@@ -1,0 +1,23 @@
+.bb {
+  margin-bottom: 1px;
+}
+.bb:hover {
+  color: theme("colors.primary");
+  border-bottom: 1px solid theme("colors.primary");
+}
+
+@font-face {
+  font-family: "Satoshi";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("~/assets/font/Satoshi-Variable.ttf") format("truetype");
+}
+
+* {
+  font-family: "Satoshi", Inter, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
