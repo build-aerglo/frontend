@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
+import persist from "pinia-plugin-persistedstate";
 
+interface UserParams {
+  id: string;
+}
 export const useUserStore = defineStore("user-aerglotech", {
   state: () => {
     return {
@@ -9,7 +13,7 @@ export const useUserStore = defineStore("user-aerglotech", {
   },
 
   actions: {
-    setUser(data) {
+    setUser(data: UserParams) {
       this.$patch((state) => {
         state["loggedIn"] = true;
         state["id"] = data.id;

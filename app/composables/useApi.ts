@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export default function () {
-  const config = useRuntimeConfig();
-  const api_url = config.public.apiUrl;
+  const api_url = useRuntimeConfig().public.apiUrl;
   const api = axios.create({
+    // @ts-ignore
     baseURL: api_url,
     headers: {
       "Content-Type": "application/json",

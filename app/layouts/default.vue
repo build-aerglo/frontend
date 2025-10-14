@@ -1,6 +1,8 @@
 <template>
     <Toast />
-    <div></div>
+    <div>
+        <slot />
+    </div>
 </template>
 
 <script setup>

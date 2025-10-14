@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev --host",
+    "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -24,6 +24,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@primevue/nuxt-module": "^4.3.9"
+    "@primevue/nuxt-module": "^4.3.9",
+    "@types/node": "^24.7.2"
   }
 }
