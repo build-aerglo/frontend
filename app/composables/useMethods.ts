@@ -9,7 +9,20 @@ export default function () {
     try {
       const res = await api.get("url");
       if (res.status === 200) {
-        return res.body;
+        return res.data;
+      }
+
+      throw new Error("Error");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const mockFunctionPost = async () => {
+    try {
+      const res = await api.post("url", JSON.stringify({ name: "test" }));
+      if (res.status === 200) {
+        return res.data;
       }
 
       throw new Error("Error");
@@ -20,5 +33,6 @@ export default function () {
 
   return {
     mockFunction,
+    mockFunctionPost,
   };
 }

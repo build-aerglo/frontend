@@ -1,4 +1,4 @@
-export function genRand(length = 10) {
+export function genRand(length = 10): string {
   const alphaNum =
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let str = "";
@@ -8,7 +8,7 @@ export function genRand(length = 10) {
   return str;
 }
 
-export const parseDateToReadableDateString = (date) => {
+export const parseDateToReadableDateString = (date: Date): string => {
   date = new Date(date);
   const year = date.getFullYear();
   const month = `0${date.getMonth() + 1}`.slice(-2);
