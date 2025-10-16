@@ -9,6 +9,7 @@ export default {
         secondaryLinen: "#F9F9F7",
         accent: "#001ad6",
         light: "#1C1C1C",
+        contrast: "#333333"
       },
     },
   },
