@@ -4,17 +4,14 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-[10px] flex-1">
             <div class="hidden sm:flex col-span-2 bg-primary rounded-l-[10px] justify-center items-center p-[20px]">
                 <div class="min-h-[500px]">
-                    <img src="" class="object-contain object-center w-[400px] h-max rounded-[10px]" />
-                    <div class="mt-[20px]">
-                        <h3 class="text-[250%] text-accent text-center">Sign into Your EchoHub account</h3>
-                        
-                    </div>
+                    <img src="assets/images/welcome.png" class="object-center object-contain w-[600px] h-[400px] rounded-[10px]"/>
+                    
                 </div>
             </div>
             <div class="shadow-lg flex justify-center items-center rounded-r-[10px] sm:p-0 p-[30px]">
                 <div class="w-full sm:w-[80%] rounded-[10px]">
                     <div class="mb-[30px]">
-                        <h1 class="text-[200%] text-accent text-center">Welcome Back!</h1>
+                        <h1 class="text-[200%] text-center text-accent">Welcome Back!</h1>
                         
                     </div>
                     <form @submit.prevent="submitform(user)" class="flex flex-col gap-[20px]">
@@ -34,7 +31,7 @@
 
                         <Button label="Sign In" fluid class="bg-primary" />
 
-                        <div class="mt-[20px] text-center">
+                        <div class="mt-[20px] text-center text-light">
                             Don't have an account? <span>
                                 <NuxtLink to="Auth/User/sign-up-user" class="text-primary">Sign Up</NuxtLink>
                             </span>
@@ -50,4 +47,6 @@
 const e = ref('')
 const p = ref('')
 </script>
+
+
 
