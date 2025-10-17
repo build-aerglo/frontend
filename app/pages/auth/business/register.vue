@@ -5,47 +5,48 @@
     </div>
     <div class="flex flex-col sm:flex-row justify-center items-center sm:max-w-[80%] mx-auto gap-[40px] sm:gap-[50px] p-4 mt-3">
       <div class="w-full sm:w-[60%]">
-        <h2 class="text-primary text-[250%] sm:text-[290%] mb-3">Engage More Users. Capture Every Insight. Elevate Your Business.</h2>
-        <P class="text-[130%] sm:text-[150%] text-contrast">Easily collect and display verified reviews. Monitor performance, respond instantly, and build trust that keeps customers coming back.</P>
+        <h2 class="text-accent text-[250%] sm:text-[290%] mb-3">Engage More Users. Capture Every Insight. Elevate Your Business.</h2>
+        <P class="text-[130%] sm:text-[150%] mb-3">Easily collect and display verified reviews. Monitor performance, respond instantly, and build trust that keeps customers coming back.</P>
+        <Rating v-model="value" :stars="5" readonly />
       </div> 
-      <div class="bg-white rounded-md w-full sm:w-[40%] p-10 shadow-md">
+      <div class="bg-white rounded-lg w-full sm:w-[40%] p-10 shadow-md">
         <h2 class="text-[200%] mb-3 text-center text-contrast">Register Your Business</h2>
         <form @submit.prevent="submitForm">
           <InputTextCustom
           v-model="businessRegistrationForm.userName"
           label="User Name"
-          placeholder="Enter your username"
           :required="true"
+          icon="pi pi-user"
           />
 
           <InputTextCustom
           v-model="businessRegistrationForm.email"
           label="Business/Non-business email"
           type="email"
-          placeholder="Enter an accessible Email"
           :required="true"
+          icon="pi pi-envelope"
           />
 
           <InputTextCustom
           v-model="businessRegistrationForm.phoneNum"
           label="Business Phone number"
-          placeholder="Enter your phone number"
           :required="true"
+          icon="pi pi-phone"
           />
 
           <InputTextCustom
           v-model="businessRegistrationForm.address"
           label="Business Address"
-          placeholder="Enter your business address"
           :required="true"
+          icon="pi pi-map-marker"
           />
 
           <InputTextCustom
           v-model="businessRegistrationForm.password"
           label="Password"
           type="password"
-          placeholder="Create a unique password"
           :required="true"
+          icon="pi pi-lock"
           />
           <ButtonCustom
             type="submit" 
@@ -53,9 +54,9 @@
             primary="true"
           />
         </form>
-        <div class="flex gap-[10px] mt-3">
+        <div class="flex gap-[10px] mt-3 text-[130%]">
           <p>Already have an account?</p>
-          <NuxtLink to="../business/login" class="text-accent hover:underline">Log in</NuxtLink>
+          <NuxtLink to="../business/login" class="text-primary hover:underline">Log in</NuxtLink>
         </div>
         
       </div>
@@ -74,7 +75,7 @@ const businessRegistrationForm = ref({
   password: '',
   userType: ''
 })
-
+const value = ref(5);
 const submitForm = () => {
   alert('You are Registered!')
   
