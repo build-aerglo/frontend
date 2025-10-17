@@ -13,7 +13,7 @@
                 <li>
                      <NuxtLink to="/Home">
                         <div class="text-primary">For Businesses</div>
-                    </NuxtLink>
+                     </NuxtLink>
                 </li>
             </ul>
         </nav>
