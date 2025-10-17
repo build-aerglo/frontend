@@ -6,6 +6,124 @@
   border-bottom: 1px solid theme("colors.primary");
 }
 
+/* themeing */
+:root {
+  /* 🌈 Core Brand Colors */
+  --p-primary-color: theme("colors.primary"); /* main brand color */
+  --p-primary-hover-color: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    white 10%
+  );
+  --p-primary-active-color: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    black 10%
+  );
+  --p-primary-contrast-color: #ffffff; /* text on primary surfaces */
+  --p-highlight-color: rgba(var(--color-primary), 0.1);
+
+  /* 🧭 Buttons */
+  --p-button-primary-background: theme("colors.primary");
+  --p-button-primary-hover-background: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    white 10%
+  );
+  --p-button-primary-active-background: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    black 10%
+  );
+  --p-button-primary-border: theme("colors.primary");
+  --p-button-primary-hover-border: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    black 5%
+  );
+  --p-button-primary-active-border: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    black 10%
+  );
+  --p-button-primary-color: #fff;
+
+  /* 📋 Inputs, Dropdowns, Selects, Textareas */
+  --p-input-focus-border-color: theme("colors.primary");
+  --p-input-focus-ring-color: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    white 60%
+  );
+  --p-input-filled-focus-background: rgba(var(--color-primary), 0.05);
+  --p-colorpicker-preview-focus-ring-style: theme("colors.primary") !important;
+
+  /* 📑 Checkbox, Radio, Switch */
+  --p-checkbox-active-border-color: theme("colors.primary");
+  --p-checkbox-active-background: theme("colors.primary");
+  --p-checkbox-active-color: #fff;
+  --p-radiobutton-active-border-color: theme("colors.primary");
+  --p-radiobutton-active-background: theme("colors.primary");
+  --p-radiobutton-active-color: #fff;
+  --p-togglebutton-checked-background: theme("colors.primary");
+  --p-togglebutton-checked-border-color: theme("colors.primary");
+  --p-togglebutton-checked-color: #fff;
+  --p-inputswitch-checked-background: theme("colors.primary");
+  --p-inputswitch-checked-border-color: theme("colors.primary");
+
+  /* 📅 Calendar, Slider, Progress */
+  --p-calendar-highlight-color: theme("colors.primary");
+  --p-slider-handle-background: theme("colors.primary");
+  --p-slider-range-background: theme("colors.primary");
+  --p-progressbar-value-background: theme("colors.primary");
+
+  /* 📜 Table + Dataview */
+  --p-datatable-highlight-background: rgba(var(--color-primary), 0.08);
+  --p-datatable-highlight-border-color: theme("colors.primary");
+
+  /* 🔘 Chips, Tags, Badges */
+  --p-badge-primary-background: theme("colors.primary");
+  --p-badge-primary-color: #fff;
+  --p-chip-remove-icon-color: theme("colors.primary");
+
+  /* 💬 Messages, Toasts */
+  --p-message-success-background: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    white 80%
+  );
+  --p-message-success-border: theme("colors.primary");
+  --p-message-success-color: theme("colors.primary");
+  --p-toast-success-background: color-mix(
+    in srgb,
+    theme("colors.primary"),
+    white 80%
+  );
+  --p-toast-success-border: theme("colors.primary");
+  --p-toast-success-color: theme("colors.primary");
+
+  /* 🧩 Menus, Tabs, Pagination */
+  --p-tabmenu-active-border-color: theme("colors.primary");
+  --p-tabmenu-active-color: theme("colors.primary");
+  --p-paginator-highlight-background: rgba(var(--color-primary), 0.1);
+  --p-paginator-highlight-color: theme("colors.primary");
+  --p-menuitem-active-color: theme("colors.primary");
+  --p-menuitem-active-icon-color: theme("colors.primary");
+
+  /* 🔍 Focus States + Links */
+  --p-focus-ring: 0 0 0 2px
+    color-mix(in srgb, theme("colors.primary"), white 60%);
+  --p-link-color: theme("colors.primary");
+  --p-link-hover-color: color-mix(in srgb, theme("colors.primary"), black 10%);
+
+  /* 🧠 Misc: Chips, Steps, ProgressSpinner, Multiselect, Accordion */
+  --p-steps-item-active-color: theme("colors.primary");
+  --p-accordion-header-active-background: rgba(var(--color-primary), 0.05);
+  --p-accordion-header-active-border-color: theme("colors.primary");
+  --p-multiselect-highlight-background: rgba(var(--color-primary), 0.1);
+  --p-spinner-color: theme("colors.primary");
+}
+
 @font-face {
   font-family: "Satoshi";
   font-style: normal;
@@ -16,6 +134,7 @@
 
 * {
   font-family: "Satoshi", Inter, system-ui, sans-serif;
+  font-size: 14px;
 }
 
 html {
