@@ -6,7 +6,7 @@
                 <div class="min-h-[500px]">
                     <img src="/ghost.webp" class="object-contain object-center w-[400px] h-max rounded-[10px]" />
                     <div class="mt-[20px]">
-                        <h3 class="text-[200%] text-white text-center">Sign up or die!!</h3>
+                        <h3 class="text-[200%] text-white text-center">Sign up Text Here!!</h3>
                         <div class="text-white text-center">Terms and conditions apply</div>
                     </div>
                 </div>
