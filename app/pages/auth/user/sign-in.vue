@@ -1,10 +1,8 @@
 <template>
     <div class="flex justify-center items-center p-[30px] sm:p-[100px] bg-secondaryLinen h-screen relative">
-        <NuxtLink to="/Auth/User/home" class="text-accent absolute top-[20px] sm:right-[100px] right-[20px]">Home</NuxtLink>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-[10px] flex-1">
             <div class="hidden sm:flex col-span-2 bg-primary rounded-l-[10px] justify-center items-center p-[20px]">
-                <div class="min-h-[500px]">
-                    <img src="assets/images/welcome.png" class="object-center object-contain w-[600px] h-[400px] rounded-[10px]"/>
+                <div class="min-h-[450px]">
                     
                 </div>
             </div>
@@ -33,7 +31,7 @@
 
                         <div class="mt-[20px] text-center text-light">
                             Don't have an account? <span>
-                                <NuxtLink to="Auth/User/sign-up-user" class="text-primary">Sign Up</NuxtLink>
+                                <NuxtLink to="/auth/user/sign-up" class="text-primary">Sign Up</NuxtLink>
                             </span>
                         </div>
                     </form>
