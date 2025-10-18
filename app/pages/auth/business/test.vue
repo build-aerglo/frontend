@@ -94,10 +94,6 @@
                                     />
                                 </div>
 
-                                <div class="text-right">
-                                    <NuxtLink to="/" class="bb">Forget Password</NuxtLink>
-                                </div>
-
                                 <ButtonCustom
                                     type="submit" 
                                     label="Register Business" 
