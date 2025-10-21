@@ -3,7 +3,7 @@ import Aura from "@primeuix/themes/aura";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
-  css: ["primeicons/primeicons.css", "@/assets/style.css"],
+  css: ["primeicons/primeicons.css", "@/assets/style.css", "@/assets/css/bundle.css"],
   modules: [
     "@nuxtjs/tailwindcss",
     "@primevue/nuxt-module",
