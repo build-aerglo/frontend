@@ -1,9 +1,7 @@
 <template>
     <div class="authentication-wrapper authentication-cover">
         <!-- Logo -->
-        <a href="index.html" class="app-brand auth-cover-brand">
-            <NavLogo />
-        </a>
+         <NuxtLink to="/auth/end-user/sign-in" class="text-primary absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
         <!-- /Logo -->
         <div class="authentication-inner row m-0">
             <!-- /Left Text -->
@@ -62,7 +60,7 @@
                         <NuxtLink to="/"><i class="pi pi-facebook ml-3" style="font-size:1rem;color:blue"></i></NuxtLink>
                         <NuxtLink to="/"><i class="pi pi-twitter ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
                         <NuxtLink to="/"><i class="pi pi-github ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
-                        <NuxtLink to="/"><i class="pi pi-google ml-3" style="font-size:1rem; color:orange"></i></NuxtLink>
+                        <NuxtLink to="/"><i class="pi pi-google ml-3" style="font-size:1rem; color:orangered"></i></NuxtLink>
                     </div>
                 </div>
             </div>
