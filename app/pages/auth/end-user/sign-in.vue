@@ -22,10 +22,8 @@
 
             <!-- Login -->
             <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6">
-                <div class="w-px-400 mx-auto mt-12 pt-5">
-                    <h4 class="mb-1">Welcome to Vuexy! 👋</h4>
-                    <p class="mb-6">Please sign-in to your account and start the adventure</p>
-
+                <div class="w-px-400 mx-auto mt-3 pt-5">
+                    <h4 class="mb-4 text-accent text-center">Welcome</h4>
                     <form id="formAuthentication" class="mb-6">
                         <div class="mb-6 form-control-validation">
                             <label for="email" class="form-label">Email or Username</label>
@@ -49,14 +47,11 @@
                                 </a>
                             </div>
                         </div>
-                        <ButtonCustom label="Submit" size="lg" primary="true" />
+                        <button class="btn btn-primary d-grid w-100">Sign in</button>
                     </form>
 
                     <p class="text-center">
-                        <span>New on our platform?</span>
-                        <a href="auth-register-cover.html">
-                            <span>Create an account</span>
-                        </a>
+                        <span>New to Echohub? </span><NuxtLink to="/auth/end-user/sign-up">Create an account</NuxtLink>
                     </p>
 
                     <div class="divider my-6">
@@ -64,21 +59,10 @@
                     </div>
 
                     <div class="d-flex justify-content-center">
-                        <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-facebook me-1_5">
-                            <i class="icon-base pi pi-google icon-20px"></i>
-                        </a>
-
-                        <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-twitter me-1_5">
-                            <i class="icon-base pi pi-twitter icon-20px"></i>
-                        </a>
-
-                        <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-github me-1_5">
-                            <i class="icon-base pi pi-github icon-20px"></i>
-                        </a>
-
-                        <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-google-plus">
-                            <i class="icon-base pi pi-facebook icon-20px"></i>
-                        </a>
+                        <NuxtLink to="/"><i class="pi pi-facebook ml-3" style="font-size:1rem;color:blue"></i></NuxtLink>
+                        <NuxtLink to="/"><i class="pi pi-twitter ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
+                        <NuxtLink to="/"><i class="pi pi-github ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
+                        <NuxtLink to="/"><i class="pi pi-google ml-3" style="font-size:1rem; color:orange"></i></NuxtLink>
                     </div>
                 </div>
             </div>
