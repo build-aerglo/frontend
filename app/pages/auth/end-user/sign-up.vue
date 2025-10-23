@@ -3,15 +3,17 @@
       <div class="authentication-inner row m-0">
         <!-- /Left Text -->
         <div class="d-none d-xl-flex col-xl-8 p-0">
-           <div class="auth-cover-bg bg-secondaryLinen d-flex justify-content-right align-items-right">
+           <div class="auth-cover-bg bg-primary d-flex justify-content-right align-items-right">
               <NuxtLink to="/" class="absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
+              <img src="assets/images/joincomm2.jpg" class="w-[150%] h-screen"/>
             </div>
         </div>
 
         <!-- Register -->
         <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6 mt-0">
           <div class="w-px-400 mx-auto mt-2 pt-5">
-            <h4 class="mb-1 text-center text-accent">Create An Account</h4>
+            <h3 class="text-center text-accent mb-0">Join The Community</h3>
+            <h5 class="mb-1 mt-0 text-center text-primary">Create An Account</h5>
             <form id="formAuthentication" class="mb-4" action="index.html" method="GET">
               <div class="mb-3 form-control-validation">
                 <label for="username" class="form-label">Full Name</label>
@@ -38,7 +40,7 @@
                 <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
               </div>
 
-              <div class="mb-6 form-password-toggle form-control-validation">
+              <div class="mb-3 form-password-toggle form-control-validation">
                   <label class="form-label" for="password">Password</label>
                   <div class="input-group input-group-merge">
                     <input
@@ -51,7 +53,7 @@
                     <span class="input-group-text cursor-pointer"><i class="pi pi-eye-slash"></i></span>
                   </div>
                 </div>
-                <div class="mb-6 form-password-toggle form-control-validation">
+                <div class="mb-3 form-password-toggle form-control-validation">
                   <label class="form-label" for="password">Confirm Password</label>
                   <div class="input-group input-group-merge">
                     <input

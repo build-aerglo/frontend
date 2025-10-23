@@ -1,13 +1,13 @@
 <template>
     <div class="authentication-wrapper authentication-cover">
-        <!-- Logo -->
-         <NuxtLink to="/" class="absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
-        <!-- /Logo -->
         <div class="authentication-inner row m-0">
             <!-- /Left Text -->
             <div class="d-none d-xl-flex col-xl-8 p-0">
                 <div class="auth-cover-bg d-flex justify-content-center align-items-center">
-                    
+                    <!-- Logo -->
+                    <NuxtLink to="/" class="absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
+                    <!-- /Logo -->
+                    <img src="assets/images/welcom2.jpg" class="w-screen h-screen"/>
                 </div>
             </div>
             <!-- /Left Text -->

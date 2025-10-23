@@ -1,15 +1,16 @@
 <template>
     <div>
-    <div class="container-xxl bg-indigo-200">
+    <div class="container-xxl bg-[url(assets/images/support1.jpg)]">
       <div class="authentication-wrapper authentication-basic container-p-y">
         <!-- Logo -->
-        <NuxtLink to="/" class="text-primary text-[130%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
+        <NuxtLink to="/" class="absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
         <!-- /Logo -->
+         
         <div class="authentication-inner py-6">
           <!-- Register Card -->
           <div class="card">
             <div class="card-body">
-              <h4 class="mb-1 text-center text-primary text-[150%]">Create Your Account</h4>
+              <h4 class="mb-1 text-center text-primary text-[140%]">Create Your Account</h4>
               
               <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
                 <div class="mb-6 form-control-validation">
