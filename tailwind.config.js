@@ -9,7 +9,7 @@ export default {
         gold: "#deae29",
         secondary:"#F5EBDC",
         accent: "#ff6523",
-        secondaryLinen :"F9F9F7",
+        secondaryLinen :"#F9F9F7",
         dark: "#f8fafc",
         light:"#1C1C1C",
         contrast: "#333333",
