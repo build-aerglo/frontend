@@ -11,7 +11,7 @@
 
     <!-- Input wrapper -->
     <div
-      class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-all duration-300 mt-1 mb-5"
+      class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 mt-1 mb-5"
     >
       <!-- Left Icon -->
       <div
@@ -70,8 +70,8 @@ const toggleVisibility = () => {
 
 <style scoped>
 /* Optional - preserve Vuexy-like focus highlight */
-.input-group:focus-within {
+/* .input-group:focus-within {
   border-color: var(--primary-color, "#001ad6");
   box-shadow: 0 0 0 0.2rem rgba(115, 103, 240, 0.12);
-}
+} */
 </style>

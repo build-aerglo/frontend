@@ -15,14 +15,14 @@
               <h4 class="mb-1 tet-[180%] !text-primary">Welcome Back! 👋</h4>
               <p class="mb-6 text-[120%] text-contrast">Sign in to manage reviews and track your business growth.</p>
 
-              <form id="formAuthentication" class="mb-4" action="index.html" method="GET">
+              <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-4">
                 
                 <div class="form-control-validation">
-                  <InputTextCustom v-model="businessRegistrationForm.email" label="Email" type="email" placeholder="Enter Email" />
+                  <InputTextCustom v-model="businessLogin.email" label="Email" type="email" placeholder="Enter Email" />
                 </div>
 
                 <div class="form-password-toggle form-control-validation">
-                  <InputTextCustom v-model="businessRegistrationForm.password" label="Password:" type="password" placeholder="Enter password" />
+                  <InputTextCustom v-model="businessLogin.password" label="Password:" type="password" placeholder="Enter password" />
                 </div>
                 <div class="mb-6 mt-8">
                   <p class="text-center text[110%]">
@@ -73,15 +73,14 @@
 </template>
 
 <script setup lang="ts">
-const businessRegistrationForm = ref({
-    userName: '',
-    businessName: '',
+const businessLogin = ref({
     email: '',
-    phoneNum: '',
     password: '',
-    confirmPassword: ''
-});
 
+});
+const HandleLogin = () => {
+  alert('Logged in successfully!')
+}
 
 </script>
 
