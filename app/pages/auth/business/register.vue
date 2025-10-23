@@ -51,7 +51,7 @@
             <div class="mb-6 mt-8">
               <div class="form-check mb-8 ms-2 form-control-validation">
                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" v-model="agreedToTerms" />
-                <label class="form-check-label text-[110%]" for="terms-conditions">
+                <label class="form-check-label text-[110%] text-contrast" for="terms-conditions">
                   I agree to
                   <NuxtLink to="/">privacy policy & terms</NuxtLink>
                 </label>
@@ -66,10 +66,10 @@
             </form>
 
             <p class="text-center text-[110%]">
-              <span>Already have an account?</span>
-              <a href="auth-login-basic.html">
+              <span class="text-contrast">Already have an account?</span>
+              <NuxtLink to="log-in">
                 <span class="ms-1 hover:underline">Sign in instead</span>
-              </a>
+              </NuxtLink>
             </p>
 
             <div class="divider my-6">

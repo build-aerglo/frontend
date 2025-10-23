@@ -38,7 +38,7 @@
 
               <p class="text-center text[110%]">
                 <span>New on our platform?</span>
-                <NuxtLink to="/register">
+                <NuxtLink to="register">
                     <span class="ms-1 hover:underline">Create an account</span>
                 </NuxtLink>
               </p>
