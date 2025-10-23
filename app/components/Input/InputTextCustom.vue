@@ -4,7 +4,7 @@
     <label
       v-if="label"
       :for="formId"
-      class="block  text-contrast mb-1 !text-[101%]"
+      class="block text-sm text-contrast mb-1"
     >
       {{ label }}
     </label>

@@ -3,17 +3,17 @@
     <div class="authentication-wrapper authentication-basic container-py">
       <div class="authentication-inner py-6">
         <!-- Register Card -->
-        <div class="card">
-          <div class="card-body">
+        <div class="md:card p-4 md:shadow-lg md:rounded-xl md:bg-white md:p-0">
+          <div class="md:card-body md:p-8">
             <!-- Logo -->
              <!-- <div class="app-brand justify-content-center mb-0"> -->
-               <NuxtLink to="/" class="text-center">
+               <NuxtLink to="/" class="md:text-center">
                  <NavLogo />
                </NuxtLink>
              <!-- </div> -->
             <!-- /Logo -->
-            <h4 class="mb-1 text-[180%] !text-primary">Register Your Business 🚀</h4>
-            <p class="mb-6 text-[130%] text-contrast">Build customer trust through real feedback!</p>
+            <h4 class="mb-1 text-[150%] md:text-[180%] !text-primary">Register Your Business 🚀</h4>
+            <p class="mb-6 text-[105%] sm:text-[130%] text-contrast">Build customer trust through real feedback!</p>
 
             <form @submit.prevent="handleRegistration" id="formAuthentication" class="mb-6">
               <div class="form-control-validation">
@@ -48,10 +48,10 @@
                 </div>
               </div>
             </div>
-            <div class="mb-6 mt-8">
+            <div class="mb-6 mt-4">
               <div class="form-check mb-8 ms-2 form-control-validation">
                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" v-model="agreedToTerms" />
-                <label class="form-check-label text-[110%] text-contrast" for="terms-conditions">
+                <label class="form-check-label md:text-[110%] text-contrast" for="terms-conditions">
                   I agree to
                   <NuxtLink to="/">privacy policy & terms</NuxtLink>
                 </label>
@@ -65,7 +65,7 @@
               ]" />
             </form>
 
-            <p class="text-center text-[110%]">
+            <p class="text-center md:text-[110%]">
               <span class="text-contrast">Already have an account?</span>
               <NuxtLink to="log-in">
                 <span class="ms-1 hover:underline">Sign in instead</span>
@@ -153,6 +153,7 @@ const handleRegistration = () => {
 }
 .authentication-wrapper.authentication-basic .authentication-inner::before,
 .authentication-wrapper.authentication-basic .authentication-inner::after {
-  background: #ff6523 !important; 
+  content: none !important;
+  display: none !important;
 }
 </style>
