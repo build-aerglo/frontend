@@ -1,13 +1,12 @@
 <template>
       <div class="authentication-wrapper authentication-cover">
-      <!-- Logo -->
-      <NuxtLink to="/" class="text-accent text-[120%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
-      <!-- /Logo -->
       <div class="authentication-inner row m-0">
         <!-- /Left Text -->
         <div class="d-none d-xl-flex col-xl-8 p-0">
           <div class="auth-cover-bg d-flex justify-content-center align-items-center">
-            
+              <!-- Logo -->
+              <NuxtLink to="/" class="text-accent text-[120%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
+              <!-- /Logo -->
           </div>
         </div>
         <!-- /Left Text -->
@@ -76,8 +75,9 @@
                   </label>
                 </div>
               </div>
+              
               <button class="btn btn-primary d-grid w-100 mt-1">Sign up</button>
-            </form>
+           </form>
 
             <p class="text-center">
               <span>Already have an account?<NuxtLink to="/auth/end-user/sign-in"><span> Sign in</span></NuxtLink></span>
@@ -100,7 +100,7 @@
     </div>
 </template>
 
-<script lang="ts">
-
+<script setup>
+  
 </script>
 

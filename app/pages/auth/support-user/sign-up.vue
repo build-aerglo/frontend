@@ -9,7 +9,7 @@
           <!-- Register Card -->
           <div class="card">
             <div class="card-body">
-              <h4 class="mb-1 text-center text-accent text-[150%]">Create Your Account</h4>
+              <h4 class="mb-1 text-center text-primary text-[150%]">Create Your Account</h4>
               
               <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
                 <div class="mb-6 form-control-validation">
@@ -39,12 +39,22 @@
                     <span class="input-group-text cursor-pointer"><i class="pi pi-eye-slash"></i></span>
                   </div>
                 </div>
+
+                <button classs="group relative border border-gray-300 bg-white text-gray-500 px-3 py-6 rounded">
+                  Select Your Role
+                  <div class="absolute top-full right-0 rounded-lg p-3 mt-1 shadow-md scale-y-0 group-focus:scale-y-100 origin-top duration-200">
+                      <NuxtLink class="active">Customer Support</NuxtLink>
+                      <NuxtLink>Technical Support</NuxtLink>
+                      <NuxtLink>Administrative Support</NuxtLink>
+                  </div>
+                </button>
+                
                 <div class="my-8 form-control-validation">
                   <div class="form-check mb-0 ms-2">
                     <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                     <label class="form-check-label" for="terms-conditions">
                       I agree to
-                      <a href="javascript:void(0);">privacy policy & terms</a>
+                      <NuxtLink to="/" class="text-accent"> privacy policy & terms</NuxtLink>
                     </label>
                   </div>
                 </div>
