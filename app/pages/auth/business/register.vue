@@ -147,7 +147,6 @@ const handleRegistration = () => {
 <style scoped>
 @media (min-width: 768px) {
   .authentication-wrapper {
-    /* Apply the custom wide width variable only when the screen is 768px or larger */
     --bs-auth-basic-inner-max-width: 650px;
   }
 }

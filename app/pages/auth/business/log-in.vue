@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="form-password-toggle form-control-validation">
-                  <InputTextCustom v-model="businessLogin.password" label="Password" type="password" placeholder="Enter password" required />
+                  <InputTextCustom v-model="businessLogin.password" label="Password" type="password" required />
                 </div>
                 <div class="mb-6 mt-8">
                   <div class="d-flex justify-content-between">

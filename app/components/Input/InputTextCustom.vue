@@ -49,18 +49,15 @@
 const props = defineProps(['placeholder', 'class', 'inputClass', 'label', 'type', 'required', 'disabled', 'icon']);
 const model = defineModel<string>()
 
-// Local state
 const formId = `input-${Math.random().toString(36).slice(2, 10)}`
 const isVisible = ref(false)
 
-// Computed
 const isPasswordType = computed(() => props.type === 'password')
 const inputType = computed(() =>
   isPasswordType.value ? (isVisible.value ? 'text' : 'password') : props.type || 'text'
 )
 const visibilityIcon = computed(() => (isVisible.value ? 'pi pi-eye' : 'pi pi-eye-slash'))
 
-// Methods
 const toggleVisibility = () => {
   isVisible.value = !isVisible.value
   console.log('Password visibility:', isVisible.value)
@@ -69,9 +66,5 @@ const toggleVisibility = () => {
 </script>
 
 <style scoped>
-/* Optional - preserve Vuexy-like focus highlight */
-/* .input-group:focus-within {
-  border-color: var(--primary-color, "#001ad6");
-  box-shadow: 0 0 0 0.2rem rgba(115, 103, 240, 0.12);
-} */
+
 </style>
