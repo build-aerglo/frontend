@@ -1,55 +1,52 @@
 <template>
-  <div class="authentication-wrapper authentication-cover bg-secondaryLinen">
-    <!-- Logo -->
-    <NuxtLink to="/" class="app-brand auth-cover-brand">
-      <NavLogo />
-    </NuxtLink>
-    <!-- /Logo -->
-    <div class="authentication-inner row m-0">
-      <!-- /Left Text -->
-      <div class="d-none d-xl-flex col-xl-8 p-0">
-        <div class="auth-cover-bg d-flex justify-content-center align-items-center">
-          <img
-            src="../../../../public/images/img/illustrations/auth-register-illustration-light.png"
-            alt="auth-register-cover"
-            class="my-5 auth-illustration"
-            data-app-light-img="illustrations/auth-register-illustration-light.png"
-            data-app-dark-img="illustrations/auth-register-illustration-dark.png" />
-          <img
-            src="../../assets/img/illustrations/bg-shape-image-light.png"
-            alt="auth-register-cover"
-            class="platform-bg"
-            data-app-light-img="illustrations/bg-shape-image-light.png"
-            data-app-dark-img="illustrations/bg-shape-image-dark.png" />
-        </div>
-      </div>
-      <!-- /Left Text -->
+  <div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-py">
+      <div class="authentication-inner py-6">
+        <!-- Register Card -->
+        <div class="card">
+          <div class="card-body">
+            <!-- Logo -->
+             <!-- <div class="app-brand justify-content-center mb-0"> -->
+               <NuxtLink to="/" class="text-center">
+                 <NavLogo />
+               </NuxtLink>
+             <!-- </div> -->
+            <!-- /Logo -->
+            <h4 class="mb-1 text-[180%] !text-primary">Register Your Business 🚀</h4>
+            <p class="mb-6 text-[130%] text-contrast">Build customer trust through real feedback!</p>
 
-      <!-- Register -->
-      <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6">
-        <div class="w-px-400 mx-auto mt-12 pt-5">
-          <h4 class="mb-1 text-[180%]">Register Your Business 🚀</h4>
-          <p class="mb-6 text-[120%]">Make your app management easy and fun!</p>
-
-          <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
-            <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.userName" label="Username" type="text" placeholder="Enter UserName" />
+            <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
+              <div class="form-control-validation">
+              <InputTextCustom v-model="businessRegistrationForm.userName" label="Username" type="text" icon="user" />
             </div>
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.businessName" label="Business name" type="text" placeholder="Enter Business Name" />
+              <InputTextCustom v-model="businessRegistrationForm.businessName" label="Business Name" type="text" icon="tag" />
             </div>
             
-            <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.email" label="Email" type="email" placeholder="Enter Email" />
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-control-validation">
+                  <InputTextCustom v-model="businessRegistrationForm.email" label="Email" type="email" icon="envelope" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-control-validation">
+                  <InputTextCustom v-model="businessRegistrationForm.phoneNum" label="Phone Number" type="tel" icon="phone" />
+                </div>
+              </div>
             </div>
-
-            <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.phoneNum" label="Phone number" type="tel" placeholder="Enter phone number" />
-            </div>
-
-            <div class="form-password-toggle form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.password" label="Password:" type="password" placeholder="Enter password" />
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-password-toggle form-control-validation">
+                  <InputTextCustom v-model="businessRegistrationForm.password" label="Password" type="password" />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-password-toggle form-control-validation">
+                  <InputTextCustom v-model="businessRegistrationForm.confirmPassword" label="Confirm Password" type="Password" />
+                </div>
+              </div>
             </div>
             <div class="mb-6 mt-8">
               <div class="form-check mb-8 ms-2 form-control-validation">
@@ -60,19 +57,66 @@
                 </label>
               </div>
             </div>
-            <ButtonCustom label="Register your business" size="lg" primary="true" />
-          </form>
+            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px]" />
+            </form>
 
-          <p class="text-center">
-            <span>Already have an account?</span>
-            <a href="auth-login-cover.html">
-              <span class="ms-1">Sign in instead</span>
-            </a>
-          </p>
+            <p class="text-center text-[110%]">
+              <span>Already have an account?</span>
+              <a href="auth-login-basic.html">
+                <span class="ms-1 hover:underline">Sign in instead</span>
+              </a>
+            </p>
 
+            <div class="divider my-6">
+              <div class="divider-text">or</div>
+            </div>
+
+            <div class="flex justify-center space-x-4">
+              <!-- Google -->
+              <NuxtLink
+                to="https://www.google.com"
+                target="_blank"
+                class=" text-[#DB4437] flex items-center justify-center w-[48px] h-[48px]
+                      transition-all duration-300 hover:bg-[#DB4437]/10 hover:rounded-full"
+              >
+                <i class="pi pi-google text-[1.3rem]"></i>
+              </NuxtLink>
+
+              <!-- Facebook -->
+              <NuxtLink
+                to="https://www.facebook.com"
+                target="_blank"
+                class=" text-[#1877F2] text-[200%] flex items-center justify-center w-[48px] h-[48px]
+                      transition-all duration-300 hover:bg-[#1877F2]/10 hover:rounded-full"
+              >
+                <i class="pi pi-facebook text-[1.3rem]"></i>
+              </NuxtLink>
+
+              <!-- Instagram -->
+              <NuxtLink
+                to="https://www.instagram.com"
+                target="_blank"
+                class=" text-[#E4405F] flex items-center justify-center w-[48px] h-[48px]
+                      transition-all duration-300 hover:bg-[#E4405F]/10 hover:rounded-full"
+              >
+                <i class="pi pi-instagram text-[1.3rem]"></i>
+              </NuxtLink>
+
+              <!-- Twitter -->
+              <NuxtLink
+                to="https://www.twitter.com"
+                target="_blank"
+                class="no-underline text-[#1DA1F2] flex items-center justify-center w-[48px] h-[48px]
+                      transition-all duration-300 hover:bg-[#1DA1F2]/10 hover:rounded-full"
+              >
+                <i class="pi pi-twitter text-[1.3rem]"></i>
+              </NuxtLink>
+            </div>
+
+          </div>
         </div>
+        <!-- Register Card -->
       </div>
-      <!-- /Register -->
     </div>
   </div>
 </template>
@@ -87,9 +131,17 @@ const businessRegistrationForm = ref({
     confirmPassword: ''
 });
 
-
 </script>
 
 <style scoped>
-
+@media (min-width: 768px) {
+  .authentication-wrapper {
+    /* Apply the custom wide width variable only when the screen is 768px or larger */
+    --bs-auth-basic-inner-max-width: 650px;
+  }
+}
+.authentication-wrapper.authentication-basic .authentication-inner::before,
+.authentication-wrapper.authentication-basic .authentication-inner::after {
+  background: #ff6523 !important; 
+}
 </style>
