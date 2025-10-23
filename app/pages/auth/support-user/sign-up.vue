@@ -26,6 +26,10 @@
                   <label for="email" class="form-label">Email</label>
                   <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
                 </div>
+                <div class="mb-6 form-control-validation">
+                  <label for="phone-number" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="phone-number" name="phone-number" pattern="[0-9]{11}" placeholder="Enter your phone number" />
+                </div>
                 <div class="mb-6 form-password-toggle form-control-validation">
                   <label class="form-label" for="password">Password</label>
                   <div class="input-group input-group-merge">
@@ -39,15 +43,19 @@
                     <span class="input-group-text cursor-pointer"><i class="pi pi-eye-slash"></i></span>
                   </div>
                 </div>
-
-                <button classs="group relative border border-gray-300 bg-white text-gray-500 px-3 py-6 rounded">
-                  Select Your Role
-                  <div class="absolute top-full right-0 rounded-lg p-3 mt-1 shadow-md scale-y-0 group-focus:scale-y-100 origin-top duration-200">
-                      <NuxtLink class="active">Customer Support</NuxtLink>
-                      <NuxtLink>Technical Support</NuxtLink>
-                      <NuxtLink>Administrative Support</NuxtLink>
+                <div class="mb-6 form-password-toggle form-control-validation">
+                  <label class="form-label" for="password">Confirm Password</label>
+                  <div class="input-group input-group-merge">
+                    <input
+                      type="confirm-password"
+                      id="confirm-password"
+                      class="form-control"
+                      name="confirm-password"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="confirm-password" />
+                    <span class="input-group-text cursor-pointer"><i class="pi pi-eye"></i></span>
                   </div>
-                </button>
+                </div>
                 
                 <div class="my-8 form-control-validation">
                   <div class="form-check mb-0 ms-2">
