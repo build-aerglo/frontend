@@ -12,10 +12,7 @@
             </li>
             <li>
                 <NuxtLink to="/auth/support-user/sign-up" class="text-accent ">Register as a Support user</NuxtLink>
-            </li>
-            <li>
-                <NuxtLink to="/auth/end-user/tryin" class="text-accent ">Check</NuxtLink>
-            </li>
+            </li>  
         </ul> 
     </div>  
 </template>

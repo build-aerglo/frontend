@@ -1,84 +1,122 @@
 <template>
-    <div class="authentication-wrapper authentication-cover">
-        <div class="authentication-inner row m-0">
-            <!-- /Left Text -->
-            <div class="d-none d-xl-flex col-xl-8 p-0">
-                <div class="auth-cover-bg d-flex justify-content-center align-items-center">
-                    <!-- Logo -->
-                    <NuxtLink to="/" class="absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
-                    <!-- /Logo -->
-                    <img src="assets/images/welcom2.jpg" class="w-screen h-screen"/>
-                </div>
-            </div>
-            <!-- /Left Text -->
-
-            <!-- Login -->
-            <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6">
-                <div class="w-px-400 mx-auto mt-3 pt-5">
-                    <h4 class="mb-4 text-accent text-center">Welcome</h4>
-                    <form id="formAuthentication" class="mb-6">
-                        <div class="mb-6 form-control-validation">
-                            <label for="email" class="form-label">Email or Username</label>
-                            <input type="text" class="form-control" id="email" name="email-username"
-                                placeholder="Enter your email or username" autofocus />
-                        </div>
-                        <div class="relative w-full">
-                            <InputTextCustom
-                                v-model="password"
-                                :type="showPassword ? 'text' : 'password'"
-                                label="Password:"
-                                placeholder="Password"
-                                inputClass="border border-light-300 hover:border-light-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full transition"
-                            />
-                            <i
-                                :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                                class="absolute right-3 top-9 cursor-pointer"
-                                @click="showPassword = !showPassword"
-                            ></i>
-                        </div>
-                        
-                <div class="my-8">
-                    <div class="d-flex justify-content-between">
-                        <div class="form-check mb-0 ms-2">
-                            <input class="form-check-input" type="checkbox" id="remember-me" />
-                            <label class="form-check-label" for="remember-me"> Remember Me </label>
-                        </div>
-                        <a href="auth-forgot-password-cover.html">
-                            <p class="mb-0">Forgot Password?</p>
-                        </a>
-                    </div>
-                </div>
-                <button class="btn btn-primary d-grid w-100">Sign in</button>
-            </form>
-            <p class="text-center">
-                <span>New to Echohub? </span><NuxtLink to="/auth/end-user/sign-up">Create an account</NuxtLink>
-            </p>
-
-            <div class="divider my-6">
-                <div class="divider-text">or</div>
-            </div>
-
-            <div class="d-flex justify-content-center">
-                <NuxtLink to="/"><i class="pi pi-facebook ml-3" style="font-size:1rem;color:blue"></i></NuxtLink>
-                <NuxtLink to="/"><i class="pi pi-twitter ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
-                <NuxtLink to="/"><i class="pi pi-github ml-3" style="font-size:1rem; color:black"></i></NuxtLink>
-                <NuxtLink to="/"><i class="pi pi-google ml-3" style="font-size:1rem; color:orangered"></i></NuxtLink>
-            </div>
-        </div>
-        </div>
-            <!-- /Login -->
+  <div class="flex h-screen bg-white overflow-hidden">
+    <!-- Left Image Section -->
+    <div class="hidden xl:flex w-2/3 relative">
+      <NuxtLink to="/" class="absolute top-6 left-6 z-10">
+        <NavLogo />
+      </NuxtLink>
+      <img
+        src="/assets/images/welcom2.jpg"
+        alt="Welcome background"
+        class="w-full h-full object-contain"
+      />
     </div>
+
+    <!-- Right Form Section -->
+    <div class="flex flex-col justify-center items-center w-full xl:w-1/3 px-8 bg-gray-50">
+      <div class="w-full max-w-sm space-y-5">
+        <h2 class="text-3xl font-bold text-center text-accent">
+          Welcome
+        </h2>
+
+        <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email or Username</label>
+            <input
+              id="email"
+              v-model="email"
+              name="email"
+              type="text"
+              placeholder="Enter your email or username"
+              required
+              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
+            />
+          </div>
+
+          <div class="relative">
+            <InputTextCustom
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              label="Password"
+              placeholder="Enter Password"
+              inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
+            />
+            <i
+              :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+              class="absolute right-3 top-9 cursor-pointer text-gray-500"
+              @click="togglePassword"
+            ></i>
+          </div>
+
+          <div class="flex justify-between items-center text-xs text-gray-600">
+            <label class="flex items-center space-x-1">
+              <input type="checkbox" id="remember-me" v-model="rememberMe" class="accent-primary" />
+              <span>Remember Me</span>
+            </label>
+            <NuxtLink to="/" class="hover:text-primary font-medium">
+              Forgot Password?
+            </NuxtLink>
+          </div>
+
+          <button type="submit" class="w-full py-2 bg-primary hover:bg-primary text-white rounded-md text-sm font-medium transition">
+            Sign In
+          </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-700">
+          <span>New to Echohub? </span>
+          <NuxtLink to="/auth/end-user/sign-up" class="text-primary hover:underline font-medium">
+            Create an account
+          </NuxtLink>
+        </p>
+
+        <div class="flex items-center">
+          <div class="flex-grow border-t border-gray-300"></div>
+          <span class="px-2 text-gray-400 text-xs">or</span>
+          <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <div class="flex justify-center space-x-4">
+          <NuxtLink to="/" aria-label="Login with Facebook">
+            <i class="pi pi-facebook text-blue-600 text-lg"></i>
+          </NuxtLink>
+          <NuxtLink to="/" aria-label="Login with Twitter">
+            <i class="pi pi-twitter text-sky-500 text-lg"></i>
+          </NuxtLink>
+          <NuxtLink to="/" aria-label="Login with GitHub">
+            <i class="pi pi-github text-gray-800 text-lg"></i>
+          </NuxtLink>
+          <NuxtLink to="/" aria-label="Login with Google">
+            <i class="pi pi-google text-red-500 text-lg"></i>
+          </NuxtLink>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+
+const email = ref<string>("");
 const password = ref<string>("");
-const confirmPassword = ref<string>("");
+const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
-const showConfirm = ref<boolean>(false);
+
+function togglePassword() {
+  showPassword.value = !showPassword.value;
+}
+
+async function handleSubmit() {
+  try {
+    console.log("Attempting login:", email.value, password.value, rememberMe.value);
+    // Future: call backend API for authentication
+    router.push("/dashboard");
+  } catch (err) {
+    console.error("Login error:", err);
+  }
+}
 </script>
-
-
