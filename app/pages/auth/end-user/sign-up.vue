@@ -12,19 +12,9 @@
         <!-- Register -->
         <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6 mt-0">
           <div class="w-px-400 mx-auto mt-2 pt-5">
-            <h3 class="text-center text-accent mb-0">Join The Community</h3>
+            <h3 class="text-center text-accent mb-0 mt-0">Join The Community</h3>
             <h5 class="mb-1 mt-0 text-center text-primary">Create An Account</h5>
             <form id="formAuthentication" class="mb-4" action="index.html" method="GET">
-              <div class="mb-3 form-control-validation">
-                <label for="username" class="form-label">Full Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="full-name"
-                  name="full-name"
-                  placeholder="Enter your full name"
-                  autofocus />
-              </div>
               <div class="mb-3 form-control-validation">
                 <label for="username" class="form-label">Username</label>
                 <input
@@ -43,34 +33,33 @@
                   <label for="phone-number" class="form-label">Phone Number</label>
                   <input type="tel" class="form-control" id="phone-number" name="phone-number" pattern="[0-9]{11}" placeholder="Enter your phone number" />
                 </div>
-              <div class="mb-3 form-password-toggle form-control-validation">
-                  <label class="form-label" for="password">Password</label>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
-                    <span class="input-group-text cursor-pointer"><i class="pi pi-eye-slash"></i></span>
-                  </div>
-                </div>
-                <div class="mb-3 form-password-toggle form-control-validation">
-                  <label class="form-label" for="password">Confirm Password</label>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="confirm-password"
-                      id="confirm-password"
-                      class="form-control"
-                      name="confirm-password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="confirm-password" />
-                    <span class="input-group-text cursor-pointer"><i class="pi pi-eye"></i></span>
-                  </div>
-                </div>
-              
-              <div class="mb-3 mt-4">
+                <div class="flex gap-2">
+                    <div class="relative w-1/2">
+                      <InputTextCustom
+                        v-model="password"
+                        :type="showPassword ? 'text' : 'password'"
+                        placeholder="Password"
+                      />
+                      <i
+                        :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                        class="absolute right-3 top-4 cursor-pointer"
+                        @click="showPassword = !showPassword"
+                      ></i>
+                    </div>
+                    <div class="relative w-1/2">
+                      <InputTextCustom
+                        v-model="confirmPassword"
+                        :type="showConfirm ? 'text' : 'password'"
+                        placeholder="Confirm password"
+                      />
+                      <i
+                        :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                        class="absolute right-3 top-4 cursor-pointer"
+                        @click="showConfirm = !showConfirm"
+                      ></i>
+                    </div>
+              </div>
+              <div class="mb-3 mt-2">
                 <div class="form-check mb-8 ms-2 form-control-validation">
                   <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" />
                   <label class="form-check-label" for="terms-conditions">
@@ -80,7 +69,7 @@
                 </div>
               </div>
               
-              <button class="btn btn-primary d-grid w-100 mt-1">Sign up</button>
+              <button class="btn btn-primary d-grid w-100 mt-0">Sign up</button>
            </form>
 
             <p class="text-center">
@@ -104,7 +93,14 @@
     </div>
 </template>
 
-<script setup>
-  
+<script setup lang="ts">
+import { ref } from "vue";
+
+const password = ref<string>("");
+const confirmPassword = ref<string>("");
+const showPassword = ref<boolean>(false);
+const showConfirm = ref<boolean>(false);
 </script>
+
+
 

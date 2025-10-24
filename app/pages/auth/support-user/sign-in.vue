@@ -21,18 +21,18 @@
                     placeholder="Enter your email address"
                     autofocus />
                 </div>
-                <div class="mb-6 form-password-toggle form-control-validation">
-                  <label class="form-label" for="password">Password</label>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
-                    <span class="input-group-text cursor-pointer"><i class="pi pi-eye-slash"></i></span>
-                  </div>
+                <div class="relative w-full">
+                  <InputTextCustom
+                    v-model="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    label="Password:"
+                    placeholder="Password"
+                  />
+                  <i
+                    :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    class="absolute right-3 top-9 cursor-pointer"
+                    @click="showPassword = !showPassword"
+                  ></i>
                 </div>
                 <div class="my-8">
                   <div class="d-flex justify-content-between">
@@ -59,7 +59,11 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref } from "vue";
 
+const password = ref<string>("");
+const showPassword = ref<boolean>(false);
 </script>
+
 
