@@ -57,10 +57,9 @@
               Forgot Password?
             </NuxtLink>
           </div>
-
-          <button type="submit" class="w-full py-2 bg-primary hover:bg-primary text-white rounded-md text-sm font-medium transition">
-            Sign In
-          </button>
+          <div class="mb-6">
+                <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+          </div>
         </form>
 
         <p class="text-center text-sm text-gray-700">

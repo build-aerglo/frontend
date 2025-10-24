@@ -120,13 +120,9 @@
             </label>
           </div>
 
-          <!-- Submit -->
-          <button
-            type="submit"
-            class="w-full bg-primary hover:bg-primaryLight text-white py-2 rounded-lg font-semibold transition"
-          >
-            Sign Up
-          </button>
+          <div class="mb-6">
+              <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+          </div>
         </form>
 
         <p class="text-center mt-4 text-sm text-gray-600">
@@ -143,10 +139,10 @@
 
         <!-- Socials -->
         <div class="flex justify-center space-x-4 text-xl">
-          <i class="pi pi-facebook text-blue-600 cursor-pointer"></i>
-          <i class="pi pi-twitter text-sky-500 cursor-pointer"></i>
-          <i class="pi pi-github text-gray-800 cursor-pointer"></i>
-          <i class="pi pi-google text-orange-500 cursor-pointer"></i>
+          <NuxtLink to="/"><i class="pi pi-facebook text-blue-600 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-twitter text-sky-500 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-google text-orange-500 cursor-pointer"></i></NuxtLink>
         </div>
       </div>
     </div>
