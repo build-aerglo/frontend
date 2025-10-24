@@ -37,6 +37,7 @@
                         v-model="password"
                         :type="showPassword ? 'text' : 'password'"
                         placeholder="Password"
+                        inputClass="border border-light-300 hover:border-light-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full transition"
                       />
                       <i
                         :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
@@ -49,6 +50,7 @@
                         v-model="confirmPassword"
                         :type="showConfirm ? 'text' : 'password'"
                         placeholder="Confirm password"
+                        inputClass="border border-light-300 hover:border-light-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full transition"
                       />
                       <i
                         :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"
