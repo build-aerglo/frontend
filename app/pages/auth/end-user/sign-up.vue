@@ -39,7 +39,7 @@
                 <label for="email" class="form-label">Email</label>
                 <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
               </div>
-              <div class="mb-6 form-control-validation">
+              <div class="mb-3 form-control-validation">
                   <label for="phone-number" class="form-label">Phone Number</label>
                   <input type="tel" class="form-control" id="phone-number" name="phone-number" pattern="[0-9]{11}" placeholder="Enter your phone number" />
                 </div>
