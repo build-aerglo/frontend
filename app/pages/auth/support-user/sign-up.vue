@@ -129,7 +129,7 @@
           </label>
         </div>
         <div class="mb-6">
-            <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
         </div>
       </form>
 
@@ -138,7 +138,7 @@
         Already have an account?
         <NuxtLink
           to="/auth/support-user/sign-in"
-          class="text-primary hover:underline"
+          class="text-green-800 hover:underline"
         >
           Sign in
         </NuxtLink>

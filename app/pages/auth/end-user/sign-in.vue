@@ -69,9 +69,9 @@
         </form>
 
         <p class="text-center text-sm text-gray-800">
-          <span>New to Echohub? </span>
+          <span>Don't have an account? </span>
           <NuxtLink to="/auth/end-user/sign-up" class="text-gray-600 hover:underline font-medium">
-            Create an account
+            Sign up
           </NuxtLink>
         </p>
 

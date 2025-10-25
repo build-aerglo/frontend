@@ -128,7 +128,20 @@
           </div>
             
           <!-- Terms -->
-          
+          <div class="flex items-center gap-2 text-sm">
+          <input
+            id="terms"
+            type="checkbox"
+            v-model="form.agree"
+            class="w-4 h-4 text-primary border-gray-300 rounded"
+          />
+          <label for="terms">
+            I agree to
+            <NuxtLink to="/" class="text-gray-600 hover:underline">
+              privacy policy & terms
+            </NuxtLink>
+          </label>
+        </div>
 
           <div class="my-4">
               <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
