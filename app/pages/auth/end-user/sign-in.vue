@@ -56,10 +56,10 @@
 
           <div class="flex justify-between items-center text-xs text-gray-600">
             <label class="flex items-center space-x-1">
-              <input type="checkbox" id="remember-me" v-model="rememberMe" class="accent-green-800" />
+              <input type="checkbox" id="remember-me" v-model="rememberMe" class="accent-blue-500" />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/" class="hover:text-primary font-medium">
+            <NuxtLink to="/" class="hover:text-gold font-medium">
               Forgot Password?
             </NuxtLink>
           </div>
