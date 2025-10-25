@@ -71,7 +71,7 @@
 
         <p class="text-center text-sm text-gray-700">
           <span>New to Echohub? </span>
-          <NuxtLink to="/auth/end-user/sign-up" class="text-primary hover:underline font-medium">
+          <NuxtLink to="/" class="text-gold hover:underline font-medium">
             Create an account
           </NuxtLink>
         </p>
