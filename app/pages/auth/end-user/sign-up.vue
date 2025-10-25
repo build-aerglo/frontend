@@ -128,19 +128,7 @@
           </div>
             
           <!-- Terms -->
-          <div class="flex items-center space-x-2 mt-3">
-            <input
-              id="terms"
-              v-model="form.agree"
-              type="checkbox"
-              class="h-4 w-4 text-green-800 border-gray-300 rounded focus:ring-green-800"
-              required
-            />
-            
-            <label for="terms" class="text-sm text-gray-700">
-              I agree to the <a href="#" class="text-gold">privacy policy</a> & terms
-            </label>
-          </div>
+          
 
           <div class="my-4">
               <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
