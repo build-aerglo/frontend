@@ -1,15 +1,24 @@
 <template>
   <div
-    class="min-h-screen bg-[url('assets/images/e-user-bg.png')] bg-cover bg-center flex items-center justify-center"
+    class="min-h-screen bg-green-100 bg-cover bg-center flex items-center justify-center"
   >
-  <!-- Logo -->
-    <NuxtLink to="/" class="text-primary text-[130%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
-    <!-- /Logo -->
+     <!-- Logo -->
+    <NuxtLink 
+      to="/" 
+      class="absolute top-4 left-4 animate-fade-in"
+    >
+      <img 
+        src="/assets/images/e-user-logo.png" 
+        alt="Logo" 
+        class="w-16 sm:w-20 md:w-24 lg:w-28 h-auto object-contain drop-shadow-md"
+      />
+    </NuxtLink>
+
     <div class="relative w-full max-w-md px-6 py-8 bg-white/90 backdrop-blur rounded-2xl shadow-lg">
 
       <!-- Register Card -->
       <h4 class="text-center text-primary text-[150%] font-bold mb-3">
-        <div class="text-primary">Create Your Account</div>
+        <div class="text-yellow-600">Create An Account</div>
       </h4>
 
       <form @submit.prevent="onSubmit" class="space-y-5">
@@ -21,14 +30,16 @@
           >
             Username
           </label>
+          <div class="relative mt-1">
+            <i class="pi pi-user absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <input
             id="username"
             v-model="username"
             type="text"
             required
-            placeholder="Enter your username"
             class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
           />
+          </div>
         </div>
 
         <!-- Email -->
@@ -39,14 +50,16 @@
           >
             Email
           </label>
+          <div class="relative mt-1">
+            <i class="pi pi-envelope absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <input
             id="email"
             v-model="email"
             type="email"
             required
-            placeholder="Enter your email"
             class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
           />
+          </div>
         </div>
 
         <!-- Phone -->
@@ -57,14 +70,16 @@
           >
             Phone Number
           </label>
+          <div class="relative mt-1">
+            <i class="pi pi-phone absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <input
             id="phone"
             v-model="phone"
             type="tel"
             pattern="[0-9]{11}"
-            placeholder="Enter your phone number"
             class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
           />
+          </div>
         </div>
 
         <!-- Passwords -->
@@ -74,11 +89,11 @@
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
-              inputClass="border border-light-300 hover:border-light-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full transition"
+              inputClass="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
             />
             <i
               :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-600"
+              class="absolute right-3 top-4 cursor-pointer text-gray-400"
               @click="togglePassword"
             ></i>
           </div>
@@ -92,7 +107,7 @@
             />
             <i
               :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-600"
+              class="absolute right-3 top-4 cursor-pointer text-gray-400"
               @click="toggleConfirm"
             ></i>
           </div>
@@ -108,7 +123,7 @@
           />
           <label for="terms">
             I agree to
-            <NuxtLink to="/" class="text-accent hover:underline">
+            <NuxtLink to="/" class="text-gray-600 hover:underline">
               privacy policy & terms
             </NuxtLink>
           </label>

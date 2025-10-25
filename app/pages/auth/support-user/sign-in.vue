@@ -1,33 +1,40 @@
 <template>
-  <div class="min-h-screen bg-indigo-200 flex items-center justify-center">
+  <div class="relative min-h-screen bg-green-100 flex items-center justify-center">
     <!-- Logo -->
-    <NuxtLink to="/" class="text-primary text-[130%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>
-    <!-- /Logo -->
-    <div class="relative w-full max-w-md px-6 py-8">
+    <NuxtLink 
+      to="/" 
+      class="absolute top-4 left-4 animate-fade-in"
+    >
+      <img 
+        src="/assets/images/e-user-logo.png" 
+        alt="Logo" 
+        class="w-16 sm:w-20 md:w-24 lg:w-28 h-auto object-contain drop-shadow-md"
+      />
+    </NuxtLink>
 
-      <!-- Login Card -->
+    <!-- Login Card -->
+    <div class="relative w-full max-w-md px-6 py-8">
       <div class="bg-white rounded-2xl shadow-lg p-8">
-        <h4 class="text-center text-primary text-xl font-bold mb-6">
-          Welcome Back!
+        <h4 class="text-center text-yellow-600 text-xl font-bold mb-6">
+          Welcome
         </h4>
 
         <form @submit.prevent="onSubmit" class="space-y-6">
           <!-- Email -->
           <div>
-            <label
-              for="email"
-              class="block text-sm font-medium text-gray-700 mb-2"
-            >
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              placeholder="Enter your email address"
-              class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
-            />
+            <div class="relative mt-1">
+              <i class="pi pi-envelope absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input
+                id="email"
+                v-model="email"
+                type="email"
+                required
+                class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
+              />
+            </div>
           </div>
 
           <!-- Password -->
@@ -36,12 +43,11 @@
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               label="Password:"
-              placeholder="Password"
               inputClass="border border-light-300 hover:border-light-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full transition"
             />
             <i
               :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-              class="absolute right-3 top-9 cursor-pointer text-gray-600"
+              class="absolute right-3 top-9 cursor-pointer text-gray-400"
               @click="togglePassword"
             ></i>
           </div>
@@ -53,23 +59,25 @@
                 id="remember-me"
                 type="checkbox"
                 v-model="rememberMe"
-                class="w-4 h-4 text-primary border-gray-300 rounded"
+                class="w-4 h-4 text-gray-800 border-gray-300 rounded"
               />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/forgot-password" class="text-accent hover:underline">
+            <NuxtLink to="/forgot-password" class="text-gold hover:underline">
               Forgot Password?
             </NuxtLink>
           </div>
 
           <div class="mb-6">
-                <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
-            </div>
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { ref } from "vue";
@@ -97,3 +105,4 @@ const onSubmit = async () => {
   }
 };
 </script>
+
