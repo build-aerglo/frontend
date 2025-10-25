@@ -1,19 +1,20 @@
 <template>
       <!-- Content -->
 
-    <div class="container-xxl">
+    <div class="container-xxl relative bg-[url('/images/b-user-bg.png')] bg-cover bg-center">
+      <div class="absolute inset-0 bg-black/50"></div>
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner py-6">
           <!-- Login -->
-          <div class="md:card p-4 md:shadow-lg md:rounded-xl md:bg-white md:p-0">
-            <div class="md:card-body md:p-8">
+          <div class="card">
+            <div class="card-body">
               <!-- Logo -->
-              <NuxtLink to="/" class="md:text-center">
-                 <NavLogo />
-               </NuxtLink>
-              <!-- /Logo -->
-              <h4 class="mb-1 text-[150%] md:text-[180%] !text-primary">Welcome Back! 👋</h4>
-              <p class="mb-6 text-[105%] sm:text-[120%] text-contrast">Sign in to manage reviews and track your business growth.</p>
+              <div class="app-brand justify-content-center mb-9">
+                <NuxtLink to="/" class="md:text-center">
+                    <NavLogo />
+                </NuxtLink>
+              </div>
+              <p class="mb-6 text-[105%] sm:text-[110%] text-center text-contrast">Sign in to manage reviews and track your business growth.</p>
 
               <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-4">
                 
@@ -30,15 +31,15 @@
                         <input class="form-check-input" type="checkbox" id="remember-me" />
                         <label class="form-check-label" for="remember-me"> Remember Me </label>
                     </div>
-                    <a href="auth-forgot-password-cover.html">
+                    <NuxtLink to="/">
                         <p class="mb-0">Forgot Password?</p>
-                    </a>
+                    </NuxtLink>
                 </div>
                 </div>
                 <ButtonCustom label="Log in to your account" size="lg" primary="true" input-class="p-3 text-[15px]" />
               </form>
 
-              <p class="text-center md:text[110%] pt-1">
+              <p class="text-center md:text[100%] pt-1">
                 <span>New on our platform?</span>
                 <NuxtLink to="register">
                     <span class="ms-1 hover:underline">Create an account</span>

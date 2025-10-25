@@ -9,7 +9,8 @@ export default {
         secondary: "#F5EBDC",
         secondaryLinen: "#F9F9F7",
         light: "#1C1C1C",
-        contrast: "#333333"
+        contrast: "#333333",
+        button: '#008253'
       },
     },
   },

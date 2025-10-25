@@ -1,5 +1,4 @@
 <template>
-    <!-- <img src="/images/logo.png" class="h-[52px]" /> -->
-    <!-- <NuxtImg src="/images/logo.png" class="h-[52px]" preload /> -->
-    <h1 class="font-bold text-[120%]">LOGO</h1>
+    <img src="../../assets/images/b-user-logo.png" class="h-[50px]" />
+    <!-- <NuxtImg src="../../assets/img/b-user-logo.png" class="h-[52px]" preload />  -->
 </template>

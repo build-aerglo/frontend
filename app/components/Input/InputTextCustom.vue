@@ -11,7 +11,7 @@
 
     <!-- Input wrapper -->
     <div
-      class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 mt-1 mb-5"
+      class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 mt-1 mb-5 bg-secondaryLinen"
     >
       <!-- Left Icon -->
       <div
