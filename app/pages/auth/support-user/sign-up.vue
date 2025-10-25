@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-[url('assets/images/support-img.jpg')] bg-cover bg-center flex items-center justify-center"
+    class="min-h-screen bg-[url('assets/images/e-user-bg.png')] bg-cover bg-center flex items-center justify-center"
   >
   <!-- Logo -->
     <NuxtLink to="/" class="text-primary text-[130%] absolute top-[20px] sm:right-[100px] left-[20px]"><NavLogo /></NuxtLink>

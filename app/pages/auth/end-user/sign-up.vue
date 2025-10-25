@@ -2,13 +2,10 @@
   <div class="flex h-screen overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden xl:flex w-2/3 relative">
-      <NuxtLink to="/" class="absolute top-6 left-6 z-10">
-        <NavLogo />
-      </NuxtLink>
       <img
-        src="/assets/images/joincomm2.jpg"
+        src="/assets/images/e-user-bg.png"
         alt="Join the community"
-        class="object-contain w-full h-full"
+        class="object-cover w-full h-full"
       />
     </div>
 

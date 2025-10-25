@@ -2,43 +2,50 @@
   <div class="flex h-screen bg-white overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden xl:flex w-2/3 relative">
-      <NuxtLink to="/" class="absolute top-6 left-6 z-10">
-        <NavLogo />
-      </NuxtLink>
       <img
-        src="/assets/images/welcom2.jpg"
+        src="/assets/images/e-user-bg.png"
         alt="Welcome background"
-        class="w-full h-full object-contain"
+        class="w-full h-full object-cover"
       />
     </div>
 
     <!-- Right Form Section -->
     <div class="flex flex-col justify-center items-center w-full xl:w-1/3 px-8 bg-gray-50">
       <div class="w-full max-w-sm space-y-5">
-        <h2 class="text-3xl font-bold text-center text-accent">
-          Welcome
-        </h2>
+        <div class="flex justify-center mb-8">
+          <img
+            src="/assets/images/e-user-logo.png"
+            alt="Welcome"
+            class="h-12 w-auto object-contain"
+          />
+        </div>
+
 
         <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Email or Username</label>
-            <input
-              id="email"
-              v-model="email"
-              name="email"
-              type="text"
-              placeholder="Enter your email or username"
-              required
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
-            />
-          </div>
+            <label for="email" class="block text-sm font-medium text-gray-700">
+              Email or Username
+            </label>
+            <div class="relative mt-1">
+              <!-- Icon -->
+              <i class="pi pi-user absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
+              <!-- Input -->
+              <input
+                id="email"
+                v-model="email"
+                name="email"
+                type="text"
+                required
+                class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
+              />
+            </div>
+          </div>
           <div class="relative">
             <InputTextCustom
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
               label="Password"
-              placeholder="Enter Password"
               inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
             />
             <i
@@ -77,16 +84,16 @@
 
         <div class="flex justify-center space-x-4">
           <NuxtLink to="/" aria-label="Login with Facebook">
-            <i class="pi pi-facebook text-blue-600 text-lg"></i>
+            <i class="pi pi-facebook text-black text-lg"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with Twitter">
-            <i class="pi pi-twitter text-sky-500 text-lg"></i>
+            <i class="pi pi-twitter text-black text-lg"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with GitHub">
             <i class="pi pi-github text-gray-800 text-lg"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with Google">
-            <i class="pi pi-google text-red-500 text-lg"></i>
+            <i class="pi pi-google text-black text-lg"></i>
           </NuxtLink>
         </div>
       </div>
