@@ -11,7 +11,7 @@
 
     <!-- Right Form Section -->
     <div
-      class="flex flex-col justify-center items-center w-full xl:w-1/3 p-8 bg-white"
+      class="flex flex-col justify-center items-center w-full xl:w-1/3 p-8"
     >
       <div class="w-full max-w-md">
         <div class="flex justify-center mb-3 mt-0">
