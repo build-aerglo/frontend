@@ -14,13 +14,14 @@
       class="flex flex-col justify-center items-center w-full xl:w-1/3 p-8 bg-white"
     >
       <div class="w-full max-w-md">
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-center mb-3 mt-0">
             <img
             src="/assets/images/e-user-logo.png"
             alt="Welcome"
             class="h-12 w-auto object-contain"
           />
         </div>
+        <div class="text-green-700 text-center font-bold text-[90%]">Clear reviews, Confident decisions</div>
         <form @submit.prevent="handleSignup" class="space-y-4">
           <!-- Username -->
           <div>
@@ -144,7 +145,7 @@
         </div>
 
           <div class="my-4">
-              <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+              <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
           </div>
         </form>
         <p class="text-center text-sm text-gray-800">
