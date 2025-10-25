@@ -14,27 +14,29 @@
       class="flex flex-col justify-center items-center w-full xl:w-1/3 p-8 bg-white"
     >
       <div class="w-full max-w-md">
-        <h3 class="text-center mb-1 text-accent text-2xl font-bold">
-          Join The Community
-        </h3>
-        <h5 class="text-center mt-0 text-primary mb-3 font-medium">
-          Create An Account
-        </h5>
-
+        <div class="flex justify-center mb-6">
+            <img
+            src="/assets/images/e-user-logo.png"
+            alt="Welcome"
+            class="h-12 w-auto object-contain"
+          />
+        </div>
         <form @submit.prevent="handleSignup" class="space-y-4">
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-gray-700">
               Username
             </label>
+            <div class="relative mt-1">
+            <i class="pi pi-user absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
             <input
               id="username"
               v-model="form.username"
               type="text"
-              placeholder="Enter your username"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
+            </div>
           </div>
 
           <!-- Email -->
@@ -42,14 +44,16 @@
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email
             </label>
+            <div class="relative mt-1">
+            <i class="pi pi-envelope absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
             <input
               id="email"
               v-model="form.email"
               type="email"
-              placeholder="Enter your email"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
+            </div>
           </div>
 
           <!-- Phone -->
@@ -57,52 +61,72 @@
             <label for="phone" class="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
+            <div class="relative mt-1">
+            <i class="pi pi-phone absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
             <input
               id="phone"
               v-model="form.phone"
               type="tel"
               pattern="[0-9]{11}"
-              placeholder="Enter your phone number"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
+            </div>
           </div>
 
-          <!-- Password & Confirm Password -->
-          <div class="flex gap-3">
+          <div class="flex space-x-4">
             <!-- Password -->
-            <div class="relative w-1/2">
-              <input
-                v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="Password"
-                class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-                required
-              />
-              <i
-                :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                class="absolute right-3 top-3 cursor-pointer text-gray-500"
-                @click="showPassword = !showPassword"
-              ></i>
+            <div class="w-1/2">
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700"
+              >
+              Password
+              </label>
+              <div class="relative mt-1">
+                <input
+                  id="password"
+                  v-model="form.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+                  required
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
+                >
+                <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                </button>
+              </div>
             </div>
-
             <!-- Confirm Password -->
-            <div class="relative w-1/2">
-              <input
-                v-model="form.confirmPassword"
-                :type="showConfirm ? 'text' : 'password'"
-                placeholder="Confirm Password"
-                class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-                required
-              />
-              <i
-                :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                class="absolute right-3 top-3 cursor-pointer text-gray-500"
-                @click="showConfirm = !showConfirm"
-              ></i>
+            <div class="w-1/2">
+              <label
+                for="confirmPassword"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </label>
+              <div class="relative mt-1">
+                <input
+                  id="confirmPassword"
+                  v-model="form.confirmPassword"
+                  :type="showConfirm ? 'text' : 'password'"
+                  class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+                  required
+                />
+                <button
+                  type="button"
+                  @click="showConfirm = !showConfirm"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
+                >
+                  <i :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                </button>
+              </div>
             </div>
           </div>
-
+            
           <!-- Terms -->
           <div class="flex items-center space-x-2 mt-3">
             <input
@@ -117,18 +141,19 @@
             </label>
           </div>
 
-          <div class="mb-6">
+          <div class="my-4">
               <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
           </div>
         </form>
-
-        <p class="text-center mt-4 text-sm text-gray-600">
-          Already have an account?
-          <NuxtLink to="/auth/end-user/sign-in" class="text-primary font-medium">Sign In</NuxtLink>
+        <p class="text-center text-sm text-gray-800">
+          <span>Already have an account? </span>
+          <NuxtLink to="/auth/end-user/sign-in" class="text-gray-600 hover:underline font-medium">
+            Sign in
+          </NuxtLink>
         </p>
 
         <!-- Divider -->
-        <div class="flex items-center my-6">
+        <div class="flex items-center my-3">
           <hr class="flex-grow border-gray-300" />
           <span class="px-3 text-gray-400 text-sm">or</span>
           <hr class="flex-grow border-gray-300" />
@@ -136,10 +161,10 @@
 
         <!-- Socials -->
         <div class="flex justify-center space-x-4 text-xl">
-          <NuxtLink to="/"><i class="pi pi-facebook text-blue-600 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-twitter text-sky-500 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-facebook text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
           <NuxtLink to="/"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-google text-orange-500 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-google text-gray-800 cursor-pointer"></i></NuxtLink>
         </div>
       </div>
     </div>

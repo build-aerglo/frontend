@@ -20,7 +20,6 @@
           />
         </div>
 
-
         <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
@@ -69,9 +68,9 @@
           </div>
         </form>
 
-        <p class="text-center text-sm text-gray-700">
+        <p class="text-center text-sm text-gray-800">
           <span>New to Echohub? </span>
-          <NuxtLink to="/" class="text-gold hover:underline font-medium">
+          <NuxtLink to="/auth/end-user/sign-up" class="text-gray-600 hover:underline font-medium">
             Create an account
           </NuxtLink>
         </p>
