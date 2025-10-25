@@ -21,7 +21,7 @@
             class="h-12 w-auto object-contain"
           />
         </div>
-        <div class="text-green-700 text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
+        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
         <form @submit.prevent="handleSignup" class="space-y-4">
           <!-- Username -->
           <div>
