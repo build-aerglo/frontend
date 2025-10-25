@@ -134,7 +134,7 @@
             id="terms"
             type="checkbox"
             v-model="form.agree"
-            class="w-4 h-4 text-primary border-gray-300 rounded"
+            class="w-4 h-4 text-[#008253] border-gray-300 rounded"
           />
           <label for="terms">
             I agree to
