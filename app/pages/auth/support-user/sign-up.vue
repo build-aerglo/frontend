@@ -85,29 +85,39 @@
         <!-- Passwords -->
         <div class="flex gap-3">
           <div class="relative w-1/2">
+            <label
+                for="password"
+                class="block text-sm font-medium text-gray-700"
+              >
+              Password
+            </label>
             <InputTextCustom
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="Password"
               inputClass="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
             />
             <i
-              :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-400"
+              :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              class="absolute right-3 top-9 cursor-pointer text-gray-400"
               @click="togglePassword"
             ></i>
           </div>
 
           <div class="relative w-1/2">
+            <label
+                for="confirm-password"
+                class="block text-sm font-medium text-gray-700"
+              >
+              Confirm Password
+            </label>
             <InputTextCustom
               v-model="confirmPassword"
               :type="showConfirm ? 'text' : 'password'"
-              placeholder="Confirm password"
               inputClass="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
             />
             <i
-              :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-400"
+              :class="showConfirm ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              class="absolute right-3 top-9 cursor-pointer text-gray-400"
               @click="toggleConfirm"
             ></i>
           </div>
