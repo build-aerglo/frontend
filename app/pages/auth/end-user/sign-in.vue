@@ -25,9 +25,6 @@
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email or Username
             </label>
-            <div class="relative mt-1">
-              <!-- Icon -->
-              <i class="pi pi-user absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
               <!-- Input -->
               <input
@@ -38,7 +35,6 @@
                 required
                 class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
               />
-            </div>
           </div>
           <div class="relative">
             <InputTextCustom

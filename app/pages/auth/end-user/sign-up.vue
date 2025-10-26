@@ -28,8 +28,7 @@
             <label for="username" class="block text-sm font-medium text-gray-700">
               Username
             </label>
-            <div class="relative mt-1">
-            <i class="pi pi-user absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            
             <input
               id="username"
               v-model="form.username"
@@ -37,7 +36,7 @@
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
-            </div>
+            
           </div>
 
           <!-- Email -->
@@ -45,8 +44,7 @@
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email
             </label>
-            <div class="relative mt-1">
-            <i class="pi pi-envelope absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+           
             <input
               id="email"
               v-model="form.email"
@@ -54,7 +52,7 @@
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
-            </div>
+            
           </div>
 
           <!-- Phone -->
@@ -62,8 +60,8 @@
             <label for="phone" class="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
-            <div class="relative mt-1">
-            <i class="pi pi-phone absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            
+            
             <input
               id="phone"
               v-model="form.phone"
@@ -72,7 +70,7 @@
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required
             />
-            </div>
+            
           </div>
 
           <div class="flex space-x-4">
