@@ -95,7 +95,7 @@
                   @click="showPassword = !showPassword"
                   class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
                 >
-                <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@
                   @click="showConfirm = !showConfirm"
                   class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
                 >
-                  <i :class="showConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                  <i :class="showConfirm ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
             </div>
