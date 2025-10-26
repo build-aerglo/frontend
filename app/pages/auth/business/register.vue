@@ -37,27 +37,21 @@
             <div class="form-password-toggle form-control-validation">
               <InputTextCustom v-model="businessRegistrationForm.confirmPassword" label="Confirm Password" type="password" required />
             </div>
-            <div class="mb-6 mt-4">
-              <div class="form-check mb-8 ms-2 form-control-validation">
-                <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" v-model="agreedToTerms" />
-                <label class="form-check-label md:text-[100%] text-contrast" for="terms-conditions">
-                  I agree to
-                  <NuxtLink to="/">privacy policy & terms</NuxtLink>
-                </label>
-              </div>
-            </div>
-            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px]" :disabled="!agreedToTerms"
-                :class="[
-                !agreedToTerms
-                  ? 'opacity-50 cursor-not-allowed pointer-events-none'
-                  : 'opacity-100 cursor-pointer'
-              ]" />
+            
+            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px] mt-8" />
             </form>
 
             <p class="text-center md:text-[100%]">
               <span class="text-contrast">Already have an account?</span>
               <NuxtLink to="log-in">
-                <span class="ms-1 hover:underline">Sign in instead</span>
+                <span class="ms-1 hover:underline text-link">Sign in instead</span>
+              </NuxtLink>
+            </p>
+
+            <p class="text-[80%] text-center">
+              <span class="text-contrast">By submitting this form you accept our</span>
+              <NuxtLink to="/">
+                <span class="ms-1 hover:underline text-link">privacy policy</span>
               </NuxtLink>
             </p>
 
@@ -80,7 +74,7 @@ const businessRegistrationForm = ref({
     confirmPassword: '',
     userType: ''
 });
-const agreedToTerms = ref(false);
+
 const handleRegistration = () => {
   alert('Registration Successful!')
 }

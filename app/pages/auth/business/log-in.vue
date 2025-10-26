@@ -32,17 +32,17 @@
                         <label class="form-check-label" for="remember-me"> Remember Me </label>
                     </div>
                     <NuxtLink to="/">
-                        <p class="mb-0">Forgot Password?</p>
+                        <p class="mb-0 text-link">Forgot Password?</p>
                     </NuxtLink>
                 </div>
                 </div>
-                <ButtonCustom label="Log in" size="lg" primary="true" input-class="p-3 text-[15px]" />
+                <ButtonCustom label="Sign in" size="lg" primary="true" input-class="p-3 text-[15px]" />
               </form>
 
               <p class="text-center md:text[100%] pt-1">
                 <span>New on our platform?</span>
                 <NuxtLink to="register">
-                    <span class="ms-1 hover:underline">Create an account</span>
+                    <span class="ms-1 hover:underline text-link">Create an account</span>
                 </NuxtLink>
               </p>
 
