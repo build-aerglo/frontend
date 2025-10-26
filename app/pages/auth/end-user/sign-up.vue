@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen overflow-hidden">
     <!-- Left Image Section -->
-    <div class="hidden xl:flex w-2/3 relative">
+    <div class="hidden md:flex w-2/3 relative">
       <img
         src="/assets/images/e-user-bg.png"
         alt="Join the community"
