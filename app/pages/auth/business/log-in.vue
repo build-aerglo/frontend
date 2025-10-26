@@ -19,7 +19,7 @@
               <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-4">
                 
                 <div class="form-control-validation">
-                  <InputTextCustom v-model="businessLogin.email" label="Email" type="email" icon="envelope" required />
+                  <InputTextCustom v-model="businessLogin.email" label="Email" type="email" required />
                 </div>
 
                 <div class="form-password-toggle form-control-validation">
@@ -36,7 +36,7 @@
                     </NuxtLink>
                 </div>
                 </div>
-                <ButtonCustom label="Log in to your account" size="lg" primary="true" input-class="p-3 text-[15px]" />
+                <ButtonCustom label="Log in" size="lg" primary="true" input-class="p-3 text-[15px]" />
               </form>
 
               <p class="text-center md:text[100%] pt-1">

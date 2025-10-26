@@ -19,15 +19,15 @@
             <form @submit.prevent="handleRegistration" id="formAuthentication" class="mb-6">
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.businessName" label="Business Name" type="text" icon="tag" required />
+              <InputTextCustom v-model="businessRegistrationForm.businessName" label="Business Name" type="text" required />
             </div>
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.email" label="Email" type="email" icon="envelope" required />
+              <InputTextCustom v-model="businessRegistrationForm.email" label="Email" type="email" required />
             </div>
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistrationForm.phoneNum" label="Phone Number" type="tel" icon="phone" required />
+              <InputTextCustom v-model="businessRegistrationForm.phoneNum" label="Phone Number" type="tel" required />
             </div>
             
             <div class="form-password-toggle form-control-validation">
