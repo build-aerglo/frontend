@@ -14,7 +14,7 @@
       class="flex flex-col justify-center items-center px-8 w-full md:w-1/3"
     >
       <div class="w-full max-w-md">
-        <div class="flex justify-center mb-3 mt-0">
+        <div class="flex justify-center mb-3 mt-2">
             <img
             src="/assets/images/e-user-logo.png"
             alt="Welcome"
