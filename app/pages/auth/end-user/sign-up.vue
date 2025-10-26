@@ -11,7 +11,7 @@
 
     <!-- Right Form Section -->
     <div
-      class="flex flex-col justify-center items-center w-full xl:w-1/3 p-8"
+      class="flex flex-col justify-center items-center px-8 w-full md:w-1/3"
     >
       <div class="w-full max-w-md">
         <div class="flex justify-center mb-3 mt-0">
@@ -136,7 +136,7 @@
           />
           <label for="terms">
             I agree to
-            <NuxtLink to="/" class="text-gray-600 hover:underline">
+            <NuxtLink to="/" class="text-blue-500 hover:underline">
               privacy policy & terms
             </NuxtLink>
           </label>
@@ -146,15 +146,15 @@
               <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
           </div>
         </form>
-        <p class="text-center text-sm text-gray-800">
+        <p class="text-center text-sm text-gray-800 mb-0">
           <span>Already have an account? </span>
-          <NuxtLink to="/auth/end-user/sign-in" class="text-gray-600 hover:underline font-medium">
+          <NuxtLink to="/auth/end-user/sign-in" class="text-blue-500 hover:underline font-medium">
             Sign in
           </NuxtLink>
         </p>
 
         <!-- Divider -->
-        <div class="flex items-center my-3">
+        <div class="flex items-center mt-0">
           <hr class="flex-grow border-gray-300" />
           <span class="px-3 text-gray-400 text-sm">or</span>
           <hr class="flex-grow border-gray-300" />

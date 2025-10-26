@@ -10,16 +10,16 @@
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center w-full xl:w-1/3 px-8 bg-gray-50">
+    <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4 bg-gray-50">
       <div class="w-full max-w-sm space-y-5">
-        <div class="flex justify-center mb-8">
+        <div class="flex justify-center mb-4">
           <img
             src="/assets/images/e-user-logo.png"
             alt="Welcome"
             class="h-12 w-auto object-contain"
           />
         </div>
-
+        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
         <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
@@ -55,7 +55,7 @@
               <input type="checkbox" id="remember-me" v-model="rememberMe" class="accent-blue-500" />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/" class="hover:text-gold font-medium">
+            <NuxtLink to="/" class="text-blue-500 hover:text-gray-600 font-medium">
               Forgot Password?
             </NuxtLink>
           </div>
@@ -66,7 +66,7 @@
 
         <p class="text-center text-sm text-gray-800">
           <span>Don't have an account? </span>
-          <NuxtLink to="/auth/end-user/sign-up" class="text-gray-600 hover:underline font-medium">
+          <NuxtLink to="/auth/end-user/sign-up" class="text-blue-500 hover:underline font-medium">
             Sign up
           </NuxtLink>
         </p>
