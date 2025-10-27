@@ -3,7 +3,7 @@
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img
-        src="/assets/images/e-user-bg.png"
+        src="/assets/images/e-user-bg(3).png"
         alt="Join the community"
         class="object-cover w-full h-full"
       />
