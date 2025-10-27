@@ -13,6 +13,9 @@
             <li>
                 <NuxtLink to="/auth/support-user/sign-up" class="text-accent ">Register for Support-user</NuxtLink>
             </li>
+            <li>
+                <NuxtLink to="/landing/rough" class="text-accent ">Landing (End-User)</NuxtLink>
+            </li>
         </ul>
     </div>  
 </template>

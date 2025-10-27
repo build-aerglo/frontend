@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [],
+   darkMode: 'class', // ← required for manual dark mode toggling
   theme: {
     extend: {
       colors: {

@@ -13,7 +13,7 @@
         </div>
         </NuxtLink>
       <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
-      <form @submit.prevent="onSubmit" class="space-y-5">
+      <form @submit.prevent="onSubmit" class="space-y-4">
         <!-- Username -->
         <div>
           <label
