@@ -77,7 +77,7 @@
     <!-- Sidebar for small screens -->
     <div
       :class="[ 
-        'fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 lg:hidden z-40', 
+        'fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 md:hidden z-40', 
         isOpen ? 'translate-x-0' : '-translate-x-full' 
       ]"
     >
