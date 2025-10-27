@@ -84,7 +84,7 @@
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
         <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
-          <i class="pi pi-times text-xl"></i>
+          <i class="pi pi-times text-sm"></i>
         </button>
       </div>
 
