@@ -65,7 +65,7 @@
           class="md:hidden text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none"
           @click="isOpen = !isOpen"
         >
-          <i :class="isOpen ? 'pi pi-times text-sm' : 'pi pi-bars text-sm'"></i>
+          <i :class="isOpen ? 'pi pi-bars text-sm' : 'pi pi-bars text-sm'"></i>
         </button>
       </div>
     </div>
