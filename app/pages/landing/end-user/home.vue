@@ -14,8 +14,8 @@
 
       <!-- Desktop Nav Links -->
       <ul class="hidden md:flex items-center space-x-8 text-gray-700 dark:text-gray-200 font-medium">
-        <li><a href="#writeReview" class="hover:text-primary">Write a Review</a></li>
-        <li><a href="#categories" class="hover:text-primary">Categories</a></li>
+        <li><NuxtLink to="/">Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/">Categories</NuxtLink></li>
 
         <!-- For Business Dropdown -->
         <li class="relative">
@@ -32,14 +32,14 @@
             class="absolute mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg py-2 w-56 z-50"
           >
             <NuxtLink
-              to="/business/add"
+              to="/"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
             <NuxtLink
-              to="/business/login"
+              to="/"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-sign-in mr-2 text-primary"></i>
@@ -85,8 +85,8 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><a href="#writeReview" class="hover:text-primary block">Write a Review</a></li>
-        <li><a href="#categories" class="hover:text-primary block">Categories</a></li>
+        <li><NuxtLink to="/">Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/">Categories</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>
@@ -100,14 +100,14 @@
 
           <div v-if="showBusinessDropdown" class="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <NuxtLink
-              to="/business/add"
+              to="/"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
             <NuxtLink
-              to="/business/login"
+              to="/"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-sign-in mr-2 text-primary"></i>
