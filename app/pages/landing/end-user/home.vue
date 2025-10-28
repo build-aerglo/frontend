@@ -59,10 +59,6 @@
         >
           Login/Register
         </NuxtLink>
-        <!-- Theme Switcher -->
-        <button @click="toggleTheme" class="text-gray-600 dark:text-gray-200 hover:text-primary">
-          <i :class="themeIcon"></i>
-        </button>
 
         <!-- Mobile toggle -->
         <button
