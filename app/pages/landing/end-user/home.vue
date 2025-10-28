@@ -146,25 +146,208 @@
     class="flex flex-col items-center justify-center text-center min-h-[90vh] px-6 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300"
   >
     <div class="max-w-3xl">
-      <h1 class="text-4xl sm:text-4xl md:text-4xl font-extrabold text-[#008253] mb-4">
+      <h1 class="text-4xl sm:text-4xl md:text-4xl my-0 font-extrabold text-[#008253] mb-4">
        Clear reviews, Confident decisions. 
       </h1>
-
-      <p class="text-base sm:text-lg md:text-xl text-gray-800 dark:text-gray-300 mb-8 leading-relaxed">
-        Join our community of satisfied users who trust our platform for authentic reviews and informed choices.
-      </p>
-
-      <NuxtLink
-        to="#explore"
-        class="inline-block bg-[#008253] text-white font-medium px-8 py-3 rounded-xl shadow-md hover:bg-primary/90 transition duration-200"
-      >
-        Start Exploring
-      </NuxtLink>
+        <SearchBar />
     </div>
   </section>
 <!--First Section Ends-->
 
+<!--Second Section Ends-->
+<section>
+    <div class="text-[#008253] text-2xl text-center my-11">Top Reviewed</div>
+        <div class="container mt-10 mb-11">
+          <div class="row gy-6">
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary">
+                    
+                  </div>
+                  <h5 class="mb-0">The Mall</h5>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-success shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-success">
+                    
+                  </div>
+                  <h5 class="mb-0">Eazi Travels</h5>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-info shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-info">
+                    
+                  </div>
+                  <h5 class="mb-0">The Pork Place</h5>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-warning shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-warning">
+                    
+                  </div>
+                  <h5 class="mb-0">Comfy Airbnb</h5>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </section>
+<!--Second Section Ends-->
+
+<!--Third Section Begins-->
+<section class="my-4">
+    <ReviewSlider /> 
+</section> 
+<!--Third Section Ends-->
+
+<!--Fourth Section begins-->
+<section  class="my-4">
+    <div class="text-[#008253] text-2xl text-center my-11">Categories</div>
+        <div class="container mt-8 mb-11">
+          <div class="row gy-6"> 
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer"> 
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary"> 
+                  </div>
+                    <i class="pi pi-building-columns"></i>
+                  <h4 class="mb-0">Restuarants</h4>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+          
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary"> 
+                  </div>
+                    <i clss="pi pi-wrench"></i>
+                  <h4 class="mb-0">Electronics</h4>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary"> 
+                  </div>
+                  <i class="pi pi-car"></i>
+                  <h4 class="mb-0">Travel</h4>
+                  
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary"> 
+                  </div>
+                  <i class="pi pi-home mr-2 text-gray-800"></i>
+                  <h4 class="mb-0">Home Services</h4>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-primary shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-primary"> 
+                  </div>
+                    <i class="pi pi-warehouse"></i>
+                  <h4 class="mb-0">Medical</h4>
+                
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+          
+          
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-success shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-success">
+                    
+                  </div>
+                  <i class="building-columns"></i>
+                  <h4 class="mb-0">Hotels</h4>
+                  
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-info shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-info">
+                    
+                  </div>
+                   <i class="pi pi-briefcase"></i>
+                  <h4 class="mb-0">Finance</h4>
+                 
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+            
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-warning shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-warning">
+                    
+                  </div>
+                  <i class="pi pi-shopping-cart mr-2 text-gray-800"></i>
+                  <h4 class="mb-0">Shopping</h4>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+<!--Fourth Section Ends-->
+
 </template>
+
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
