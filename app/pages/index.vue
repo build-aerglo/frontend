@@ -13,6 +13,9 @@
             <li>
                 <NuxtLink to="/auth/support-user/sign-up" class="text-blue-500">Register for Support-user</NuxtLink>
             </li>
+             <li>
+                <NuxtLink to="/landing/end-user/home" class="text-blue-500">Landing</NuxtLink>
+            </li>
         </ul>
     </div>  
 </template>

@@ -13,7 +13,7 @@
       </NuxtLink>
 
       <!-- Desktop Nav Links -->
-      <ul class="hidden md:flex items-center space-x-8 text-gray-700 dark:text-white font-large">
+      <ul class="hidden md:flex items-center space-x-8 text-gray-700 dark:text-gray-200 font-medium">
         <li><a href="#writeReview" class="hover:text-primary">Write a Review</a></li>
         <li><a href="#categories" class="hover:text-primary">Categories</a></li>
 
@@ -50,35 +50,35 @@
       </ul>
 
       <!-- Right buttons -->
-      <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-8">
+
+        <!-- Login/Register -->
+        <NuxtLink
+          to="/auth/end-user/sign-in"
+          class="hidden md:inline-flex items-center bg-[#008253] text-white px-4 py-2 rounded-lg ml-2 hover:bg-primary/90 transition"
+        >
+          Login/Register
+        </NuxtLink>
         <!-- Theme Switcher -->
         <button @click="toggleTheme" class="text-gray-600 dark:text-gray-200 hover:text-primary">
           <i :class="themeIcon"></i>
         </button>
 
-        <!-- Login/Register -->
-        <NuxtLink
-          to="/auth/end-user/sign-in"
-          class="hidden sm:inline-flex items-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition"
-        >
-          Login/Register
-        </NuxtLink>
-
         <!-- Mobile toggle -->
         <button
-          class="lg:hidden text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none"
+          class="md:hidden text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none"
           @click="isOpen = !isOpen"
         >
-          <i :class="isOpen ? 'pi pi-times text-xl' : 'pi pi-bars text-xl'"></i>
+          <i :class="isOpen ? 'pi pi-times text-sm' : 'pi pi-bars text-sm'"></i>
         </button>
       </div>
     </div>
 
     <!-- Sidebar for small screens -->
     <div
-      :class="[ 
-        'fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 md:hidden z-40', 
-        isOpen ? 'translate-x-0' : '-translate-x-full' 
+      :class="[
+        'fixed top-0 left-0 h-full bg-white dark:bg-gray-900 shadow-md transform transition-transform duration-300 md:hidden z-50',
+        isOpen ? 'translate-y-0' : '-translate-x-full',
       ]"
     >
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -88,7 +88,7 @@
         </button>
       </div>
 
-      <ul class="flex flex-col text-gray-700 dark:text-gray-200 font-medium p-6 space-y-4">
+      <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
         <li><a href="#writeReview" class="hover:text-primary block">Write a Review</a></li>
         <li><a href="#categories" class="hover:text-primary block">Categories</a></li>
 
@@ -107,14 +107,14 @@
               to="/business/add"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <i class="pi pi-briefcase mr-2 text-[#008253]"></i>
+              <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
             <NuxtLink
               to="/business/login"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <i class="pi pi-sign-in mr-2 text-[#008253]"></i>
+              <i class="pi pi-sign-in mr-2 text-primary"></i>
               Log in to Your Business Account
             </NuxtLink>
           </div>
@@ -130,26 +130,32 @@
         </li>
       </ul>
     </div>
-
     <!-- Overlay when sidebar is open -->
     <div
-      v-if="isOpen"
-      class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-30 lg:hidden"
-      @click="isOpen = false"
+    v-if="isOpen"
+    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-md transition-all duration-300"
+    @click="isOpen = false"
     ></div>
   </nav>
-<!--First section-->
+  <!-- Overlay when sidebar is open -->
+    <div
+    v-if="isOpen"
+    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-md transition-all duration-300"
+    @click="isOpen = false"
+    ></div>
+
+<!--First Section Start-->
   <section
     id="hero"
     class="flex flex-col items-center justify-center text-center min-h-[90vh] px-6 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300"
   >
     <div class="max-w-3xl">
-      <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#008253] mb-4">
-        Clear reviews, Confident decisions.
+      <h1 class="text-4xl sm:text-4xl md:text-4xl font-extrabold text-[#008253] mb-4">
+       Clear reviews, Confident decisions. 
       </h1>
 
       <p class="text-base sm:text-lg md:text-xl text-gray-800 dark:text-gray-300 mb-8 leading-relaxed">
-        Your trusted space for authentic opinions and unbiased reviews...
+        Join our community of satisfied users who trust our platform for authentic reviews and informed choices.
       </p>
 
       <NuxtLink
@@ -160,10 +166,9 @@
       </NuxtLink>
     </div>
   </section>
-<!-- First Section Ends -->
+<!--First Section Ends-->
 
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
@@ -178,6 +183,7 @@ onMounted(() => {
     isDark.value = true
     document.documentElement.classList.add('dark')
   }
+
   document.addEventListener('click', handleClickOutside)
 })
 
