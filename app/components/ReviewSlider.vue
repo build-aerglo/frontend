@@ -50,9 +50,9 @@
                     alt="Avatar"
                     class="w-10 h-10 rounded-full mr-3"
                   />
-                  <div>
-                    <h6 class="font-sm text-gray-900 dark:text-white">
-                      {{ review.name }}
+                  <div class="mt-4">
+                    <h6 class="font-md text-gray-900 dark:text-white">
+                      {{ review.name }} <br><p class="text-gray-400 text-[75%] font-sm">{{ review.time }}</p></br>
                     </h6>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ interface Review {
   text: string
   avatar: string
   name: string
-  
+  time: string 
 }
 
 const reviews = ref<Review[]>([
@@ -86,27 +86,29 @@ const reviews = ref<Review[]>([
     business: 'Comfy Airbnb',
     text: "Comfy Airbnb is hands down the best!",
     avatar: img1,
-    name: 'Nduka John',  
+    name: 'Nduka John',
+    time: '2 days ago',  
   },
   {
     business: 'The Mall',
     text: "I still can't imagine a better place to shop for everything at once.",
     avatar: img2,
     name: 'Eugenia Moore',
-    
+    time: '28 hours ago',  
   },
   {
     business: 'The Pork Place',
     text: "The Sanitation and customer service here is top-notch!",
     avatar: img3,
     name: 'Tife Ryan',
-    
+    time: '1 day ago',  
   },
   {
     business: 'Eazi Travels',
     text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!",
     avatar: img4,
     name: 'Sarah Betsy',
+    time: '15 minutes ago',  
   }
 ])
 
