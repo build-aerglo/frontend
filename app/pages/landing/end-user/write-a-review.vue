@@ -14,14 +14,22 @@
 
       <!-- Desktop Nav Links -->
       <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-        <li><NuxtLink to="/landing/end-user/home">Home</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/home" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Home</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Categories</NuxtLink></li>
 
         <!-- For Business Dropdown -->
         <li class="relative">
           <button
             @click="toggleBusinessDropdown"
-            class="flex items-center hover:text-primary focus:outline-none"
+            class="flex items-center hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
           >
             For Business
             <i class="pi pi-chevron-down ml-1 text-sm"></i>
@@ -85,14 +93,22 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/landing/end-user/home">Home</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/home" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+           >Home</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Categories</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>
           <button
             @click="toggleBusinessDropdown"
-            class="flex items-center justify-between w-full hover:text-primary focus:outline-none"
+            class="flex items-center justify-between w-full hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
           >
             <span>For Business</span>
             <i class="pi pi-chevron-down text-sm"></i>
@@ -101,7 +117,7 @@
           <div v-if="showBusinessDropdown" class="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <NuxtLink
               to="/"
-              class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-500"
             >
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
@@ -144,14 +160,17 @@
 <!--First Section Start-->
   <section
   id="hero"
-  class="relative flex flex-col items-center bg-gray-50 justify-center text-center min-h-[90vh] px-6 overflow-hidden"
+  class="relative flex flex-col items-center bg-gray-50 justify-center text-center min-h-[40vh] px-6 overflow-hidden"
 >
   <!--content-->
-  <div class="relative mt-0 z-10 max-w-3xl">
+  <div class="relative z-10 max-w-3xl">
     <h1 class="text-3xl sm:text-3xl font-bold mb-4 text-[#008253] drop-shadow-lg">
-      Share Your Experience
+      Share Your Experience With Others
     </h1>
-    <SearchBarReview />
+    <div>
+      <SearchBarReview />
+    </div>
+    
   </div>
 </section>
 <!--First Section Ends-->

@@ -14,14 +14,22 @@
 
       <!-- Desktop Nav Links -->
       <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-        <li><NuxtLink to="/landing/end-user/write-a-review">Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/write-a-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Categories</NuxtLink></li>
 
         <!-- For Business Dropdown -->
         <li class="relative">
           <button
             @click="toggleBusinessDropdown"
-            class="flex items-center hover:text-primary focus:outline-none"
+            class="flex items-center hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
           >
             For Business
             <i class="pi pi-chevron-down ml-1 text-sm"></i>
@@ -85,8 +93,14 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/landing/end-user/write-a-review">Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/write-a-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Categories</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>

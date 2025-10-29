@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full flex justify-center mt-0">
+  <div class="w-full flex justify-center ">
     <div
-      class="relative mt-0 flex items-center w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-3 sm:px-4 py-4 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
+      class="relative flex items-center w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-3 sm:px-4 py-4 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
     >
       <!-- Search Icon -->
       <i class="pi pi-search text-gray-400 mr-3 text-md"></i>
