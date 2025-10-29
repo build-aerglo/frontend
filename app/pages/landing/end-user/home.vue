@@ -149,13 +149,14 @@
       <h1 class="text-4xl sm:text-4xl md:text-4xl my-0 font-extrabold text-[#008253] mb-4">
        Clear reviews, Confident decisions. 
       </h1>
-        <SearchBar />
+      <SearchBar />
+      <div class="text-gray-950 my-6">Join  our community of satisfied users who trust our platform for authentic reviews and informed choices...</div>
     </div>
   </section>
 <!--First Section Ends-->
 
 <!--Second Section Ends-->
-<section>
+<section class="my-0">
     <div class="text-[#008253] text-2xl text-center my-11">Top Reviewed</div>
         <div class="container mt-10 mb-11">
           <div class="row gy-6">
@@ -166,7 +167,7 @@
                   <div class="mb-4 text-primary">
                     
                   </div>
-                  <h5 class="mb-0">The Mall</h5>
+                  <h5 class="mb-0 text-gray-950">The Mall</h5>
                 </div>
               </div>
               </NuxtLink>
@@ -178,7 +179,7 @@
                   <div class="mb-4 text-success">
                     
                   </div>
-                  <h5 class="mb-0">Eazi Travels</h5>
+                  <h5 class="mb-0 text-gray-950">Eazi Travels</h5>
                 </div>
               </div>
               </NuxtLink>
@@ -190,7 +191,7 @@
                   <div class="mb-4 text-info">
                     
                   </div>
-                  <h5 class="mb-0">The Pork Place</h5>
+                  <h5 class="mb-0 text-gray-950">The Pork Place</h5>
                 </div>
               </div>
               </NuxtLink>
@@ -202,7 +203,7 @@
                   <div class="mb-4 text-warning">
                     
                   </div>
-                  <h5 class="mb-0">Comfy Airbnb</h5>
+                  <h5 class="mb-0 text-gray-950">Comfy Airbnb</h5>
                 </div>
               </div>
               </NuxtLink>
@@ -213,13 +214,13 @@
 <!--Second Section Ends-->
 
 <!--Third Section Begins-->
-<section class="my-4">
+<section class="my-8">
     <ReviewSlider /> 
 </section> 
 <!--Third Section Ends-->
 
 <!--Fourth Section begins-->
-<section  class="my-4">
+<section  class="my-8">
     <div class="text-[#008253] text-2xl text-center my-11">Categories</div>
         <div class="container mt-8 mb-11">
           <div class="row gy-6"> 
@@ -229,8 +230,8 @@
                 <div class="card-body text-center">
                   <div class="mb-4 text-primary"> 
                   </div>
-                    <i class="pi pi-building-columns"></i>
-                  <h4 class="mb-0">Restuarants</h4>
+                    <i class="pi pi-building-columns text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Restuarants</h4>
                 </div>
               </div>
               </NuxtLink>
@@ -243,8 +244,8 @@
                 <div class="card-body text-center">
                   <div class="mb-4 text-primary"> 
                   </div>
-                    <i clss="pi pi-wrench"></i>
-                  <h4 class="mb-0">Electronics</h4>
+                    <i class="pi pi-wrench text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Electronics</h4>
                 </div>
               </div>
               </NuxtLink>
@@ -256,8 +257,8 @@
                 <div class="card-body text-center">
                   <div class="mb-4 text-primary"> 
                   </div>
-                  <i class="pi pi-car"></i>
-                  <h4 class="mb-0">Travel</h4>
+                  <i class="pi pi-car text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Travel</h4>
                   
                 </div>
               </div>
@@ -272,7 +273,7 @@
                   <div class="mb-4 text-primary"> 
                   </div>
                   <i class="pi pi-home mr-2 text-gray-800"></i>
-                  <h4 class="mb-0">Home Services</h4>
+                  <h4 class="mb-0 text-gray-800">Home Services</h4>
                 </div>
               </div>
               </NuxtLink>
@@ -285,25 +286,9 @@
                 <div class="card-body text-center">
                   <div class="mb-4 text-primary"> 
                   </div>
-                    <i class="pi pi-warehouse"></i>
-                  <h4 class="mb-0">Medical</h4>
+                    <i class="pi pi-warehouse text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Medical</h4>
                 
-                </div>
-              </div>
-              </NuxtLink>
-            </div>
-          
-          
-            <div class="col-sm-6 col-lg-3">
-              <NuxtLink to="/" class="cursor-pointer">
-              <div class="card border border-success shadow-none">
-                <div class="card-body text-center">
-                  <div class="mb-4 text-success">
-                    
-                  </div>
-                  <i class="building-columns"></i>
-                  <h4 class="mb-0">Hotels</h4>
-                  
                 </div>
               </div>
               </NuxtLink>
@@ -317,8 +302,8 @@
                   <div class="mb-4 text-info">
                     
                   </div>
-                   <i class="pi pi-briefcase"></i>
-                  <h4 class="mb-0">Finance</h4>
+                   <i class="pi pi-briefcase text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Finance</h4>
                  
                 </div>
               </div>
@@ -333,8 +318,20 @@
                   <div class="mb-4 text-warning">
                     
                   </div>
-                  <i class="pi pi-shopping-cart mr-2 text-gray-800"></i>
-                  <h4 class="mb-0">Shopping</h4>
+                  <i class="pi pi-shopping-cart mr-2 text-gray-950"></i>
+                  <h4 class="mb-0 text-gray-950">Shopping</h4>
+                </div>
+              </div>
+              </NuxtLink>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+              <NuxtLink to="/" class="cursor-pointer">
+              <div class="card border border-success shadow-none">
+                <div class="card-body text-center">
+                  <div class="mb-4 text-success"> 
+                  </div>
+                  <h4 class="mb-4 text-gray-950">More</h4>
                 </div>
               </div>
               </NuxtLink>
