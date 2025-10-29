@@ -13,9 +13,9 @@
       </NuxtLink>
 
       <!-- Desktop Nav Links -->
-      <ul class="hidden md:flex items-center space-x-8 text-gray-700 dark:text-gray-200 font-medium">
-        <li><NuxtLink to="/">Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/">Categories</NuxtLink></li>
+      <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
+        <li><NuxtLink to="/landing/end-user/write-a-review">Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
 
         <!-- For Business Dropdown -->
         <li class="relative">
@@ -85,8 +85,8 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/">Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/write-a-review">Write a Review</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>
@@ -129,14 +129,14 @@
     <!-- Overlay when sidebar is open -->
     <div
     v-if="isOpen"
-    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-md transition-all duration-300"
+    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
     @click="isOpen = false"
     ></div>
   </nav>
   <!-- Overlay when sidebar is open -->
     <div
     v-if="isOpen"
-    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-md transition-all duration-300"
+    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
     @click="isOpen = false"
     ></div>
 
@@ -152,11 +152,11 @@
   ></div>
 
   <!-- 🔹 Foreground content -->
-  <div class="relative z-10 max-w-3xl text-white">
-    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4 text-[#00c479] drop-shadow-lg">
+  <div class="relative z-10 max-w-3xl">
+    <h1 class="text-3xl sm:text-3xl font-bold mb-4 text-[#019c54dc] drop-shadow-lg">
       Clear reviews, Confident decisions.
     </h1>
-    <SearchBar />
+    <SearchBarHome />
     <div class="mt-6 text-gray-100">
       Join our community of satisfied users who trust our platform for authentic reviews and informed choices...
     </div>
@@ -313,7 +313,7 @@
                     
                   </div>
                    <i class="pi pi-briefcase text-gray-950"></i>
-                  <h4 class="mb-0 text-gray-950">Finance</h4>
+                  <h4 class="mb-0 text-gray-950">Business Services</h4>
                  
                 </div>
               </div>
@@ -351,6 +351,10 @@
         </div>
       </section>
 <!--Fourth Section Ends-->
+
+<!--Footer-->
+<FooterSection/>
+<!--Footer-->
 
 </template>
 
