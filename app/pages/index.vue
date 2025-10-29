@@ -3,6 +3,7 @@
         <p>Home</p>
         <NuxtLink to="./auth/business/register">Business Registration page</NuxtLink>
         <NuxtLink to="./auth/business/log-in">Business Login page</NuxtLink>
+        <NuxtLink to="./auth/business/settings">Business Settings page</NuxtLink>
     </div>
 </template>
 
