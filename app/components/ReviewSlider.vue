@@ -68,6 +68,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
+import img1 from '~/assets/images/1.png'
+import img2 from '~/assets/images/2.png'
+import img3 from '~/assets/images/3.png'
+import img4 from '~/assets/images/ONE.jpg'
+
 interface Review {
   business: string
   text: string
@@ -80,27 +85,27 @@ const reviews = ref<Review[]>([
   {
     business: 'Comfy Airbnb',
     text: "Comfy Airbnb is hands down the best!",
-    avatar: '/assets/images/1.png',
+    avatar: img1,
     name: 'Nduka John',  
   },
   {
     business: 'The Mall',
     text: "I still can't imagine a better place to shop for everything at once.",
-    avatar: '/assets/images/2.png',
+    avatar: img2,
     name: 'Eugenia Moore',
     
   },
   {
     business: 'The Pork Place',
     text: "The Sanitation and customer service here is top-notch!",
-    avatar: '/assets/images/3.png',
+    avatar: img3,
     name: 'Tife Ryan',
     
   },
   {
     business: 'Eazi Travels',
     text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!",
-    avatar: '/assets/images/ONE.jpg',
+    avatar: img4,
     name: 'Sarah Betsy',
   }
 ])
