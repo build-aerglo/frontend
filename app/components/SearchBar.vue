@@ -4,7 +4,7 @@
       class="relative flex items-center w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl shadow-md border border-gray-200 dark:border-gray-700 px-6 sm:px-3 py-4 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
     >
       <!-- Search Icon -->
-      <i class="pi pi-search text-gray-400 mr-3 text-lg"></i>
+      <i class="pi pi-search text-white mr-3 text-lg"></i>
 
       <!-- Input Field -->
       <input
@@ -14,7 +14,7 @@
         @input="filterSuggestions"
         @focus="showSuggestions = true"
         @blur="hideWithDelay"
-        class="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400"
+        class="flex-1 bg-transparent outline-none text-white dark:text-gray-200 placeholder-white"
       />
 
       <!-- Suggestion Dropdown -->

@@ -142,20 +142,30 @@
 
 <!--First Section Start-->
   <section
-    id="hero"
-    class="flex flex-col items-center justify-center text-center min-h-[90vh] px-6 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300"
-  >
-    <div class="max-w-3xl">
-      <h1 class="text-4xl sm:text-4xl md:text-4xl my-0 font-extrabold text-[#008253] mb-4">
-       Clear reviews, Confident decisions. 
-      </h1>
-      <SearchBar />
-      <div class="text-gray-950 my-6">Join  our community of satisfied users who trust our platform for authentic reviews and informed choices...</div>
+  id="hero"
+  class="relative flex flex-col items-center justify-center text-center min-h-[90vh] px-6 overflow-hidden"
+>
+  <!-- 🔹 Background image div -->
+  <div
+    class="absolute inset-0 bg-cover bg-center blur-sm brightness-75 bg-fixed"
+    style="background-image: url('/images/e-user-ldg.png');"
+  ></div>
+
+  <!-- 🔹 Foreground content -->
+  <div class="relative z-10 max-w-3xl text-white">
+    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4 text-[#00c479] drop-shadow-lg">
+      Clear reviews, Confident decisions.
+    </h1>
+    <SearchBar />
+    <div class="mt-6 text-gray-100">
+      Join our community of satisfied users who trust our platform for authentic reviews and informed choices...
     </div>
-  </section>
+  </div>
+</section>
 <!--First Section Ends-->
 
-<!--Second Section Ends-->
+
+<!--Second Section Starts-->
 <section class="my-0">
     <div class="text-[#008253] text-2xl text-center my-11">Top Reviewed</div>
         <div class="container mt-10 mb-11">
