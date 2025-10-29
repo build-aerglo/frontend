@@ -15,7 +15,7 @@
       <!-- Desktop Nav Links -->
       <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
         <li><NuxtLink to="/landing/end-user/home">Home</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories">Categories</NuxtLink></li>
+        <li><NuxtLink to="/landing/end-user/write-a-review">Write a review</NuxtLink></li>
 
         <!-- For Business Dropdown -->
         <li class="relative">
