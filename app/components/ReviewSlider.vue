@@ -1,7 +1,7 @@
 <template>
   <section class="bg-white dark:bg-gray-900 py-16">
-    <div class="container mx-auto px-4">
-      <!-- Header -->
+    <div class="container mx-auto px-2 md:px-1">
+      <!-- Side Text -->
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-10">
         <div>
           <h2 class="text-3xl font-extrabold mt-2 text-[#008253]">Recent Reviews</h2>
