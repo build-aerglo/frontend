@@ -76,6 +76,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: false 
+});
+
 const businessLogin = ref({
     email: '',
     password: '',
