@@ -29,65 +29,13 @@
 
 
     <!--Second Section Starts-->
-    <section class="my-0">
-        <div class="text-[#008253] text-2xl text-center my-11">Top Reviewed</div>
-            <div class="container mt-10 mb-11">
-              <div class="row gy-6">
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-primary shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-primary">
-                        
-                      </div>
-                      <h5 class="mb-0 text-gray-950">The Mall</h5>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-success shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-success">
-                        
-                      </div>
-                      <h5 class="mb-0 text-gray-950">Eazi Travels</h5>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-info shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-info">
-                        
-                      </div>
-                      <h5 class="mb-0 text-gray-950">The Pork Place</h5>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-warning shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-warning">
-                        
-                      </div>
-                      <h5 class="mb-0 text-gray-950">Comfy Airbnb</h5>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </section>
+    <section class="my-3">
+    <TopReviewed/>
+    </section>
     <!--Second Section Ends-->
 
     <!--Third Section Begins-->
-    <section class="my-8">
+    <section class="my-0">
         <ReviewSlider /> 
     </section> 
     <!--Third Section Ends-->

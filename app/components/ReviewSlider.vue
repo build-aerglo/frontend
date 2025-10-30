@@ -1,7 +1,7 @@
 <template>
   <section class="bg-white dark:bg-gray-900 py-16">
-    <div class="container mx-auto px-2 md:px-1">
-      <!-- Side Text -->
+    <div class="container mx-auto px-4">
+      <!-- Header -->
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-10">
         <div>
           <h2 class="text-3xl font-extrabold mt-2 text-[#008253]">Recent Reviews</h2>
@@ -86,13 +86,13 @@ interface Review {
 }
 
 const reviews = ref<Review[]>([
-  { business: 'Comfy Airbnb', text: "Comfy Airbnb is hands down the best!", avatar: img1, name: 'Nduka John', time: '2 days ago' },
-  { business: 'The Mall', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
-  { business: 'The Pork Place', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
+  { business: 'OceanView', text: "Ocean View is hands down the best!", avatar: img1, name: 'Nduka John', time: '2 days ago' },
+  { business: 'ShopEase', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
+  { business: 'Tasty Bites', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
   { business: 'Eazi Travels', text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
-  { business: 'Leadwell Academy', text: "A great school with outstanding teaching quality.", avatar: img2, name: 'Sarah Moses', time: '45 minutes ago' },
+  { business: 'Star Academy', text: "A great school with outstanding teaching quality.", avatar: img2, name: 'Sarah Moses', time: '45 minutes ago' },
   { business: 'Paula Motors', text: "Paula Motors make all my journeys so much easier and stress-free!", avatar: img2, name: 'Julia Mamoa', time: '10 minutes ago' },
-  { business: 'Get Fit Gym', text: "All the motivation and equipment required? It's all at GFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
+  { business: 'IronFit Gym', text: "All the motivation and equipment required? It's all at IFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
 ])
 
 const currentIndex = ref(0)
