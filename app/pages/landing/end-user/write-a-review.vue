@@ -24,6 +24,9 @@
     <div class="text-[#008253]  ml-8 text-2xl text-left">
       Have You Checked These Out Recently?
     </div>
+    <div>
+      <Suggestions/>
+    </div>
   </section>
 
     <!--Footer-->
