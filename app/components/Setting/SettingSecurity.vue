@@ -4,7 +4,7 @@
   <form class="px-6 py-5">
     <h1 class="text-[150%] text-contrast">Security</h1>
     <InputTextCustom type="password" label="Current Password" />
-    <div class="grid grid-cols-2 gap-2">
+    <div class="md:grid grid-cols-2 gap-2">
       <div class="flex flex-col gap-1">
         <InputTextCustom type="password" label="New Password" v-model="newPassword" />
         <small v-if="newPassword.length > 0" class="text-red-500 text-sm mt-[-8px] block mb-2">

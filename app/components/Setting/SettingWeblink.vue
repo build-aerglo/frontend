@@ -7,7 +7,7 @@
       
       <div class="mt-7">
         <p>Social media links</p>
-        <div class="grid grid-cols-2 gap-4 mt-1">
+        <div class="md:grid grid-cols-2 gap-4 mt-1">
           <InputTextCustom type="url">
             <template #label>
               <i class="pi pi-whatsapp text-green-500"></i> WhatsApp

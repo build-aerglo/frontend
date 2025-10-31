@@ -1,9 +1,9 @@
 <template>
-  <div class="">
+  <div>
     <form class="px-6 py-5">
       <h1 class="text-[150%] text-contrast">Contact Information</h1>
       
-      <div class="grid grid-cols-2 gap-2">
+      <div class="md:grid grid-cols-2 gap-2">
         <InputTextCustom type="email" label="Business E-mail" />
         <InputTextCustom type="tel" label="Phone Number" />
       </div>
