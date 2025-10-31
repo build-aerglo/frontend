@@ -21,7 +21,6 @@
           :key="index"
           class="relative bg-gray-50 dark:bg-gray-800 p-3 shadow hover:shadow-md hover:-translate-y-1.5 transform transition-transform duration-150 ease-out scale-[0.75]"
           :class="card.borderColor"
-          style="will-change: transform;"
         >
           <!-- Top-left icon -->
           <div
@@ -34,15 +33,11 @@
           <!-- Logo -->
           <div class="flex justify-center mt-6 mb-3">
             <nuxt-img
-            :src="card.logo"
-            alt="logo"
-            class="w-16 h-16 rounded-full object-cover"
-            width="64"
-            height="64"
-            format="webp"
-            loading="lazy"
-          />  
-        </div>
+              :src="card.logo"
+              alt="logo"
+              class="w-16 h-16 rounded-full object-cover"
+            />
+          </div>
 
           <!-- Business name -->
           <h3 class="text-lg font-semibold text-center text-gray-800 dark:text-white">
