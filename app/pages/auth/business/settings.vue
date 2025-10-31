@@ -48,7 +48,7 @@ const componentMap = {
 
 
 const tabItems = [
-  { key: 'account', name: 'Account', icon: 'pi pi-user' },
+  { key: 'account', name: 'Account', icon: 'pi pi-users' },
   { key: 'contact', name: 'Contact', icon: 'pi pi-phone' },
   { key: 'weblinks', name: 'Web Links', icon: 'pi pi-link' },
   { key: 'media', name: 'Media & Branding', icon: 'pi pi-images' },

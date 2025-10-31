@@ -3,7 +3,10 @@
        :class="{ 'layout-menu-collapsed': isLayoutCollapsed }">
     <div class="layout-container">
       
-      <NavSideBar @toggle="toggleLayout" />
+      <NavSideBar 
+        @toggle="toggleLayout" 
+        :isLayoutCollapsed="isLayoutCollapsed" 
+      />
 
       <div class="layout-page">
         
@@ -20,9 +23,7 @@
               </a>
             </div>
             
-            <div class="flex-grow">
-              </div>
-
+            <div class="flex-grow"></div>
 
             <div class="flex items-center space-x-4">
               
@@ -36,12 +37,13 @@
                     <i class="pi pi-user text-xl"></i> 
                   </div>
                 </a>
-                </div>
+              </div>
 
             </div>
             
           </div>
         </nav>
+
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
             <slot /> 
@@ -51,20 +53,23 @@
       </div>
     </div>
     
-    <div v-if="!isLayoutCollapsed" class="layout-overlay layout-menu-toggle" @click="toggleLayout"></div>
     
+    <div 
+      class="menu-overlay fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 z-[1040] sm:hidden"
+      :class="{ 'opacity-100 visible': !isLayoutCollapsed, 'opacity-0 invisible': isLayoutCollapsed }"
+      @click="toggleLayout"
+    ></div>
+
   </div>
 </template>
 
 <script setup>
-
-const isLayoutCollapsed = ref(false);
+const isLayoutCollapsed = ref(true);
 
 const toggleLayout = () => {
   console.log("Toggling sidebar. New state:", !isLayoutCollapsed.value);
   isLayoutCollapsed.value = !isLayoutCollapsed.value;
 };
-
 
 watch(isLayoutCollapsed, (isCollapsed) => {
   if (import.meta.client) { 
@@ -76,17 +81,56 @@ watch(isLayoutCollapsed, (isCollapsed) => {
   }
 }, { immediate: true }); 
 </script>
-<style scoped>
 
+<style scoped>
 .layout-navbar {
   z-index: 1020 !important; 
 }
 
+/* Sidebar transitions */
 @media (max-width: 1200px) {
+  .layout-menu {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    background-color: white;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    z-index: 1050;
+    pointer-events: none;
+  }
+
   body.menu-open .layout-menu {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .menu-overlay {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .menu-overlay.opacity-100.visible {
+    opacity: 1 !important;
     visibility: visible !important;
-    transform: translateX(0) !important;
-    z-index: 1050 !important;
+  }
+
+  .menu-overlay.opacity-0.invisible {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+/* Preventing overlay from appearing on larger screens */
+@media (min-width: 641px) {
+  .menu-overlay {
+    display: none !important;
   }
 }
 

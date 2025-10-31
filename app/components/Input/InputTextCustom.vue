@@ -2,11 +2,13 @@
   <div class="w-full">
     <!-- Label -->
     <label
-      v-if="label"
+      v-if="label || $slots.label"
       :for="formId"
-      class="block text-sm text-contrast mb-1"
+      class="block text-sm text-contrast mb-1 flex items-center gap-2"
     >
-      {{ label }}
+      <slot name="label">
+        {{ label }}
+      </slot>
     </label>
 
     <!-- Input wrapper -->
@@ -62,9 +64,7 @@ const toggleVisibility = () => {
   isVisible.value = !isVisible.value
   console.log('Password visibility:', isVisible.value)
 }
-
 </script>
 
 <style scoped>
-
 </style>
