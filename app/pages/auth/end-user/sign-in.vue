@@ -78,16 +78,16 @@
         </div>
 
         <div class="flex justify-center space-x-4">
-          <NuxtLink to="/" aria-label="Login with Facebook">
+          <NuxtLink to="/landing/end-user/home" aria-label="Login with Facebook">
             <i class="pi pi-facebook text-black text-lg"></i>
           </NuxtLink>
-          <NuxtLink to="/" aria-label="Login with Twitter">
+          <NuxtLink to="/landing/end-user/home" aria-label="Login with Twitter">
             <i class="pi pi-twitter text-black text-lg"></i>
           </NuxtLink>
-          <NuxtLink to="/" aria-label="Login with GitHub">
+          <NuxtLink to="/landing/end-user/home" aria-label="Login with GitHub">
             <i class="pi pi-github text-gray-800 text-lg"></i>
           </NuxtLink>
-          <NuxtLink to="/" aria-label="Login with Google">
+          <NuxtLink to="/landing/end-user/home" aria-label="Login with Google">
             <i class="pi pi-google text-black text-lg"></i>
           </NuxtLink>
         </div>

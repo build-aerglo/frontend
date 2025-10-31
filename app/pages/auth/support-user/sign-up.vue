@@ -3,7 +3,7 @@
     class="min-h-screen bg-green-100 bg-cover bg-center flex items-center justify-center"
   >
     <div class="relative w-full max-w-md px-6 py-8 bg-white/90 backdrop-blur rounded-2xl shadow-lg">
-      <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+      <NuxtLink to="/" class="cursor-pointer">
         <div class="flex justify-center mb-4">
           <img
             src="/assets/images/e-user-logo.png"

@@ -6,7 +6,7 @@
     <!--First Section Start-->
     <section
     id="hero"
-    class="relative flex flex-col items-center justify-center text-center min-h-[80vh] px-6 overflow-hidden"
+    class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6 overflow-hidden"
   >
     <!-- Background image div -->
     <div
@@ -29,7 +29,7 @@
 
 
     <!--Second Section Starts-->
-    <section class="my-3">
+    <section class="my-0">
     <TopReviewed/>
     </section>
     <!--Second Section Ends-->
@@ -174,5 +174,6 @@
 </template>
 
 <script setup>
+
 import { Dumbbell,Cake,Plane, Clapperboard,Martini, Handshake, Tablets,ShoppingCart, Ellipsis,} from 'lucide-vue-next'
 </script>

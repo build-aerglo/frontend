@@ -162,10 +162,10 @@
 
         <!-- Socials -->
         <div class="flex justify-center space-x-4 text-xl">
-          <NuxtLink to="/"><i class="pi pi-facebook text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-google text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/landing/end-user/home"><i class="pi pi-facebook text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/landing/end-user/home"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/landing/end-user/home"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/landing/end-user/home"><i class="pi pi-google text-gray-800 cursor-pointer"></i></NuxtLink>
         </div>
       </div>
     </div>

@@ -18,11 +18,11 @@
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Write a Review</NuxtLink></li>
-        <li><NuxtLink to="#categories" class="nav-link relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+        <li> 
+          <NuxtLink to="#categories" class="nav-link relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Categories</NuxtLink></li>
-
         <!-- For Business Dropdown -->
         <li class="relative">
           <button
@@ -158,7 +158,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import ReviewDialog from '~/components/ReviewDialog.vue'
 
+
+
+const open = ref(false);
 const isOpen = ref(false)
 const isDark = ref(false)
 const showBusinessDropdown = ref(false)

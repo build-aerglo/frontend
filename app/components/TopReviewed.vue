@@ -2,11 +2,18 @@
   <section class="bg-white dark:bg-gray-900 py-16">
     <div class="container mx-auto px-4">
       <!-- Header -->
-      <div class="text-center mb-12">
+      <div class="relative mb-12 text-center">
         <h2 class="text-2xl md:text-3xl font-bold text-[#008253] dark:text-white">
           Top Reviewed
         </h2>
+        <a
+          href="/"
+          class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline dark:text-gray-300"
+        >
+          See more
+        </a>
       </div>
+
 
       <!-- Card Grid -->
       <div
@@ -15,7 +22,7 @@
         <div
           v-for="(card, index) in cards"
           :key="index"
-          class="relative bg-gray-50 dark:bg-gray-800 p-6 shadow hover:shadow-lg hover:-translate-y-1 transition duration-100"
+           class="relative bg-gray-50 dark:bg-gray-800 p-3 shadow hover:shadow-lg hover:-translate-y-1 transition duration-300 scale-[0.75]"
           :class="card.borderColor"
           >
           <!-- Top-left icon -->

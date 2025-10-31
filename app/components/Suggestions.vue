@@ -8,7 +8,7 @@
       >
         <!-- Close Icon with hover tooltip -->
         <button
-          class="absolute top-3 right-3 text-gray-500 hover:text-[#008253]"
+          class="absolute top-1 right-1 text-gray-900 hover:text-[#008253]"
           @click="closeCard(idx)"
           :aria-label="'Close suggestion for ' + card.name"
           title="close suggestion"
@@ -56,6 +56,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import img1 from '~/assets/images/cafe.jpg'
+import img2 from '~/assets/images/techhub.jpg'
+import img3 from '~/assets/images/spa.jpg'
+import img4 from '~/assets/images/store.jpg'
+
 
 interface Card {
   id: number
@@ -65,10 +70,10 @@ interface Card {
 }
 
 const cards = ref<Card[]>([
-  { id: 1, name: 'Sunrise Café', image: '/images/cafe.jpg', rating: 0 },
-  { id: 2, name: 'TechHub Innovations', image: '/images/techhub.jpg', rating: 0 },
-  { id: 3, name: 'GreenLeaf Spa', image: '/images/spa.jpg', rating: 0 },
-  { id: 4, name: 'Urban Styles', image: '/images/fashion.jpg', rating: 0 }
+  { id: 1, name: 'Sunrise Café', image:img1, rating: 0 },
+  { id: 2, name: 'TechHub Innovations', image: img2, rating: 0 },
+  { id: 3, name: 'GreenLeaf Spa', image: img3, rating: 0 },
+  { id: 4, name: 'Urban Styles', image: img4, rating: 0 }
 ])
 
 function setRating(cardIndex: number, value: number) {
@@ -89,6 +94,6 @@ button i {
   transition: transform 0.18s ease;
 }
 button:hover i {
-  transform: rotate(90deg);
+  transform: rotate(0deg);
 }
 </style>

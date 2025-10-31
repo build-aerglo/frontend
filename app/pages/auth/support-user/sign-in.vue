@@ -4,7 +4,7 @@
     <!-- Login Card -->
     <div class="relative w-full max-w-md px-6 py-8">
       <div class="bg-white rounded-2xl shadow-lg p-8">
-        <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+        <NuxtLink to="/" class="cursor-pointer">
         <div class="flex justify-center mb-4">
           <img
             src="/assets/images/e-user-logo.png"
