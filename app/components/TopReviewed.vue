@@ -14,17 +14,15 @@
         </a>
       </div>
 
-
       <!-- Card Grid -->
-      <div
-        class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
-      >
+      <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <div
           v-for="(card, index) in cards"
           :key="index"
-           class="relative bg-gray-50 dark:bg-gray-800 p-3 shadow hover:shadow-lg hover:-translate-y-1 transition duration-300 scale-[0.75]"
+          class="relative bg-gray-50 dark:bg-gray-800 p-3 shadow hover:shadow-md hover:-translate-y-1.5 transform transition-transform duration-150 ease-out scale-[0.9]"
           :class="card.borderColor"
-          >
+          style="will-change: transform;"
+        >
           <!-- Top-left icon -->
           <div
             class="absolute top-3 left-3 p-2 rounded-lg"
@@ -47,21 +45,37 @@
             {{ card.name }}
           </h3>
 
-          <!-- Ratings -->
-          <div class="flex items-center justify-center mt-2 space-x-1"> 
-            <span
-              v-for="n in 5"
-              :key="n"
-              class="text-gold"
-            >
-              <i
-                class="fas"
-                :class="n <= card.rating ? 'fa-star' : 'fa-star text-gray-300 dark:text-gray-600'"
-              ></i>
+          <!-- SVG Ratings -->
+          <div class="flex items-center justify-center mt-2 space-x-1">
+            <span v-for="n in 5" :key="n">
+              <svg
+                v-if="n <= card.rating"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 text-gold"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
+                />
+              </svg>
+
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 text-gray-300 dark:text-gray-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
+                />
+              </svg>
             </span>
-           </div>
-           <div class="text-center text-[80%]" >
-            <p class=" text-gray-400 dark:text-gray-300">
+          </div>
+
+          <div class="text-center text-[80%]">
+            <p class="text-gray-400 dark:text-gray-300">
               ({{ card.reviews }} reviews)
             </p>
           </div>
@@ -84,19 +98,15 @@ import img8 from '~/assets/images/school2.png'
 import img9 from '~/assets/images/rest1.jpg'
 
 const cards = [
-  { icon: ShoppingCart, logo: img4 , name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border-1 border-purple-200 ' },
-  { icon: Dumbbell, logo: img2, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 ' },
-  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 ' },
-  { icon: Dumbbell, logo: img1, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 ' },
-  { icon: Hotel, logo: img6, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200  ' },
-  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 ' },
-  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 '},
-  { icon: ShoppingCart, logo: img3, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600',  borderColor: 'border-1 border-purple-200 ' },
-  { icon: Hotel, logo: img5, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200 ' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 ' },
+  { icon: ShoppingCart, logo: img4, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Dumbbell, logo: img2, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: Dumbbell, logo: img1, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Hotel, logo: img6, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
+  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: ShoppingCart, logo: img3, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Hotel, logo: img5, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
 ]
 </script>
-
-<style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
-</style>
