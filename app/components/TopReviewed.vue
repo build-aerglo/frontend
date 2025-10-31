@@ -97,15 +97,25 @@ import img8 from '~/assets/images/school2.png'
 import img9 from '~/assets/images/rest1.jpg'
 
 const cards = [
-  { icon: ShoppingCart, logo: img4, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
-  { icon: Dumbbell, logo: img2, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
-  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
-  { icon: Dumbbell, logo: img1, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
-  { icon: Hotel, logo: img6, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
-  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
-  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
-  { icon: ShoppingCart, logo: img3, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
-  { icon: Hotel, logo: img5, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
+  { icon: ShoppingCart, logo: '~/assets/images/rest1.jpg'
+, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Dumbbell, logo: '~/assets/images/rest1.jpg'
+, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Utensils, logo: '~/assets/images/rest1.jpg'
+, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: Dumbbell, logo: '~/assets/images/rest1.jpg'
+, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Hotel, logo: '~/assets/images/rest1.jpg'
+, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: '~/assets/images/rest1.jpg'
+, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
+  { icon: Utensils, logo: '~/assets/images/rest1.jpg'
+, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: ShoppingCart, logo: '~/assets/images/rest1.jpg'
+, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Hotel, logo: '~/assets/images/rest1.jpg'
+, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: '~/assets/images/rest1.jpg'
+, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
 ]
 </script>
