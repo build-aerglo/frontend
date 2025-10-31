@@ -11,13 +11,13 @@
               @click="prevSlide"
               class="p-3 rounded-full border border-gray-300 hover:bg-[#008253]/10 text-[#008253] transition"
             >
-              <i class="pi pi-chevron-left text-lg"></i>
+              <i class="pi pi-chevron-left text-sm"></i>
             </button>
             <button
               @click="nextSlide"
               class="p-3 rounded-full border border-gray-300 hover:bg-[#008253]/10 text-[#008253] transition"
             >
-              <i class="pi pi-chevron-right text-lg"></i>
+              <i class="pi pi-chevron-right text-sm"></i>
             </button>
           </div>
         </div>
@@ -75,7 +75,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import img1 from '~/assets/images/1.png'
 import img2 from '~/assets/images/2.png'
 import img3 from '~/assets/images/3.png'
-import img4 from '~/assets/images/ONE.jpg'
+import img4 from '~/assets/images/4.jpg'
 
 interface Review {
   business: string
@@ -128,7 +128,7 @@ const prevSlide = () => {
 onMounted(() => {
   updateVisibleCount()
   window.addEventListener('resize', updateVisibleCount)
-  interval = setInterval(nextSlide, 4000)
+  interval = setInterval(nextSlide, 3000)
 })
 onBeforeUnmount(() => {
   clearInterval(interval)

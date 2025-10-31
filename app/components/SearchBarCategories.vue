@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex justify-center ">
     <div
-      class="relative flex items-center w-full sm:max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-3 sm:px-4 py-4 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
+      class="relative flex items-center w-full sm:max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-4 sm:px-4 py-6 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
     >
       <!-- Search Icon -->
       <i class="pi pi-search text-gray-400 mr-3 text-md"></i>
@@ -10,7 +10,7 @@
       <input
         v-model="query"
         type="text"
-        placeholder="Search business/company to review..."
+        placeholder="What are you looking for?"
         @input="filterSuggestions"
         @focus="showSuggestions = true"
         @blur="hideWithDelay"
@@ -47,11 +47,16 @@ const showSuggestions = ref(false)
 
 // predefined search suggestions
 const suggestions = ref([
-  'Food & Restuarants',
+  'Restuarants',
   'Fashion',
-  'Hotels & Airbnb',
+  'Hotels',
   'Business & Finance',
-  'Software',
+  'Media',
+  'Medical',
+  'Events',
+  'Academic',
+  'Travel',
+  'Animals & Pets',
   'Home Services',
   'Electronics',
 ])

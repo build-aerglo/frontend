@@ -4,7 +4,7 @@
     <!-- Login Card -->
     <div class="relative w-full max-w-md px-6 py-8">
       <div class="bg-white rounded-2xl shadow-lg p-8">
-        <NuxtLink to="/" class="cursor-pointer">
+        <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
         <div class="flex justify-center mb-4">
           <img
             src="/assets/images/e-user-logo.png"
@@ -61,7 +61,7 @@
           </div>
 
           <div class="mb-6">
-            <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
+            <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign In</button></NuxtLink>
           </div>
         </form>
       </div>

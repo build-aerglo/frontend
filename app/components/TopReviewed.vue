@@ -15,7 +15,7 @@
         <div
           v-for="(card, index) in cards"
           :key="index"
-          class="relative bg-gray-50 dark:bg-gray-800 p-6 shadow hover:shadow-lg hover:-translate-y-1 transition duration-300"
+          class="relative bg-gray-50 dark:bg-gray-800 p-6 shadow hover:shadow-lg hover:-translate-y-1 transition duration-100"
           :class="card.borderColor"
           >
           <!-- Top-left icon -->
@@ -77,16 +77,16 @@ import img8 from '~/assets/images/school2.png'
 import img9 from '~/assets/images/rest1.jpg'
 
 const cards = [
-  { icon: ShoppingCart, logo: img4 , name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border-1 border-purple-200 shadow-[0_0_15px_-3px_rgba(168,85,247,0.3)]' },
-  { icon: Dumbbell, logo: img2, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)]' },
-  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 shadow-[0_0_15px_-3px_rgba(234,179,8,0.3)]' },
-  { icon: Dumbbell, logo: img1, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)]' },
-  { icon: Hotel, logo: img6, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200  shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]' },
-  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 shadow-[0_0_15px_-3px_rgba(239,68,68,0.3)]' },
-  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 shadow-[0_0_15px_-3px_rgba(234,179,8,0.3)]'},
-  { icon: ShoppingCart, logo: img3, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600',  borderColor: 'border-1 border-purple-200 shadow-[0_0_15px_-3px_rgba(168,85,247,0.3)]' },
-  { icon: Hotel, logo: img5, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200  shadow-[0_0_15px_-3px_rgba(34,197,94,0.3)]' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 shadow-[0_0_15px_-3px_rgba(239,68,68,0.3)]' },
+  { icon: ShoppingCart, logo: img4 , name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border-1 border-purple-200 ' },
+  { icon: Dumbbell, logo: img2, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 ' },
+  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 ' },
+  { icon: Dumbbell, logo: img1, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600',  borderColor: 'border-1 border-blue-200 ' },
+  { icon: Hotel, logo: img6, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200  ' },
+  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 ' },
+  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600',  borderColor: 'border-1 border-orange-200 '},
+  { icon: ShoppingCart, logo: img3, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600',  borderColor: 'border-1 border-purple-200 ' },
+  { icon: Hotel, logo: img5, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600',  borderColor: 'border-1 border-green-200 ' },
+  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600',  borderColor: 'border-1 border-red-200 ' },
 ]
 </script>
 

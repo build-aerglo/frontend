@@ -143,7 +143,7 @@
         </div>
 
           <div class="my-4">
-              <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
+            <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
           </div>
         </form>
         <p class="text-center text-sm text-gray-800 mb-0">

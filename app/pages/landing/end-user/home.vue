@@ -40,45 +40,33 @@
     </section> 
     <!--Third Section Ends-->
 
-    <!--Fourth Section begins-->
-    <section  class="my-8">
-        <div class="text-[#008253] text-2xl text-center my-11">Categories</div>
+  <!--Fourth Section begins-->
+    <section id="categories" class="my-8">
+      <div class="text-2xl text-[#008253] text-center">Categories</div>
             <div class="container mt-8 mb-11">
               <div class="row gy-6"> 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer"> 
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer"> 
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-primary"> 
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Martini class="w-6 h-6 text-gray-500 "/>
                       </div>
-                        <i class="pi pi-building-columns text-gray-950"></i>
                       <h4 class="mb-0 text-gray-950">Restuarants</h4>
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
-              
                 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-primary"> 
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Plane class="w-6 h-6 text-gray-500 "/>
+
                       </div>
-                        <i class="pi pi-wrench text-gray-950"></i>
-                      <h4 class="mb-0 text-gray-950">Electronics</h4>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-                
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-primary shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-primary"> 
-                      </div>
-                      <i class="pi pi-car text-gray-950"></i>
+                      
                       <h4 class="mb-0 text-gray-950">Travel</h4>
                       
                     </div>
@@ -86,44 +74,28 @@
                   </NuxtLink>
                 </div>
                 
-                
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-primary"> 
-                      </div>
-                      <i class="pi pi-home mr-2 text-gray-800"></i>
-                      <h4 class="mb-0 text-gray-800">Home Services</h4>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-                
-                
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
-                  <div class="card border border-primary shadow-none">
-                    <div class="card-body text-center">
-                      <div class="mb-4 text-primary"> 
-                      </div>
-                        <i class="pi pi-building text-gray-950"></i>
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Tablets class="w-6 h-6 text-gray-500 "/>
+                      </div> 
                       <h4 class="mb-0 text-gray-950">Medical</h4>
-                    
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
                 
-                
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
                   <div class="card border border-info shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-info">
-                        
+                      
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Handshake class="w-6 h-6 text-gray-500 "/>
                       </div>
-                      <i class="pi pi-briefcase text-gray-950"></i>
+                      
                       <h4 class="mb-0 text-gray-950">Business Services</h4>
                     
                     </div>
@@ -133,31 +105,63 @@
                 
                 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
                   <div class="card border border-warning shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-warning">
-                        
+                      
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <ShoppingCart class="w-6 h-6 text-gray-500 "/>
                       </div>
-                      <i class="pi pi-shopping-cart mr-2 text-gray-950"></i>
+                      
                       <h4 class="mb-0 text-gray-950">Shopping</h4>
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
 
+
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
                   <div class="card border border-success shadow-none">
                     <div class="card-body text-center">
-                      <div class="mb-4 text-success"> 
+                      
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Clapperboard class="w-6 h-6 text-gray-500 "/>
                       </div>
-                      <h4 class="mb-4 text-gray-950">More</h4>
+                      
+                      <h4 class="mb-4 text-gray-950">Entertainment</h4>
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
-                
+
+                <div class="col-sm-6 col-lg-3">
+                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <div class="card border border-success shadow-none">
+                    <div class="card-body text-center">
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Dumbbell class="w-6 h-6 text-gray-500 "/>
+                      </div>
+                      <h4 class="mb-4 text-gray-950">Fitness</h4>
+                    </div>
+                  </div>
+                  </NuxtLink>
+                </div>
+                 
+                <div class="col-sm-6 col-lg-3">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
+                  <div class="card border border-primary shadow-none">
+                    <div class="card-body text-center">
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <Ellipsis class="w-6 h-6 text-gray-500 "/>
+                      </div>
+                        
+                      <h4 class="mb-0 text-gray-950">More</h4>
+                    </div>
+                  </div>
+                  </NuxtLink>
+                </div>
+
               </div>
             </div>
           </section>
@@ -168,3 +172,7 @@
     <!--Footer-->
 
 </template>
+
+<script setup>
+import { Dumbbell,Cake,Plane, Clapperboard,Martini, Handshake, Tablets,ShoppingCart, Ellipsis,} from 'lucide-vue-next'
+</script>

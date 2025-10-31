@@ -4,7 +4,7 @@
   >
     <div class="container mx-auto px-6 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/" class="flex items-center space-x-2">
+      <NuxtLink to="/landing/end-user/home" class="flex items-center space-x-2">
         <img
           src="/assets/images/e-user-logo.png"
           alt="Welcome"
@@ -18,7 +18,7 @@
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+        <li><NuxtLink to="#categories" class="nav-link relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Categories</NuxtLink></li>
