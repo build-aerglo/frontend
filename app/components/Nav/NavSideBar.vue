@@ -37,48 +37,48 @@
       </li>
 
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-comments"></i>
           <div data-i18n="Settings">Reviews management</div>
         </NuxtLink>
       </li>
 
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-chart-bar"></i>
           <div data-i18n="Settings">Reports</div>
         </NuxtLink>
       </li>
 
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+      <li class="menu-item ">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-envelope"></i>
           <div data-i18n="Settings">Messages</div>
         </NuxtLink>
       </li>
 
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-lock"></i>
           <div data-i18n="Settings">Access Mnagement</div>
         </NuxtLink>
       </li>
       
       <li class="menu-item">
-        <NuxtLink to="/auth/business/profile" class="menu-link">
+        <NuxtLink to="/auth/business/profile" class="menu-link flex items-center">
           <i class="menu-icon pi pi-user"></i>
           <div data-i18n="Settings">Profile</div>
         </NuxtLink>
       </li>
       <li class="menu-item">
-        <NuxtLink to="/auth/business/settings" class="menu-link">
+        <NuxtLink to="/auth/business/settings" class="menu-link flex items-center">
           <i class="menu-icon pi pi-cog"></i>
           <div data-i18n="Settings">Settings</div>
         </NuxtLink>
       </li>
 
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-question-circle"></i>
           <div data-i18n="Settings"> Help and support</div>
         </NuxtLink>
@@ -99,6 +99,9 @@ const props = defineProps({
 const emit = defineEmits(['toggle']);
 </script>
 <style scoped>
- 
+ .menu-icon {
+  @apply flex items-center justify-center text-[18px] leading-none;
+}
+
 
 </style>
