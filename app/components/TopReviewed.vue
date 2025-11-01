@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-white dark:bg-gray-900 py-16">
+  <section class="bg-white dark:bg-gray-900 pb-5 pt-10">
     <div class="container mx-auto px-4">
       <!-- Header -->
-      <div class="relative mb-12 text-center">
-        <h2 class="text-2xl md:text-3xl font-bold text-[#008253] dark:text-white">
+      <div class="relative mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold text-left text-[#008253] dark:text-white">
           Top Reviewed
         </h2>
         <a
@@ -19,7 +19,7 @@
         <div
           v-for="(card, index) in cards"
           :key="index"
-          class="relative bg-gray-50 dark:bg-gray-800 p-3 shadow hover:shadow-md hover:-translate-y-1.5 transform transition-transform duration-150 ease-out scale-[0.75]"
+          class="relative bg-gray-50 dark:bg-gray-800 p-2 shadow hover:shadow-md hover:-translate-y-1.5 transform transition-transform duration-150 ease-out"
           :class="card.borderColor"
         >
           <!-- Top-left icon -->
@@ -32,7 +32,7 @@
 
           <!-- Logo -->
           <div class="flex justify-center mt-6 mb-3">
-            <nuxt-img
+            <img
               :src="card.logo"
               alt="logo"
               class="w-16 h-16 rounded-full object-cover"
@@ -90,32 +90,22 @@ import img1 from '~/assets/images/gym1.jpg'
 import img2 from '~/assets/images/gym2.jpg'
 import img3 from '~/assets/images/shop1.jpg'
 import img4 from '~/assets/images/shop2.jpg'
-import img5 from '~/assets/images/hotel1.jpg'
-import img6 from '~/assets/images/hotel2.jpg'
-import img7 from '~/assets/images/school1.jpg'
-import img8 from '~/assets/images/school2.png'
-import img9 from '~/assets/images/rest1.jpg'
+import img5 from '~/assets/images/hot1.jpg'
+import img6 from '~/assets/images/hot2.jpg'
+import img7 from '~/assets/images/sch1.jpg'
+import img8 from '~/assets/images/sch2.jpg'
+import img9 from '~/assets/images/res1.jpg'
 
 const cards = [
-  { icon: ShoppingCart, logo: '~/assets/images/rest1.jpg'
-, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
-  { icon: Dumbbell, logo: '~/assets/images/rest1.jpg'
-, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
-  { icon: Utensils, logo: '~/assets/images/rest1.jpg'
-, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
-  { icon: Dumbbell, logo: '~/assets/images/rest1.jpg'
-, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
-  { icon: Hotel, logo: '~/assets/images/rest1.jpg'
-, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
-  { icon: School, logo: '~/assets/images/rest1.jpg'
-, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
-  { icon: Utensils, logo: '~/assets/images/rest1.jpg'
-, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
-  { icon: ShoppingCart, logo: '~/assets/images/rest1.jpg'
-, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
-  { icon: Hotel, logo: '~/assets/images/rest1.jpg'
-, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
-  { icon: School, logo: '~/assets/images/rest1.jpg'
-, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
+  { icon: ShoppingCart, logo: img3, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Dumbbell, logo: img1, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: Dumbbell, logo: img2, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200' },
+  { icon: Hotel, logo: img5, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
+  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200' },
+  { icon: ShoppingCart, logo: img4, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
+  { icon: Hotel, logo: img6, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200' },
+  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200' },
 ]
 </script>

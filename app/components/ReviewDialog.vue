@@ -1,12 +1,21 @@
 <template>
   <div>
     <!-- Open Dialog Button -->
-    <button
-      @click="open = true"
-      class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
-    >
-     Share Your Experience
-    </button>
+     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <NuxtLink to="/auth/end-user/sign-in">
+          <button
+          class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
+        >
+        Review as a User
+        </button>
+        </NuxtLink>
+        <button
+          @click="open = true"
+          class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
+        >
+        Review as a Guest
+        </button>
+     </div>
 
     <!-- Dialog Overlay -->
     <div
@@ -133,14 +142,7 @@
   
                 <!-- Label + login link -->
                 <div class="flex items-center space-x-1 text-sm text-gray-700">
-                    <label for="anonymous" class="cursor-pointer">Review as a guest? / </label>
-                    <a
-                    href="/auth/end-user/sign-in"
-                    @click.stop
-                    class="text-[#008253] hover:underline"
-                    >
-                    login
-                    </a>
+                    <label for="anonymous" class="cursor-pointer">Review as a guest? </label>
                 </div>
             </div>
 

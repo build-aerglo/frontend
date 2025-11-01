@@ -13,12 +13,13 @@
       </NuxtLink>
 
       <!-- Desktop Nav Links -->
-      <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
+       <!-- Right buttons -->
+      <div class="flex items-right space-x-8">
+        <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
         <li><NuxtLink to="/landing/end-user/write-a-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
-            >Write a review</NuxtLink></li>
-
+            >Write a Review</NuxtLink></li>
         <!-- For Business Dropdown -->
         <li class="relative">
           <button
@@ -53,17 +54,6 @@
         </li>
       </ul>
 
-      <!-- Right buttons -->
-      <div class="flex items-center space-x-8">
-
-        <!-- Login/Register -->
-        <NuxtLink
-          to="/auth/end-user/sign-in"
-          class="hidden md:inline-flex items-center bg-[#008253] text-white px-4 py-2 rounded-lg ml-2 hover:bg-primary/90 transition"
-        >
-          Login/Register
-        </NuxtLink>
-
         <!-- Mobile toggle -->
         <button
           class="md:hidden text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none"
@@ -89,10 +79,14 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
+        <li><NuxtLink to="/landing/end-user/home" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Home</NuxtLink></li>
         <li><NuxtLink to="/landing/end-user/write-a-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
-            >Write a review</NuxtLink></li>
+            >Write a Review</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>
@@ -150,7 +144,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import ReviewDialog from '~/components/ReviewDialog.vue'
 
+
+
+const open = ref(false);
 const isOpen = ref(false)
 const isDark = ref(false)
 const showBusinessDropdown = ref(false)

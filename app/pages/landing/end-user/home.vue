@@ -21,7 +21,7 @@
       </h1>
       <SearchBarHome />
       <div class="mt-6 text-gray-100">
-        Join our community of satisfied users who trust our platform for authentic reviews and informed choices...
+        Discover honest opinions from real people. Share your story. Make informed decisions.
       </div>
     </div>
     </section>
@@ -166,6 +166,29 @@
             </div>
           </section>
     <!--Fourth Section Ends-->
+    
+    <!--Fifth Section begins-->
+    <section class="bg-green-50 dark:bg-gray-900 py-12 mb-0">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-[#008253] dark:text-white mb-6">
+          Add Your Voice
+        </h2>
+        <p class="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+        Become part of a growing network of individuals who value transparency and trust. By joining our platform, you contribute to shaping authentic conversations, helping others make informed choices while discovering new and better experiences every day.
+        </p>
+        <div class="flex justify-center space-x-4">
+          <NuxtLink
+            to="/auth/end-user/sign-in"
+            class="flex items-center space-x-2 bg-[#008253] hover:bg-[#006f46] text-white px-6 py-2 rounded-full transition-all duration-300"
+          >
+            <span>Login/Register</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+    <!--Fifth Section Ends-->
+
+
 
     <!--Footer-->
     <FooterSection/>
