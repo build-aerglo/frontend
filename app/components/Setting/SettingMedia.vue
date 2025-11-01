@@ -7,7 +7,7 @@
         <div class="flex flex-col gap-4">
           <!-- Single image (Profile Picture) -->
           <div class="flex flex-col gap-1">
-            <InputMedia label="Business Profile" />
+            <InputMedia label="Business Logo" />
           </div>
   
           <!-- Multiple images (Media Files) -->
