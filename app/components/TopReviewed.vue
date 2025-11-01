@@ -32,10 +32,15 @@
 
           <!-- Logo -->
           <div class="flex justify-center mt-6 mb-3">
-            <img
+            <NuxtImg
               :src="card.logo"
               alt="logo"
+              width="64"
+              height="64"
+              format="webp"
               class="w-16 h-16 rounded-full object-cover"
+              loading="lazy"
+              placeholder="blur"
             />
           </div>
 
@@ -85,16 +90,18 @@
 </template>
 
 <script setup>
+import { NuxtImg } from '#components'
+
 import { Dumbbell, Utensils, Hotel, School, ShoppingCart } from 'lucide-vue-next'
-import img1 from '~/assets/images/gym1.jpg'
-import img2 from '~/assets/images/gym2.jpg'
-import img3 from '~/assets/images/shop1.jpg'
-import img4 from '~/assets/images/shop2.jpg'
-import img5 from '~/assets/images/hot1.jpg'
-import img6 from '~/assets/images/hot2.jpg'
-import img7 from '~/assets/images/sch1.jpg'
-import img8 from '~/assets/images/sch2.jpg'
-import img9 from '~/assets/images/res1.jpg'
+import img1 from '/images/gym1.jpg'
+import img2 from '/images/gym2.jpg'
+import img3 from '/images/shop1.jpg'
+import img4 from '/images/shop2.jpg'
+import img5 from '/images/hot1.jpg'
+import img6 from '/images/hot2.jpg'
+import img7 from '/images/sch1.jpg'
+import img8 from '/images/sch2.jpg'
+import img9 from '/images/res1.jpg'
 
 const cards = [
   { icon: ShoppingCart, logo: img3, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200' },
