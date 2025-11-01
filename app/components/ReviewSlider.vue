@@ -103,8 +103,8 @@ const isTransitioning = ref(true)
 let interval: NodeJS.Timeout
 
 const updateVisibleCount = () => {
-  if (window.innerWidth < 768) visibleCount.value = 1
-  else if (window.innerWidth < 1024) visibleCount.value = 3
+  if (window.innerWidth < 640) visibleCount.value = 1
+  else if (window.innerWidth < 1006) visibleCount.value = 3
   else visibleCount.value = 5
 }
 
