@@ -15,12 +15,11 @@
       </li>
     </ul>
 
-    <div class="card shadow-lg rounded-lg">
-      <div class="card-body px-3 py-1">
+    <div>
+      
         <KeepAlive>
           <component :is="currentComponent" />
         </KeepAlive>
-      </div>
     </div>
   </div>
 </template>
@@ -29,9 +28,6 @@
 import { computed, defineAsyncComponent } from 'vue';
 import { useRoute } from 'vue-router'; 
 
-
-const SettingProfile = defineAsyncComponent(() => import('~/components/Setting/SettingProfile.vue'));
-const SettingContact = defineAsyncComponent(() => import('~/components/Setting/SettingContact.vue'));
 const SettingWeblink = defineAsyncComponent(() => import('~/components/Setting/SettingWeblink.vue'));
 const SettingMedia = defineAsyncComponent(() => import('~/components/Setting/SettingMedia.vue'));
 const SettingSecurity = defineAsyncComponent(() => import('~/components/Setting/SettingSecurity.vue'));
@@ -39,8 +35,6 @@ const SettingSecurity = defineAsyncComponent(() => import('~/components/Setting/
 
 
 const componentMap = {
-  account: SettingProfile,
-  contact: SettingContact,
   weblinks: SettingWeblink,
   media: SettingMedia,
   security: SettingSecurity,
@@ -48,11 +42,9 @@ const componentMap = {
 
 
 const tabItems = [
-  { key: 'account', name: 'Account', icon: 'pi pi-users' },
-  { key: 'contact', name: 'Contact', icon: 'pi pi-phone' },
-  { key: 'weblinks', name: 'Web Links', icon: 'pi pi-link' },
+  { key: 'weblinks', name: 'Connections', icon: 'pi pi-link' },
   { key: 'media', name: 'Media & Branding', icon: 'pi pi-images' },
-  { key: 'security', name: 'Security', icon: 'pi pi-lock' },
+  { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
 ];
 
 

@@ -30,7 +30,7 @@
     <ul class="menu-inner py-3">
 
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/" class="menu-link flex items-center">
           <i class="menu-icon pi pi-home"></i>
           <div data-i18n="Settings">Dashboard</div>
         </NuxtLink>
@@ -65,13 +65,13 @@
       </li>
       
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/auth/business/profile" class="menu-link">
           <i class="menu-icon pi pi-user"></i>
           <div data-i18n="Settings">Profile</div>
         </NuxtLink>
       </li>
       <li class="menu-item">
-        <NuxtLink to="/" class="menu-link">
+        <NuxtLink to="/auth/business/settings" class="menu-link">
           <i class="menu-icon pi pi-cog"></i>
           <div data-i18n="Settings">Settings</div>
         </NuxtLink>
