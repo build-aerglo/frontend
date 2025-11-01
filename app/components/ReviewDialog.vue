@@ -131,29 +131,14 @@
           </div>
 
 
-
-          <div class="flex items-center space-x-2">
-                <input
-                    type="checkbox"
-                    v-model="anonymous"
-                    id="anonymous"
-                    class="w-4 h-4 text-gray-600"
-                />
-  
-                <!-- Label + login link -->
-                <div class="flex items-center space-x-1 text-sm text-gray-700">
-                    <label for="anonymous" class="cursor-pointer">Review as a guest? </label>
-                </div>
-            </div>
-
-<div v-if="anonymous" class="mt-2">
-  <input
-    type="email"
-    v-model="email"
-    placeholder="Enter email..."
-    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none text-gray-700"
-  />
-</div>
+          <div class="mt-2">
+            <input
+              type="email"
+              v-model="email"
+              placeholder="Enter email..."
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none text-gray-700"
+            />
+          </div>
 
 
           <!-- Date -->

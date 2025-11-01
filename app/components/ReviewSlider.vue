@@ -27,7 +27,8 @@
       <!-- Review Slider -->
       <div class="relative w-full overflow-hidden">
         <div
-          class="flex transition-transform duration-700 ease-in-out"
+          class="flex ease-in-out"
+          :class="isTransitioning ? 'transition-transform duration-700' : ''"
           :style="{ transform: `translateX(-${currentIndex * (100 / visibleCount)}%)` }"
         >
           <div
@@ -72,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import img1 from '~/assets/images/1.png'
 import img2 from '~/assets/images/2.png'
 import img3 from '~/assets/images/3.png'
@@ -86,24 +87,19 @@ interface Review {
   time: string
 }
 
-const reviews = ref<Review[]>([
+const baseReviews: Review[] = [
   { business: 'OceanView', text: "Ocean View is hands down the best!", avatar: img1, name: 'Nduka John', time: '2 days ago' },
-  { business: 'ShopEase', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
-  { business: 'Tasty Bites', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
-  { business: 'Eazi Travels', text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
   { business: 'ShopEase', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
   { business: 'Tasty Bites', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
   { business: 'Eazi Travels', text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
   { business: 'Star Academy', text: "A great school with outstanding teaching quality.", avatar: img2, name: 'Sarah Moses', time: '45 minutes ago' },
   { business: 'Paula Motors', text: "Paula Motors make all my journeys so much easier and stress-free!", avatar: img2, name: 'Julia Mamoa', time: '10 minutes ago' },
   { business: 'IronFit Gym', text: "All the motivation and equipment required? It's all at IFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
-  { business: 'ShopEase', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
-  { business: 'Tasty Bites', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
-  { business: 'Eazi Travels', text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
-])
+]
 
-const currentIndex = ref(0)
 const visibleCount = ref(5)
+const currentIndex = ref(visibleCount.value) // start after prepended clones
+const isTransitioning = ref(true)
 let interval: NodeJS.Timeout
 
 const updateVisibleCount = () => {
@@ -112,20 +108,40 @@ const updateVisibleCount = () => {
   else visibleCount.value = 5
 }
 
+// Clone slides for infinite looping
+const reviews = computed(() => {
+  return [
+    ...baseReviews.slice(-visibleCount.value),
+    ...baseReviews,
+    ...baseReviews.slice(0, visibleCount.value)
+  ]
+})
+
 const slideWidthClass = computed(() => {
   if (visibleCount.value === 1) return 'min-w-full'
   if (visibleCount.value === 3) return 'min-w-1/3'
   return 'min-w-[20%]'
 })
 
-const nextSlide = () => {
-  currentIndex.value =
-    (currentIndex.value + 1) % (reviews.value.length - visibleCount.value + 1)
+const nextSlide = async () => {
+  isTransitioning.value = true
+  currentIndex.value++
+  if (currentIndex.value === baseReviews.length + visibleCount.value) {
+    // jump instantly back to real first slide
+    await new Promise(r => setTimeout(r, 700)) // wait for transition
+    isTransitioning.value = false
+    currentIndex.value = visibleCount.value
+  }
 }
-const prevSlide = () => {
-  currentIndex.value =
-    (currentIndex.value - 1 + (reviews.value.length - visibleCount.value + 1)) %
-    (reviews.value.length - visibleCount.value + 1)
+
+const prevSlide = async () => {
+  isTransitioning.value = true
+  currentIndex.value--
+  if (currentIndex.value === 0) {
+    await new Promise(r => setTimeout(r, 700))
+    isTransitioning.value = false
+    currentIndex.value = baseReviews.length
+  }
 }
 
 onMounted(() => {
@@ -133,6 +149,7 @@ onMounted(() => {
   window.addEventListener('resize', updateVisibleCount)
   interval = setInterval(nextSlide, 3000)
 })
+
 onBeforeUnmount(() => {
   clearInterval(interval)
   window.removeEventListener('resize', updateVisibleCount)
