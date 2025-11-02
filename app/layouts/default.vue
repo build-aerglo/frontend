@@ -9,14 +9,20 @@
       />
 
       <div class="layout-page">
-        <nav class="!sm:hidden bg-white w-full py-1 flex items-center justify-between px-6 shadow-md nav sticky top-0">
+        <nav class="!sm:hidden bg-white w-full py-1 flex items-center justify-between px-6 shadow-sm nav sticky top-0">
+      
           <a href="javascript:void(0);" 
-            class="nav-item nav-link px-0 p-2 h-full" 
+            class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle" 
             @click="toggleLayout"
           >
             <i class="pi pi-bars text-2xl"></i> 
           </a>
-
+          
+           
+          <div class="hidden xl:flex items-center space-x-4"> 
+            <slot name="topNavContent" />
+          </div>
+          
         </nav>
 
         <div class="content-wrapper">
@@ -58,9 +64,14 @@ watch(isLayoutCollapsed, (isCollapsed) => {
 </script>
 
 <style scoped>
-@media (min-width: 1200px) {
-  nav {
+@media (min-width: 1201px) {
+  .mobile-menu-toggle {
     display: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  .nav {
+    padding: 11px !important;
   }
 }
 .nav {
@@ -125,6 +136,5 @@ watch(isLayoutCollapsed, (isCollapsed) => {
     height: 100vh;
   }
 }
-
 
 </style>

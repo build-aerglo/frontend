@@ -13,6 +13,9 @@ export default {
         link: "#001ad6",
         
       },
+      boxshadow: {
+        'tiny': '0 1px 2px rgba(0, 0, 0, 0.4)'
+      }
     },
   },
   plugins: [],
