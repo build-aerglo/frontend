@@ -9,7 +9,7 @@
       />
 
       <div class="layout-page">
-        <nav class="!sm:hidden bg-white w-full py-1 flex items-center justify-between px-6 shadow-sm nav sticky top-0">
+        <nav class="!sm:hidden bg-white w-full py-1 flex items-center justify-between px-6 shadow-md nav sticky top-0">
       
           <a href="javascript:void(0);" 
             class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle" 
@@ -71,7 +71,7 @@ watch(isLayoutCollapsed, (isCollapsed) => {
 }
 @media (min-width: 1200px) {
   .nav {
-    padding: 11px !important;
+    padding: 12px 20px 12px 20px !important;
   }
 }
 .nav {
