@@ -19,19 +19,16 @@
             class="h-12 w-auto object-contain"
           />
         </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
+        <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">Clear reviews, Confident decisions.</div>
         <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
-              Email or Username
-            </label>
-
               <!-- Input -->
               <input
                 id="email"
                 v-model="email"
                 name="email"
                 type="text"
+                placeholder="Email"
                 required
                 class="block w-full rounded-md border border-gray-300 p-2 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
               />
@@ -40,12 +37,12 @@
             <InputTextCustom
               v-model="password"
               :type="showPassword ? 'text' : 'password'"
-              label="Password"
+              placeholder="Password"
               inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
             />
             <i
               :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
-              class="absolute right-3 top-9 cursor-pointer text-gray-500"
+              class="absolute right-3 top-4 cursor-pointer text-gray-500"
               @click="togglePassword"
             ></i>
           </div>
@@ -73,24 +70,30 @@
 
         <div class="flex items-center">
           <div class="flex-grow border-t border-gray-300"></div>
-          <span class="px-2 text-gray-400 text-xs">or</span>
+          <span class="px-2 text-gray-400 text-xs">or sign in with</span>
           <div class="flex-grow border-t border-gray-300"></div>
         </div>
 
         <div class="flex justify-center space-x-4">
           <NuxtLink to="/landing/end-user/home" aria-label="Login with Facebook">
-            <i class="pi pi-facebook text-black text-lg"></i>
+            <i class="pi pi-facebook text-black text-xl"></i>
           </NuxtLink>
           <NuxtLink to="/landing/end-user/home" aria-label="Login with Twitter">
-            <i class="pi pi-twitter text-black text-lg"></i>
+            <i class="pi pi-twitter text-black text-xl"></i>
           </NuxtLink>
           <NuxtLink to="/landing/end-user/home" aria-label="Login with GitHub">
-            <i class="pi pi-github text-gray-800 text-lg"></i>
+            <i class="pi pi-github text-gray-800 text-xl"></i>
           </NuxtLink>
           <NuxtLink to="/landing/end-user/home" aria-label="Login with Google">
-            <i class="pi pi-google text-black text-lg"></i>
+            <i class="pi pi-google text-black text-xl"></i>
           </NuxtLink>
         </div>
+        <p class="text-center mt-4 text-sm text-gray-800">
+          <NuxtLink to="/landing/end-user/write-a-review" class="text-blue-500 font-medium">
+            Review as a Guest
+          </NuxtLink>
+        </p>
+
       </div>
     </div>
   </div>

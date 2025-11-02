@@ -1,19 +1,12 @@
 <template>
   <div>
     <!-- Open Dialog Button -->
-     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-        <NuxtLink to="/auth/end-user/sign-in">
-          <button
-          class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
-        >
-        Review as a User
-        </button>
-        </NuxtLink>
+     <div class="justify-center items-center">
         <button
           @click="open = true"
           class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
         >
-        Review as a Guest
+        Share Your Experience
         </button>
      </div>
 

@@ -15,15 +15,15 @@
     ></div>
 
     <!-- Foreground content -->
-    <div class="relative z-10 max-w-3xl">
-      <h1 class="text-3xl sm:text-3xl font-bold mb-4 text-[#008253] drop-shadow-lg">
-        Clear reviews, Confident decisions.
+    <div class="relative z-10 max-w-3xl font-sans">
+      <h1 class="text-3xl sm:text-3xl font-bold mb-0 text-white drop-shadow-lg">
+        Let real experiences guide you
       </h1>
-      <SearchBarHome />
-      <div class="mt-6 text-gray-100">
-        Discover honest opinions from real people. Share your story. Make informed decisions.
-      </div>
+      <p class="mt-1 text-lg text-[#008253]">
+        Clear reviews. Confident decisions.
+      </p>
     </div>
+    <SearchBarHome />
     </section>
     <!--First Section Ends-->
 
@@ -41,7 +41,7 @@
     <!--Third Section Ends-->
 
     <!--Fourth Section begins-->
-    <section class="bg-yellow-50 dark:bg-gray-900 py-12 mb-0">
+    <section class="bg-gray-100 dark:bg-gray-900 py-12 mb-0">
       <div class="container mx-auto px-6 text-center">
         <h2 class="text-3xl md:text-4xl font-bold text-[#008253] dark:text-white mb-6">
           Add Your Voice
@@ -61,14 +61,25 @@
     </section>
     <!--Fourth Section Ends-->
 
-
-  <!--Fifth Section begins-->
-    <section id="categories" class="my-8">
-      <div class="text-2xl text-[#008253] text-center">Categories</div>
-            <div class="container mt-8 mb-11">
-              <div class="row gy-6"> 
+    <!--Fifth Section begins-->  
+    <section class="bg-white dark:bg-gray-900 pb-5 pt-10">
+     <div class="container mx-auto px-4">
+       <!-- Header -->
+        <div class="relative mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold text-left text-[#008253] dark:text-white">
+            Categories
+          </h2>
+          <a
+            href="/landing/end-user/categories"
+            class="absolute right-0 top-1/2 -translate-y-1/2 text-3xl text-blue-600 hover:text-gray-900 dark:text-gray-300"
+          >
+            ...
+          </a>
+        </div>
+        <div class="container mt-8 mb-11">
+        <div class="row gy-6"> 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer"> 
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer"> 
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
                       <div class="flex items-center justify-center mb-2 -mt-1"> 
@@ -79,9 +90,10 @@
                   </div>
                   </NuxtLink>
                 </div>
+    
                 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
                       <div class="flex items-center justify-center mb-2 -mt-1"> 
@@ -96,21 +108,39 @@
                   </NuxtLink>
                 </div>
                 
+                
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-primary shadow-none">
                     <div class="card-body text-center">
                       <div class="flex items-center justify-center mb-2 -mt-1"> 
-                        <Tablets class="w-6 h-6 text-gray-500 "/>
-                      </div> 
-                      <h4 class="mb-0 text-gray-950">Medical</h4>
+                        <Drill class="w-6 h-6 text-gray-500 "/>
+            
+                      </div>
+                      
+                      <h4 class="mb-0 text-gray-800">Home Services</h4>
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
                 
+      
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
+                  <div class="card border border-success shadow-none">
+                    <div class="card-body text-center">
+                      <div class="flex items-center justify-center mb-2 -mt-1"> 
+                        <School class="w-6 h-6 text-gray-500 "/>
+                      </div>
+                      <h4 class="mb-0 text-gray-950">Academic</h4>
+                    </div>
+                  </div>
+                  </NuxtLink>
+                </div>
+                
+                
+                <div class="col-sm-6 col-lg-3">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-info shadow-none">
                     <div class="card-body text-center">
                       
@@ -127,7 +157,7 @@
                 
                 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-warning shadow-none">
                     <div class="card-body text-center">
                       
@@ -141,61 +171,44 @@
                   </NuxtLink>
                 </div>
 
-
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-success shadow-none">
                     <div class="card-body text-center">
-                      
                       <div class="flex items-center justify-center mb-2 -mt-1"> 
                         <Clapperboard class="w-6 h-6 text-gray-500 "/>
-                      </div>
-                      
-                      <h4 class="mb-4 text-gray-950">Entertainment</h4>
+                      </div>  
+                      <h4 class="mb-0 text-gray-950">Entertainment</h4>
                     </div>
                   </div>
                   </NuxtLink>
                 </div>
 
                 <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/home" class="cursor-pointer">
+                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
                   <div class="card border border-success shadow-none">
                     <div class="card-body text-center">
                       <div class="flex items-center justify-center mb-2 -mt-1"> 
                         <Dumbbell class="w-6 h-6 text-gray-500 "/>
                       </div>
-                      <h4 class="mb-4 text-gray-950">Fitness</h4>
+                      <h4 class="mb-0 text-gray-950">Fitness</h4>
                     </div>
                   </div>
                   </NuxtLink>
-                </div>
-                 
-                <div class="col-sm-6 col-lg-3">
-                  <NuxtLink to="/landing/end-user/categories" class="cursor-pointer">
-                  <div class="card border border-primary shadow-none">
-                    <div class="card-body text-center">
-                      <div class="flex items-center justify-center mb-2 -mt-1"> 
-                        <Ellipsis class="w-6 h-6 text-gray-500 "/>
-                      </div>
-                        
-                      <h4 class="mb-0 text-gray-950">More</h4>
-                    </div>
-                  </div>
-                  </NuxtLink>
-                </div>
-
+                </div>  
               </div>
-            </div>
-          </section>
-    <!--Fifth Section Ends-->
+            </div>        
+      </div>
+    </section>
+    <!--Fifth Section ends-->  
+
 
     <!--Footer-->
     <FooterSection/>
     <!--Footer-->
 
-</template>
+ </template>
 
-<script setup>
-
-import { Dumbbell,Cake,Plane, Clapperboard,Martini, Handshake, Tablets,ShoppingCart, Ellipsis,} from 'lucide-vue-next'
+ <script setup>
+import { Dumbbell, School, Clapperboard, Drill, Martini, Handshake, Plane, ShoppingCart,} from 'lucide-vue-next'
 </script>

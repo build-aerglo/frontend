@@ -16,7 +16,7 @@
         @blur="hideWithDelay"
         class="flex-1 bg-transparent outline-none text-gray-600 dark:text-white placeholder-gray-400"
       />
-
+    
       <!-- Suggestion Dropdown -->
       <ul
         v-if="showSuggestions && filteredSuggestions.length"
