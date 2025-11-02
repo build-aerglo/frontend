@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-gray-200 dark:bg-gray-900 text-gray-700 dark:text-gray-300 mt-0 border-t border-gray-200 dark:border-gray-700">
+  <footer id="footer" class="bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-300 mt-0 border-t border-gray-200 dark:border-gray-700">
     <div class="container mx-auto px-6 py-12">
       <!-- Top Section -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -17,10 +17,10 @@
         <div>
           <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
           <ul class="space-y-2">
-            <li><NuxtLink to="/" class="hover:text-[#008253] transition">Home</NuxtLink></li>
-            <li><NuxtLink to="/" class="hover:text-[#008253] transition">About Us</NuxtLink></li>
-            <li><NuxtLink to="/" class="hover:text-[#008253] transition">Browse Reviews</NuxtLink></li>
-            <li><NuxtLink to="/" class="hover:text-[#008253] transition">Contact</NuxtLink></li>
+            <li><a href="#home" class="hover:text-[#008253] transition">Home</a></li>
+            <li><a href="#add-voice" class="hover:text-[#008253] transition">About Us</a></li>
+            <li><a href="#home" class="hover:text-[#008253] transition">Browse Reviews</a></li>
+            <li><a href="#footer" class="hover:text-[#008253] transition">Contact</a></li>
           </ul>
         </div>
 
