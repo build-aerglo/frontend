@@ -1,6 +1,7 @@
 <template>
   <div class="settings-page">
 
+    <!-- Mobile nav -->
     <ul
       v-if="isMobile"
       class="nav nav-pills flex-col sm:flex-row mb-6 flex-wrap space-y-2 sm:space-y-0 sm:space-x-2"
@@ -17,6 +18,7 @@
       </li>
     </ul>
 
+    <!-- Desktop nav -->
     <template v-if="!isMobile">
       <Teleport to=".nav"> 
         <div class="flex items-center space-x-2 h-full px-4"> 
@@ -39,9 +41,20 @@
       </Teleport>
     </template>
 
+    <!-- Edit / Cancel button -->
+    <div class="flex justify-start mb-4">
+      <button
+        @click="toggleEdit"
+        class="px-0 py-1 rounded !text-primary hover:underline"
+      >
+        {{ isEditing ? 'Cancel' : editButtonText }}
+      </button>
+    </div>
+
+    <!-- Render settings content -->
     <div>
       <KeepAlive>
-        <component :is="currentComponent" />
+        <component :is="currentComponent" :is-editing="isEditing" />
       </KeepAlive>
     </div>
   </div>
@@ -51,49 +64,47 @@
 import { ref, computed, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router'; 
 
-// Lazy load the components
-const SettingWeblink = defineAsyncComponent(() => import('~/components/Setting/SettingWeblink.vue'));
-const SettingMedia = defineAsyncComponent(() => import('~/components/Setting/SettingMedia.vue'));
-const SettingSecurity = defineAsyncComponent(() => import('~/components/Setting/SettingSecurity.vue'));
+const isEditing = ref(false)
+const toggleEdit = () => (isEditing.value = !isEditing.value)
 
-// Map tab keys to components
+const SettingSecurity = defineAsyncComponent(() => import('~/components/Setting/SettingSecurity.vue'));
+const SettingSubscription = defineAsyncComponent(() => import('~/components/Setting/SettingSubscription.vue'));
+
 const componentMap = {
-  weblinks: SettingWeblink,
-  media: SettingMedia,
   security: SettingSecurity,
+  subscription: SettingSubscription,
 };
 
-// Define tabs
 const tabItems = [
-  { key: 'weblinks', name: 'Connections', icon: 'pi pi-link' },
-  { key: 'media', name: 'Media & Branding', icon: 'pi pi-images' },
   { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
+  { key: 'subscription', name: 'Subscription', icon: 'pi pi-subscribe' },
 ];
 
-// Get route
 const route = useRoute();
 const currentTabKey = computed(() => route.query.tab?.toLowerCase() || tabItems[0].key);
-const currentComponent = computed(() => componentMap[currentTabKey.value] || SettingWeblink);
+const currentComponent = computed(() => componentMap[currentTabKey.value] || SettingSecurity);
 
-// Detect screen width manually (Re-added for conditional rendering)
+// 🔹 Dynamic edit button text based on active tab
+const editButtonText = computed(() => {
+  switch (currentTabKey.value) {
+    case 'subscription':
+      return 'Edit Subscription'
+    case 'security':
+    default:
+      return 'Edit Profile'
+  }
+})
+
 const isMobile = ref(false)
-const checkScreen = () => {
-  // Use the 1200px breakpoint established in your CSS
-  isMobile.value = window.innerWidth < 1200
-}
-
+const checkScreen = () => (isMobile.value = window.innerWidth < 1200)
 onMounted(() => {
   checkScreen()
   window.addEventListener('resize', checkScreen)
 })
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkScreen)
-})
+onUnmounted(() => window.removeEventListener('resize', checkScreen))
 </script>
 
 <style scoped>
-/* Optionally style nav pills */
 .nav-link.active {
   background-color: var(--primary, #008253);
   color: white !important;

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <SettingProfile />
-    <SettingMedia />
-    <SettingWeblink />
+    <h1>Subscry</h1>
   </div>
 </template>
 

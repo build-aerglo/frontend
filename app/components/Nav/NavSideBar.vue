@@ -85,6 +85,15 @@
       </li>
       
     </ul>
+    <div class="p-4">
+      <button
+        @click="handleLogout"
+        class="w-full flex items-center gap-2 text-red-500 font-medium hover:text-red-600 transition-all duration-200 px-3 py-2"
+      >
+        <i class="pi pi-sign-out text-lg"></i>
+        <span v-if="!isLayoutCollapsed">Logout</span>
+      </button>
+    </div>
   </aside>
 </template>
 
