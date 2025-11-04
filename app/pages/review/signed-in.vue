@@ -1,14 +1,29 @@
 <template>
-  <div>
+    <!--Header-->
+    <div class="mb-0">
+    <NavBarReview/>
+    <!--Header-->
+    </div>
+
+
+<section>
+    <!--content-->
+    <div class="relative bg-gray-400 px-6 py-8 overflow-hidden">
     <!-- Open Dialog Button -->
-     <div class="justify-center items-center">
-        <button
-          @click="open = true"
-          class="px-10 py-3 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
+     <div class="flex flex-col md:flex-row justify-center items-center space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 text-center">
+        <p class="text-4xl text-[#008253] dark:text-gray-300">
+            Your opinions make a difference.
+        </p>
+        
+        <a
+            href="#"
+            @click.prevent="open = true"
+            class="inline-block text-gray-200 underline font-bold text-lg hover:underline cursor-pointer transition-colors duration-150"
         >
-        Share Your Experience
-        </button>
+            Share Your Latest Experience.
+        </a>
      </div>
+
 
     <!-- Dialog Overlay -->
     <div
@@ -37,7 +52,7 @@
                 v-model="businessName"
                 @input="handleBusinessInput"
                 @focus="showBusinessDropdown = true"
-                placeholder="e.g KFC"
+                placeholder="e.g, KFC"
                 class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
               />
               <!-- Checkmark Icon -->
@@ -75,7 +90,7 @@
                 v-model="businessLocation"
                 @input="handleLocationInput"
                 @focus="showLocationDropdown = true"
-                placeholder="Town/City, e.g Yaba, Anthony..."
+                placeholder="Town/City. e.g, Yaba, Anthony..."
                 class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
               />
               <!-- Checkmark Icon -->
@@ -112,7 +127,7 @@
                 ></i>
               </template>
               <span class="ml-2 text-sm text-gray-600">
-                {{ rating > 0 ? ` ${ratingLabels[rating]}` : '' }}
+                {{ rating > 0 ? `${ratingLabels[rating]}` : ''}}
               </span>
             </div>
           </div>
@@ -165,16 +180,6 @@
             </label>
           </div>
 
-          <!-- Email -->
-          <div class="mt-2">
-            <input
-              type="email"
-              v-model="email"
-              placeholder="Email"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none text-gray-700"
-            />
-          </div>
-
           <!-- Date -->
           <div class="text-xs text-gray-500 text-right mt-2">
             {{ formattedDate }}
@@ -193,6 +198,21 @@
       </div>
     </div>
   </div>
+  </section>
+
+  <section class="mt-5">
+    <div class="text-[#008253]  ml-5 text-2xl text-left">
+      Have You Checked These Out Recently?
+    </div>
+    <div>
+      <Suggestions/>
+    </div>
+  </section>
+
+  <!--Footer-->
+    <FooterSection/>
+  <!--Footer-->
+
 </template>
 
 <script setup lang="ts">
@@ -204,8 +224,7 @@ const businessLocation = ref("");
 const reviewBody = ref("");
 const rating = ref(0);
 const hoverRating = ref(0);
-const anonymous = ref(true);
-const email = ref("");
+const anonymous = ref(false);
 const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
