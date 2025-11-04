@@ -1,7 +1,6 @@
 <template>
   <div class="settings-page">
 
-    <!-- Mobile nav -->
     <ul
       v-if="isMobile"
       class="nav nav-pills flex-col sm:flex-row mb-6 flex-wrap space-y-2 sm:space-y-0 sm:space-x-2"
@@ -18,7 +17,6 @@
       </li>
     </ul>
 
-    <!-- Desktop nav -->
     <template v-if="!isMobile">
       <Teleport to=".nav"> 
         <div class="flex items-center space-x-2 h-full px-4"> 
@@ -42,12 +40,12 @@
     </template>
 
     <!-- Edit / Cancel button -->
-    <div class="flex justify-start mb-4">
+    <div class="flex justify-end mb-4">
       <button
         @click="toggleEdit"
-        class="px-0 py-1 rounded !text-primary hover:underline"
+        class="px-4 py-1 rounded bg-link text-white hover:bg-[#336be6]"
       >
-        {{ isEditing ? 'Cancel' : editButtonText }}
+        {{ isEditing ? 'Cancel' : 'Edit' }}
       </button>
     </div>
 
@@ -77,23 +75,12 @@ const componentMap = {
 
 const tabItems = [
   { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
-  { key: 'subscription', name: 'Subscription', icon: 'pi pi-subscribe' },
+  { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-subscribe' },
 ];
 
 const route = useRoute();
 const currentTabKey = computed(() => route.query.tab?.toLowerCase() || tabItems[0].key);
 const currentComponent = computed(() => componentMap[currentTabKey.value] || SettingSecurity);
-
-// 🔹 Dynamic edit button text based on active tab
-const editButtonText = computed(() => {
-  switch (currentTabKey.value) {
-    case 'subscription':
-      return 'Edit Subscription'
-    case 'security':
-    default:
-      return 'Edit Profile'
-  }
-})
 
 const isMobile = ref(false)
 const checkScreen = () => (isMobile.value = window.innerWidth < 1200)

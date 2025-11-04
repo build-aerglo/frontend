@@ -30,7 +30,8 @@
         <h1 class="text-[150%] text-contrast mb-4">Preferences</h1>
 
         <div class="flex flex-col gap-4">
-          <div class="flex justify-between items-center" v-for="(item, index) in preferenceToggles" :key="index">
+          <div class="flex justify-between items-center md:w-[50%]" v-for="(item, index) in preferenceToggles" :key="index">
+            <label class="text-contrast text-[15px]">{{ item.label }}</label>
             <label class="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -47,7 +48,6 @@
                 peer-checked:bg-primary"
               ></div>
             </label>
-            <label class="text-contrast text-[15px]">{{ item.label }}</label>
           </div>
         </div>
 
