@@ -9,8 +9,8 @@
       />
 
       <div class="layout-page">
-        <nav class="!sm:hidden bg-white w-full py-1 flex items-center justify-between px-6 shadow-md nav sticky top-0">
-      
+        <nav class="nav-bar bg-white w-full py-1 flex items-center px-6 shadow-md nav sticky top-0">
+          
           <a href="javascript:void(0);" 
             class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle" 
             @click="toggleLayout"
@@ -18,11 +18,32 @@
             <i class="pi pi-bars text-2xl"></i> 
           </a>
           
-           
-          <div class="hidden xl:flex items-center space-x-4"> 
-            <slot name="topNavContent" />
+          <div class="flex items-center justify-between w-full px-0">
+  
+            <div 
+              v-if="route.path === '/auth/business/settings'" 
+              class="hidden md:flex items-center space-x-4"
+            >
+              <SettingTab />
+            </div>
+            
+            <div v-if="route.path === '/auth/business/settings'" class="flex-grow hidden md:block"></div> 
+
+            <div class="flex items-center gap-4 ml-auto">
+              <i class="pi pi-bell text-xl text-gray-600 cursor-pointer"></i>
+
+              <div
+                class="relative w-10 h-10 rounded-full overflow-hidden group cursor-pointer"
+                @click="triggerFileInput"
+              >
+                <img
+                  :src="previewUrl || defaultAvatar"
+                  alt="Profile"
+                  class="w-full h-full object-cover rounded-full border border-gray-300"
+                />
+                </div>
+            </div>
           </div>
-          
         </nav>
 
         <div class="content-wrapper">
@@ -34,7 +55,6 @@
       </div>
     </div>
     
-    
     <div 
       class="menu-overlay fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 z-[1040]"
       :class="{ 'opacity-100 visible': !isLayoutCollapsed, 'opacity-0 invisible': isLayoutCollapsed }"
@@ -45,10 +65,10 @@
 </template>
 
 <script setup>
+const route = useRoute()
 const isLayoutCollapsed = ref(true);
 
 const toggleLayout = () => {
-  console.log("Toggling sidebar. New state:", !isLayoutCollapsed.value);
   isLayoutCollapsed.value = !isLayoutCollapsed.value;
 };
 
@@ -61,6 +81,22 @@ watch(isLayoutCollapsed, (isCollapsed) => {
     }
   }
 }, { immediate: true }); 
+const defaultAvatar = 'https://www.gravatar.com/avatar/?d=mp&s=100'
+
+
+const previewUrl = ref(null)
+const fileInput = ref(null)
+
+const triggerFileInput = () => {
+  fileInput.value.click()
+}
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    previewUrl.value = URL.createObjectURL(file)
+  }
+}
 </script>
 
 <style scoped>
@@ -71,14 +107,13 @@ watch(isLayoutCollapsed, (isCollapsed) => {
 }
 @media (min-width: 1200px) {
   .nav {
-    padding: 12px 20px 12px 20px !important;
+    padding: 12px 20px 12px 20px !important; 
   }
 }
 .nav {
   z-index: 1020 !important; 
 }
 
-/* Sidebar transitions */
 @media (max-width: 1200px) {
   .layout-menu {
     position: fixed !important;
@@ -121,8 +156,6 @@ watch(isLayoutCollapsed, (isCollapsed) => {
     pointer-events: none;
   }
 }
-
-/* Hide overlay completely on desktop*/
 @media (min-width: 1200px) {
   .menu-overlay {
     display: none !important;
@@ -136,5 +169,4 @@ watch(isLayoutCollapsed, (isCollapsed) => {
     height: 100vh;
   }
 }
-
 </style>

@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 flex justify-between items-center md:w-[51%]">
           <label class="block font-medium text-gray-700 mb-2">
             Preferred modes of contact
           </label>
@@ -88,7 +88,19 @@
           <InputTextCustom label="CAC ID Number" :disabled="!isEditing" />
           <InputTextCustom label="TIN" :disabled="!isEditing" />
         </div>
-        <InputSelect label="Other ID" :disabled="!isEditing" />
+        <div class="md:grid grid-cols-2 gap-2">
+          <InputSelect label="Other ID" :disabled="!isEditing" />
+          <div class="flex flex-col gap-1">
+            <InputMedia label="ID Image" />
+          </div>
+        </div>
+         <ButtonCustom
+          label="Save changes"
+          size="lg"
+          primary="true"
+          input-class="p-[10px] text-[15px] mt-5 w-auto"
+          :disabled="!isEditing"
+        />
       </div>
     </div>
 

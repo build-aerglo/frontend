@@ -2,8 +2,7 @@
   <div class="settings-page">
 
     <ul
-      v-if="isMobile"
-      class="nav nav-pills flex-col sm:flex-row mb-6 flex-wrap space-y-2 sm:space-y-0 sm:space-x-2"
+      class="nav nav-pills flex-col md:hidden mb-6 flex-wrap"
     >
       <li v-for="tab in tabItems" :key="tab.key" class="nav-item">
         <NuxtLink 
@@ -17,29 +16,7 @@
       </li>
     </ul>
 
-    <template v-if="!isMobile">
-      <Teleport to=".nav"> 
-        <div class="flex items-center space-x-2 h-full px-4"> 
-          <ul class="flex flex-row flex-wrap space-x-2 nav nav-pills">
-            <li v-for="tab in tabItems" :key="tab.key" class="nav-item">
-              <NuxtLink
-                :to="{ path: $route.path, query: { tab: tab.key } }"
-                class="nav-link flex items-center text-[15px] px-3 py-1 rounded-md transition-colors duration-200"
-                :class="{
-                  '!bg-primary text-white': currentTabKey === tab.key,
-                  'text-contrast hover:bg-gray-100 border border-gray-200': currentTabKey !== tab.key
-                }"
-              >
-                <i v-if="tab.icon" :class="[tab.icon, 'me-2 text-[16px]']"></i>
-                {{ tab.name }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div>
-      </Teleport>
-    </template>
 
-    <!-- Edit / Cancel button -->
     <div class="flex justify-end mb-4">
       <button
         @click="toggleEdit"
@@ -49,7 +26,6 @@
       </button>
     </div>
 
-    <!-- Render settings content -->
     <div>
       <KeepAlive>
         <component :is="currentComponent" :is-editing="isEditing" />
@@ -59,9 +35,8 @@
 </template>
 
 <script setup>
-import { ref, computed, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router'; 
-
+const prop = defineProps(['isMobile'])
 const isEditing = ref(false)
 const toggleEdit = () => (isEditing.value = !isEditing.value)
 
@@ -72,11 +47,10 @@ const componentMap = {
   security: SettingSecurity,
   subscription: SettingSubscription,
 };
-
 const tabItems = [
   { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
   { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-subscribe' },
-];
+]
 
 const route = useRoute();
 const currentTabKey = computed(() => route.query.tab?.toLowerCase() || tabItems[0].key);
@@ -92,8 +66,14 @@ onUnmounted(() => window.removeEventListener('resize', checkScreen))
 </script>
 
 <style scoped>
+/* 🚨 WARNING: Keep this only if you want to override Tailwind on mobile pills 🚨 */
 .nav-link.active {
   background-color: var(--primary, #008253);
-  color: white !important;
+  color: white !important; /* Kept for mobile specificity */
+}
+@media (min-width: 768px) {
+  .nav-pills {
+    display: none;
+  }
 }
 </style>
