@@ -44,7 +44,6 @@
           class="w-full h-full object-cover rounded-md border"
         />
 
-        <!-- Remove icon -->
         <button
           type="button"
           @click.stop="removeImage(index)"
@@ -63,7 +62,6 @@
         class="w-full h-full object-cover rounded-md border"
       />
 
-      <!-- Remove icon for single -->
       <button
         type="button"
         @click.stop="removeImage(0)"

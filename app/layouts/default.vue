@@ -122,7 +122,7 @@ watch(isLayoutCollapsed, (isCollapsed) => {
   }
 }
 
-/* Hide overlay completely on desktop (1200px and above) */
+/* Hide overlay completely on desktop*/
 @media (min-width: 1200px) {
   .menu-overlay {
     display: none !important;
