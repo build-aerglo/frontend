@@ -24,7 +24,9 @@
               v-if="route.path === '/auth/business/settings'" 
               class="hidden md:flex items-center space-x-4"
             >
-              <SettingTab />
+              <ClientOnly>
+                <SettingTab />
+              </ClientOnly>
             </div>
             
             <div v-if="route.path === '/auth/business/settings'" class="flex-grow hidden md:block"></div> 
