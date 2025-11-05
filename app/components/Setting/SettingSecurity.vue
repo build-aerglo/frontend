@@ -52,30 +52,30 @@
         </div>
 
         <div class="mt-4 flex justify-between items-center w-full sm:w-[51%]">
-          <label class="block font-medium text-contrast mb-2">
-            Contact mode
+    
+          <label class=" font-medium text-contrast flex items-center">
+              Contact mode
           </label>
           
           <div class="flex items-center gap-x-8"> 
-            <div 
-              class="flex items-center space-x-2" 
-              v-for="mode in contactModes" 
-              :key="mode"
-            >
-              <input
-                type="checkbox"
-                :id="mode"
-                :value="mode"
-                v-model="selectedContactModes"
-                :disabled="!isEditing"
-              />
-              <label :for="mode" class="text-gray-900 flex items-center space-x-1 cursor-pointer">
-                <span>{{ mode }}</span>
-              </label>
-            </div>
+              <div 
+                  class="flex items-center space-x-2" 
+                  v-for="mode in contactModes" 
+                  :key="mode"
+              >
+                  <input
+                      type="checkbox"
+                      :id="mode"
+                      :value="mode"
+                      v-model="selectedContactModes"
+                      :disabled="!isEditing"
+                  />
+                  <label :for="mode" class="text-gray-900 flex items-center space-x-1 cursor-pointer">
+                      <span>{{ mode }}</span>
+                  </label>
+              </div>
           </div>
         </div>
-
         <ButtonCustom
           label="Save Preferences"
           size="lg"
