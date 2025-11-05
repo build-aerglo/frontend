@@ -21,3 +21,7 @@
 html {
   scroll-behavior: smooth;
 }
+.authentication-inner {
+  max-width: 850px; /* Adjust this value (e.g., 650px) to your desired width */
+  width: 100%;
+}
