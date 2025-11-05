@@ -1,224 +1,240 @@
 <template>
-    <!--Header-->
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
     <div class="mb-0">
-    <NavBarReview/>
-    <!--Header-->
+      <NavBarReview />
     </div>
 
-
-<section>
-    <!--content-->
-    <div class="relative bg-gray-400 px-6 py-8 overflow-hidden">
-    <!-- Open Dialog Button -->
-     <div class="flex flex-col md:flex-row justify-center items-center space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 text-center">
-        <p class="text-4xl text-[#008253] dark:text-gray-300">
-            Your opinions make a difference.
-        </p>
+    <!-- Three Column Layout -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         
-        <a
-            href="#"
-            @click.prevent="open = true"
-            class="inline-block text-gray-200 underline font-bold text-lg hover:underline cursor-pointer transition-colors duration-150"
-        >
-            Share Your Latest Experience.
-        </a>
-     </div>
-
-
-    <!-- Dialog Overlay -->
-    <div
-      v-if="open"
-      class="fixed inset-0 flex items-center justify-center bg-gray-400 bg-opacity-50 z-50"
-    >
-      <!-- Dialog Box -->
-      <div
-        class="bg-white w-[90%] md:w-[1000px] shadow-xl p-4 relative animate-fadeIn max-h-[90vh] overflow-y-auto"
-      >
-        <!-- Close Button -->
-        <i
-          class="pi pi-times absolute top-4 right-4 text-gray-500 cursor-pointer hover:text-black"
-          @click="closeDialog"
-        ></i>
-
-        <!-- Form -->
-        <form @submit.prevent="submitReview" class="space-y-2">
-
-          <!-- Business Name -->
-          <div ref="businessDropdownRef">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
-            <div class="relative">
-              <input
-                type="text"
-                v-model="businessName"
-                @input="handleBusinessInput"
-                @focus="showBusinessDropdown = true"
-                placeholder="e.g, KFC"
-                class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
-              />
-              <!-- Checkmark Icon -->
-              <i
-                v-if="businessName && isBusinessInList"
-                class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"
-              ></i>
-            </div>
-            <!-- Dropdown List -->
-            <ul v-if="showBusinessDropdown && filteredBusinesses.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto">
-              <li
-                v-for="(b, i) in filteredBusinesses"
-                :key="i"
-                @click="selectBusiness(b)"
-                class="px-3 py-2 cursor-pointer hover:bg-gray-100"
-              >
-                {{ b }}
-              </li>
-            </ul>
-            <!-- Helper Text -->
-            <p
-              v-if="businessName && !isBusinessInList && filteredBusinesses.length === 0"
-              class="text-xs text-gray-500 mt-1"
+        <!-- LEFT SECTION - Featured Businesses (3 columns on md+) -->
+        <div class="md:col-span-3 bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold text-[#008253] mb-6">Featured Businesses</h2>
+          
+          <div class="space-y-4">
+            <div
+              v-for="(business, index) in featuredBusinesses"
+              :key="index"
+              class="border rounded-lg p-4 hover:shadow-lg transition-shadow"
             >
-              New on our list? No problem, review away!
-            </p>
-          </div>
-
-          <!-- Business Location -->
-          <div ref="locationDropdownRef">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Business Location</label>
-            <div class="relative">
-              <input
-                type="text"
-                v-model="businessLocation"
-                @input="handleLocationInput"
-                @focus="showLocationDropdown = true"
-                placeholder="Town/City. e.g, Yaba, Anthony..."
-                class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
-              />
-              <!-- Checkmark Icon -->
-              <i
-                v-if="businessLocation && isLocationInList"
-                class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"
-              ></i>
-            </div>
-            <!-- Dropdown List -->
-            <ul v-if="showLocationDropdown && filteredLocations.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto">
-              <li
-                v-for="(l, i) in filteredLocations"
-                :key="i"
-                @click="selectLocation(l)"
-                class="px-3 py-2 cursor-pointer hover:bg-gray-100"
-              >
-                {{ l }}
-              </li>
-            </ul>
-          </div>
-
-          <!-- Star Rating -->
-          <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1">Rating</label>
-            <div class="flex items-center space-x-1">
-              <template v-for="(star, i) in 5" :key="i">
-                <i
-                  class="pi text-2xl cursor-pointer transition-colors"
-                  :class="getStarIcon(i)"
-                  @click="setRating(i + 1)"
-                  @mousemove="hoverRating = i + 1"
-                  @mouseleave="hoverRating = 0"
-                  :style="{ color: i < rating ? '#deae29' : '#d1d5db' }"
-                ></i>
-              </template>
-              <span class="ml-2 text-sm text-gray-600">
-                {{ rating > 0 ? `${ratingLabels[rating]}` : ''}}
-              </span>
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex-1">
+                  <h3 class="font-semibold text-gray-800">{{ business.name }}</h3>
+                  <p class="text-xs text-gray-500">{{ business.location }}</p>
+                </div>
+                <button
+                  @click="removeBusiness(index)"
+                  class="text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  <i class="pi pi-times text-sm"></i>
+                </button>
+              </div>
+              
+              <!-- Star Rating -->
+              <div class="flex items-center space-x-1 mt-2">
+                <template v-for="star in 5" :key="star">
+                  <i
+                    class="pi text-lg cursor-pointer transition-colors"
+                    :class="star <= (business.hoverRating || business.rating) ? 'pi-star-fill' : 'pi-star'"
+                    :style="{ color: star <= (business.hoverRating || business.rating) ? '#deae29' : '#d1d5db' }"
+                    @click="rateBusiness(index, star)"
+                    @mouseenter="business.hoverRating = star"
+                    @mouseleave="business.hoverRating = 0"
+                  ></i>
+                </template>
+              </div>
+              <p v-if="business.rating > 0" class="text-xs text-gray-600 mt-1">
+                {{ ratingLabels[business.rating] }}
+              </p>
             </div>
           </div>
+        </div>
 
-          <!-- Review Body -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Review Body</label>
-            <textarea
-              v-model="reviewBody"
-              maxlength="500"
-              minlength="20"
-              rows="4"
-              placeholder="Share your experience. Tell us what you loved (or didn't)."
-              class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
-            ></textarea>
-            <p class="text-xs text-gray-500 text-right">
-              {{ reviewBody.length }}/500
-            </p>
-          </div>
-
-          <!-- Add Images -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Add Images (max 3)</label>
-            <input type="file" multiple accept="image/*" @change="handleImages" class="text-sm text-gray-600" />
-            <div class="flex mt-2 gap-2 flex-wrap">
-              <div
-                v-for="(img, index) in images"
-                :key="index"
-                class="relative w-20 h-20 rounded-lg overflow-hidden border"
-              >
-                <img :src="img" class="object-cover w-full h-full" />
+        <!-- MIDDLE SECTION - Review Form (6 columns on md+) -->
+        <div class="md:col-span-6 bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-2xl font-bold text-[#008253] mb-6">Share Your Experience</h2>
+          
+          <div class="space-y-4">
+            <!-- Business Name -->
+            <div ref="businessDropdownRef">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+              <div class="relative">
+                <input
+                  type="text"
+                  v-model="businessName"
+                  @input="handleBusinessInput"
+                  @focus="showBusinessDropdown = true"
+                  placeholder="e.g, KFC"
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
+                />
                 <i
-                  class="pi pi-times absolute top-1 right-1 bg-white rounded-full p-1 text-xs cursor-pointer"
-                  @click="removeImage(index)"
+                  v-if="businessName && isBusinessInList"
+                  class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"
                 ></i>
               </div>
+              <ul v-if="showBusinessDropdown && filteredBusinesses.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full md:w-auto">
+                <li
+                  v-for="(b, i) in filteredBusinesses"
+                  :key="i"
+                  @click="selectBusiness(b)"
+                  class="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                >
+                  {{ b }}
+                </li>
+              </ul>
+              <p
+                v-if="businessName && !isBusinessInList && filteredBusinesses.length === 0"
+                class="text-xs text-gray-500 mt-1"
+              >
+                New on our list? No problem, review away!
+              </p>
+            </div>
+
+            <!-- Business Location -->
+            <div ref="locationDropdownRef">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Business Location</label>
+              <div class="relative">
+                <input
+                  type="text"
+                  v-model="businessLocation"
+                  @input="handleLocationInput"
+                  @focus="showLocationDropdown = true"
+                  placeholder="Town/City. e.g, Yaba, Anthony..."
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
+                />
+                <i
+                  v-if="businessLocation && isLocationInList"
+                  class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"
+                ></i>
+              </div>
+              <ul v-if="showLocationDropdown && filteredLocations.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full md:w-auto">
+                <li
+                  v-for="(l, i) in filteredLocations"
+                  :key="i"
+                  @click="selectLocation(l)"
+                  class="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                >
+                  {{ l }}
+                </li>
+              </ul>
+            </div>
+
+            <!-- Star Rating -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+              <div class="flex items-center space-x-1">
+                <template v-for="star in 5" :key="star">
+                  <i
+                    class="pi text-2xl cursor-pointer transition-colors"
+                    :class="star <= (hoverRating || rating) ? 'pi-star-fill' : 'pi-star'"
+                    @click="rating = star"
+                    @mouseenter="hoverRating = star"
+                    @mouseleave="hoverRating = 0"
+                    :style="{ color: star <= (hoverRating || rating) ? '#deae29' : '#d1d5db' }"
+                  ></i>
+                </template>
+                <span class="ml-2 text-sm text-gray-600">
+                  {{ rating > 0 ? ratingLabels[rating] : '' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Review Body -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Review Body</label>
+              <textarea
+                v-model="reviewBody"
+                maxlength="500"
+                minlength="20"
+                rows="4"
+                placeholder="Share your experience. Tell us what you loved (or didn't)."
+                class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
+              ></textarea>
+              <p class="text-xs text-gray-500 text-right">
+                {{ reviewBody.length }}/500
+              </p>
+            </div>
+
+            <!-- Add Images -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Add Images (max 3)</label>
+              <input type="file" multiple accept="image/*" @change="handleImages" class="text-sm text-gray-600" />
+              <div class="flex mt-2 gap-2 flex-wrap">
+                <div
+                  v-for="(img, index) in images"
+                  :key="index"
+                  class="relative w-20 h-20 rounded-lg overflow-hidden border"
+                >
+                  <img :src="img" class="object-cover w-full h-full" />
+                  <i
+                    class="pi pi-times absolute top-1 right-1 bg-white rounded-full p-1 text-xs cursor-pointer"
+                    @click="removeImage(index)"
+                  ></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Anonymous Checkbox -->
+            <div class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="anonymous"
+                v-model="anonymous"
+                class="w-4 h-4 rounded border-gray-300 accent-[#008253]"
+              />
+              <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">
+                Review as anonymous
+              </label>
+            </div>
+
+            <!-- Date -->
+            <div class="text-xs text-gray-500 text-right">
+              {{ formattedDate }}
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              @click="submitReview"
+              class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition"
+            >
+              Submit Review
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT SECTION - Ads Placeholder (3 columns on md+) -->
+        <div class="md:col-span-3 space-y-4">
+          <div class="bg-white rounded-lg shadow-md p-6 h-64 flex items-center justify-center border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400">
+              <i class="pi pi-image text-4xl mb-2"></i>
+              <p class="text-sm">Ad Space</p>
+              <p class="text-xs">300x250</p>
             </div>
           </div>
-
-          <!-- Anonymous Checkbox -->
-          <div class="flex items-center space-x-2 mt-2">
-            <input
-              type="checkbox"
-              id="anonymous"
-              v-model="anonymous"
-              class="w-4 h-4 rounded border-gray-300 accent-[#008253]"
-            />
-            <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">
-              Review as anonymous
-            </label>
+          
+          <div class="bg-white rounded-lg shadow-md p-6 h-64 flex items-center justify-center border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400">
+              <i class="pi pi-image text-4xl mb-2"></i>
+              <p class="text-sm">Ad Space</p>
+              <p class="text-xs">300x250</p>
+            </div>
           </div>
+        </div>
 
-          <!-- Date -->
-          <div class="text-xs text-gray-500 text-right mt-2">
-            {{ formattedDate }}
-          </div>
-
-          <!-- Submit Button -->
-           <NuxtLink to="/landing/end-user/home">
-          <button
-            type="submit"
-            class="w-full py-2 mt-2 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition"
-          >
-            Submit Review
-          </button>
-          </NuxtLink>
-        </form>
       </div>
     </div>
+
+    <!-- Footer -->
+    <FooterSection />
   </div>
-  </section>
-
-  <section class="mt-5">
-    <div class="text-[#008253]  ml-5 text-2xl text-left">
-      Have You Checked These Out Recently?
-    </div>
-    <div>
-      <Suggestions/>
-    </div>
-  </section>
-
-  <!--Footer-->
-    <FooterSection/>
-  <!--Footer-->
-
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
-const open = ref(false);
+// Form state
 const businessName = ref("");
 const businessLocation = ref("");
 const reviewBody = ref("");
@@ -229,11 +245,20 @@ const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
 
+
 // Refs for dropdown containers
 const businessDropdownRef = ref<HTMLElement | null>(null);
 const locationDropdownRef = ref<HTMLElement | null>(null);
 
-// Mock suggestions with more businesses
+// Featured businesses
+const featuredBusinesses = ref([
+  { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0 },
+  { name: "McDonald's", location: "Ikeja", rating: 0, hoverRating: 0 },
+  { name: "Domino's Pizza", location: "Victoria Island", rating: 0, hoverRating: 0 },
+  { name: "Chicken Republic", location: "Anthony", rating: 0, hoverRating: 0 },
+]);
+
+// Business and location lists
 const businessList = [
   "KFC",
   "McDonald's",
@@ -244,6 +269,7 @@ const businessList = [
   "Green Bakery",
   "City Lounge"
 ];
+
 const locationList = [
   "Yaba",
   "Anthony",
@@ -253,7 +279,6 @@ const locationList = [
   "Victoria Island"
 ];
 
-// Rating labels
 const ratingLabels: Record<number, string> = {
   1: "Not Great",
   2: "Needs Improvement",
@@ -265,15 +290,21 @@ const ratingLabels: Record<number, string> = {
 const filteredBusinesses = ref<string[]>([]);
 const filteredLocations = ref<string[]>([]);
 
-// Check if business name is in the list
 const isBusinessInList = computed(() => {
   return businessList.some(b => b.toLowerCase() === businessName.value.toLowerCase());
 });
 
-// Check if location is in the list
 const isLocationInList = computed(() => {
   return locationList.some(l => l.toLowerCase() === businessLocation.value.toLowerCase());
 });
+
+const formattedDate = computed(() =>
+  new Date().toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+);
 
 // Handle click outside to close dropdowns
 const handleClickOutside = (event: MouseEvent) => {
@@ -319,15 +350,6 @@ const selectLocation = (l: string) => {
   filteredLocations.value = [];
 };
 
-const getStarIcon = (i: number) => {
-  if (hoverRating.value >= i + 1 || rating.value >= i + 1) return "pi-star-fill";
-  return "pi-star";
-};
-
-const setRating = (val: number) => {
-  rating.value = val;
-};
-
 const handleImages = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (!files) return;
@@ -346,36 +368,22 @@ const removeImage = (index: number) => {
   images.value.splice(index, 1);
 };
 
-const formattedDate = computed(() =>
-  new Date().toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-);
+const rateBusiness = (index: number, stars: number) => {
+  featuredBusinesses[index].rating = stars;
+};
 
-const closeDialog = () => {
-  open.value = false;
+const removeBusiness = (index: number) => {
+  featuredBusinesses.value.splice(index, 1);
 };
 
 const submitReview = () => {
   alert("Review submitted successfully!");
-  closeDialog();
+  // Reset form
+  businessName.value = "";
+  businessLocation.value = "";
+  reviewBody.value = "";
+  rating.value = 0;
+  anonymous.value = false;
+  images.value = [];
 };
 </script>
-
-<style scoped>
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.2s ease-in-out;
-}
-</style>

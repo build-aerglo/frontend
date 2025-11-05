@@ -139,13 +139,13 @@
 import { ref } from 'vue'
 
 const user = ref({
-  avatar: '/images/user-avatar.png',
+  avatar: 'app/assets/images/1.png',
   username: 'Jane Doe',
-  phone: '+1 (555) 234-9876',
+  phone: '+234 234-9876-888',
   email: 'janedoe@mail.com',
-  address: '123 Maple Street, Ikeja, Lagos',
+  address: '13 Maple Street, Ikeja, Lagos',
   stats: {
-    reviews: 42,
+    reviews: 3,
     helpfulVotes: 128,
     points: 720,
     badges: ['Top Reviewer', 'Helpful Member', 'Community Star']
