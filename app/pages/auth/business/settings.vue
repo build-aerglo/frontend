@@ -66,10 +66,10 @@ onUnmounted(() => window.removeEventListener('resize', checkScreen))
 </script>
 
 <style scoped>
-/* 🚨 WARNING: Keep this only if you want to override Tailwind on mobile pills 🚨 */
+
 .nav-link.active {
   background-color: var(--primary, #008253);
-  color: white !important; /* Kept for mobile specificity */
+  color: white !important; 
 }
 @media (min-width: 768px) {
   .nav-pills {

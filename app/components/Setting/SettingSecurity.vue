@@ -51,9 +51,9 @@
           </div>
         </div>
 
-        <div class="mt-4 flex justify-between items-center md:w-[51%]">
-          <label class="block font-medium text-gray-700 mb-2">
-            Preferred modes of contact
+        <div class="mt-4 flex justify-between items-center sm:w-[51%]">
+          <label class="block font-medium text-contrast mb-2">
+            Contact mode
           </label>
           <div class="flex flex-wrap gap-x-8 gap-y-4 items-center p-3">
             <div class="flex items-center space-x-2" v-for="mode in contactModes" :key="mode">
