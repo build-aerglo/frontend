@@ -51,12 +51,17 @@
           </div>
         </div>
 
-        <div class="mt-4 flex justify-between items-center sm:w-[51%]">
+        <div class="mt-4 flex justify-between items-center w-full sm:w-[51%]">
           <label class="block font-medium text-contrast mb-2">
             Contact mode
           </label>
-          <div class="flex flex-wrap gap-x-8 gap-y-4 items-center p-3">
-            <div class="flex items-center space-x-2" v-for="mode in contactModes" :key="mode">
+          
+          <div class="flex items-center gap-x-8"> 
+            <div 
+              class="flex items-center space-x-2" 
+              v-for="mode in contactModes" 
+              :key="mode"
+            >
               <input
                 type="checkbox"
                 :id="mode"
@@ -152,8 +157,8 @@ const confirmDeactivate = ref(false);
 const selectedContactModes = ref([]);
 const contactModes = ["Email", "SMS", "Whatsapp"];
 const preferenceToggles = [
-  { label: "Set reviews to private", model: isPrivateReview },
-  { label: "Set do not disturb mode", model: isDndMode },
-  { label: "Toggle dark mode", model: isDndMode },
+  { label: "Private Reviews", model: isPrivateReview },
+  { label: "Do Not Disturb", model: isDndMode },
+  { label: "Dark Mode", model: isDndMode },
 ];
 </script>
