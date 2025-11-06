@@ -11,7 +11,7 @@
                 <NuxtLink to="/review/signed-in" class="text-blue-500">Logged-in user write a review page</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
+                <NuxtLink to="/profile/test" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
         </ul>
     </div> 
