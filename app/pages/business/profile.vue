@@ -7,7 +7,9 @@
 </template>
 
 <script setup lang="ts">
-
+definePageMeta({
+  layout: 'business' 
+});
 </script>
 
 <style scoped>

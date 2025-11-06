@@ -1,4 +1,5 @@
 <template>
+    
     <div>
         <ul>
              <li>
@@ -27,9 +28,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: false 
-});
 
 
 </script>

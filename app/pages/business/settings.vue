@@ -35,6 +35,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'business' 
+});
 import { useRoute } from 'vue-router'; 
 const prop = defineProps(['isMobile'])
 const isEditing = ref(false)
@@ -66,7 +69,6 @@ onUnmounted(() => window.removeEventListener('resize', checkScreen))
 </script>
 
 <style scoped>
-
 .nav-link.active {
   background-color: var(--primary, #008253);
   color: white !important; 

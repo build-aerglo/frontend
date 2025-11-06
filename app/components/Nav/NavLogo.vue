@@ -1,6 +1,6 @@
 <template>
   <img
-    src="../../assets/images/b-user-logo.png"
+    src="/images/logo/b-user-logo.png"
     :class="heightClass"
     alt="Logo"
   />
