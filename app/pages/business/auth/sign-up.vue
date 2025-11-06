@@ -43,7 +43,7 @@
 
             <p class="text-center md:text-[100%]">
               <span class="text-contrast">Already have an account?</span>
-              <NuxtLink to="log-in">
+              <NuxtLink to="sign-in">
                 <span class="ms-1 hover:underline text-link">Sign in instead</span>
               </NuxtLink>
             </p>
@@ -66,12 +66,7 @@
 <script setup lang="ts">
 import  useMethods  from '~/composables/useMethods';
 import type { BusinessData } from "~/types";
-
 const { registerBusiness } = useMethods();
-
-definePageMeta({
-  layout: false 
-});
 const businessRegistration = ref<BusinessData>({
     id: '',
     name: '',

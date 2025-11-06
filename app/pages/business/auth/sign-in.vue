@@ -39,7 +39,7 @@
 
               <p class="text-center md:text[100%] pt-1">
                 <span>New on our platform?</span>
-                <NuxtLink to="register">
+                <NuxtLink to="sign-up">
                     <span class="ms-1 hover:underline text-link">Create an account</span>
                 </NuxtLink>
               </p>
@@ -52,9 +52,6 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: false 
-});
 
 const businessLogin = ref({
     email: '',
