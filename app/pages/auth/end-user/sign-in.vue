@@ -89,7 +89,7 @@
           </NuxtLink>
         </div>
         <p class="text-center mt-4 text-sm text-gray-800">
-          <NuxtLink to="/review/not-signed-in" class="text-blue-500 font-medium">
+          <NuxtLink to="/review/guest" class="text-blue-500 font-medium">
             Review as a Guest
           </NuxtLink>
         </p>
