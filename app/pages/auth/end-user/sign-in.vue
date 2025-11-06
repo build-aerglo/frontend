@@ -3,7 +3,7 @@
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img
-        src="/assets/images/e-user-bg (3).png"
+        src="/assets/images/e-user-bg.png"
         alt="Welcome background"
         class="w-full h-full object-cover"
       />
@@ -89,7 +89,7 @@
           </NuxtLink>
         </div>
         <p class="text-center mt-4 text-sm text-gray-800">
-          <NuxtLink to="/review/guest" class="text-blue-500 font-medium">
+          <NuxtLink to="/review/guest" class="text-blue-500 font-medium hover:underline">
             Review as a Guest
           </NuxtLink>
         </p>

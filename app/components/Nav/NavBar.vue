@@ -149,9 +149,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import ReviewDialog from '~/components/ReviewDialog.vue'
-
-
 
 const open = ref(false);
 const isOpen = ref(false)

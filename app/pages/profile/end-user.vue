@@ -223,6 +223,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { NuxtImg } from '#components'
 
 interface Review {
   id: number

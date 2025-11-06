@@ -251,9 +251,6 @@
 
       </div>
     </div>
-
-    <!-- Footer -->
-    <FooterSection />
   </div>
 </template>
 
@@ -279,10 +276,10 @@ const locationDropdownRef = ref<HTMLElement | null>(null);
 
 // Featured businesses
 const featuredBusinesses = ref([
-  { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/kfc.png" },
-  { name: "Domino's Pizza", location: "Ikeja", rating: 0, hoverRating: 0, logo: "/images/pizza.png" },
-  { name: "Chicken Republic", location: "Victoria Island", rating: 0, hoverRating: 0, logo: "/images/republic.png" },
-  { name: "T-Pizza", location: "Anthony", rating: 0, hoverRating: 0, logo: "/images/res1.jpg" },
+  { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/logos/kfc.png" },
+  { name: "Domino's Pizza", location: "Ikeja", rating: 0, hoverRating: 0, logo: "/images/logos/pizza.png" },
+  { name: "Chicken Republic", location: "Victoria Island", rating: 0, hoverRating: 0, logo: "/images/logos/republic.png" },
+  { name: "T-Pizza", location: "Anthony", rating: 0, hoverRating: 0, logo: "/images/logos/res1.jpg" },
 ]);
 
 

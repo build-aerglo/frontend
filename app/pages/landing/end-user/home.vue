@@ -11,7 +11,7 @@
     <!-- Background image div -->
     <div
       class="absolute inset-0 bg-cover bg-top blur-sm brightness-75 bg-fixed"
-      style="background-image: url('/images/e-user-ldg.png');"
+      style="background-image: url('/images/background/e-user-ldg.png');"
     ></div>
 
     <!-- Foreground content -->
@@ -204,7 +204,7 @@
 
 
     <!--Footer-->
-    <FooterSection/>
+    <NavFooter/>
     <!--Footer-->
 
  </template>

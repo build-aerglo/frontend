@@ -223,7 +223,7 @@
   <!--Content-->
 
   <!--Footer-->
-  <FooterSection/>
+  <NavFooter/>
   <!--Footer-->
 </template>
 
