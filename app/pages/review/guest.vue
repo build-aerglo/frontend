@@ -54,7 +54,7 @@
 
         <!-- MIDDLE SECTION - Review Form (6 columns on md+) -->
         <div class="md:col-span-6 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.18)_0px_0px_50px_5px]">
-          <h2 class="text-2xl font-bold text-[#008253] mb-6">Share Your Experience</h2>
+          <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
           
           <div class="space-y-4">
             <!-- Business Name -->
@@ -144,14 +144,14 @@
             </div>
 
             <!-- Review Body -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Review Body</label>
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
               <textarea
                 v-model="reviewBody"
                 maxlength="500"
                 minlength="20"
                 rows="4"
-                placeholder="Share your experience. Tell us what you loved (or didn't)."
+                placeholder="Tell us what you loved (or didn't)."
                 class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
               ></textarea>
               <p class="text-xs text-gray-500 text-right">
