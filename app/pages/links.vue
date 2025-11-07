@@ -8,9 +8,6 @@
                 <NuxtLink to="/auth/support-user/sign-up" class="text-blue-500">Register as Support User</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/review/signed-in" class="text-blue-500">Logged-in user write a review page</NuxtLink>
-            </li>
-            <li>
                 <NuxtLink to="/profile/test" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
         </ul>

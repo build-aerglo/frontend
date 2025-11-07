@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Sticky Navbar -->
     <nav
-      class="fixed top-0 inset-x-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
+      class="fixed top-0 inset-x-0 z-50 bg-white mb-1 dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
     >
       <div
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"
@@ -37,7 +37,7 @@
       class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-2 pt-5 pb-4 space-y-4"
     >
       <!-- === Top Row: Profile Info + Badges === -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Profile Card -->
         <div
           class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 flex flex-col sm:flex-row sm:items-start items-center gap-6"
@@ -109,17 +109,17 @@
       </div>
 
       <!-- === Middle Row: Stats + Top Sector + Location === -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Stats -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 flex justify-between flex-wrap"
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 flex justify-between flex-wrap"
         >
           <div
-            class="text-center flex-1 min-w-[80px] mb-4 sm:mb-0"
+            class="text-center flex-1 min-w-[80px] mb-1 sm:mb-0"
             v-for="stat in stats"
             :key="stat.label"
           >
-            <i :class="stat.icon + ' text-[#008253] text-lg'"></i>
+            <i :class="stat.icon + ' text-[#008253] text-sm'"></i>
             <p class="text-xl font-bold text-[#008253] mt-1">
               {{ stat.value }}
             </p>
@@ -128,17 +128,17 @@
         </div>
 
         <!-- Top Sectors -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
           <h3
-            class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"
+            class="text-lg font-semibold mb-2 flex items-center gap-2 text-gray-900 dark:text-white"
           >
             <i class="pi pi-briefcase text-[#008253]"></i> Top Reviewed Sectors
           </h3>
-          <ul class="space-y-2">
+          <ul class="space-y-1">
             <li
               v-for="(sector, idx) in user.topSectors"
               :key="idx"
-              class="flex items-center justify-between text-gray-700 dark:text-gray-300"
+              class="flex items-center justify-between text-gray-500 dark:text-gray-300"
             >
               <span>{{ sector }}</span>
               <i class="pi pi-star-fill text-gold"></i>
@@ -146,42 +146,58 @@
           </ul>
         </div>
 
-        <!-- Top Locations -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-          <h3
-            class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white"
-          >
-            <i class="pi pi-map-marker text-[#008253]"></i> Most Reviewed
-            Locations
-          </h3>
-          <ul class="space-y-2">
+       
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
+        <h3
+            class="text-lg font-semibold mb-2 flex items-center gap-2 text-gray-900 dark:text-white"
+        >
+            <i class="pi pi-map-marker text-[#008253]"></i>
+            Most Reviewed Locations
+        </h3>
+
+        <!-- Two-column layout -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
+            <!-- Left Column (3 items) -->
+            <ul class="space-y-1">
             <li
-              v-for="(location, idx) in user.topLocations"
-              :key="idx"
-              class="flex items-center justify-between text-gray-700 dark:text-gray-300"
+                v-for="(location, idx) in user.topLocations.slice(0, 3)"
+                :key="idx"
+                class="flex items-center justify-between text-gray-500 dark:text-gray-300"
             >
-              <span>{{ location }}</span>
-              <i class="pi pi-star-fill text-gold"></i>
+                <span> • {{ location }}</span>
             </li>
-          </ul>
+            </ul>
+
+            <!-- Right Column (2 items) -->
+            <ul class="space-y-1">
+            <li
+                v-for="(location, idx) in user.topLocations.slice(3, 5)"
+                :key="idx + 3"
+                class="flex items-center justify-between text-gray-500 dark:text-gray-300"
+            >
+                <span> • {{ location }}</span>
+            </li>
+            </ul>
         </div>
-      </div>
+     </div>
+    </div>
 
       <!-- Reviews Section -->
-        <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-        <h3 class="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
+        <section class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-2">
+        <h3 class="text-lg font-semibold mb-2 flex items-center gap-2 text-[#008253] dark:text-white">
             <i class="pi pi-comments text-[#008253]"></i>
             Your Reviews
         </h3>
 
         <!-- Reviews Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div
             v-for="review in user.reviews.slice(0, 3)"
             :key="review.id"
             class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-900 hover:shadow-lg transition"
             >
-            <div class="flex items-start justify-between mb-2">
+            <div class="flex items-start justify-between mb-1">
                 <h4 class="font-semibold text-gray-900 dark:text-white">
                 {{ review.title }}
                 </h4>
@@ -333,6 +349,6 @@ const handleSignOut = () => {
 
 <style scoped>
 .text-gold {
-  color: #fbbf24;
+  color: #deae29;
 }
 </style>
