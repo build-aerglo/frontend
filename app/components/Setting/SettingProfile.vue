@@ -56,58 +56,6 @@
             <InputTextCustom type="tel" label="Phone Number" />
           </div>
           
-          <div class="mt-4">
-            <label class="block font-medium text-gray-700 mb-2">
-              Preferred modes of contact (Select all that apply)
-            </label>
-      
-            <div class="flex flex-wrap gap-x-8 gap-y-4 items-center p-3">
-              
-              <div class="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  :id="'modeEmail'" 
-                  name="contactMode" 
-                  :value="'Email'"
-                  class="form-check-input" 
-                  v-model="selectedContactModes"
-                />
-                <label :for="'modeEmail'" class="text-gray-900 flex items-center space-x-1 cursor-pointer">
-                  <span>Email</span>
-                </label>
-              </div>
-      
-              <div class="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  :id="'modeSms'" 
-                  name="contactMode" 
-                  :value="'SMS'" 
-                  class="form-check-input"
-                  v-model="selectedContactModes"
-                />
-                <label :for="'modeSms'" class="text-gray-900 flex items-center space-x-1 cursor-pointer">
-                  <span>SMS</span>
-                </label>
-              </div>
-      
-              <div class="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  :id="'modeWhatsapp'" 
-                  name="contactMode" 
-                  :value="'Whatsapp'" 
-                  class="form-check-input"
-                  v-model="selectedContactModes"
-                />
-                <label :for="'modeWhatsapp'" class="text-gray-900 flex items-center space-x-1 cursor-pointer">
-                  <span>Whatsapp</span>
-                </label>
-              </div>
-              
-            </div>
-          </div>
-          
           <ButtonCustom label="Save changes" size="lg" primary="true"
             input-class="p-[10px] text-[15px] mt-4 w-auto" 
           />

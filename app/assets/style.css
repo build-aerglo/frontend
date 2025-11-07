@@ -25,3 +25,6 @@ html {
   max-width: 850px; /* Adjust this value (e.g., 650px) to your desired width */
   width: 100%;
 }
+.menu-icon {
+  @apply flex items-center justify-center text-[18px] leading-none;
+}
