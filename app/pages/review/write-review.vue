@@ -11,7 +11,7 @@
         
         <!-- LEFT SECTION - Featured Businesses (3 columns on md+) -->
         <div class="md:col-span-3 bg-white rounded-lg shadow-md p-2">
-          <h2 class="text-xl font-bold text-[#008253] mb-6">Featured Businesses</h2>
+          <h2 class="text-xl font-bold text-center text-gray-400 mb-6">Featured Businesses</h2>
           
           <div class="space-y-3">
             <div
@@ -21,12 +21,12 @@
             >
               <div class="flex items-start justify-between mb-1">
                 <div class="flex-1">
-                  <h4 class="font-semibold text-gray-800">{{ business.name }}</h4>
-                  <p class="text-sm text-gray-600">{{ business.location }}</p>
+                  <h4 class="font-semibold text-lg text-gray-400">{{ business.name }}</h4>
+                  <p class="text-xs text-gray-400">{{ business.location }}</p>
                 </div>
                 <button
                   @click="removeBusiness(index)"
-                  class="text-gray-400 hover:text-gray-700 transition-colors"
+                  class="text-gray-400 hover:text-gray-800 transition-colors"
                 >
                   <i class="pi pi-times text-xs"></i>
                 </button>
@@ -45,7 +45,7 @@
                   ></i>
                 </template>
               </div>
-              <p v-if="business.rating > 0" class="text-xs text-gray-900 mt-0">
+              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
                 {{ ratingLabels[business.rating] }}
               </p>
             </div>
@@ -53,13 +53,13 @@
         </div>
 
         <!-- MIDDLE SECTION - Review Form (6 columns on md+) -->
-        <div class="md:col-span-6 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.18)_0px_0px_50px_5px]">
-          <h2 class="text-2xl font-bold text-[#008253] mb-6">Share Your Experience</h2>
+        <div class="md:col-span-6 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+          <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
           
           <div class="space-y-4">
             <!-- Business Name -->
             <div ref="businessDropdownRef">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+              <label class="block text-sm font-medium text-gray-900 mb-1">Business Name</label>
               <div class="relative">
                 <input
                   type="text"
@@ -96,7 +96,7 @@
 
             <!-- Business Location -->
             <div ref="locationDropdownRef">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Business Location</label>
+              <label class="block text-sm font-medium text-gray-900 mb-1">Business Location</label>
               <div class="relative">
                 <input
                   type="text"
@@ -125,11 +125,11 @@
 
             <!-- Star Rating -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-              <div class="flex items-center space-x-1">
+              <label class="block text-xs text-gray-900 mb-1">Rating</label>
+              <div class="flex items-center space-x-2">
                 <template v-for="star in 5" :key="star">
                   <i
-                    class="pi text-2xl cursor-pointer transition-colors"
+                    class="pi text-3xl cursor-pointer transition-colors"
                     :class="star <= (hoverRating || rating) ? 'pi-star-fill' : 'pi-star'"
                     @click="rating = star"
                     @mouseenter="hoverRating = star"
@@ -137,24 +137,24 @@
                     :style="{ color: star <= (hoverRating || rating) ? '#deae29' : '#6b7280' }"
                   ></i>
                 </template>
-                <span class="ml-2 text-sm text-gray-600">
-                  {{ rating > 0 ? ratingLabels[rating] : '' }}
+                <span class="ml-2 text-sm text-gray-800">
+                  {{ rating > 0 ? ratingLabels[rating] : ' ' }}
                 </span>
               </div>
             </div>
 
             <!-- Review Body -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Review Body</label>
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-900 mb-1">Your Review</label>
               <textarea
                 v-model="reviewBody"
                 maxlength="500"
                 minlength="20"
                 rows="4"
-                placeholder="Share your experience. Tell us what you loved (or didn't)."
+                placeholder="Tell us what you loved (or didn't)."
                 class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
               ></textarea>
-              <p class="text-xs text-gray-500 text-right">
+              <p class="text-xs text-gray-400 text-right">
                 {{ reviewBody.length }}/500
               </p>
             </div>
@@ -191,9 +191,14 @@
               </label>
             </div>
 
-            <!-- Date -->
-            <div class="text-xs text-gray-500 text-right">
-              {{ formattedDate }}
+            <!-- Email Field -->
+            <div  v-if="anonymous">
+              <input
+                type="email"
+                v-model="email"
+                placeholder="Email"
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none"
+              />
             </div>
 
             <!-- Submit Button -->
@@ -265,6 +270,7 @@ const reviewBody = ref("");
 const rating = ref(0);
 const hoverRating = ref(0);
 const anonymous = ref(false);
+const email = ref("");
 const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
@@ -304,11 +310,11 @@ const locationList = [
 ];
 
 const ratingLabels: Record<number, string> = {
-  1: "Not Great",
-  2: "Needs Improvement",
-  3: "Just Okay",
-  4: "Really Good",
-  5: "Fantastic"
+  1: "Not Great.",
+  2: "Needs Improvement.",
+  3: "Just Okay.",
+  4: "Really Good!",
+  5: "Fantastic!"
 };
 
 const filteredBusinesses = ref<string[]>([]);

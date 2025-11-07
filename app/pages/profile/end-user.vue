@@ -3,7 +3,7 @@
     <!-- Header with Sign Out -->
     <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Profile</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Profile</h1>
         <button
           @click="handleSignOut"
           class="flex items-center gap-2 px-4 py-2 text-[#008253] hover:bg-green-50 dark:hover:bg-red-900/20 rounded-lg transition"
@@ -143,7 +143,7 @@
                 class="flex items-center justify-between text-gray-700 dark:text-gray-300"
               >
                 <span>{{ sector }}</span>
-                <i class="pi pi-star-fill text-yellow-400"></i>
+                <i class="pi pi-star-fill text-gold"></i>
               </li>
             </ul>
           </div>
@@ -161,7 +161,7 @@
                 class="flex items-center justify-between text-gray-700 dark:text-gray-300"
               >
                 <span>{{ location }}</span>
-                <i class="pi pi-star-fill text-yellow-400"></i>
+                <i class="pi pi-star-fill text-gold"></i>
               </li>
             </ul>
           </div>
@@ -209,7 +209,7 @@
                   </div>
                 </div>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  {{ review.location }} • {{ review.date }}
+                  {{ review.location }} • {{ review.date }} • {{ review.status }}
                 </p>
                 <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ review.content }}</p>
               </div>
@@ -230,6 +230,7 @@ interface Review {
   title: string
   location: string
   date: string
+  status: string
   rating: number
   content: string
 }
@@ -255,9 +256,9 @@ interface User {
 
 const user = ref<User>({
   avatar: '/images/profile-images/3.png',
-  username: 'Jane Doe',
+  username: 'John Doe',
   phone: '+234 810-9876-888',
-  email: 'janedoe@mail.com',
+  email: 'johndoe@mail.com',
   address: '13 Akinwale Street, Ikeja, Lagos',
   stats: {
     reviews: 3,
@@ -270,25 +271,28 @@ const user = ref<User>({
   reviews: [
     {
       id: 1,
-      title: 'Amazing Stay at Oceanview Hotel',
+      title: 'Oceanview Hotel',
       location: 'Ikeja',
       date: 'Oct 20, 2025',
+      status:'pending',
       rating: 5,
       content: 'Had a wonderful stay with excellent service and beautiful ocean views. Highly recommend!'
     },
     {
       id: 2,
-      title: 'Good but pricey headphones',
-      location: 'BestBuy - Abeokuta',
+      title: 'Mabel Electronics Store',
+      location: 'Abeokuta',
       date: 'Sep 18, 2025',
+      status:'posted',
       rating: 4,
-      content: 'Sound quality is excellent, but the price feels a bit high for what it offers.'
+      content: 'Impressed by the sound quality of these headphones, but the price feels a bit too high.'
     },
     {
       id: 3,
-      title: 'Delicious food, slow service',
-      location: 'Sunset Diner',
+      title: 'TastyBites',
+      location: 'Abuja',
       date: 'Aug 30, 2025',
+      status:'investigating',
       rating: 3,
       content: 'Loved the food! But the waiting time was longer than expected.'
     }
