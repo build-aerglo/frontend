@@ -57,7 +57,7 @@
             </NuxtLink>
           </div>
           <div class="mb-6">
-              <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign In</button></NuxtLink>
+              <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign In</button></NuxtLink>
           </div>
         </form>
 
@@ -75,16 +75,16 @@
         </div>
 
         <div class="flex justify-center space-x-4">
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Facebook">
+          <NuxtLink to="/" aria-label="Login with Facebook">
             <i class="pi pi-facebook text-black text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Twitter">
+          <NuxtLink to="/" aria-label="Login with Twitter">
             <i class="pi pi-twitter text-black text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with GitHub">
+          <NuxtLink to="/" aria-label="Login with GitHub">
             <i class="pi pi-github text-gray-800 text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Google">
+          <NuxtLink to="/" aria-label="Login with Google">
             <i class="pi pi-google text-black text-xl"></i>
           </NuxtLink>
         </div>

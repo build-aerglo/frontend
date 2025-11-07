@@ -189,9 +189,9 @@
           <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
             <h3 class="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
               <i class="pi pi-comments text-[#008253]"></i>
-              All Reviews Posted
+              Your Reviews
             </h3>
-            <div class="space-y-6 max-h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
+            <div class="space-y-6 max-h-[600px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
               <div
                 v-for="review in user.reviews"
                 :key="review.id"
@@ -254,7 +254,7 @@ interface User {
 }
 
 const user = ref<User>({
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane',
+  avatar: '/images/profile-images/3.png',
   username: 'Jane Doe',
   phone: '+234 810-9876-888',
   email: 'janedoe@mail.com',

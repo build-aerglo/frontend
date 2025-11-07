@@ -4,7 +4,7 @@
   >
     <div class="container mx-auto px-6 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/landing/end-user/home" class="flex items-center space-x-2">
+      <NuxtLink to="/" class="flex items-center space-x-2">
         <img
           src="/assets/images/e-user-logo.png"
           alt="Welcome"
@@ -72,17 +72,13 @@
       ]"
     >
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+        <NuxtLink to="/"><img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" /></NuxtLink>
         <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
           <i class="pi pi-times text-sm"></i>
         </button>
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/landing/end-user/home" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
-             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
-             hover:after:w-full"
-            >Home</NuxtLink></li>
         <li><NuxtLink to="/auth/end-user/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
@@ -144,9 +140,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import ReviewDialog from '~/components/ReviewDialog.vue'
-
-
 
 const open = ref(false);
 const isOpen = ref(false)

@@ -4,7 +4,7 @@
   >
     <div class="container mx-auto px-6 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/landing/end-user/home" class="flex items-center space-x-2">
+      <NuxtLink to="/links" class="flex items-center space-x-2">
         <img
           src="/assets/images/e-user-logo.png"
           alt="Welcome"
@@ -77,7 +77,7 @@
       ]"
     >
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+        <NuxtLink to="/links"><img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" /></NuxtLink>
         <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
           <i class="pi pi-times text-sm"></i>
         </button>
@@ -88,7 +88,7 @@
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+        <li><NuxtLink to="/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Categories</NuxtLink></li>
