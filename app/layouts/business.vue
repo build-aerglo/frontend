@@ -53,7 +53,11 @@
         
       </div>
     </div>
-    
+    <div 
+      class="menu-overlay fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 z-[1040]"
+      :class="{ 'opacity-100 visible': !isLayoutCollapsed, 'opacity-0 invisible': isLayoutCollapsed }"
+      @click="toggleLayout"
+    ></div>
     </div>
 </template>
 
