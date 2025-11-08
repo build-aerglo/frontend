@@ -2,7 +2,7 @@
   <div class="flex h-screen overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
-      <img src="~/assets/images/e-user-bg (3).png" alt="Join the community" class="object-cover w-full h-full" />
+      <img src="~/assets/images/e-user-bg.png" alt="Join the community" class="object-cover w-full h-full" />
     </div>
 
     <!-- Right Form Section -->
