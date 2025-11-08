@@ -40,7 +40,6 @@
               format="webp"
               class="w-16 h-16 rounded-full object-cover"
               loading="lazy"
-              placeholder="blur"
             />
           </div>
 

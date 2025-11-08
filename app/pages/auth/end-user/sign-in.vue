@@ -41,7 +41,7 @@
               inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
             />
             <i
-              :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              :class="showPassword ? 'pi pi-eye' : ''"
               class="absolute right-3 top-4 cursor-pointer text-gray-500"
               @click="togglePassword"
             ></i>
@@ -109,6 +109,7 @@ const email = ref<string>("");
 const password = ref<string>("");
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
+
 
 function togglePassword() {
   showPassword.value = !showPassword.value;

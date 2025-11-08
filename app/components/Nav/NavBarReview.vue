@@ -16,7 +16,7 @@
        <!-- Right buttons -->
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+        <li><NuxtLink to="/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Categories</NuxtLink></li>

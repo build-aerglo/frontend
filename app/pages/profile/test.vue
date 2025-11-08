@@ -5,7 +5,7 @@
       class="fixed top-0 inset-x-0 z-50 bg-white mb-1 dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
     >
       <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex justify-between items-center"
       >
         <h1 class="text-xl font-bold text-gray-900 dark:text-white">Profile</h1>
 
@@ -37,7 +37,7 @@
       class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-2 pt-5 pb-4 space-y-4"
     >
       <!-- === Top Row: Profile Info + Badges === -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <!-- Profile Card -->
         <div
           class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 flex flex-col sm:flex-row sm:items-start items-center gap-6"
@@ -115,7 +115,7 @@
           class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 flex justify-between flex-wrap"
         >
           <div
-            class="text-center flex-1 min-w-[80px] mb-1 sm:mb-0"
+            class="text-center flex-1 min-w-[60px] mb-1 sm:mb-0"
             v-for="stat in stats"
             :key="stat.label"
           >
