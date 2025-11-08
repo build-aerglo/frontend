@@ -4,7 +4,7 @@
   >
     <div class="container mx-auto px-6 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/landing/end-user/home" class="flex items-center space-x-2">
+      <NuxtLink to="/" class="flex items-center space-x-2">
         <img
           src="/assets/images/e-user-logo.png"
           alt="Welcome"
@@ -16,15 +16,10 @@
        <!-- Right buttons -->
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-        <li>
-           <NuxtLink to="/auth/end-user/sign-in">
-          <button
-          class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition"
-          >
-          Write a review
-          </button>
-          </NuxtLink>
-        </li>
+        <li><NuxtLink to="/auth/end-user/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Write a Review</NuxtLink></li>
         <!-- For Business Dropdown -->
         <li class="relative">
           <button
@@ -77,7 +72,7 @@
       ]"
     >
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+        <NuxtLink to="/"><img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" /></NuxtLink>
         <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
           <i class="pi pi-times text-sm"></i>
         </button>
@@ -88,10 +83,6 @@
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Write a Review</NuxtLink></li>
-        <li><NuxtLink to="/landing/end-user/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
-             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
-             hover:after:w-full"
-            >Categories</NuxtLink></li>
 
         <!-- For Business Dropdown (Mobile) -->
         <li>
@@ -149,9 +140,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import ReviewDialog from '~/components/ReviewDialog.vue'
-
-
 
 const open = ref(false);
 const isOpen = ref(false)

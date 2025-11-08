@@ -3,7 +3,7 @@
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img
-        src="/assets/images/e-user-bg (3).png"
+        src="/assets/images/e-user-bg.png"
         alt="Join the community"
         class="object-cover w-full h-full"
       />
@@ -143,7 +143,7 @@
         </div>
 
           <div class="my-4">
-            <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
+            <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
           </div>
         </form>
         <p class="text-center text-sm text-gray-800 mb-0">
@@ -162,10 +162,10 @@
 
         <!-- Socials -->
         <div class="flex justify-center space-x-4 text-xl">
-          <NuxtLink to="/landing/end-user/home"><i class="pi pi-facebook text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/landing/end-user/home"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/landing/end-user/home"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/landing/end-user/home"><i class="pi pi-google text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-facebook text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-github text-gray-800 cursor-pointer"></i></NuxtLink>
+          <NuxtLink to="/"><i class="pi pi-google text-gray-800 cursor-pointer"></i></NuxtLink>
         </div>
       </div>
     </div>
