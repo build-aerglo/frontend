@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul>
-             <li>
+            <li>
                 <NuxtLink to="/" class="text-blue-500">End-User Landing Page</NuxtLink>
             </li>
             <li>
@@ -11,21 +11,21 @@
                 <NuxtLink to="/profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
         </ul>
-    </div> 
-    
-    
+    </div>
+
+
     <div class="flex gap-[10px] p-4">
-        <p>Home</p>
-        <NuxtLink to="./auth/business/register">Business Registration page</NuxtLink>
-        <NuxtLink to="./auth/business/login">Business Login page</NuxtLink>
-        <NuxtLink to="./auth/business/settings">Business Settings page</NuxtLink>
-        <NuxtLink to="./auth/business/profile">Business Profile page</NuxtLink>
+
+        <NuxtLink to="./business/auth/business/sign-in">Business Registration page</NuxtLink>
+        <NuxtLink to="./business/auth/business/sign-up">Business Login page</NuxtLink>
+        <NuxtLink to="./business/settings">Business Settings page</NuxtLink>
+        <NuxtLink to="./business/profile">Business Profile page</NuxtLink>
     </div>
 </template>
 
 <script setup>
 definePageMeta({
-  layout: false 
+    layout: false
 });
 
 

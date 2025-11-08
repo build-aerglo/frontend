@@ -34,7 +34,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+definePageMeta({
+  layout: 'business' 
+});
 import { useRoute } from 'vue-router'; 
 const prop = defineProps(['isMobile'])
 const isEditing = ref(false)
@@ -53,8 +56,15 @@ const tabItems = [
 ]
 
 const route = useRoute();
-const currentTabKey = computed(() => route.query.tab?.toLowerCase() || tabItems[0].key);
-const currentComponent = computed(() => componentMap[currentTabKey.value] || SettingSecurity);
+const currentTabKey = computed(() => {
+  const tab = route.query.tab;
+  const tabValue = Array.isArray(tab) ? tab[0] : tab;
+  return (tabValue?.toString().toLowerCase() || tabItems[0]!.key);
+});
+const currentComponent = computed(() => {
+  const key = currentTabKey.value as keyof typeof componentMap;
+  return componentMap[key] || SettingSecurity;
+});
 
 const isMobile = ref(false)
 const checkScreen = () => (isMobile.value = window.innerWidth < 1200)
@@ -66,7 +76,6 @@ onUnmounted(() => window.removeEventListener('resize', checkScreen))
 </script>
 
 <style scoped>
-
 .nav-link.active {
   background-color: var(--primary, #008253);
   color: white !important; 

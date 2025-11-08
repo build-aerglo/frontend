@@ -1,6 +1,5 @@
 <template>
-  <aside id="layout-menu" class="layout-menu menu-vertical menu"
-  >
+  <aside id="layout-menu" class="layout-menu menu-vertical menu">
     <div class="app-brand demo">
       <NuxtLink v-if="!isLayoutCollapsed" to="/" class="app-brand-link">
         <NavLogo height="h-[40px]" />
@@ -13,13 +12,11 @@
         <i 
           v-if="isLayoutCollapsed" 
           class="pi pi-chevron-right d-none d-xl-block"
-        ></i>
-        
+        ></i>      
         <i 
           v-else 
           class="pi pi-times d-none d-xl-block"
         ></i>
-
         <i class="pi pi-times d-block d-xl-none"></i>
       </a>
       
@@ -28,63 +25,21 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-3">
-
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-home"></i>
-          <div data-i18n="Settings">Dashboard</div>
-        </NuxtLink>
-      </li>
-
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-comments"></i>
-          <div data-i18n="Settings">Reviews management</div>
-        </NuxtLink>
-      </li>
-
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-chart-bar"></i>
-          <div data-i18n="Settings">Reports</div>
-        </NuxtLink>
-      </li>
-
-      <li class="menu-item ">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-envelope"></i>
-          <div data-i18n="Settings">Messages</div>
-        </NuxtLink>
-      </li>
-
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-lock"></i>
-          <div data-i18n="Settings">Access Mnagement</div>
-        </NuxtLink>
-      </li>
       
-      <li class="menu-item">
-        <NuxtLink to="/auth/business/profile" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-user"></i>
-          <div data-i18n="Settings">Profile</div>
-        </NuxtLink>
-      </li>
-      <li class="menu-item">
-        <NuxtLink to="/auth/business/settings" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-cog"></i>
-          <div data-i18n="Settings">Settings</div>
-        </NuxtLink>
-      </li>
-
-      <li class="menu-item">
-        <NuxtLink to="/" class="menu-link flex items-center">
-          <i class="menu-icon pi pi-question-circle"></i>
-          <div data-i18n="Settings"> Help and support</div>
+      <li 
+        v-for="item in menuItems" 
+        :key="item.name" 
+        class="menu-item"
+        :class="{ 'active': $route.path === item.to }"
+      >
+        <NuxtLink :to="item.to" class="menu-link flex items-center">
+          <i class="menu-icon" :class="item.icon"></i>
+          <div data-i18n="Menu Item">{{ item.name }}</div>
         </NuxtLink>
       </li>
       
     </ul>
+    
     <div class="p-4">
       <button
         @click="handleLogout"
@@ -103,14 +58,34 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  menuItems: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(['toggle']);
+
+const handleLogout = () => {
+    console.log("Logging out...");
+};
 </script>
+
 <style scoped>
  .menu-icon {
   @apply flex items-center justify-center text-[18px] leading-none;
 }
-
+.menu-item.active > .menu-link {
+  
+ background: linear-gradient(
+    90deg, 
+    rgba(0, 26, 214, 0.7) 20%, 
+    rgba(0, 130, 83, 0.7) 80%
+  );
+  
+  box-shadow: 0 0.125rem 0.375rem 0 rgba(0, 130, 83, 0.3);
+  
+  @apply text-white; 
+}
 
 </style>

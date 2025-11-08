@@ -5,28 +5,19 @@
     <div class="relative w-full max-w-md px-6 py-8">
       <div class="bg-white rounded-2xl shadow-lg p-8">
         <NuxtLink to="/" class="cursor-pointer">
-        <div class="flex justify-center mb-4">
-          <img
-            src="/assets/images/e-user-logo.png"
-            alt="Welcome"
-            class="h-12 w-auto object-contain"
-          />
-        </div>
+          <div class="flex justify-center mb-4">
+            <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
+          </div>
         </NuxtLink>
-         <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
-         <form @submit.prevent="onSubmit" class="space-y-6">
+        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
+        <form @submit.prevent="onSubmit" class="space-y-6">
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
-              <input
-                id="email"
-                v-model="email"
-                type="email"
-                required
-                class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition"
-              />
+            <input id="email" v-model="email" type="email" required
+              class="border border-light-300 hover:border-light-400 focus:border-primary focus:ring-2 focus:ring-primary outline-none rounded-md p-2 w-full transition" />
           </div>
 
           <!-- Password -->
@@ -47,12 +38,8 @@
           <!-- Remember & Forgot -->
           <div class="flex items-center justify-between text-sm">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                id="remember-me"
-                type="checkbox"
-                v-model="rememberMe"
-                class="w-4 h-4 text-gray-800 border-gray-300 rounded"
-              />
+              <input id="remember-me" type="checkbox" v-model="rememberMe"
+                class="w-4 h-4 text-gray-800 border-gray-300 rounded" />
               <span>Remember Me</span>
             </label>
             <NuxtLink to="/forgot-password" class="text-blue-500 hover:underline">
@@ -97,4 +84,3 @@ const onSubmit = async () => {
   }
 };
 </script>
-

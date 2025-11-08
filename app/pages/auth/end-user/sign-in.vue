@@ -2,36 +2,22 @@
   <div class="flex h-screen overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
-      <img
-        src="/assets/images/e-user-bg.png"
-        alt="Welcome background"
-        class="w-full h-full object-cover"
-      />
+      <img src="~/assets/images/e-user-bg.png" alt="Welcome background" class="w-full h-full object-cover" />
     </div>
 
     <!-- Right Form Section -->
     <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4 bg-gray-50">
       <div class="w-full max-w-sm space-y-5">
         <div class="flex justify-center mb-4">
-          <img
-            src="/assets/images/e-user-logo.png"
-            alt="Welcome"
-            class="h-12 w-auto object-contain"
-          />
+          <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">Clear reviews, Confident decisions.</div>
+        <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">Clear reviews, Confident decisions.
+        </div>
         <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
           <div>
-              <!-- Input -->
-              <input
-                id="email"
-                v-model="email"
-                name="email"
-                type="text"
-                placeholder="Email"
-                required
-                class="block w-full rounded-md border border-gray-300 p-2 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition"
-              />
+            <!-- Input -->
+            <input id="email" v-model="email" name="email" type="text" placeholder="Email" required
+              class="block w-full rounded-md border border-gray-300 p-2 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition" />
           </div>
           <div class="relative">
             <InputTextCustom
@@ -57,7 +43,8 @@
             </NuxtLink>
           </div>
           <div class="mb-6">
-              <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign In</button></NuxtLink>
+            <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign
+                In</button></NuxtLink>
           </div>
         </form>
 
