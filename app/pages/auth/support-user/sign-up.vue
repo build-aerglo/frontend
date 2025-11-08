@@ -70,8 +70,7 @@
           </label>
         </div>
         <div class="mb-6">
-          <NuxtLink to="/landing/end-user/home"><button class="btn btn-primary d-grid w-100" type="submit">Sign
-              Up</button></NuxtLink>
+          <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
         </div>
       </form>
 

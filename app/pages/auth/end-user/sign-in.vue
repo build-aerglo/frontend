@@ -55,21 +55,21 @@
         </div>
 
         <div class="flex justify-center space-x-4">
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Facebook">
+          <NuxtLink to="/" aria-label="Login with Facebook">
             <i class="pi pi-facebook text-black text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Twitter">
+          <NuxtLink to="/" aria-label="Login with Twitter">
             <i class="pi pi-twitter text-black text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with GitHub">
+          <NuxtLink to="/" aria-label="Login with GitHub">
             <i class="pi pi-github text-gray-800 text-xl"></i>
           </NuxtLink>
-          <NuxtLink to="/landing/end-user/home" aria-label="Login with Google">
+          <NuxtLink to="/" aria-label="Login with Google">
             <i class="pi pi-google text-black text-xl"></i>
           </NuxtLink>
         </div>
         <p class="text-center mt-4 text-sm text-gray-800">
-          <NuxtLink to="/review/not-signed-in" class="text-blue-500 font-medium">
+          <NuxtLink to="/review/write-review" class="text-blue-500 font-medium hover:underline">
             Review as a Guest
           </NuxtLink>
         </p>

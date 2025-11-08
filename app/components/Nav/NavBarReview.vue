@@ -4,7 +4,7 @@
   >
     <div class="container mx-auto px-6 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/landing/end-user/home" class="flex items-center space-x-2">
+      <NuxtLink to="/" class="flex items-center space-x-2">
         <img
           src="/assets/images/e-user-logo.png"
           alt="Welcome"
