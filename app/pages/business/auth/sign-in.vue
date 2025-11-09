@@ -1,5 +1,5 @@
 <template>
-    <div class="container-xxl relative bg-[url('/images/b-user-bg.png')] bg-cover bg-center">
+    <div class="container-xxl relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
       <div class="absolute inset-0 bg-black/50"></div>
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner py-6">
