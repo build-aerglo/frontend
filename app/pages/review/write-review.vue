@@ -6,46 +6,46 @@
     </div>
 
     <!-- Three Column Layout -->
-    <div class="container mx-auto px-4 py-8">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+    <div class="w-full h-full px-6 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
         
         <!-- LEFT SECTION - Featured Businesses (3 columns on md+) -->
-        <div class="md:col-span-3 bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-2xl font-bold text-[#008253] mb-6">Featured Businesses</h2>
+        <div class="md:col-span-3 bg-white rounded-lg shadow-md p-2">
+          <h2 class="text-xl font-bold text-center text-gray-400 mb-6">Featured Businesses</h2>
           
-          <div class="space-y-4">
+          <div class="space-y-3">
             <div
               v-for="(business, index) in featuredBusinesses"
               :key="index"
               class="border rounded-lg p-4 hover:shadow-lg transition-shadow"
             >
-              <div class="flex items-start justify-between mb-2">
+              <div class="flex items-start justify-between mb-1">
                 <div class="flex-1">
-                  <h3 class="font-semibold text-gray-800">{{ business.name }}</h3>
-                  <p class="text-xs text-gray-500">{{ business.location }}</p>
+                  <h4 class="font-semibold text-lg text-gray-400">{{ business.name }}</h4>
+                  <p class="text-xs text-gray-400">{{ business.location }}</p>
                 </div>
                 <button
                   @click="removeBusiness(index)"
-                  class="text-gray-400 hover:text-red-500 transition-colors"
+                  class="text-gray-400 hover:text-gray-800 transition-colors"
                 >
-                  <i class="pi pi-times text-sm"></i>
+                  <i class="pi pi-times text-xs"></i>
                 </button>
               </div>
               
               <!-- Star Rating -->
-              <div class="flex items-center space-x-1 mt-2">
+              <div class="items-center space-x-1 mt-2">
                 <template v-for="star in 5" :key="star">
                   <i
-                    class="pi text-lg cursor-pointer transition-colors"
+                    class="pi text-lg md:text-sm cursor-pointer transition-colors"
                     :class="star <= (business.hoverRating || business.rating) ? 'pi-star-fill' : 'pi-star'"
-                    :style="{ color: star <= (business.hoverRating || business.rating) ? '#deae29' : '#d1d5db' }"
+                    :style="{ color: star <= (business.hoverRating || business.rating) ? '#deae29' : '#6b7280' }"
                     @click="rateBusiness(index, star)"
                     @mouseenter="business.hoverRating = star"
                     @mouseleave="business.hoverRating = 0"
                   ></i>
                 </template>
               </div>
-              <p v-if="business.rating > 0" class="text-xs text-gray-600 mt-1">
+              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
                 {{ ratingLabels[business.rating] }}
               </p>
             </div>
@@ -53,13 +53,13 @@
         </div>
 
         <!-- MIDDLE SECTION - Review Form (6 columns on md+) -->
-        <div class="md:col-span-6 bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-2xl font-bold text-[#008253] mb-6">Share Your Experience</h2>
+        <div class="md:col-span-6 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+          <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
           
           <div class="space-y-4">
             <!-- Business Name -->
             <div ref="businessDropdownRef">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+              <label class="block text-sm font-medium text-gray-900 mb-1">Business Name</label>
               <div class="relative">
                 <input
                   type="text"
@@ -69,10 +69,12 @@
                   placeholder="e.g, KFC"
                   class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
                 />
-                <i
-                  v-if="businessName && isBusinessInList"
-                  class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"
-                ></i>
+                <img
+                  v-if="selectedBusinessLogo"
+                  :src="selectedBusinessLogo"
+                  alt="Business Logo"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 object-contain"
+                /> 
               </div>
               <ul v-if="showBusinessDropdown && filteredBusinesses.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full md:w-auto">
                 <li
@@ -94,7 +96,7 @@
 
             <!-- Business Location -->
             <div ref="locationDropdownRef">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Business Location</label>
+              <label class="block text-sm font-medium text-gray-900 mb-1">Business Location</label>
               <div class="relative">
                 <input
                   type="text"
@@ -123,36 +125,36 @@
 
             <!-- Star Rating -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-              <div class="flex items-center space-x-1">
+              <label class="block text-xs text-gray-900 mb-1">Rating</label>
+              <div class="flex items-center space-x-2">
                 <template v-for="star in 5" :key="star">
                   <i
-                    class="pi text-2xl cursor-pointer transition-colors"
+                    class="pi text-3xl cursor-pointer transition-colors"
                     :class="star <= (hoverRating || rating) ? 'pi-star-fill' : 'pi-star'"
                     @click="rating = star"
                     @mouseenter="hoverRating = star"
                     @mouseleave="hoverRating = 0"
-                    :style="{ color: star <= (hoverRating || rating) ? '#deae29' : '#d1d5db' }"
+                    :style="{ color: star <= (hoverRating || rating) ? '#deae29' : '#6b7280' }"
                   ></i>
                 </template>
-                <span class="ml-2 text-sm text-gray-600">
-                  {{ rating > 0 ? ratingLabels[rating] : '' }}
+                <span class="ml-2 text-sm text-gray-800">
+                  {{ rating > 0 ? ratingLabels[rating] : ' ' }}
                 </span>
               </div>
             </div>
 
             <!-- Review Body -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Review Body</label>
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-900 mb-1">Your Review</label>
               <textarea
                 v-model="reviewBody"
                 maxlength="500"
                 minlength="20"
                 rows="4"
-                placeholder="Share your experience. Tell us what you loved (or didn't)."
+                placeholder="Tell us what you loved (or didn't)."
                 class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
               ></textarea>
-              <p class="text-xs text-gray-500 text-right">
+              <p class="text-xs text-gray-400 text-right">
                 {{ reviewBody.length }}/500
               </p>
             </div>
@@ -189,9 +191,14 @@
               </label>
             </div>
 
-            <!-- Date -->
-            <div class="text-xs text-gray-500 text-right">
-              {{ formattedDate }}
+            <!-- Email Field -->
+            <div  v-if="anonymous">
+              <input
+                type="email"
+                v-model="email"
+                placeholder="Email"
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none"
+              />
             </div>
 
             <!-- Submit Button -->
@@ -206,33 +213,55 @@
 
         <!-- RIGHT SECTION - Ads Placeholder (3 columns on md+) -->
         <div class="md:col-span-3 space-y-4">
-          <div class="bg-white rounded-lg shadow-md p-6 h-64 flex items-center justify-center border-2 border-dashed border-gray-300">
+          <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
             <div class="text-center text-gray-400">
-              <i class="pi pi-image text-4xl mb-2"></i>
+              <i class="pi pi-image text-3xl mb-2"></i>
               <p class="text-sm">Ad Space</p>
-              <p class="text-xs">300x250</p>
+              
             </div>
           </div>
           
-          <div class="bg-white rounded-lg shadow-md p-6 h-64 flex items-center justify-center border-2 border-dashed border-gray-300">
+          <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
             <div class="text-center text-gray-400">
-              <i class="pi pi-image text-4xl mb-2"></i>
+              <i class="pi pi-image text-3xl mb-2"></i>
               <p class="text-sm">Ad Space</p>
-              <p class="text-xs">300x250</p>
+              
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400">
+              <i class="pi pi-image text-3xl mb-2"></i>
+              <p class="text-sm">Ad Space</p>
+              
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400">
+              <i class="pi pi-image text-3xl mb-2"></i>
+              <p class="text-sm">Ad Space</p>
+              
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
+            <div class="text-center text-gray-400">
+              <i class="pi pi-image text-3xl mb-2"></i>
+              <p class="text-sm">Ad Space</p>
+              
             </div>
           </div>
         </div>
 
       </div>
     </div>
-
-    <!-- Footer -->
-    <FooterSection />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { watch } from "vue";
 
 // Form state
 const businessName = ref("");
@@ -240,7 +269,8 @@ const businessLocation = ref("");
 const reviewBody = ref("");
 const rating = ref(0);
 const hoverRating = ref(0);
-const anonymous = ref(true);
+const anonymous = ref(false);
+const email = ref("");
 const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
@@ -252,22 +282,22 @@ const locationDropdownRef = ref<HTMLElement | null>(null);
 
 // Featured businesses
 const featuredBusinesses = ref([
-  { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0 },
-  { name: "McDonald's", location: "Ikeja", rating: 0, hoverRating: 0 },
-  { name: "Domino's Pizza", location: "Victoria Island", rating: 0, hoverRating: 0 },
-  { name: "Chicken Republic", location: "Anthony", rating: 0, hoverRating: 0 },
+  { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/logos/kfc.png" },
+  { name: "Domino's Pizza", location: "Ikeja", rating: 0, hoverRating: 0, logo: "/images/logos/pizza.png" },
+  { name: "Chicken Republic", location: "Victoria Island", rating: 0, hoverRating: 0, logo: "/images/logos/republic.png" },
+  { name: "T-Pizza", location: "Anthony", rating: 0, hoverRating: 0, logo: "/images/logos/res1.jpg" },
 ]);
+
 
 // Business and location lists
 const businessList = [
-  "KFC",
-  "McDonald's",
+  "KFC", 
   "Domino's Pizza",
   "Chicken Republic",
-  "Blue Cafe",
+  "Oceanview",
   "Tech Hub",
   "Green Bakery",
-  "City Lounge"
+  "City Lounge",
 ];
 
 const locationList = [
@@ -280,11 +310,11 @@ const locationList = [
 ];
 
 const ratingLabels: Record<number, string> = {
-  1: "Not Great",
-  2: "Needs Improvement",
-  3: "Just Okay",
-  4: "Really Good",
-  5: "Fantastic"
+  1: "Not Great.",
+  2: "Needs Improvement.",
+  3: "Just Okay.",
+  4: "Really Good!",
+  5: "Fantastic!"
 };
 
 const filteredBusinesses = ref<string[]>([]);
@@ -338,11 +368,22 @@ const handleLocationInput = () => {
   );
 };
 
+const selectedBusinessLogo = ref<string>("");
+
 const selectBusiness = (b: string) => {
   businessName.value = b;
   showBusinessDropdown.value = false;
   filteredBusinesses.value = [];
+
+  // Find logo for the selected business (falls back to empty string)
+  const found = featuredBusinesses.value.find(biz => biz.name === b);
+  selectedBusinessLogo.value = found ? found.logo ?? "" : "";
 };
+
+watch(businessName, (val) => {
+  if (!val) selectedBusinessLogo.value = "";
+});
+
 
 const selectLocation = (l: string) => {
   businessLocation.value = l;
@@ -369,7 +410,7 @@ const removeImage = (index: number) => {
 };
 
 const rateBusiness = (index: number, stars: number) => {
-  featuredBusinesses.value[index].rating = stars;
+  featuredBusinesses.value[index]!.rating = stars;
 };
 
 const removeBusiness = (index: number) => {

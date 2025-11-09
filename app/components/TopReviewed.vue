@@ -40,7 +40,7 @@
               format="webp"
               class="w-16 h-16 rounded-full object-cover"
               loading="lazy"
-              placeholder="blur"
+              :placeholder="false"
             />
           </div>
 
@@ -93,15 +93,15 @@
 import { NuxtImg } from '#components'
 
 import { Dumbbell, Utensils, Hotel, School, ShoppingCart } from 'lucide-vue-next'
-import img1 from '/images/gym1.jpg'
-import img2 from '/images/gym2.jpg'
-import img3 from '/images/shop1.jpg'
-import img4 from '/images/shop2.jpg'
-import img5 from '/images/hot1.jpg'
-import img6 from '/images/hot2.jpg'
-import img7 from '/images/sch1.jpg'
-import img8 from '/images/sch2.jpg'
-import img9 from '/images/res1.jpg'
+import img1 from '/images/logos/gym1.jpg'
+import img2 from '/images/logos/gym2.jpg'
+import img3 from '/images/logos/shop1.jpg'
+import img4 from '/images/logos/shop2.jpg'
+import img5 from '/images/logos/hot1.jpg'
+import img6 from '/images/logos/hot2.jpg'
+import img7 from '/images/logos/sch1.jpg'
+import img8 from '/images/logos/sch2.jpg'
+import img9 from '/images/logos/res1.jpg'
 
 const cards = [
   { icon: ShoppingCart, logo: img3, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },

@@ -1,203 +1,657 @@
 <template>
-    
-     <!--Header-->
-    <NavBarProfile/>
-    <!--Header-->
-
-  <main class="bg-white dark:bg-gray-800 shadow rounded-2xl p-6 flex flex-col items-center text-center">
-    <!-- Header Section -->
-    <header class="bg-white w-[90%]  dark:bg-gray-800 shadow-md py-10 px-6 sm:px-12 flex flex-col sm:flex-row items-center sm:items-end justify-between gap-6">
-      <!-- Profile Info -->
-      <div class="flex flex-col items-start gap-4 w-full sm:w-auto text-left">
-  <!-- Profile Image -->
-  <div class="relative group self-start">
-    <img
-      :src="user.avatar"
-      alt="Avatar"
-      class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-green-600 shadow-md"
-    />
-    <label
-      for="avatarUpload"
-      class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer"
-    >
-      <i class="pi pi-camera text-white text-xl"></i>
-    </label>
-    <input
-      id="avatarUpload"
-      type="file"
-      class="hidden"
-      accept="image/*"
-      @change="handleAvatarUpload"
-    />
-  </div>
-
-  <!-- Profile Info -->
-  <div class="space-y-1">
-    <h1 class="text-xl font-semibold">{{ user.username }}</h1>
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.phone }}</p>
-    <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.address }}</p>
-  </div>
-</div>
-
-
-      <!-- Stats Summary -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center w-full sm:w-auto">
-        <div>
-          <p class="text-2xl font-bold text-green-600">{{ user.stats.reviews }}</p>
-          <span class="text-gray-500 text-sm">Reviews</span>
-        </div>
-        <div>
-          <p class="text-2xl font-bold text-green-600">{{ user.stats.helpfulVotes }}</p>
-          <span class="text-gray-500 text-sm">Helpful Votes</span>
-        </div>
-        <div>
-          <p class="text-2xl font-bold text-green-600">{{ user.stats.points }}</p>
-          <span class="text-gray-500 text-sm">Points</span>
-        </div>
-        <div>
-          <p class="text-2xl font-bold text-green-600">{{ user.stats.badges.length }}</p>
-          <span class="text-gray-500 text-sm">Badges</span>
+  <div class="min-h-screen bg-green-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <span class="text-[#008253] text-xl font-large">Profile</span>
+          <!-- Logo -->
+          <NuxtLink to="/" class="flex items-center space-x-2">
+            <img
+              src="/assets/images/e-user-logo.png"
+              alt="Welcome"
+              class="h-10 w-auto object-contain"
+            />
+          </NuxtLink>
+          <button 
+            @click="handleSignOut"
+            class="px-4 py-2 text-[#008253] hover:bg-green-50 rounded-lg transition font-medium flex items-center gap-1"
+          >
+            <i class="pi pi-sign-out"></i>
+            <span class="hidden sm:inline">Sign Out</span>
+          </button>
         </div>
       </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <section class="px-6 sm:px-12 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <!-- Left Column -->
-      <div class="space-y-8">
-        <!-- Top Reviewed Sectors -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-            <i class="pi pi-briefcase text-green-600"></i> Top 3 Reviewed Sectors
-          </h2>
-          <ul class="space-y-3">
-            <li v-for="sector in user.topSectors" :key="sector" class="flex justify-between">
-              <span>{{ sector }}</span>
-              <i class="pi pi-star text-yellow-400"></i>
-            </li>
-          </ul>
+    <!-- Edit Profile View -->
+    <div v-if="isEditingProfile" class="max-w-2xl mx-auto px-4 py-8">
+      <div class="mb-6">
+        <button 
+          @click="isEditingProfile = false"
+          class="text-gray-700 font-medium flex items-center gap-2 hover:text-gray-900"
+        >
+          <i class="pi pi-arrow-left"></i>
+          <span>Back to Profile</span>
+        </button>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-sm p-8 space-y-3">
+        <div>
+          <input 
+            type="file" 
+            ref="fileInput" 
+            accept="image/*" 
+            class="hidden" 
+            @change="handleFileUpload"
+          />
+          <div class="mt-2 flex flex-col items-center">
+            <img
+              :src="editForm.image"
+              alt="Profile Preview"
+              class="w-24 h-24 rounded-full object-cover cursor-pointer border-2 border-gray-200 hover:opacity-80"
+              @click="selectImage"
+              @error="handleImageError"
+            />
+            <p class="text-xs text-gray-500 mt-1">Click image to change</p>
+          </div>
         </div>
 
-        <!-- Top Reviewed Locations -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-            <i class="pi pi-map-marker text-green-600"></i> Top 5 Reviewed Locations
-          </h2>
-          <ul class="space-y-3">
-            <li v-for="loc in user.topLocations" :key="loc" class="flex justify-between">
-              <span>{{ loc }}</span>
-              <i class="pi pi-star text-yellow-400"></i>
-            </li>
-          </ul>
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-user mr-2"></i>
+            Username
+          </label>
+          <input
+            v-model="editForm.username"
+            type="text"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
+          />
         </div>
 
-        <!-- Badges -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-          <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-            <i class="pi pi-trophy text-green-600"></i> Badges Earned
-          </h2>
-          <div class="flex flex-wrap gap-3">
-            <span
-              v-for="badge in user.stats.badges"
-              :key="badge"
-              class="bg-green-100 dark:bg-green-700 text-green-700 dark:text-green-100 px-3 py-1 rounded-full text-sm font-medium"
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-phone mr-2"></i>
+            Phone Number
+          </label>
+          <input
+            v-model="editForm.phone"
+            type="tel"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
+          />
+        </div>
+
+        <div class="pt-2 justify-center text-center items-center">
+          <button
+            @click="handleSaveProfile"
+            class="flex-1 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#008253] transition font-medium"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Profile View -->
+    <div v-else>
+      <!-- User Profile Section -->
+      <div class="bg-gradient-to-b from-blue-50 to-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col items-center">
+            <img 
+              :src="profileData.image"
+              alt="Profile"
+              class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white"
+              @error="handleImageError"
+            />
+            <div class="mt-4 text-center space-y-2">
+              <div class="items-center justify-center">
+                <h2 class="text-2xl font-bold text-gray-800">{{ profileData.username }}</h2>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-phone text-gray-400"></i>
+                <span>{{ profileData.phone }}</span>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-envelope text-gray-400"></i>
+                <span class="text-sm sm:text-base">{{ profileData.email }}</span>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-home text-gray-400"></i>
+                <span class="text-sm">{{ profileData.address }}</span>
+              </div>
+            </div>
+            <button
+              @click="isEditingProfile = true"
+              class="mt-4 text-blue-500 hover:text-[#008253] text-sm font-medium flex items-center gap-2"
             >
-              {{ badge }}
-            </span>
+              <i class="pi pi-pencil text-xs"></i>
+              Edit Profile
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: All Reviews -->
-      <div class="lg:col-span-2 text-left">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-          <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
-            <i class="pi pi-comments text-green-600"></i> All Reviews Posted
-          </h2>
-          <div class="space-y-4 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
-            <div
-              v-for="review in user.reviews"
-              :key="review.id"
-              class="border-b border-gray-200 dark:border-gray-700 pb-4"
-            >
-              <h3 class="font-semibold text-gray-800 dark:text-white">{{ review.title }}</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ review.location }} • {{ review.date }}</p>
-              <p class="mt-2 text-gray-700 dark:text-gray-300">{{ review.content }}</p>
-              <div class="flex items-center gap-2 mt-2">
-                <i v-for="n in review.rating" :key="n" class="pi pi-star-fill text-yellow-400 text-sm"></i>
+      <!-- Menu Bar (Desktop/Tablet) -->
+      <div class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-wrap items-center justify-between py-4 gap-4">
+            <div class="flex flex-wrap gap-2 sm:gap-4">
+              <button
+                @click="activeTab = 'your-reviews'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'your-reviews'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-star mr-2"></i>
+                Your Reviews
+              </button>
+              <button
+                @click="activeTab = 'recent-reviews'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'recent-reviews'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-clock mr-2"></i>
+                Recent Reviews
+              </button>
+              <button
+                @click="activeTab = 'rewards'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'rewards'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-star mr-2"></i>
+                Rewards
+              </button>
+              <button
+                @click="activeTab = 'notifications'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'notifications'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-bell mr-2"></i>
+                Notifications
+              </button>
+            </div>
+            <NuxtLink to="/review/write-review">
+              <button 
+                @click="handleReviewBusiness"
+                class="px-6 py-2 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium whitespace-nowrap"
+              >
+                Review a Business
+              </button>
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Business Button (Mobile) -->
+      <div class="md:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <NuxtLink to="/review/write-review">
+          <button 
+            @click="handleReviewBusiness"
+            class="w-full px-6 py-3 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium"
+          >
+            Review a Business
+          </button>
+        </NuxtLink>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <!-- Left Column -->
+          <div class="md:col-span-3 space-y-6">
+            <!-- Badges -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="pi pi-trophy text-gold"></i>
+                Your Badges
+              </h5>
+              <div class="space-y-3">
+                <div 
+                  v-for="(badge, idx) in badges" 
+                  :key="idx" 
+                  :class="[badge.color, 'rounded-lg p-3 flex items-center gap-3']"
+                >
+                  <i :class="[badge.icon, 'text-2xl']"></i>
+                  <span class="font-medium text-gray-700 text-sm">{{ badge.name }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Categories -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="pi pi-star-fill text-gold"></i>
+                Top Reviewed Categories
+              </h5>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(cat, idx) in topCategories" 
+                  :key="idx" 
+                  class="flex items-start gap-2 text-sm text-gray-600"
+                >
+                  <span class="text-gold">●</span>
+                  <span>{{ cat }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Top Locations -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="pi pi-map-marker text-gold"></i>
+                Top Reviewed Locations
+              </h5>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(loc, idx) in topLocations" 
+                  :key="idx" 
+                  class="flex items-start gap-2 text-sm text-gray-600"
+                >
+                  <span class="text-gold">●</span>
+                  <span>{{ loc }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Middle Column -->
+          <div class="md:col-span-6">
+            <!-- Menu Bar (Mobile) -->
+            <div class="md:hidden bg-white border-b border-gray-200 mb-6 -mx-4 px-4">
+              <div class="flex flex-wrap gap-2 py-4">
+                <button
+                  @click="activeTab = 'your-reviews'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'your-reviews'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-star mr-2"></i>
+                  Your Reviews
+                </button>
+                <button
+                  @click="activeTab = 'recent-reviews'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'recent-reviews'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-clock mr-2"></i>
+                  Recent Reviews
+                </button>
+                <button
+                  @click="activeTab = 'rewards'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'rewards'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-star mr-2"></i>
+                  Rewards
+                </button>
+                <button
+                  @click="activeTab = 'notifications'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'notifications'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-bell mr-2"></i>
+                  Notifications
+                </button>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <!-- Your Reviews Tab -->
+              <div v-if="activeTab === 'your-reviews'" class="space-y-6">
+                <h2 class="text-2xl font-bold text-[#008253]">Your Reviews</h2>
+                <div 
+                  v-for="review in userReviews" 
+                  :key="review.id" 
+                  class="border-b border-gray-200 pb-6 last:border-0"
+                >
+                  <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ review.businessName }}</h3>
+                    <span 
+                      :class="[
+                        'px-3 py-1 rounded-full text-xs font-medium',
+                        review.status === 'Posted' 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-yellow-100 text-yellow-700'
+                      ]"
+                    >
+                      {{ review.status }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                    <span class="flex items-center gap-1">
+                      <i class="pi pi-map-marker"></i>
+                      {{ review.location }}
+                    </span>
+                    <span class="flex items-center gap-2">
+                      {{ review.date }}
+                    </span>
+                  </div>
+                  <div class="mb-2">
+                    <i 
+                      v-for="n in review.rating" 
+                      :key="n" 
+                      class="pi pi-star-fill text-gold"
+                    ></i>
+                  </div>
+                  <p class="text-gray-700">{{ review.body }}</p>
+                </div>
+              </div>
+
+              <!-- Recent Reviews Tab -->
+              <div v-if="activeTab === 'recent-reviews'" class="space-y-6">
+                <h2 class="text-2xl font-bold text-[#008253]">Recent Reviews</h2>
+                <div 
+                  v-for="review in recentReviews" 
+                  :key="review.id" 
+                  class="border-b border-gray-200 pb-6 last:border-0"
+                >
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                      {{ review.author?.charAt(0) || 'U' }}
+                    </div>
+                    <div>
+                      <p class="font-semibold text-gray-800 mb-1">{{ review.author }}</p>
+                      <p class="text-sm text-gray-600">{{ review.date }}</p>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ review.businessName }}</h3>
+                  <div class="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <i class="pi pi-map-marker"></i>
+                    {{ review.location }}
+                  </div>
+                  <div class="mb-2">
+                    <i 
+                      v-for="n in review.rating" 
+                      :key="n" 
+                      class="pi pi-star-fill text-gold"
+                    ></i>
+                  </div>
+                  <p class="text-gray-700">{{ review.body }}</p>
+                </div>
+              </div>
+
+              <!-- Rewards Tab -->
+              <div v-if="activeTab === 'rewards'" class="bg-white rounded-xl p-3 max-w-md mx-auto space-y-5">
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-trophy text-gold text-xl"></i>
+                  <span class="font-medium">Badges Earned: <strong>3</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-star-fill text-gold text-xl"></i>
+                  <span class="font-medium">Points Earned: <strong>149</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-thumbs-up text-gold text-xl"></i>
+                  <span class="font-medium">Helpful Votes: <strong>67</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-comment text-gold text-xl"></i>
+                  <span class="font-medium">Number of Reviews: <strong>3</strong></span>
+                </div>
+              </div>
+
+              <!-- Notifications Tab -->
+              <div v-if="activeTab === 'notifications'" class="text-center py-12">
+                <i class="pi pi-bell text-6xl text-gray-300 mb-4"></i>
+                <h2 class="text-2xl font-bold text-[#008253] mb-2">Notifications</h2>
+                <p class="text-gray-500">Nothing new yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Ads -->
+          <div class="md:col-span-3 space-y-6">
+            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-sm p-4 border border-yellow-200">
+              <p class="text-xs font-semibold text-gray-600 mb-3 uppercase tracking-wide flex items-center gap-2">
+                <i class="pi pi-star"></i>
+                Featured
+              </p>
+              <div 
+                v-for="ad in ads" 
+                :key="ad.id" 
+                class="mb-4 last:mb-0"
+              >
+                <img 
+                  :src="ad.image"
+                  :alt="ad.business"
+                  class="w-full h-32 object-cover rounded-lg mb-2"
+                  @error="handleImageError"
+                />
+                <h4 class="font-semibold text-gray-800">{{ ad.business }}</h4>
+                <p class="text-sm text-gray-600">{{ ad.tagline }}</p>
+                <button class="mt-2 text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center gap-1">
+                  Learn More
+                  <i class="pi pi-arrow-right text-xs"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const user = ref({
-  avatar: 'app/assets/images/1.png',
-  username: 'Jane Doe',
-  phone: '+234 234-9876-888',
-  email: 'janedoe@mail.com',
-  address: '13 Maple Street, Ikeja, Lagos',
-  stats: {
-    reviews: 3,
-    helpfulVotes: 128,
-    points: 720,
-    badges: ['Top Reviewer', 'Helpful Member', 'Community Star']
-  },
-  topSectors: ['Restaurants', 'Hotels', 'Electronics'],
-  topLocations: ['Abulegba', 'Ikorodu', 'Oju elegba', 'Ikeja', 'Abeokuta'],
-  reviews: [
-    {
-      id: 1,
-      title: 'Amazing Stay at Oceanview Hotel',
-      location: 'Ikeja',
-      date: 'Oct 20, 2025',
-      rating: 5,
-      content:
-        'Had a wonderful stay with excellent service and beautiful ocean views. Highly recommend!'
-    },
-    {
-      id: 2,
-      title: 'Good but pricey headphones',
-      location: 'BestBuy - Abeokuta',
-      date: 'Sep 18, 2025',
-      rating: 4,
-      content: 'Sound quality is excellent, but the price feels a bit high for what it offers.'
-    },
-    {
-      id: 3,
-      title: 'Delicious food, slow service',
-      location: 'Sunset Diner',
-      date: 'Aug 30, 2025',
-      rating: 3,
-      content: 'Loved the food! But the waiting time was longer than expected.'
-    }
-  ]
-})
+interface ProfileData {
+  username: string
+  phone: string
+  email: string
+  address: string
+  image: string
+}
 
-// Avatar upload
-const handleAvatarUpload = (e: Event) => {
-  const file = (e.target as HTMLInputElement).files?.[0]
+interface EditForm {
+  username: string
+  phone: string
+  image: string
+}
+
+interface Badge {
+  name: string
+  icon: string
+  color: string
+}
+
+interface Review {
+  id: number
+  businessName: string
+  location: string
+  date: string
+  status?: string
+  body: string
+  rating: number
+  author?: string
+}
+
+interface Ad {
+  id: number
+  business: string
+  image: string
+  tagline: string
+}
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const selectImage = () => {
+  fileInput.value?.click()
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
   if (file) {
     const reader = new FileReader()
-    reader.onload = () => (user.value.avatar = reader.result as string)
+    reader.onload = (e) => {
+      editForm.value.image = e.target?.result as string
+    }
     reader.readAsDataURL(file)
   }
+}
+
+
+const activeTab = ref<string>('your-reviews')
+const isEditingProfile = ref<boolean>(false)
+
+const profileData = ref<ProfileData>({
+  username: 'Sarah Betsy',
+  phone: '+234 810-1230-567',
+  email: 'sarahbetsy111@gmail.com',
+  address: '160 Main Street, Yaba, Lagos State.',
+  image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop'
+})
+
+const editForm = ref<EditForm>({
+  username: profileData.value.username,
+  phone: profileData.value.phone,
+  image: profileData.value.image
+})
+
+const badges = ref<Badge[]>([
+  { name: 'Top Reviewer', icon: 'pi pi-trophy', color: 'bg-yellow-100' },
+  { name: 'Helpful Member', icon: 'pi pi-star-fill', color: 'bg-blue-100' },
+  { name: '100 Reviews', icon: 'pi pi-check-circle', color: 'bg-purple-100' }
+])
+
+const topCategories = ref<string[]>([
+  'Restaurants',
+  'Coffee & Cafes',
+  'Shopping',
+  'Hotels & Travel',
+  'Beauty & Spas'
+])
+
+const topLocations = ref<string[]>([
+  'Ewekoro',
+  'Oju-ore',
+  'Ikeja',
+  'Yaba',
+  'Abeokuta'
+])
+
+const userReviews = ref<Review[]>([
+  {
+    id: 1,
+    businessName: 'The Cozy Cafe',
+    location: 'Victoria Island',
+    date: '2025-09-05',
+    status: 'Posted',
+    body: 'Amazing coffee and pastries! Staff is always friendly and attentive.',
+    rating: 5
+  },
+  {
+    id: 2,
+    businessName: 'Sunset Grill',
+    location: 'Abeokuta',
+    date: '2025-11-01',
+    status: 'Posted',
+    body: 'Great food and wonderful outdoor seating. Highly recommend the grilled salmon.',
+    rating: 4
+  },
+  {
+    id: 3,
+    businessName: 'Tech Hub Store',
+    location: 'Ikeja',
+    date: '2025-11-08',
+    status: 'Pending',
+    body: 'Good selection of electronics. Staff could be more knowledgeable about products, but prices are competitive.',
+    rating: 3
+  }
+])
+
+const recentReviews = ref<Review[]>([
+  {
+    id: 4,
+    author: 'Ade Temi',
+    businessName: 'Ilupeju Spa',
+    location: 'Ogun State',
+    date: '2025-11-07',
+    body: 'Incredible massage therapy and relaxing atmosphere. Will definitely return!',
+    rating: 5
+  },
+  {
+    id: 5,
+    author: 'Igwe Donald',
+    businessName: 'Book Haven',
+    location: 'Yaba',
+    date: '2025-11-06',
+    body: 'Cozy bookstore with a great selection. The staff recommendations are always spot-on.',
+    rating: 5
+  }
+])
+
+const ads = ref<Ad[]>([
+  {
+    id: 1,
+    business: 'Prime Steakhouse',
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=200&fit=crop',
+    tagline: 'Enjoy a fine dining experience'
+  },
+  {
+    id: 2,
+    business: 'Yoga Sanctuary',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop',
+    tagline: 'Let us help you Relax and Unwind.'
+  }
+])
+
+const handleSaveProfile = () => {
+  profileData.value.username = editForm.value.username
+  profileData.value.phone = editForm.value.phone
+  profileData.value.image = editForm.value.image
+  isEditingProfile.value = false
+}
+
+const handleSignOut = () => {
+  console.log('Sign out clicked')
+}
+
+const handleReviewBusiness = () => {
+  console.log('Review business clicked')
+}
+
+const handleImageError = (e: Event) => {
+  const target = e.target as HTMLImageElement
+  target.src = 'https://via.placeholder.com/200'
 }
 </script>
 
 <style scoped>
-/* Custom scrollbar styling */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-}
+
 </style>

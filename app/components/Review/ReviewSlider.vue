@@ -58,7 +58,7 @@
                   format="webp"
                   class="w-12 h-12 rounded-full object-cover mr-2"
                   loading="lazy"
-                  placeholder="blur"
+                  :placeholder="false"
                     />
                 <div class="mt-4">
                   <h6 class="font-semibold mb-0 text-gray-900 dark:text-white">
@@ -79,10 +79,10 @@
 import { NuxtImg } from '#components'
 
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import img1 from '/images/1.png'
-import img2 from '/images/2.png'
-import img3 from '/images/3.png'
-import img4 from '/images/4.jpg'
+import img1 from '/images/profile-images/1.png'
+import img2 from '/images/profile-images/2.png'
+import img3 from '/images/profile-images/3.png'
+import img4 from '/images/profile-images/4.jpg'
 
 interface Review {
   business: string
