@@ -6,7 +6,7 @@
         <div class="flex justify-between items-center h-16">
           <span class="text-[#008253] text-xl font-large">Profile</span>
           <!-- Logo -->
-          <NuxtLink to="/" class="flex items-center space-x-2">
+          <NuxtLink to="/">
             <img
               src="/assets/images/e-user-logo.png"
               alt="Welcome"

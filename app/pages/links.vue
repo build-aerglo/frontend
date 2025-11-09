@@ -10,6 +10,9 @@
             <li>
                 <NuxtLink to="/profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
+            <li>
+                <NuxtLink to="/profile/business-profile-user-pov" class="text-blue-500">Business Profile</NuxtLink>
+            </li>
         </ul>
     </div>
 
