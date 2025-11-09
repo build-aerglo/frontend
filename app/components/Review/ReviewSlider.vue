@@ -79,10 +79,10 @@
 import { NuxtImg } from '#components'
 
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import img1 from '/images/1.png'
-import img2 from '/images/2.png'
-import img3 from '/images/3.png'
-import img4 from '/images/4.jpg'
+import img1 from '/images/profile-images/1.png'
+import img2 from '/images/profile-images/2.png'
+import img3 from '/images/profile-images/3.png'
+import img4 from '/images/profile-images/4.jpg'
 
 interface Review {
   business: string

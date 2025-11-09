@@ -17,9 +17,9 @@
         <div>
           <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
           <ul class="space-y-2">
-            <li><a href="#home" class="hover:text-[#008253] transition">Home</a></li>
+            <li><a href="#" class="hover:text-[#008253] transition">Home</a></li>
             <li><a href="#add-voice" class="hover:text-[#008253] transition">About Us</a></li>
-            <li><a href="#home" class="hover:text-[#008253] transition">Browse Reviews</a></li>
+            <li><a href="#" class="hover:text-[#008253] transition">Browse Reviews</a></li>
             <li><a href="#footer" class="hover:text-[#008253] transition">Contact</a></li>
           </ul>
         </div>
