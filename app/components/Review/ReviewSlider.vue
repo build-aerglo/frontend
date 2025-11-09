@@ -58,7 +58,7 @@
                   format="webp"
                   class="w-12 h-12 rounded-full object-cover mr-2"
                   loading="lazy"
-                  placeholder="blur"
+                  :placeholder="false"
                     />
                 <div class="mt-4">
                   <h6 class="font-semibold mb-0 text-gray-900 dark:text-white">

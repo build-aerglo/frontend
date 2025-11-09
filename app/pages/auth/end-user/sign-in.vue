@@ -20,10 +20,17 @@
               class="block w-full rounded-md border border-gray-300 p-2 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition" />
           </div>
           <div class="relative">
-            <InputTextCustom v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password"
-              inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition" />
-            <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-500" @click="togglePassword"></i>
+            <InputTextCustom
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
+            />
+            <i
+              :class="showPassword ? 'pi pi-eye' : ''"
+              class="absolute right-3 top-4 cursor-pointer text-gray-500"
+              @click="togglePassword"
+            ></i>
           </div>
 
           <div class="flex justify-between items-center text-xs text-gray-600">
@@ -89,6 +96,7 @@ const email = ref<string>("");
 const password = ref<string>("");
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
+
 
 function togglePassword() {
   showPassword.value = !showPassword.value;

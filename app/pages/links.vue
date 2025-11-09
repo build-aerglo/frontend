@@ -8,7 +8,7 @@
                 <NuxtLink to="/auth/support-user/sign-up" class="text-blue-500">Register as Support User</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/profile/test" class="text-blue-500">End-User Profile</NuxtLink>
+                <NuxtLink to="/profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
         </ul>
     </div>

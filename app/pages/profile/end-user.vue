@@ -1,380 +1,657 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <!-- Header with Sign Out -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Profile</h1>
-        <button
-          @click="handleSignOut"
-          class="flex items-center gap-2 px-4 py-2 text-[#008253] hover:bg-green-50 dark:hover:bg-red-900/20 rounded-lg transition"
+  <div class="min-h-screen bg-green-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <span class="text-[#008253] text-xl font-large">Profile</span>
+          <!-- Logo -->
+          <NuxtLink to="/" class="flex items-center space-x-2">
+            <img
+              src="/assets/images/e-user-logo.png"
+              alt="Welcome"
+              class="h-10 w-auto object-contain"
+            />
+          </NuxtLink>
+          <button 
+            @click="handleSignOut"
+            class="px-4 py-2 text-[#008253] hover:bg-green-50 rounded-lg transition font-medium flex items-center gap-1"
+          >
+            <i class="pi pi-sign-out"></i>
+            <span class="hidden sm:inline">Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Edit Profile View -->
+    <div v-if="isEditingProfile" class="max-w-2xl mx-auto px-4 py-8">
+      <div class="mb-6">
+        <button 
+          @click="isEditingProfile = false"
+          class="text-gray-700 font-medium flex items-center gap-2 hover:text-gray-900"
         >
-          <i class="pi pi-sign-out"></i>
-          <span class="hidden sm:inline">Sign Out</span>
+          <i class="pi pi-arrow-left"></i>
+          <span>Back to Profile</span>
         </button>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-sm p-8 space-y-3">
+        <div>
+          <input 
+            type="file" 
+            ref="fileInput" 
+            accept="image/*" 
+            class="hidden" 
+            @change="handleFileUpload"
+          />
+          <div class="mt-2 flex flex-col items-center">
+            <img
+              :src="editForm.image"
+              alt="Profile Preview"
+              class="w-24 h-24 rounded-full object-cover cursor-pointer border-2 border-gray-200 hover:opacity-80"
+              @click="selectImage"
+              @error="handleImageError"
+            />
+            <p class="text-xs text-gray-500 mt-1">Click image to change</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-user mr-2"></i>
+            Username
+          </label>
+          <input
+            v-model="editForm.username"
+            type="text"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-phone mr-2"></i>
+            Phone Number
+          </label>
+          <input
+            v-model="editForm.phone"
+            type="tel"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
+          />
+        </div>
+
+        <div class="pt-2 justify-center text-center items-center">
+          <button
+            @click="handleSaveProfile"
+            class="flex-1 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#008253] transition font-medium"
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Profile Header Card -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 sm:p-8 mb-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-6">
-          <div class="flex items-center gap-6">
-            <!-- Avatar with Upload -->
-            <div class="relative group">
-              <img
-                :src="user.avatar"
-                alt="Profile"
-                class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-[#008253] shadow-lg"
-              />
-              <label
-                for="avatarUpload"
-                class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer"
-              >
-                <i class="pi pi-camera text-white text-2xl"></i>
-              </label>
-              <input
-                id="avatarUpload"
-                type="file"
-                class="hidden"
-                accept="image/*"
-                @change="handleAvatarUpload"
-              />
+    <!-- Main Profile View -->
+    <div v-else>
+      <!-- User Profile Section -->
+      <div class="bg-gradient-to-b from-blue-50 to-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col items-center">
+            <img 
+              :src="profileData.image"
+              alt="Profile"
+              class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white"
+              @error="handleImageError"
+            />
+            <div class="mt-4 text-center space-y-2">
+              <div class="items-center justify-center">
+                <h2 class="text-2xl font-bold text-gray-800">{{ profileData.username }}</h2>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-phone text-gray-400"></i>
+                <span>{{ profileData.phone }}</span>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-envelope text-gray-400"></i>
+                <span class="text-sm sm:text-base">{{ profileData.email }}</span>
+              </div>
+              <div class="flex items-center justify-center gap-2 text-gray-600">
+                <i class="pi pi-home text-gray-400"></i>
+                <span class="text-sm">{{ profileData.address }}</span>
+              </div>
             </div>
-
-            <!-- Profile Info -->
-            <div class="space-y-2">
-              <input
-                v-if="isEditing"
-                v-model="editForm.username"
-                type="text"
-                class="text-xl font-semibold border-b-2 border-[#008253] focus:outline-none px-2 py-1 bg-transparent dark:text-white"
-                placeholder="Username"
-              />
-              <h2 v-else class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ user.username }}
-              </h2>
-              
-              <p class="text-gray-600 dark:text-gray-400">{{ user.email }}</p>
-              
-              <input
-                v-if="isEditing"
-                v-model="editForm.phone"
-                type="tel"
-                class="text-sm text-gray-600 dark:text-gray-400 border-b-2 border-[#008253] focus:outline-none px-2 py-1 w-full bg-transparent"
-                placeholder="Phone"
-              />
-              <p v-else class="text-sm text-gray-600 dark:text-gray-400">{{ user.phone }}</p>
-              
-              <input
-                v-if="isEditing"
-                v-model="editForm.address"
-                type="text"
-                class="text-sm text-gray-600 dark:text-gray-400 border-b-2 border-[#008253] focus:outline-none px-2 py-1 w-full bg-transparent"
-                placeholder="Address"
-              />
-              <p v-else class="text-sm text-gray-600 dark:text-gray-400">{{ user.address }}</p>
-            </div>
-          </div>
-
-          <!-- Edit/Save Buttons -->
-          <div class="flex gap-2">
-            <template v-if="isEditing">
-              <button
-                @click="handleSaveProfile"
-                class="flex items-center gap-2 px-4 py-2 bg-[#008253] text-white rounded-lg hover:bg-green-700 transition"
-              >
-                <i class="pi pi-check"></i>
-                Save
-              </button>
-              <button
-                @click="handleEditToggle"
-                class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-              >
-                <i class="pi pi-times"></i>
-                Cancel
-              </button>
-            </template>
             <button
-              v-else
-              @click="handleEditToggle"
-              class="flex items-center gap-2 px-4 py-2 bg-[#008253] text-white rounded-lg hover:bg-green-700 transition"
+              @click="isEditingProfile = true"
+              class="mt-4 text-blue-500 hover:text-[#008253] text-sm font-medium flex items-center gap-2"
             >
-              <i class="pi pi-pencil"></i>
+              <i class="pi pi-pencil text-xs"></i>
               Edit Profile
             </button>
           </div>
         </div>
+      </div>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <div class="text-center">
-            <p class="text-3xl font-bold text-[#008253]">{{ user.stats.reviews }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Reviews</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-[#008253]">{{ user.stats.helpfulVotes }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Helpful Votes</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-[#008253]">{{ user.stats.points }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Points</p>
-          </div>
-          <div class="text-center">
-            <p class="text-3xl font-bold text-[#008253]">{{ user.stats.badges.length }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Badges</p>
+      <!-- Menu Bar (Desktop/Tablet) -->
+      <div class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-wrap items-center justify-between py-4 gap-4">
+            <div class="flex flex-wrap gap-2 sm:gap-4">
+              <button
+                @click="activeTab = 'your-reviews'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'your-reviews'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-star mr-2"></i>
+                Your Reviews
+              </button>
+              <button
+                @click="activeTab = 'recent-reviews'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'recent-reviews'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-clock mr-2"></i>
+                Recent Reviews
+              </button>
+              <button
+                @click="activeTab = 'rewards'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'rewards'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-star mr-2"></i>
+                Rewards
+              </button>
+              <button
+                @click="activeTab = 'notifications'"
+                :class="[
+                  'px-4 py-2 rounded-lg font-medium transition',
+                  activeTab === 'notifications'
+                    ? 'bg-[#008253] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ]"
+              >
+                <i class="pi pi-bell mr-2"></i>
+                Notifications
+              </button>
+            </div>
+            <NuxtLink to="/review/write-review">
+              <button 
+                @click="handleReviewBusiness"
+                class="px-6 py-2 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium whitespace-nowrap"
+              >
+                Review a Business
+              </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
 
+      <!-- Review Business Button (Mobile) -->
+      <div class="md:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <NuxtLink to="/review/write-review">
+          <button 
+            @click="handleReviewBusiness"
+            class="w-full px-6 py-3 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium"
+          >
+            Review a Business
+          </button>
+        </NuxtLink>
+      </div>
+
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left Sidebar -->
-        <div class="space-y-6">
-          <!-- Top Sectors -->
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-              <i class="pi pi-briefcase text-[#008253]"></i>
-              Top Reviewed Sectors
-            </h3>
-            <ul class="space-y-3">
-              <li
-                v-for="(sector, idx) in user.topSectors"
-                :key="idx"
-                class="flex items-center justify-between text-gray-700 dark:text-gray-300"
-              >
-                <span>{{ sector }}</span>
-                <i class="pi pi-star-fill text-gold"></i>
-              </li>
-            </ul>
-          </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <!-- Left Column -->
+          <div class="md:col-span-3 space-y-6">
+            <!-- Badges -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="pi pi-trophy text-gold"></i>
+                Your Badges
+              </h5>
+              <div class="space-y-3">
+                <div 
+                  v-for="(badge, idx) in badges" 
+                  :key="idx" 
+                  :class="[badge.color, 'rounded-lg p-3 flex items-center gap-3']"
+                >
+                  <i :class="[badge.icon, 'text-2xl']"></i>
+                  <span class="font-medium text-gray-700 text-sm">{{ badge.name }}</span>
+                </div>
+              </div>
+            </div>
 
-          <!-- Top Locations -->
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-              <i class="pi pi-map-marker text-[#008253]"></i>
-              Top Reviewed Locations
-            </h3>
-            <ul class="space-y-3">
-              <li
-                v-for="(location, idx) in user.topLocations"
-                :key="idx"
-                class="flex items-center justify-between text-gray-700 dark:text-gray-300"
-              >
-                <span>{{ location }}</span>
+            <!-- Top Categories -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-star-fill text-gold"></i>
-              </li>
-            </ul>
-          </div>
+                Top Reviewed Categories
+              </h5>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(cat, idx) in topCategories" 
+                  :key="idx" 
+                  class="flex items-start gap-2 text-sm text-gray-600"
+                >
+                  <span class="text-gold">●</span>
+                  <span>{{ cat }}</span>
+                </li>
+              </ul>
+            </div>
 
-          <!-- Badges -->
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
-              <i class="pi pi-trophy text-[#008253]"></i>
-              Badges Earned
-            </h3>
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-for="(badge, idx) in user.stats.badges"
-                :key="idx"
-                class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-[#008253] px-3 py-1 rounded-full text-sm font-medium"
-              >
-                {{ badge }}
-              </span>
+            <!-- Top Locations -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="pi pi-map-marker text-gold"></i>
+                Top Reviewed Locations
+              </h5>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(loc, idx) in topLocations" 
+                  :key="idx" 
+                  class="flex items-start gap-2 text-sm text-gray-600"
+                >
+                  <span class="text-gold">●</span>
+                  <span>{{ loc }}</span>
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
 
-        <!-- Reviews Section -->
-        <div class="lg:col-span-2">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 class="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
-              <i class="pi pi-comments text-[#008253]"></i>
-              Your Reviews
-            </h3>
-            <div class="space-y-6 max-h-[600px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
-              <div
-                v-for="review in user.reviews"
-                :key="review.id"
-                class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0"
-              >
-                <div class="flex items-start justify-between mb-2">
-                  <h4 class="font-semibold text-gray-900 dark:text-white">{{ review.title }}</h4>
-                  <div class="flex gap-1">
-                    <i
-                      v-for="n in 5"
-                      :key="n"
-                      class="text-sm"
-                      :class="n <= review.rating ? 'pi pi-star-fill text-gold' : 'pi pi-star text-gray-500'"
+          <!-- Middle Column -->
+          <div class="md:col-span-6">
+            <!-- Menu Bar (Mobile) -->
+            <div class="md:hidden bg-white border-b border-gray-200 mb-6 -mx-4 px-4">
+              <div class="flex flex-wrap gap-2 py-4">
+                <button
+                  @click="activeTab = 'your-reviews'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'your-reviews'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-star mr-2"></i>
+                  Your Reviews
+                </button>
+                <button
+                  @click="activeTab = 'recent-reviews'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'recent-reviews'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-clock mr-2"></i>
+                  Recent Reviews
+                </button>
+                <button
+                  @click="activeTab = 'rewards'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'rewards'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-star mr-2"></i>
+                  Rewards
+                </button>
+                <button
+                  @click="activeTab = 'notifications'"
+                  :class="[
+                    'px-4 py-2 rounded-lg font-medium transition text-sm',
+                    activeTab === 'notifications'
+                      ? 'bg-[#008253] text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ]"
+                >
+                  <i class="pi pi-bell mr-2"></i>
+                  Notifications
+                </button>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <!-- Your Reviews Tab -->
+              <div v-if="activeTab === 'your-reviews'" class="space-y-6">
+                <h2 class="text-2xl font-bold text-[#008253]">Your Reviews</h2>
+                <div 
+                  v-for="review in userReviews" 
+                  :key="review.id" 
+                  class="border-b border-gray-200 pb-6 last:border-0"
+                >
+                  <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ review.businessName }}</h3>
+                    <span 
+                      :class="[
+                        'px-3 py-1 rounded-full text-xs font-medium',
+                        review.status === 'Posted' 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-yellow-100 text-yellow-700'
+                      ]"
+                    >
+                      {{ review.status }}
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                    <span class="flex items-center gap-1">
+                      <i class="pi pi-map-marker"></i>
+                      {{ review.location }}
+                    </span>
+                    <span class="flex items-center gap-2">
+                      {{ review.date }}
+                    </span>
+                  </div>
+                  <div class="mb-2">
+                    <i 
+                      v-for="n in review.rating" 
+                      :key="n" 
+                      class="pi pi-star-fill text-gold"
                     ></i>
                   </div>
+                  <p class="text-gray-700">{{ review.body }}</p>
                 </div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  {{ review.location }} • {{ review.date }} • {{ review.status }}
-                </p>
-                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ review.content }}</p>
+              </div>
+
+              <!-- Recent Reviews Tab -->
+              <div v-if="activeTab === 'recent-reviews'" class="space-y-6">
+                <h2 class="text-2xl font-bold text-[#008253]">Recent Reviews</h2>
+                <div 
+                  v-for="review in recentReviews" 
+                  :key="review.id" 
+                  class="border-b border-gray-200 pb-6 last:border-0"
+                >
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                      {{ review.author?.charAt(0) || 'U' }}
+                    </div>
+                    <div>
+                      <p class="font-semibold text-gray-800 mb-1">{{ review.author }}</p>
+                      <p class="text-sm text-gray-600">{{ review.date }}</p>
+                    </div>
+                  </div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ review.businessName }}</h3>
+                  <div class="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <i class="pi pi-map-marker"></i>
+                    {{ review.location }}
+                  </div>
+                  <div class="mb-2">
+                    <i 
+                      v-for="n in review.rating" 
+                      :key="n" 
+                      class="pi pi-star-fill text-gold"
+                    ></i>
+                  </div>
+                  <p class="text-gray-700">{{ review.body }}</p>
+                </div>
+              </div>
+
+              <!-- Rewards Tab -->
+              <div v-if="activeTab === 'rewards'" class="bg-white rounded-xl p-3 max-w-md mx-auto space-y-5">
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-trophy text-gold text-xl"></i>
+                  <span class="font-medium">Badges Earned: <strong>3</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-star-fill text-gold text-xl"></i>
+                  <span class="font-medium">Points Earned: <strong>149</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-thumbs-up text-gold text-xl"></i>
+                  <span class="font-medium">Helpful Votes: <strong>67</strong></span>
+                </div>
+
+                <div class="flex items-center gap-3 text-gray-700">
+                  <i class="pi pi-comment text-gold text-xl"></i>
+                  <span class="font-medium">Number of Reviews: <strong>3</strong></span>
+                </div>
+              </div>
+
+              <!-- Notifications Tab -->
+              <div v-if="activeTab === 'notifications'" class="text-center py-12">
+                <i class="pi pi-bell text-6xl text-gray-300 mb-4"></i>
+                <h2 class="text-2xl font-bold text-[#008253] mb-2">Notifications</h2>
+                <p class="text-gray-500">Nothing new yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Ads -->
+          <div class="md:col-span-3 space-y-6">
+            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-sm p-4 border border-yellow-200">
+              <p class="text-xs font-semibold text-gray-600 mb-3 uppercase tracking-wide flex items-center gap-2">
+                <i class="pi pi-star"></i>
+                Featured
+              </p>
+              <div 
+                v-for="ad in ads" 
+                :key="ad.id" 
+                class="mb-4 last:mb-0"
+              >
+                <img 
+                  :src="ad.image"
+                  :alt="ad.business"
+                  class="w-full h-32 object-cover rounded-lg mb-2"
+                  @error="handleImageError"
+                />
+                <h4 class="font-semibold text-gray-800">{{ ad.business }}</h4>
+                <p class="text-sm text-gray-600">{{ ad.tagline }}</p>
+                <button class="mt-2 text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center gap-1">
+                  Learn More
+                  <i class="pi pi-arrow-right text-xs"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NuxtImg } from '#components'
 
-interface Review {
-  id: number
-  title: string
-  location: string
-  date: string
-  status: string
-  rating: number
-  content: string
-}
-
-interface UserStats {
-  reviews: number
-  helpfulVotes: number
-  points: number
-  badges: string[]
-}
-
-interface User {
-  avatar: string
+interface ProfileData {
   username: string
   phone: string
   email: string
   address: string
-  stats: UserStats
-  topSectors: string[]
-  topLocations: string[]
-  reviews: Review[]
+  image: string
 }
 
-const user = ref<User>({
-  avatar: '/images/profile-images/3.png',
-  username: 'John Doe',
-  phone: '+234 810-9876-888',
-  email: 'johndoe@mail.com',
-  address: '13 Akinwale Street, Ikeja, Lagos',
-  stats: {
-    reviews: 3,
-    helpfulVotes: 128,
-    points: 720,
-    badges: ['Top Reviewer', 'Helpful Member', 'Community Star']
-  },
-  topSectors: ['Restaurants', 'Hotels', 'Electronics'],
-  topLocations: ['Abulegba', 'Ikorodu', 'Oju elegba', 'Ikeja', 'Abeokuta'],
-  reviews: [
-    {
-      id: 1,
-      title: 'Oceanview Hotel',
-      location: 'Ikeja',
-      date: 'Oct 20, 2025',
-      status:'pending',
-      rating: 5,
-      content: 'Had a wonderful stay with excellent service and beautiful ocean views. Highly recommend!'
-    },
-    {
-      id: 2,
-      title: 'Mabel Electronics Store',
-      location: 'Abeokuta',
-      date: 'Sep 18, 2025',
-      status:'posted',
-      rating: 4,
-      content: 'Impressed by the sound quality of these headphones, but the price feels a bit too high.'
-    },
-    {
-      id: 3,
-      title: 'TastyBites',
-      location: 'Abuja',
-      date: 'Aug 30, 2025',
-      status:'investigating',
-      rating: 3,
-      content: 'Loved the food! But the waiting time was longer than expected.'
-    }
-  ]
-})
+interface EditForm {
+  username: string
+  phone: string
+  image: string
+}
 
-const isEditing = ref(false)
-const editForm = ref({
-  username: user.value.username,
-  phone: user.value.phone,
-  address: user.value.address
-})
+interface Badge {
+  name: string
+  icon: string
+  color: string
+}
 
-const handleAvatarUpload = (e: Event) => {
-  const target = e.target as HTMLInputElement
+interface Review {
+  id: number
+  businessName: string
+  location: string
+  date: string
+  status?: string
+  body: string
+  rating: number
+  author?: string
+}
+
+interface Ad {
+  id: number
+  business: string
+  image: string
+  tagline: string
+}
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const selectImage = () => {
+  fileInput.value?.click()
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
   const file = target.files?.[0]
   if (file) {
     const reader = new FileReader()
-    reader.onload = () => {
-      user.value.avatar = reader.result as string
+    reader.onload = (e) => {
+      editForm.value.image = e.target?.result as string
     }
     reader.readAsDataURL(file)
   }
 }
 
-const handleEditToggle = () => {
-  if (isEditing.value) {
-    // Reset form to current user data if canceling
-    editForm.value = {
-      username: user.value.username,
-      phone: user.value.phone,
-      address: user.value.address
-    }
+
+const activeTab = ref<string>('your-reviews')
+const isEditingProfile = ref<boolean>(false)
+
+const profileData = ref<ProfileData>({
+  username: 'Sarah Betsy',
+  phone: '+234 810-1230-567',
+  email: 'sarahbetsy111@gmail.com',
+  address: '160 Main Street, Yaba, Lagos State.',
+  image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop'
+})
+
+const editForm = ref<EditForm>({
+  username: profileData.value.username,
+  phone: profileData.value.phone,
+  image: profileData.value.image
+})
+
+const badges = ref<Badge[]>([
+  { name: 'Top Reviewer', icon: 'pi pi-trophy', color: 'bg-yellow-100' },
+  { name: 'Helpful Member', icon: 'pi pi-star-fill', color: 'bg-blue-100' },
+  { name: '100 Reviews', icon: 'pi pi-check-circle', color: 'bg-purple-100' }
+])
+
+const topCategories = ref<string[]>([
+  'Restaurants',
+  'Coffee & Cafes',
+  'Shopping',
+  'Hotels & Travel',
+  'Beauty & Spas'
+])
+
+const topLocations = ref<string[]>([
+  'Ewekoro',
+  'Oju-ore',
+  'Ikeja',
+  'Yaba',
+  'Abeokuta'
+])
+
+const userReviews = ref<Review[]>([
+  {
+    id: 1,
+    businessName: 'The Cozy Cafe',
+    location: 'Victoria Island',
+    date: '2025-09-05',
+    status: 'Posted',
+    body: 'Amazing coffee and pastries! Staff is always friendly and attentive.',
+    rating: 5
+  },
+  {
+    id: 2,
+    businessName: 'Sunset Grill',
+    location: 'Abeokuta',
+    date: '2025-11-01',
+    status: 'Posted',
+    body: 'Great food and wonderful outdoor seating. Highly recommend the grilled salmon.',
+    rating: 4
+  },
+  {
+    id: 3,
+    businessName: 'Tech Hub Store',
+    location: 'Ikeja',
+    date: '2025-11-08',
+    status: 'Pending',
+    body: 'Good selection of electronics. Staff could be more knowledgeable about products, but prices are competitive.',
+    rating: 3
   }
-  isEditing.value = !isEditing.value
-}
+])
+
+const recentReviews = ref<Review[]>([
+  {
+    id: 4,
+    author: 'Ade Temi',
+    businessName: 'Ilupeju Spa',
+    location: 'Ogun State',
+    date: '2025-11-07',
+    body: 'Incredible massage therapy and relaxing atmosphere. Will definitely return!',
+    rating: 5
+  },
+  {
+    id: 5,
+    author: 'Igwe Donald',
+    businessName: 'Book Haven',
+    location: 'Yaba',
+    date: '2025-11-06',
+    body: 'Cozy bookstore with a great selection. The staff recommendations are always spot-on.',
+    rating: 5
+  }
+])
+
+const ads = ref<Ad[]>([
+  {
+    id: 1,
+    business: 'Prime Steakhouse',
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=200&fit=crop',
+    tagline: 'Enjoy a fine dining experience'
+  },
+  {
+    id: 2,
+    business: 'Yoga Sanctuary',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=200&fit=crop',
+    tagline: 'Let us help you Relax and Unwind.'
+  }
+])
 
 const handleSaveProfile = () => {
-  user.value.username = editForm.value.username
-  user.value.phone = editForm.value.phone
-  user.value.address = editForm.value.address
-  isEditing.value = false
-  
-  // TODO: Add API call to save profile
-  // Example:
-  // await $fetch('/api/profile', {
-  //   method: 'PUT',
-  //   body: {
-  //     username: editForm.value.username,
-  //     phone: editForm.value.phone,
-  //     address: editForm.value.address
-  //   }
-  // })
+  profileData.value.username = editForm.value.username
+  profileData.value.phone = editForm.value.phone
+  profileData.value.image = editForm.value.image
+  isEditingProfile.value = false
 }
 
 const handleSignOut = () => {
-  if (confirm('Are you sure you want to sign out?')) {
-    console.log('User signed out')
-    // TODO: Add sign out logic
-    // Example:
-    // await $fetch('/api/auth/logout', { method: 'POST' })
-    // navigateTo('/login')
-  }
+  console.log('Sign out clicked')
+}
+
+const handleReviewBusiness = () => {
+  console.log('Review business clicked')
+}
+
+const handleImageError = (e: Event) => {
+  const target = e.target as HTMLImageElement
+  target.src = 'https://via.placeholder.com/200'
 }
 </script>
 
 <style scoped>
-/* Custom scrollbar styling */
-.scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-}
-.scrollbar-thumb-green-600::-webkit-scrollbar-thumb {
-  background-color: #008253;
-}
-.scrollbar-track-gray-200::-webkit-scrollbar-track {
-  background-color: #e5e7eb;
-}
-.dark .scrollbar-track-gray-700::-webkit-scrollbar-track {
-  background-color: #008253;
-}
-</style>
 
+</style>
