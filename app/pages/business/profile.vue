@@ -6,17 +6,24 @@
         <img  src="/images/profile/profile-picture.jpg" alt="" class="w-full h-full object-cover rounded-t">
       </div>
       <div class="absolute bottom-[4%] left-12 transform translate-y-1/2 flex flex-col items-center gap-1">
-        <Rating v-model="value" :stars="5" style="--p-rating-icon-size: 13px; --p-rating-icon-color: #001ad6;" />
+        <Rating v-model="value" :stars="5" style="--p-rating-icon-size: 13px;
+        " 
+        :ptOptions="{ mergeProps: true }"
+        :pt="{
+          onIcon: { class: '!text-link' }, // Use !important
+          offIcon: { class: '!text-gray-500' } // Use !important
+        }"
+        />
         <p class="text-[80%]">(120 Reviews)</p>
       </div>
       <p class="text-[170%] ml-[190px] mt-5">{{ business.name || 'John Doe' }}</p>
-      <div class="ml-[190px] flex items-center gap-6">
+      <div class="ml-[190px] flex items-center gap-5">
         <div class="flex items-center gap-2">
           <i class=" pi pi-briefcase"></i>
           <span>{{ business.sector || 'Sector' }}</span>
         </div>
 
-        <ProfileVerified :isVerified="true" size="sm" />
+        <ProfileVerified :isVerified="false" size="sm" />
         <div class="flex items-center gap-2">
           <i class=" pi pi-tag"></i>
           <span>{{ business.tag || 'Tags' }}</span>
@@ -60,7 +67,7 @@ definePageMeta({
   layout: 'business' 
 });
 import { useRoute } from 'vue-router'; 
-const value = ref(5)
+const value = ref(3)
 const business = {
   name: '',
   sector: '',

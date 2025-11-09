@@ -9,7 +9,7 @@
         :menuItems="menuItems" />
 
       <div class="layout-page">
-        <nav class="nav-bar bg-white w-full py-1 flex items-center px-6 shadow-md nav sticky top-0">
+        <nav class="nav-bar bg-white w-full py-1 flex items-center px-6 shadow-bottom nav sticky top-0">
           
           <a href="javascript:void(0);" 
             class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle" 
@@ -50,6 +50,62 @@
             <slot /> 
           </div>
         </div>
+        <footer class="footer bg-white border-t border-gray-200 p-8 mt-12">
+          <div class="container-xxl mx-auto">
+            
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+
+              <div class="col-span-full lg:col-span-2">
+                <p class="text-[150%] font-semibold text-gold mb-3">CleReview</p>
+                <p class="text-[100%] text-contrast w-full md:max-w-md">
+                  Empower your business with real-time customer insights. Turn feedback into fuel for growth and excellence.
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-[140%] font-semibold text-contrast mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-sm">
+                  <li>
+                    <NuxtLink to="/" class="!text-link hover:underline">Home</NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink to="/about" class="!text-link hover:underline">About Us</NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink to="/contact" class="!text-link hover:underline">Contact</NuxtLink>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 class="text-[140%] font-semibold text-contrast mb-4">Support</h3>
+                <ul class="space-y-2 text-sm">
+                  <li>
+                    <NuxtLink to="/faqs" class="!text-link hover:underline">FAQs</NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink to="/help-center" class="!text-link hover:underline">Help Center</NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink to="/terms" class="!text-link hover:underline">Terms of Service</NuxtLink>
+                  </li>
+                  <li>
+                    <NuxtLink to="/privacy" class="!text-link hover:underline">Privacy Policy</NuxtLink>
+                  </li>
+                </ul>
+              </div>
+              
+            </div>
+
+            <hr class="my-8 border-gray-200" />
+
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500">
+              <p class="mb-4 sm:mb-0 text-contrast">
+                &copy; {{ new Date().getFullYear() }} <span class="text-gold">CleReview</span>. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
         
       </div>
     </div>

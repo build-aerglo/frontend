@@ -112,7 +112,7 @@
     <div class="card">
       <div class="card-body px-6 py-5">
         <h1 class="text-[150%] text-contrast mb-4">Deactivate account</h1>
-        <div class="mb-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-md">
+        <div class="mb-6 bg-yellow-50 border-l-4 border-gold p-4 rounded-md">
           <h5 class="text-yellow-700 font-semibold mb-1">
             Are you sure you want to delete your account?
           </h5>

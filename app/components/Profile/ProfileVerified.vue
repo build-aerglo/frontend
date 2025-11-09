@@ -9,7 +9,7 @@
     ]"
   >
     <i 
-      :class="isVerified ? 'pi pi-check' : 'pi pi-times'" 
+      :class="isVerified ? 'pi pi-check' : 'pi pi-check'" 
       aria-hidden="true"
     ></i>
   </div>
