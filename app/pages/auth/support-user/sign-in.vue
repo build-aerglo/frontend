@@ -10,7 +10,7 @@
           </div>
         </NuxtLink>
         <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
-        <form @submit.prevent="onSubmit" class="space-y-6">
+        <form id="formAuthentication" @submit.prevent="onSubmit" class="space-y-6">
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -35,20 +35,20 @@
             ></i>
           </div>
 
-          <!-- Remember & Forgot -->
+          <!-- Remember Me & Forgot Password -->
           <div class="flex items-center justify-between text-sm">
             <label class="flex items-center gap-2 cursor-pointer">
               <input id="remember-me" type="checkbox" v-model="rememberMe"
                 class="w-4 h-4 text-gray-800 border-gray-300 rounded" />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/forgot-password" class="text-blue-500 hover:underline">
+            <NuxtLink to="/" class="text-blue-500 hover:underline">
               Forgot Password?
             </NuxtLink>
           </div>
 
           <div class="mb-6">
-            <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign In</button></NuxtLink>
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
           </div>
         </form>
       </div>
@@ -56,31 +56,46 @@
   </div>
 </template>
 
-
-
 <script setup lang="ts">
 import { ref } from "vue";
+import axios from "axios";
 
-// Form state
 const email = ref<string>("");
 const password = ref<string>("");
 const showPassword = ref<boolean>(false);
 const rememberMe = ref<boolean>(false);
 
-// Actions
 const togglePassword = () => (showPassword.value = !showPassword.value);
 
-// Future-ready backend submission
 const onSubmit = async () => {
   try {
-    // TODO: connect to your backend API for authentication
-    console.log("Login attempt:", {
+    const loginUrl = "http://aerglotechnology.com/api/auth/login";
+
+    const response = await axios.post(loginUrl, {
       email: email.value,
       password: password.value,
-      remember: rememberMe.value,
     });
-  } catch (error) {
-    console.error("Login failed:", error);
+
+    const token = response.data.access_token;
+
+    if (!token) {
+      throw new Error("No token received from server.");
+    }
+
+    if (rememberMe.value) {
+      // Save token persistently
+      localStorage.setItem("authToken", token);
+    } else {
+      // Save token for session only
+      sessionStorage.setItem("authToken", token);
+    }
+
+    // Redirect to home page after successful login
+    window.location.href = "/";
+  } catch (error: any) {
+    alert(
+      error.response?.data?.message || error.message || "Login failed. Please try again."
+    );
   }
 };
 </script>

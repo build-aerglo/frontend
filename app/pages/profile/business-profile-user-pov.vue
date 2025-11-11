@@ -1,36 +1,6 @@
 <template>
   <div class="min-h-screen bg-green-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <NuxtLink to="/">
-            <button 
-              @click="goBack"
-              class="text-[#008253] font-medium flex items-center gap-2"
-            >
-              <i class="pi pi-arrow-left"></i>
-              <span class="hidden sm:inline">Back</span>
-            </button>
-          </NuxtLink>
-          <!-- Logo -->
-          <NuxtLink to="/">
-            <img
-              src="/assets/images/e-user-logo.png"
-              alt="Welcome"
-              class="h-10 w-auto object-contain"
-            />
-          </NuxtLink>
-          <button 
-            @click="handleShare"
-            class="px-4 py-2 text-[#008253] hover:bg-green-50 rounded-lg transition font-medium flex items-center gap-1"
-          >
-            <i class="pi pi-share-alt"></i>
-            <span class="hidden sm:inline">Share</span>
-          </button>
-        </div>
-      </div>
-    </nav>
+    <NavBar/>
 
     <!-- Business Header Section -->
     <div class="bg-white border-b border-gray-200">
@@ -70,14 +40,7 @@
                   {{ businessData.category }}
                 </p>
               </div>
-              <NuxtLink to="/review/write-review">
-                <button 
-                  class="px-6 py-3 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium whitespace-nowrap"
-                >
-                  <i class="pi pi-pencil mr-2"></i>
-                  Write a Review
-                </button>
-              </NuxtLink>
+              
             </div>
 
             <div class="space-y-2 text-gray-700">

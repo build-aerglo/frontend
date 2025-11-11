@@ -1,28 +1,6 @@
 <template>
   <div class="min-h-screen bg-green-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <span class="text-[#008253] text-xl font-large">Profile</span>
-          <!-- Logo -->
-          <NuxtLink to="/">
-            <img
-              src="/assets/images/e-user-logo.png"
-              alt="Welcome"
-              class="h-10 w-auto object-contain"
-            />
-          </NuxtLink>
-          <button 
-            @click="handleSignOut"
-            class="px-4 py-2 text-[#008253] hover:bg-green-50 rounded-lg transition font-medium flex items-center gap-1"
-          >
-            <i class="pi pi-sign-out"></i>
-            <span class="hidden sm:inline">Sign Out</span>
-          </button>
-        </div>
-      </div>
-    </nav>
+    <NavBar/>
 
     <!-- Edit Profile View -->
     <div v-if="isEditingProfile" class="max-w-2xl mx-auto px-4 py-8">
@@ -95,42 +73,50 @@
     <!-- Main Profile View -->
     <div v-else>
       <!-- User Profile Section -->
-      <div class="bg-gradient-to-b from-blue-50 to-white py-8">
+      <div class="bg-gradient-to-b from-blue-50 to-white py-8"> 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex flex-col items-center">
+          <!-- Use flex-row instead of flex-col -->
+          <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            
+            <!-- Profile Image -->
             <img 
               :src="profileData.image"
               alt="Profile"
               class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white"
               @error="handleImageError"
             />
-            <div class="mt-4 text-center space-y-2">
-              <div class="items-center justify-center">
-                <h2 class="text-2xl font-bold text-gray-800">{{ profileData.username }}</h2>
-              </div>
-              <div class="flex items-center justify-center gap-2 text-gray-600">
+
+            <!-- Text Section -->
+            <div class="text-left md:text-left space-y-2">
+              <h2 class="text-2xl font-bold text-gray-800">{{ profileData.username }}</h2>
+              
+              <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-phone text-gray-400"></i>
                 <span>{{ profileData.phone }}</span>
               </div>
-              <div class="flex items-center justify-center gap-2 text-gray-600">
+
+              <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-envelope text-gray-400"></i>
                 <span class="text-sm sm:text-base">{{ profileData.email }}</span>
               </div>
-              <div class="flex items-center justify-center gap-2 text-gray-600">
+
+              <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-home text-gray-400"></i>
                 <span class="text-sm">{{ profileData.address }}</span>
               </div>
+
+              <button
+                @click="isEditingProfile = true"
+                class="mt-2 text-blue-500 hover:text-[#008253] text-sm font-medium flex items-center gap-2 justify-center md:justify-start"
+              >
+                <i class="pi pi-pencil text-xs"></i>
+                Edit Profile
+              </button>
             </div>
-            <button
-              @click="isEditingProfile = true"
-              class="mt-4 text-blue-500 hover:text-[#008253] text-sm font-medium flex items-center gap-2"
-            >
-              <i class="pi pi-pencil text-xs"></i>
-              Edit Profile
-            </button>
           </div>
         </div>
       </div>
+
 
       <!-- Menu Bar (Desktop/Tablet) -->
       <div class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block">
@@ -186,29 +172,13 @@
                 Notifications
               </button>
             </div>
-            <NuxtLink to="/review/write-review">
-              <button 
-                @click="handleReviewBusiness"
-                class="px-6 py-2 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium whitespace-nowrap"
-              >
-                Review a Business
-              </button>
-            </NuxtLink>
+            
           </div>
         </div>
       </div>
 
       <!-- Review Business Button (Mobile) -->
-      <div class="md:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <NuxtLink to="/review/write-review">
-          <button 
-            @click="handleReviewBusiness"
-            class="w-full px-6 py-3 bg-[#008253] text-white rounded-lg hover:bg-[#008260] transition font-medium"
-          >
-            Review a Business
-          </button>
-        </NuxtLink>
-      </div>
+      
 
       <!-- Main Content Grid -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
