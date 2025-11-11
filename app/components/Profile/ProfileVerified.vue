@@ -21,7 +21,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // Define size options for reusability
   size: {
     type: String,
     default: 'md', // sm, md, lg
@@ -32,7 +31,7 @@ const props = defineProps({
 
 <style scoped>
 .verified-badge {
-  /* This is the key CSS for the zig-zag shape (a 12-point star/flower) */
+  
   clip-path: polygon(
     50% 0%, 
     66% 5%, 
