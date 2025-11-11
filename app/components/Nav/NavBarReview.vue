@@ -2,7 +2,7 @@
 <nav
     class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300"
   >
-    <div class="container mx-auto px-6 flex items-center justify-between h-16">
+    <div class="mx-auto px-8 flex items-center justify-between h-16">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center space-x-2">
         <img

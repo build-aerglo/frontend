@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-green-50">
-    <NavBar/>
+    <NavBarProfile/>
 
     <!-- Edit Profile View -->
     <div v-if="isEditingProfile" class="max-w-2xl mx-auto px-4 py-8">
