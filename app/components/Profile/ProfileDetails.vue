@@ -118,10 +118,9 @@
 </template>
 
 <script setup lang="ts">
-// In a final application, this data should be received via props or injected state.
-// Here the data is hardcoded for demonstration purposes.
+
 </script>
 
 <style scoped>
-/* Scoped styles */
+
 </style>

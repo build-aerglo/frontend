@@ -1,25 +1,26 @@
 <template>
   <div>
-    <div class="relative bg-white w-full h-[270px] rounded shadow-lg flex">
-      <div class=" flex flex-col items-center gap-2 absolute bottom-[40%] left-[30px] transform translate-y-1/2">
-        <div class="relative w-[120px] h-[120px]">
-          <!-- Profile image -->
-          <img
-            :src="previewUrl || '/images/profile/profile-picture.jpg'"
-            alt="Profile"
-            class="w-full h-full object-cover rounded-full border-3 !border-primary"
-          />
+    <div
+      :class="[isEditing? 'bg-white w-full h-[800px] md:h-[400px] border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative mb-8': 'bg-white w-full h-[650px] md:h-[400px] border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative mb-8' ] "
+    >
+      <div 
+        class="relative image-slot-profile"
+        :class="{ 'cursor-pointer': isEditing }"
+        @click="isEditing && triggerFileInput()"
+      >
+        <img
+          :src="previewUrl || '/images/profile/profile-picture.jpg'"
+          alt="Profile"
+          class="w-full h-[250px] md:w-[260px] rounded-[20px] object-cover"
+        />
 
-          <!-- Pencil Button -->
-          <button
-            @click="triggerFileInput"
-            class="absolute bottom-1 right-1 !bg-primary text-white rounded-full 
-                  w-8 h-8 flex items-center justify-center shadow-md hover:bg-link transition-colors duration-200"
+        <div v-if="isEditing">
+          <div 
+            class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center rounded-[20px] h-[250px] overlay-profile"
           >
-            <i class="pi pi-pencil text-sm"></i>
-          </button>
+            <i class="pi pi-camera text-white text-3xl"></i>
+          </div>
 
-          <!-- Hidden Input -->
           <input
             ref="fileInput"
             type="file"
@@ -28,131 +29,355 @@
             @change="handleFileChange"
           />
         </div>
-        <div class="flex flex-col items-center gap-1">
-          <Rating v-model="ratingValue" :stars="5" style="--p-rating-icon-size: 13px;"
-          :ptOptions="{ mergeProps: true }"
-          :pt="{
-            onIcon: { class: '!text-gold' }, // Use !important
-            offIcon: { class: '!text-gray-500' } // Use !important
+      </div>
 
-          }"
+      <div class="flex flex-col gap-[10px] items-start justify-start">
+        <div class="flex gap-2 items-center">
+          <template v-if="!isEditing">
+            <span class="text-contrast text-[150%] font-bold">
+              {{ business.name || 'Business Name' }}
+            </span>
+            <ProfileVerified :isVerified="false" size="sm" />
+          </template>
+          <template v-else>
+            <input
+              v-model="business.name"
+              type="text"
+              placeholder="Business Name"
+              class="border border-gray-400 rounded-md px-2 py-1 w-[220px]"
+            />
+          </template>
+        </div>
+
+        <div class="flex gap-1">
+          <Rating
+            v-model="ratingValue"
+            :stars="5"
+            style="--p-rating-icon-size: 16px;"
+            :ptOptions="{ mergeProps: true }"
+            :pt="{
+              onIcon: { class: '!text-gold' },
+              offIcon: { class: '!text-gray-500' }
+            }"
           />
-          <p class="text-[80%]">(120 Reviews)</p>
+          <span class="text-[100%] text-gray-500">(120 Reviews)</span>
+        </div>
+
+        <ProfileField
+          v-model="business.sector"
+          icon="pi pi-briefcase"
+          placeholder="Sector"
+          :is-editing="isEditing"
+        />
+
+        <ProfileField
+          v-model="business.tag"
+          icon="pi pi-tag"
+          placeholder="Tags"
+          :is-editing="isEditing"
+        />
+
+        <ProfileField
+          v-model="business.location"
+          icon="pi pi-map-marker"
+          placeholder="Location"
+          :is-editing="isEditing"
+        />
+
+        <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
+          <ProfileField
+            v-model="business.contact"
+            icon="pi pi-phone"
+            placeholder="Contact"
+            :is-editing="isEditing"
+          />
+          <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
+          <ProfileField
+            v-model="business.contact"
+            icon="pi pi-whatsapp"
+            placeholder="WhatsApp"
+            :is-editing="isEditing"
+          />
+        </div>
+
+        <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
+          <ProfileField
+            v-model="business.websiteUrl"
+            icon="pi pi-globe"
+            placeholder="Website URL"
+            :is-editing="isEditing"
+          />
+          <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
+          <ProfileField
+            v-model="business.websiteUrl"
+            icon="pi pi-instagram"
+            placeholder="Instagram"
+            :is-editing="isEditing"
+          />
+        </div>
+
+        <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2']">
+          <ProfileField
+              v-if="!isEditing"
+              v-model="business.openDays"
+              icon="pi pi-clock"
+              placeholder="Open Now - Closes at 10:00 PM"
+              :is-editing="isEditing"
+          />
+          
+          <template v-else>
+              <ProfileField
+                  v-model="business.openDaysDetails" 
+                  icon="pi pi-calendar"
+                  placeholder="Select Opening Days (e.g., Mon-Fri)"
+                  :is-editing="true"
+                  input-class="cursor-pointer" 
+                  @click="triggerDayPicker" 
+              />
+              
+              <ProfileField
+                  v-model="business.closeTime"
+                  icon="pi pi-clock"
+                  placeholder="Closing Time (e.g., 10:00 PM)"
+                  :is-editing="true"
+                  input-class="cursor-pointer" 
+                  @click="triggerTimePicker"
+              />
+          </template>
         </div>
       </div>
 
-      <div class="absolute bottom-[50%] left-[190px] transform translate-y-1/2">
-        <p class="text-[170%] mt-5">{{ business.name || 'John Doe' }}</p>
-        <div class="flex items-center gap-5">
-          <div class="flex items-center gap-2">
-            <i class=" pi pi-briefcase"></i>
-            <span>{{ business.sector || 'Sector' }}</span>
-          </div>
-  
-          <ProfileVerified :isVerified="false" size="sm" />
-          <div class="flex items-center gap-2">
-            <i class=" pi pi-tag"></i>
-            <span>{{ business.tag || 'Tags' }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="absolute top-[5%] right-7 transform translate-y-1/2">
-        <ButtonCustom 
-        :label="isOpened ? 'Opened' : 'Closed'" 
-        @click="toggleStatus"
-        primary="true" 
-        size="lg" />
-      </div>
-    </div>
-
-    <div>
-      <ul
-        class="nav nav-pills flex flex-col md:flex-row mb-6 flex-wrap mt-8 gap-2"
+      <div
+        :class="[isEditing? 'absolute top-[33%] right-0 md:top-0 md:right-[10px] transform translate-y-1/2 px-5': 'absolute top-[41%] right-0 md:top-0 md:right-[10px] transform translate-y-1/2 px-5']"
       >
-        <li v-for="tab in tabItems" :key="tab.key" class="nav-item">
-          <NuxtLink 
-            :to="{ path: $route.path, query: { tab: tab.key } }" 
-            class="nav-link flex items-center" 
-            :class="{ 'active': currentTabKey === tab.key }"
+        <ButtonCustom
+          :label="isEditing ? 'Save Changes' : 'Edit Profile'"
+          :primary="true"
+          size="lg"
+          icon="pi pi-pencil"
+          input-class="text-[15px] w-auto"
+          @click="toggleEdit"
+        />
+      </div>
+
+      <div
+        class="absolute bottom-[5%] md:bottom-[8%] left-[2px] transform translate-y-1/2 border-t-[1px] border-gray-200 w-full"
+      >
+        <div class="relative flex items-center py-4 px-4 md:px-0 md:justify-start">
+          
+          <div 
+            class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
+            id="scroll-left-btn"
+            @click="scrollLeft"
           >
-            <i v-if="tab.icon" :class="[tab.icon, 'me-2']"></i> 
-            {{ tab.name }}
-          </NuxtLink>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <KeepAlive>
-        <component :is="currentComponent" />
-      </KeepAlive>
+            <i class="pi pi-chevron-left text-lg"></i>
+          </div>
+          
+          <ul 
+            class="nav nav-pills flex flex-nowrap gap-2 overflow-x-scroll hide-scrollbar scroll-smooth w-full px-4 md:px-4"
+            id="tabs-scroll-container"
+            ref="tabsContainer"
+          >
+            <li v-for="tab in tabItems" :key="tab.key" class="nav-item flex-shrink-0">
+              <NuxtLink
+                :to="{ path: $route.path, query: { tab: tab.key } }"
+                class="nav-link"
+                :class="{ active: currentTabKey === tab.key }"
+              >
+                {{ tab.name }}
+              </NuxtLink>
+            </li>
+          </ul>
+
+          <div 
+            class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
+            id="scroll-right-btn"
+            @click="scrollRight"
+          >
+            <i class="pi pi-chevron-right text-lg"></i>
+          </div>
+
+        </div>
+      </div>
+      </div>
+    
+    <div class="md:grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="col-span-1 md:col-span-2 ">
+        <KeepAlive>
+          <component :is="currentComponent" />
+        </KeepAlive>
+      </div>
+      
+      <div class="col-span-1 mb-6 md:mb-0">
+        <div class="card p-6 bg-white rounded-lg shadow sticky top-1">
+          <h1 class="text-xl font-bold text-contrast mb-4">Quick Stats</h1>
+          
+          <ul class="flex flex-col gap-4 text-gray-700">
+            
+            <li class="flex justify-between items-center pb-2 border-b border-gray-100">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-star-fill text-yellow-500"></i>
+                <span class="font-semibold text-base">Total Reviews</span>
+              </div>
+              <span class="text-xl font-bold text-contrast">1,250</span>
+            </li>
+            
+            <li class="flex justify-between items-center pb-2 border-b border-gray-100">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-clock !text-primary"></i>
+                <span class="font-semibold text-base">Avg. Response Time</span>
+              </div>
+              <span class="text-lg font-bold text-contrast">12 hours</span>
+            </li>
+            
+            <li class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-eye !text-primary"></i>
+                <span class="font-semibold text-base">Profile Hits (30 Days)</span>
+              </div>
+              <span class="text-xl font-bold text-contrast">3,450</span>
+            </li>
+            
+          </ul>
+          
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: 'business' 
-});
 import { useRoute } from 'vue-router'; 
-const ratingValue = ref(4)
+import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 
-const business = {
+definePageMeta({ layout: 'business' })
+
+const isEditing = ref(false)
+const toggleEdit = () => (isEditing.value = !isEditing.value)
+
+const ratingValue = ref(4)
+const previewUrl = ref<string | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const business = reactive({
   name: '',
   sector: '',
-  tag: ''
-}
-const isOpened = ref(true); // Start the button as "Opened"
+  tag: '',
+  location: '',
+  contact: '',
+  websiteUrl: '',
+  openDays: 'Open Now - Closes at 10:00 PM', 
+  openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
+  closeTime: '22:00', // This will hold the time value when editing
+})
 
-const toggleStatus = () => {
-  isOpened.value = !isOpened.value;
+const handleFileChange = (e: Event) => {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (file) previewUrl.value = URL.createObjectURL(file)
+}
+const triggerFileInput = () => fileInput.value?.click()
+
+// NEW Placeholder Methods for Day/Time Selection
+const triggerDayPicker = () => {
+    console.log("Day Picker component triggered!");
 };
-const ProfileDetails = defineAsyncComponent(() => import('~/components/Profile/ProfileDetails.vue'));
-const SettingConnection = defineAsyncComponent(() => import('~/components/Setting/SettingConnection.vue'));
-const SettingMedia = defineAsyncComponent(() => import('~/components/Setting/SettingMedia.vue'));
-const ProfileStats = defineAsyncComponent(() => import('~/components/Profile/ProfileStats.vue'));
+
+const triggerTimePicker = () => {
+    console.log("Time Picker component triggered!");
+};
+
+const ProfileOverview = defineAsyncComponent(() => import('~/components/Profile/ProfileOverview.vue'));
+const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/ProfileReview.vue'));
+const ProfileMedia = defineAsyncComponent(() => import('~/components/Profile/ProfileMedia.vue'));
+const ProfileFaq = defineAsyncComponent(() => import('~/components/Profile/ProfileFaq.vue'));
+const ProfileGetReview = defineAsyncComponent(() => import('~/components/Profile/ProfileGetReview.vue'));
+
+const route = useRoute();
 
 const componentMap = {
-  profile: ProfileDetails,
-  connections: SettingConnection,
-  media: SettingMedia,
-  stats: ProfileStats,
+  overview: ProfileOverview,
+  review: ProfileReview,
+  media: ProfileMedia,
+  faq: ProfileFaq,
+  getreview: ProfileGetReview,
 };
 
 const tabItems = [
-  { key: 'profile', name: 'Profile', icon: 'pi pi-users' },
-  { key: 'connections', name: 'Connections', icon: 'pi pi-link' },
-  { key: 'media', name: 'Media & Branding', icon: 'pi pi-image' },
-  { key: 'stats', name: 'Stats & Reviews', icon: 'pi pi-chart-bar' },
+  { key: 'overview', name: 'Overview' },
+  { key: 'review', name: 'Reviews' },
+  { key: 'media', name: 'Photos' },
+  { key: 'faq', name: 'FAQs' },
+  { key: 'getreview', name: 'Get Reviews' }
 ]
 
-const route = useRoute();
 const currentTabKey = computed(() => {
   const tab = route.query.tab;
   const tabValue = Array.isArray(tab) ? tab[0] : tab;
   return (tabValue?.toString().toLowerCase() || tabItems[0]!.key);
 });
+
 const currentComponent = computed(() => {
   const key = currentTabKey.value as keyof typeof componentMap;
-  return componentMap[key] || ProfileDetails;
+  return componentMap[key] || ProfileOverview;
 });
-const fileInput = ref(null);
-const previewUrl = ref("");
+const tabsContainer = ref<HTMLUListElement | null>(null); 
+const SCROLL_AMOUNT = 150; 
 
-// Open file picker
-const triggerFileInput = () => {
-  fileInput.value?.click();
+// --- Scrolling Methods ---
+
+const scrollLeft = () => {
+  if (tabsContainer.value) {
+    tabsContainer.value.scrollBy({
+      left: -SCROLL_AMOUNT,
+      behavior: 'smooth'
+    });
+  }
 };
 
-// Show image preview
-const handleFileChange = (event) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    previewUrl.value = URL.createObjectURL(file);
+const scrollRight = () => {
+  if (tabsContainer.value) {
+    tabsContainer.value.scrollBy({
+      left: SCROLL_AMOUNT,
+      behavior: 'smooth'
+    });
   }
 };
 </script>
 
 <style scoped>
+.overlay-profile {
+    opacity: 0;
+}
 
+.image-slot-profile:hover .overlay-profile {
+    opacity: 1;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;  
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; 
+}
+
+
+@media (max-width: 767px) {
+    #scroll-left-btn,
+    #scroll-right-btn {
+        display: flex !important;
+    }
+    
+    .relative.flex.items-center.py-4.px-4 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    #tabs-scroll-container {
+        padding-left: 8px; 
+        padding-right: 8px; 
+    }
+}
 </style>

@@ -22,7 +22,7 @@
       inputClass
     ]"
   >
-    <i v-if="icon" :class="`pi pi-${icon}`"></i>
+    <i v-if="icon" :class="`pi pi-${icon}`" class="px-3"></i>
     {{ label }}
   </button>
 </template>
