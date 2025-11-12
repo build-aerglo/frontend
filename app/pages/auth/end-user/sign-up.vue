@@ -11,72 +11,88 @@
         <div class="flex justify-center mb-3 mt-2">
           <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
+        <div class="text-[#008253] text-center font-bold text-[100%] my-4">
+          Clear reviews, Confident decisions.
+        </div>
+
         <form @submit.prevent="handleSignup" class="space-y-4">
           <!-- Username -->
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-
-            <input id="username" v-model="form.username" type="text"
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input
+              id="username"
+              v-model="form.username"
+              type="text"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-
+              required
+            />
           </div>
 
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-
-            <input id="email" v-model="form.email" type="email"
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              id="email"
+              v-model="form.email"
+              type="email"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-
+              required
+            />
           </div>
 
           <!-- Phone -->
           <div>
-            <label for="phone" class="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-
-
-            <input id="phone" v-model="form.phone" type="tel" pattern="[0-9]{11}"
+            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input
+              id="phone"
+              v-model="form.phone"
+              type="tel"
+              pattern="[0-9]{11}"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-
+              required
+            />
           </div>
 
           <div class="flex space-x-4">
             <!-- Password -->
             <div class="w-1/2">
-              <label for="password" class="block text-sm font-medium text-gray-700">
-                Password
-              </label>
+              <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
               <div class="relative mt-1">
-                <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'"
+                <input
+                  id="password"
+                  v-model="form.password"
+                  :type="showPassword ? 'text' : 'password'"
                   class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-                  required />
-                <button type="button" @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary">
+                  required
+                />
+                <button
+                  type="button"
+                  @click="showPassword = !showPassword"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
+                >
                   <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
             </div>
+
             <!-- Confirm Password -->
             <div class="w-1/2">
               <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <div class="relative mt-1">
-                <input id="confirmPassword" v-model="form.confirmPassword" :type="showConfirm ? 'text' : 'password'"
+                <input
+                  id="confirmPassword"
+                  v-model="form.confirmPassword"
+                  :type="showConfirm ? 'text' : 'password'"
                   class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-                  required />
-                <button type="button" @click="showConfirm = !showConfirm"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary">
+                  required
+                />
+                <button
+                  type="button"
+                  @click="showConfirm = !showConfirm"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary"
+                >
                   <i :class="showConfirm ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
@@ -85,25 +101,27 @@
 
           <!-- Terms -->
           <div class="flex items-center gap-2 text-sm">
-            <input id="terms" type="checkbox" v-model="form.agree"
-              class="w-4 h-4 text-[#008253] border-gray-300 rounded" />
+            <input
+              id="terms"
+              type="checkbox"
+              v-model="form.agree"
+              required
+              class="w-4 h-4 text-[#008253] border-gray-300 rounded"
+            />
             <label for="terms">
               I agree to
-              <NuxtLink to="/" class="text-blue-500 hover:underline">
-                privacy policy & terms
-              </NuxtLink>
+              <NuxtLink to="/" class="text-blue-500 hover:underline">privacy policy & terms</NuxtLink>
             </label>
           </div>
 
           <div class="my-4">
-            <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
           </div>
         </form>
+
         <p class="text-center text-sm text-gray-800 mb-0">
           <span>Already have an account? </span>
-          <NuxtLink to="/auth/end-user/sign-in" class="text-blue-500 hover:underline font-medium">
-            Sign in
-          </NuxtLink>
+          <NuxtLink to="/auth/end-user/sign-in" class="text-blue-500 hover:underline font-medium">Sign in</NuxtLink>
         </p>
 
         <!-- Divider -->
@@ -127,6 +145,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import { useUserStore } from "~/store/user"; // import Pinia store
 
 interface SignupForm {
   username: string;
@@ -136,6 +157,9 @@ interface SignupForm {
   confirmPassword: string;
   agree: boolean;
 }
+
+const router = useRouter();
+const userStore = useUserStore(); // initialize store
 
 const form = ref<SignupForm>({
   username: "",
@@ -149,12 +173,58 @@ const form = ref<SignupForm>({
 const showPassword = ref(false);
 const showConfirm = ref(false);
 
-const handleSignup = () => {
+const handleSignup = async () => {
+  if (
+    !form.value.username ||
+    !form.value.email ||
+    !form.value.phone ||
+    !form.value.password ||
+    !form.value.confirmPassword ||
+    !form.value.agree
+  ) {
+    alert("Please fill in all fields and agree to the terms.");
+    return;
+  }
+
   if (form.value.password !== form.value.confirmPassword) {
     alert("Passwords do not match!");
     return;
   }
-  // Placeholder for backend auth API integration
-  console.log("User data ready for backend:", form.value);
+
+  try {
+    const signupUrl = "http://aerglotechnology.com/api/auth/login";
+
+    // Send signup request
+    const response = await axios.post(signupUrl, {
+      username: form.value.username,
+      email: form.value.email,
+      phone: form.value.phone,
+      password: form.value.password,
+    });
+
+    console.log("Signup response:", response.data);
+
+    //since API returns a token and user id
+    const token = response.data.access_token;
+    const userId = response.data.user?.id || "unknown";
+
+    if (!token) throw new Error("No token received from server.");
+
+    // Save token in storage
+    localStorage.setItem("authToken", token);
+
+    // Update Pinia store to mark user as logged in
+    userStore.setUser({ id: userId });
+
+    // Redirect to index.vue
+    router.push("/");
+  } catch (error: any) {
+    alert(
+      error.response?.data?.message ||
+        error.message ||
+        "Registration failed. Please try again."
+    );
+    console.error("Signup error:", error);
+  }
 };
 </script>

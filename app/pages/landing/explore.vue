@@ -145,20 +145,19 @@
       </div>
 
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Left Section - Business Cards (2/3 width) -->
-        <div class="lg:col-span-2 space-y-6">
-          <div 
-            v-for="business in filteredBusinesses" 
-            :key="business.id"
-            @click="focusedBusinessId = business.id"
-            :class="[
-              'bg-white rounded-2xl shadow-sm border-2 p-6 transition-all duration-300 cursor-pointer',
-              focusedBusinessId === business.id 
-                ? 'border-[#008253] shadow-lg ring-2 ring-green-200' 
-                : 'border-slate-200 hover:shadow-lg hover:border-slate-300'
-            ]"
-          >
+        <div class="md:col-span-2 space-y-6">
+          <template v-for="business in filteredBusinesses" :key="business.id">
+            <div 
+              @click="focusedBusinessId = business.id"
+              :class="[
+                'bg-white rounded-2xl shadow-sm border-2 p-6 transition-all duration-300 cursor-pointer',
+                focusedBusinessId === business.id 
+                  ? 'border-[#008253] shadow-lg ring-2 ring-green-200' 
+                  : 'border-slate-200 hover:shadow-lg hover:border-slate-300'
+              ]"
+            >
             <div class="grid grid-cols-[auto_1fr] gap-6">
               <!-- Card 1: Square Logo with Badges -->
               <div class="relative w-32 h-32">
@@ -227,8 +226,8 @@
                       <i class="pi pi-star-fill text-[#deae29]"></i>
                       <span class="text-xs font-semibold text-slate-700 uppercase tracking-wide">Rating</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                      <span class="text-2xl font-bold text-slate-900">{{ business.rating }}</span>
+                    <div class="flex items-center gap-1">
+                      <span class="text-xl font-bold text-slate-900">{{ business.rating }}</span>
                       <div class="flex">
                         <i 
                           v-for="star in 5" 
@@ -245,24 +244,12 @@
             </div>
           </div>
 
-          <!-- No Results Message -->
-          <div v-if="filteredBusinesses.length === 0" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
-            <i class="pi pi-search text-5xl text-slate-300 mb-4"></i>
-            <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
-            <p class="text-slate-600 mb-4">Try adjusting your filters to see more results</p>
-            <button
-              @click="clearAllFilters"
-              class="px-6 py-2 bg-[#008253] text-white rounded-xl hover:bg-[#008258] transition-colors"
-            >
-              Clear all filters
-            </button>
-          </div>
-        </div>
-
-        <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="lg:col-span-1">
-          <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky top-8">
-            <!-- Business Header -->
+          <!-- Review Summary for Mobile - Shows below clicked card -->
+          <div 
+            v-if="focusedBusinessId === business.id && focusedBusiness"
+            class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+          >
+            <!--header-->
             <div class="mb-6 pb-4 border-b border-slate-200">
               <div class="flex items-center gap-3 mb-2">
                 <img 
@@ -278,8 +265,8 @@
             </div>
 
             <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl font-bold text-slate-900">{{ focusedBusiness.rating }}</span>
+              <div class="flex items-center gap-1">
+                <span class="text-xl font-bold text-slate-900">{{ focusedBusiness.rating }}</span>
                 <div class="flex">
                   <i 
                     v-for="star in 5" 
@@ -345,15 +332,151 @@
 
               <!-- Review Stats -->
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-emerald-50 rounded-xl p-3 border border-emerald-200">
-                  <div class="flex items-center gap-2 mb-1">
+                <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-200">
+                  <div class="flex items-center gap-1">
                     <i class="pi pi-thumbs-up text-emerald-600 text-sm"></i>
                     <span class="text-xs font-semibold text-slate-700">Positive</span>
                   </div>
                   <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.positivePercent }}%</p>
                 </div>
-                <div class="bg-rose-50 rounded-xl p-3 border border-rose-200">
-                  <div class="flex items-center gap-2 mb-1">
+                <div class="bg-rose-50 rounded-xl p-2 border border-rose-200">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-thumbs-down text-rose-600 text-sm"></i>
+                    <span class="text-xs font-semibold text-slate-700">Negative</span>
+                  </div>
+                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.negativePercent }}%</p>
+                </div>
+              </div>
+
+              <!-- Common Keywords -->
+              <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                <p class="text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide">Common Keywords</p>
+                <div class="flex flex-wrap gap-2">
+                  <span 
+                    v-for="keyword in focusedBusiness.keywords" 
+                    :key="keyword"
+                    class="text-xs bg-white px-3 py-1.5 rounded-lg text-slate-700 border border-slate-200"
+                  >
+                    {{ keyword }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          </template>
+
+          <!-- No Results Message -->
+          <div v-if="filteredBusinesses.length === 0" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
+            <i class="pi pi-search text-5xl text-slate-300 mb-4"></i>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
+            <p class="text-slate-600 mb-4">Try adjusting your filters to see more results</p>
+            <button
+              @click="clearAllFilters"
+              class="px-6 py-2 bg-[#008253] text-white rounded-xl hover:bg-[#008258] transition-colors"
+            >
+              Clear all filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Section - Review Summary (1/3 width) -->
+        <div class="hidden md:block md:col-span-1">
+            <div 
+                v-if="focusedBusiness" 
+                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
+            >
+            <!--header-->
+            <div class="mb-6 pb-4 border-b border-slate-200">
+              <div class="flex items-center gap-3 mb-2">
+                <img 
+                  :src="focusedBusiness.logo" 
+                  :alt="focusedBusiness.name"
+                  class="w-12 h-12 rounded-lg object-cover border-2 border-slate-200"
+                />
+                <div>
+                  <h3 class="text-lg font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
+                  <p class="text-xs text-slate-600">Review Highlights</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-1">
+                <span class="text-xl font-bold text-slate-900">{{ focusedBusiness.rating }}</span>
+                <div class="flex">
+                  <i 
+                    v-for="star in 5" 
+                    :key="star"
+                    class="pi text-sm"
+                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                  ></i>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button 
+                  @click="prevReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-left text-slate-700 text-sm"></i>
+                </button>
+                <button 
+                  @click="nextReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Review Card -->
+              <div v-if="currentReview" :class="[
+                'rounded-xl p-4 border transition-all',
+                currentReview.rating >= 4 
+                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200' 
+                  : currentReview.rating >= 3
+                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
+                    : 'bg-gradient-to-br from-rose-50 to-red-50 border-rose-200'
+              ]">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      :src="currentReview.avatar" 
+                      :alt="currentReview.author"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
+                    <div class="flex items-center gap-1">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="pi text-xs"
+                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                  {{ currentReview.text }}
+                </p>
+                <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
+              </div>
+
+              <!-- Review Stats -->
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-200">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-thumbs-up text-emerald-600 text-sm"></i>
+                    <span class="text-xs font-semibold text-slate-700">Positive</span>
+                  </div>
+                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.positivePercent }}%</p>
+                </div>
+                <div class="bg-rose-50 rounded-xl p-2 border border-rose-200">
+                  <div class="flex items-center gap-1">
                     <i class="pi pi-thumbs-down text-rose-600 text-sm"></i>
                     <span class="text-xs font-semibold text-slate-700">Negative</span>
                   </div>
@@ -378,11 +501,14 @@
           </div>
 
           <!-- No Business Selected -->
-          <div v-else class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center sticky top-8">
-            <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
-            <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
-            <p class="text-sm text-slate-600">Click on any business card to view review highlights</p>
-          </div>
+          <div 
+                v-else 
+                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8"
+            >
+                <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
+                <p class="text-sm text-slate-600">Click on any business card to view review highlights</p>
+            </div>
         </div>
       </div>
     </div>
@@ -676,7 +802,7 @@ const businesses = ref<Business[]>([
         date: "2 weeks ago"
       }
     ]
-    }
+  }
 ])
 
 // --- Computed States ---
@@ -758,7 +884,5 @@ select:focus {
   box-shadow: 0 0 0 2px #008253 !important;
 }
 </style>
-
-
 
 
