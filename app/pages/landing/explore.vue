@@ -1,5 +1,6 @@
 <template>
   <NavBar/>
+
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filter Criteria Section -->
@@ -757,4 +758,7 @@ select:focus {
   box-shadow: 0 0 0 2px #008253 !important;
 }
 </style>
+
+
+
 

@@ -4,26 +4,42 @@ import persist from "pinia-plugin-persistedstate";
 interface UserParams {
   id: string;
 }
+
 export const useUserStore = defineStore("user-aerglotech", {
-  state: () => {
-    return {
-      loggedIn: false,
-      id: "null",
-    };
-  },
+  state: () => ({
+    loggedIn: false,
+    id: "null",
+    theme: "light", 
+  }),
 
   actions: {
     setUser(data: UserParams) {
-      this.$patch((state) => {
-        state["loggedIn"] = true;
-        state["id"] = data.id;
-      });
-
-      return true;
+      this.loggedIn = true;
+      this.id = data.id;
     },
 
     logOut() {
-      this.$reset;
+      this.$reset();
+    },
+
+    toggleTheme() {
+      this.theme = this.theme === "light" ? "dark" : "light";
+
+      
+      if (this.theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    },
+
+    initTheme() {
+      if (typeof document === "undefined") return;
+      if (this.theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     },
   },
 

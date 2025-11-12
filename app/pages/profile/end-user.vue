@@ -87,8 +87,10 @@
             />
 
             <!-- Text Section -->
-            <div class="text-left md:text-left space-y-2">
-              <h2 class="text-2xl font-bold text-gray-800">{{ profileData.username }}</h2>
+            <div class="space-y-2">
+              <div class="flex items-center text-bold text-2xl justify-center md:justify-start text-gray-800">
+                <span>{{ profileData.username }}</span>
+              </div>
               
               <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-phone text-gray-400"></i>
@@ -107,10 +109,10 @@
 
               <button
                 @click="isEditingProfile = true"
-                class="mt-2 text-blue-500 hover:text-[#008253] text-sm font-medium flex items-center gap-2 justify-center md:justify-start"
+                class="mt-2 text-blue-500 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
               >
                 <i class="pi pi-pencil text-xs"></i>
-                Edit Profile
+                <span class="text-sm">Edit Profile</span>
               </button>
             </div>
           </div>

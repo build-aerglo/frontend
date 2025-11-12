@@ -16,11 +16,7 @@
        <!-- Right buttons -->
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-        <li><NuxtLink to="/auth/end-user/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
-             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
-             hover:after:w-full"
-            >Write a Review</NuxtLink></li>
-        <!-- For Business Dropdown -->
+          <!-- For Business Dropdown -->
         <li class="relative">
           <button
             @click="toggleBusinessDropdown"
@@ -51,6 +47,11 @@
               Log in to Your Business Account
             </NuxtLink>
           </div>
+        </li>
+        <li><NuxtLink to="/auth/end-user/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
+             hover:after:w-full"
+            >Write a Review</NuxtLink>
         </li>
       </ul>
 
@@ -139,21 +140,15 @@
 
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useUserStore } from '~/store/user'
 
-const open = ref(false);
 const isOpen = ref(false)
-const isDark = ref(false)
 const showBusinessDropdown = ref(false)
+const userStore = useUserStore()
 
-// Theme setup
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme === 'dark') {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-  }
-
+  userStore.initTheme()
   document.addEventListener('click', handleClickOutside)
 })
 
@@ -161,17 +156,6 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-const toggleTheme = () => {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark', isDark.value)
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-}
-
-const themeIcon = computed(() =>
-  isDark.value ? 'pi pi-moon text-xl' : 'pi pi-sun text-xl'
-)
-
-// For Business dropdown
 const toggleBusinessDropdown = (event: MouseEvent) => {
   event.stopPropagation()
   showBusinessDropdown.value = !showBusinessDropdown.value
@@ -181,3 +165,8 @@ const handleClickOutside = () => {
   showBusinessDropdown.value = false
 }
 </script>
+
+
+
+
+
