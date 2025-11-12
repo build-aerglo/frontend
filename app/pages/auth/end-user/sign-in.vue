@@ -4,7 +4,6 @@
     <div class="hidden md:flex w-2/3 relative">
       <img
         src="~/assets/images/e-user-bg.png"
-        alt="Welcome background"
         class="w-full h-full object-cover"
       />
     </div>
@@ -15,7 +14,6 @@
         <div class="flex justify-center mb-4">
           <img
             src="~/assets/images/e-user-logo.png"
-            alt="Welcome"
             class="h-12 w-auto object-contain"
           />
         </div>
@@ -59,7 +57,6 @@
             </NuxtLink>
           </div>
           <div class="mb-6">
-            <!-- Removed NuxtLink wrapper to prevent navigation before login -->
             <button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
           </div>
         </form>

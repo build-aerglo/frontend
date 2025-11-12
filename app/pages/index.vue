@@ -10,7 +10,7 @@
     <div class="absolute inset-0 bg-cover bg-top blur-sm brightness-75 bg-fixed"
       style="background-image: url('/images/background/e-user-ldg.png');"></div>
 
-    <!-- Foreground content -->
+    <!-- Beginning content -->
     <div class="relative z-10 max-w-3xl font-sans">
       <h1 class="text-3xl sm:text-3xl font-bold mb-0 text-white drop-shadow-lg">
         Let real experiences guide you

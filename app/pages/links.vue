@@ -13,6 +13,9 @@
             <li>
                 <NuxtLink to="./profile/business-profile-user-pov" class="text-blue-500">Business Profile</NuxtLink>
             </li>
+            <li>
+                <NuxtLink to="./landing/explore" class="text-blue-500">Explore Page</NuxtLink>
+            </li>
         </ul>
     </div>
 
