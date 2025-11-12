@@ -16,7 +16,7 @@
             <!-- /Logo -->
             <p class="mb-6 text-[105%] sm:text-[110%] text-contrast text-center">Build customer trust through real feedback!</p>
 
-            <form @submit.prevent="handleRegistration" class="mb-6">
+            <form class="mb-6">
 
             <div class="form-control-validation">
               <InputTextCustom v-model="businessRegistration.name" label="Business Name" type="text" required />
@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import  useMethods  from '~/composables/useMethods';
 import type { BusinessData } from "~/types";
-const { registerBusiness } = useMethods();
+// const { registerBusiness } = useMethods();
 const businessRegistration = ref<BusinessData>({
     id: '',
     name: '',
@@ -77,14 +77,14 @@ const businessRegistration = ref<BusinessData>({
     confirmPassword: '',
 });
 
-const handleRegistration = async () => {
-  try {
-    const res = await registerBusiness (businessRegistration.value)
-    console.log('Business registered successfully:', res)
-  } catch (error) {
-    console.error('Error registering business:', error)
-  }
-}
+// const handleRegistration = async () => {
+//   try {
+//     const res = await registerBusiness (businessRegistration.value)
+//     console.log('Business registered successfully:', res)
+//   } catch (error) {
+//     console.error('Error registering business:', error)
+//   }
+// }
 
 </script>
 

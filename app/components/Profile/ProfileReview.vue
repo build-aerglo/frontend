@@ -9,10 +9,10 @@
     </div>
 
     <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold text-contrast">Recent Reviews</h3>
+      <span class="text-[130%] font-semibold text-contrast">Recent Reviews</span>
       <NuxtLink 
         :to="{ path: $route.path, query: { tab: 'review' } }"
-        class="text-sm text-primary hover:text-blue-700 transition"
+        class="text-sm !text-link hover:underline transition"
       >
         See All
       </NuxtLink>

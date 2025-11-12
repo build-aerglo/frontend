@@ -7,3 +7,7 @@ export interface BusinessData {
   confirmPassword: string;
   userType: string;
 }
+export interface LoginData {
+  email: string;
+  password: string;
+}
