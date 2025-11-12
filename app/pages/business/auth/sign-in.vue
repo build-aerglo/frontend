@@ -17,11 +17,11 @@
               <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-4">
                 
                 <div class="form-control-validation">
-                  <InputTextCustom v-model="businessLogin.email" label="Email" type="email" required />
+                  <InputTextCustom v-model="loginData.email" label="Email" type="email" required />
                 </div>
 
                 <div class="form-password-toggle form-control-validation">
-                  <InputTextCustom v-model="businessLogin.password" label="Password" type="password" required />
+                  <InputTextCustom v-model="loginData.password" label="Password" type="password" required />
                 </div>
                 <div class="mb-6 mt-8">
                   <div class="d-flex justify-content-between">
@@ -34,7 +34,7 @@
                     </NuxtLink>
                 </div>
                 </div>
-                <ButtonCustom label="Sign in" size="lg" primary="true" input-class="p-3 text-[15px]" />
+                <ButtonCustom label="Sign in" size="lg" primary="true" input-class="p-3 text-[15px]" type="submit" />
               </form>
 
               <p class="text-center md:text[100%] pt-1">
@@ -52,14 +52,24 @@
 </template>
 
 <script setup lang="ts">
+import  useMethods  from '~/composables/useMethods';
+import type { LoginData } from "~/types";
+const { loginAuth0 } = useMethods();
 
-const businessLogin = ref({
-    email: '',
-    password: '',
+const loginData = ref<LoginData>({
+  email: '',
+  password: '',
 
 });
-const HandleLogin = () => {
-  alert('Logged in successfully!')
+const HandleLogin = async () => {
+  console.log(useRuntimeConfig().public.apiUrl)
+  const res = await loginAuth0(loginData.value, "business_user");
+  if (!res.error) {
+    console.log("Login successful:", res);
+    navigateTo('./profile')
+  } else {
+    alert(res.error);
+  }
 }
 
 </script>
