@@ -24,12 +24,19 @@
         <NuxtLink to="./business/settings">Business Settings page</NuxtLink>
         <NuxtLink to="./business/profile">Business Profile page</NuxtLink>
     </div>
+
+    <button @click="isLogin">Login</button>
 </template>
 
 <script setup>
 definePageMeta({
     layout: false
 });
+const { login } = useMethods();
 
+const isLogin = async () => {
+    const res = await login();
+    console.log(res);
+}
 
 </script>

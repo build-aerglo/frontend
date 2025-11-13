@@ -1,10 +1,13 @@
 import Aura from "@primeuix/themes/aura";
 
 export default defineNuxtConfig({
-  
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
-  css: ["primeicons/primeicons.css","@/assets/style.css", "@/assets/css/bundle.css"],
+  css: [
+    "primeicons/primeicons.css",
+    "@/assets/style.css",
+    "@/assets/css/bundle.css",
+  ],
   modules: [
     "@nuxtjs/tailwindcss",
     "@primevue/nuxt-module",
@@ -26,6 +29,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: process.env.API_URL!,
+      business_api_url: process.env.BUSINESS_API!,
+      user_api_url: process.env.USER_API!,
     },
   },
 });
