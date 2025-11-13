@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import  useMethods  from '~/composables/useMethods';
 import type { LoginData } from "~/types";
-const { loginAuth0 } = useMethods();
+const { loginUser } = useMethods();
 
 const loginData = ref<LoginData>({
   email: '',
@@ -63,10 +63,10 @@ const loginData = ref<LoginData>({
 });
 const HandleLogin = async () => {
   console.log(useRuntimeConfig().public.apiUrl)
-  const res = await loginAuth0(loginData.value, "business_user");
+  const res = await loginUser(loginData.value);
   if (!res.error) {
     console.log("Login successful:", res);
-    navigateTo('./profile')
+    // navigateTo('./profile')
   } else {
     alert(res.error);
   }

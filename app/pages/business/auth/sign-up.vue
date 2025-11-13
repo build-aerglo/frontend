@@ -16,29 +16,29 @@
             <!-- /Logo -->
             <p class="mb-6 text-[105%] sm:text-[110%] text-contrast text-center">Build customer trust through real feedback!</p>
 
-            <form class="mb-6">
+            <form @submit.prevent="handleRegistration" class="mb-6">
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistration.name" label="Business Name" type="text" required />
+              <InputTextCustom v-model="businessData.name" label="Business Name" type="text" required />
             </div>
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistration.email" label="Email" type="email" required />
+              <InputTextCustom v-model="businessData.email" label="Email" type="email" required />
             </div>
 
             <div class="form-control-validation">
-              <InputTextCustom v-model="businessRegistration.phone" label="Phone Number" type="tel" required />
+              <InputTextCustom v-model="businessData.phone" label="Phone Number" type="tel" required />
             </div>
             
             <div class="form-password-toggle form-control-validation">
-              <InputTextCustom v-model="businessRegistration.password" label="Password" type="password" required />
+              <InputTextCustom v-model="businessData.password" label="Password" type="password" required />
             </div>
 
             <div class="form-password-toggle form-control-validation">
-              <InputTextCustom v-model="businessRegistration.confirmPassword" label="Confirm Password" type="password" required />
+              <InputTextCustom v-model="businessData.confirmPassword" label="Confirm Password" type="password" required />
             </div>
             
-            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px] mt-8" />
+            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px] mt-8" type="submit" />
             </form>
 
             <p class="text-center md:text-[100%]">
@@ -66,25 +66,31 @@
 <script setup lang="ts">
 import  useMethods  from '~/composables/useMethods';
 import type { BusinessData } from "~/types";
-// const { registerBusiness } = useMethods();
-const businessRegistration = ref<BusinessData>({
+const { registerBusiness } = useMethods();
+const businessData = ref<BusinessData>({
     id: '',
     name: '',
     email: '',
     phone: '',
-    userType: '',
+    userType: 'business_user',
     password: '',
     confirmPassword: '',
+    address: null,
+    branchName: null,
+    branchAddress: null,
+    website: null,
+    categoryIds: [
+      null
+    ]
 });
-
-// const handleRegistration = async () => {
-//   try {
-//     const res = await registerBusiness (businessRegistration.value)
-//     console.log('Business registered successfully:', res)
-//   } catch (error) {
-//     console.error('Error registering business:', error)
-//   }
-// }
+const handleRegistration = async () => {
+  try {
+    const res = await registerBusiness (businessData.value)
+    console.log('Business registered successfully:', res)
+  } catch (error) {
+    console.error('Error registering business:', error)
+  }
+}
 
 </script>
 
