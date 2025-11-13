@@ -26,6 +26,15 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: process.env.API_URL!,
+      businessApiUrl: process.env.BUSINESS_API_URL!
     },
   },
+  // nitro: {
+  //   devProxy : {
+  //     '/api/' : {
+  //       target: 'http://aerglotechnology.com',
+  //       changeOrigin : true
+  //     }
+  //   }
+  // }
 });

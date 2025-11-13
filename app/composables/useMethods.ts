@@ -1,67 +1,56 @@
 import useApi from "~/composables/useApi";
+import useBusinessApi from "~/composables/useBusinessApi";
 import useUser from "~/composables/useUser";
 import type { BusinessData, LoginData } from "~/types";
 export default function () {
   const api = useApi();
+  const businessApi = useBusinessApi();
   const user = useUser();
-  const loginAuth0 = async (data:LoginData, type: "business_user" | "end_user" | "support_user") => {
-    try {
-      // Step 1: Send email & password to backend
-      const res = await api.post("api/auth/login", {
-        email: data.email,
-        password: data.password,
-      });
+  const loginUser = async (data: LoginData) => {
+  try {
+    const res = await api.post("api/auth/login", {
+      email: data.email,
+      password: data.password,
+    });
 
-      if (res.status === 200) {
-        const { token, user } = res.data;
-        // Step 2: Store token (if any)
+    if (res.status === 200) {
+      const { token, user } = res.data;
+      if (token) {
         localStorage.setItem("token", token);
-        localStorage.setItem("user_type", type);
-
-        // Step 3: Redirect or return user data
-        if (type === "business_user") {
-          // e.g., navigate to business dashboard
-          console.log("Logged in as Business User:", user);
-        } else if (type === "end_user") {
-          console.log("Logged in as End User:", user);
-        } else if (type === "support_user") {
-          console.log("Logged in as Support User:", user);
-        }
-        return user;
-      } else {
-        throw new Error("Login failed");
       }
-    } catch (error) {
-      console.error("Auth0 login error:", error);
-      return { error: "Invalid credentials or network issue" };
+      localStorage.setItem("user", JSON.stringify(user));
+      console.log("Login successful:", user);
+      navigateTo("/business/profile");
+
+      return user;
+    } else {
+      throw new Error("Login failed");
     }
-  };
+  } catch (error: any) {
+    console.error("Login error:", error);
+    return {
+      error: error.response?.data?.message || "Invalid credentials or network issue",
+    };
+  }
+};
+const registerBusiness = async (data: BusinessData) => {
+  try {
+    const res = await api.post("api/User/business", data);
 
+    if (res.status === 200 || res.status === 201) {
+      console.log("Business registered successfully:", res.data);
+      return res.data;
+    } else {
+      throw new Error("Registration failed");
+    }
+  } catch (error: any) {
+    console.error("Business registration error:", error);
+    return {
+      error: error.response?.data?.message || "Something went wrong during registration",
+    };
+  }
+};
 
-
-  // const registerAuth0 = async (data:BusinessData, type: "business_user" | "end_user" | "support_user") => {
-  //   try {
-  //     const res = await api.post(
-  //       "api/auth/register",
-  //       JSON.stringify({ email: data.email, password: data.password})
-  //     );
-  //     if (res.status === 200) {
-  //       if (type === "business_user") {
-  //         return await registerBusiness(data);
-  //       }
-  //       if (type === "end_user") {
-  //         return await registerEndUser(data);
-  //       }
-  //       if (type === "support_user") {
-  //         return await registerSupportUser(data);
-  //       }
-  //       return res.data;
-  //     }
-  //     throw new Error("Error");
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // };
   const mockFunction = async () => {
     try {
       const res = await api.get("url");
@@ -91,7 +80,7 @@ export default function () {
   return {
     mockFunction,
     mockFunctionPost,
-    loginAuth0,
-
+    loginUser,
+    registerBusiness
   };
 }
