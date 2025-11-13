@@ -128,7 +128,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "~/store/user"; // Adjust path as needed
+import { useUserStore } from "~/store/user"; 
 import axios from "axios";
 
 const router = useRouter();
@@ -146,10 +146,10 @@ function togglePassword() {
 }
 
 async function handleSubmit() {
-  // Clear previous error
+  
   errorMessage.value = "";
   
-  // Basic validation
+  
   if (!email.value || !password.value) {
     errorMessage.value = "Please enter both email and password.";
     return;
@@ -168,13 +168,13 @@ async function handleSubmit() {
     console.log("Login response:", response.data);
 
     const token = response.data.access_token;
-    const userId = response.data.user?.id || response.data.id; // Adjust based on your API response structure
+    const userId = response.data.user?.id || response.data.id; 
 
     if (!token) {
       throw new Error("No authentication token received from server.");
     }
 
-    // Save token based on remember me preference
+    // Save token 
     if (rememberMe.value) {
       localStorage.setItem("authToken", token);
     } else {
@@ -186,7 +186,7 @@ async function handleSubmit() {
       id: userId || email.value // Use email as fallback if no ID
     });
 
-    // Optional: Store additional user info if available
+  
     if (response.data.user) {
       
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
