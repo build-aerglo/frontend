@@ -59,11 +59,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import axios from "axios";
+import { useUserStore } from "~/store/user"; 
+import { useRouter } from "vue-router";
 
 const email = ref<string>("");
 const password = ref<string>("");
 const showPassword = ref<boolean>(false);
 const rememberMe = ref<boolean>(false);
+
+const userStore = useUserStore();
+const router = useRouter();
 
 const togglePassword = () => (showPassword.value = !showPassword.value);
 
@@ -77,24 +82,28 @@ const onSubmit = async () => {
     });
 
     const token = response.data.access_token;
+    const userId = response.data.user?.id; 
 
     if (!token) {
       throw new Error("No token received from server.");
     }
 
+    // Save token
     if (rememberMe.value) {
-      // Save token persistently
       localStorage.setItem("authToken", token);
     } else {
-      // Save token for session only
       sessionStorage.setItem("authToken", token);
     }
 
-    // Redirect to home page after successful login
-    window.location.href = "/";
+    userStore.setUser({ id: userId });
+
+    await router.push("/");
   } catch (error: any) {
+    console.error("Login error:", error);
     alert(
-      error.response?.data?.message || error.message || "Login failed. Please try again."
+      error.response?.data?.message || 
+      error.message || 
+      "Login failed. Please check your connection and try again."
     );
   }
 };
