@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex justify-center mt-1">
     <div
-      class="relative flex items-center w-full sm:max-w-sm md:max-w-md lg:max-w-lg bg-transparent dark:bg-gray-900 shadow-md border border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-[#008253] transition-all duration-300"
+      class="relative flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg bg-transparent dark:bg-gray-900 shadow-md border border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-[#008253] transition-all duration-300"
     >
       <!-- Input Field -->
       <input
