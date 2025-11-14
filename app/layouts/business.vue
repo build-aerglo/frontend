@@ -1,45 +1,32 @@
 <template>
-  <div class="layout-wrapper layout-content-navbar" 
-       :class="{ 'layout-menu-collapsed': isLayoutCollapsed }">
+  <Toast />
+  <div class="layout-wrapper layout-content-navbar" :class="{ 'layout-menu-collapsed': isLayoutCollapsed }">
     <div class="layout-container">
-      
-      <NavSideBar 
-        @toggle="toggleLayout" 
-        :isLayoutCollapsed="isLayoutCollapsed" 
-        :menuItems="menuItems" />
+
+      <NavSideBar @toggle="toggleLayout" :isLayoutCollapsed="isLayoutCollapsed" :menuItems="menuItems" />
 
       <div class="layout-page">
         <nav class="nav-bar bg-white w-full py-1 flex items-center px-6 shadow-bottom nav sticky top-0">
-          
-          <a href="javascript:void(0);" 
-            class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle" 
-            @click="toggleLayout"
-          >
-            <i class="pi pi-bars text-2xl"></i> 
+
+          <a href="javascript:void(0);" class="nav-item nav-link px-0 p-2 h-full mobile-menu-toggle"
+            @click="toggleLayout">
+            <i class="pi pi-bars text-2xl"></i>
           </a>
-          
+
           <div class="flex items-center justify-between w-full px-0">
-  
-            <div 
-              v-if="route.path === '/business/settings'" 
-              class="hidden md:flex items-center space-x-4"
-            >
+
+            <div v-if="route.path === '/business/settings'" class="hidden md:flex items-center space-x-4">
               <ClientOnly>
                 <SettingTab />
               </ClientOnly>
             </div>
-            
+
             <div class="flex items-center gap-4 ml-auto">
               <i class="pi pi-bell text-xl text-contrast cursor-pointer"></i>
-              <div
-                  class="relative w-10 h-10 rounded-full overflow-hidden group cursor-pointer"
-                  @click="triggerFileInput" 
-              >
-                  <img
-                      :src="previewUrl || defaultAvatar"
-                      alt="Profile"
-                      class="w-full h-full object-cover rounded-full border border-gray-300"
-                  />
+              <div class="relative w-10 h-10 rounded-full overflow-hidden group cursor-pointer"
+                @click="triggerFileInput">
+                <img :src="previewUrl || defaultAvatar" alt="Profile"
+                  class="w-full h-full object-cover rounded-full border border-gray-300" />
               </div>
             </div>
           </div>
@@ -47,18 +34,19 @@
 
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
-            <slot /> 
+            <slot />
           </div>
         </div>
         <footer class="footer bg-white border-t border-gray-200 p-8 mt-12">
           <div class="container-xxl mx-auto">
-            
+
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 
               <div class="col-span-full lg:col-span-2">
                 <p class="text-[150%] font-semibold text-gold mb-3">CleReview</p>
                 <p class="text-[100%] text-contrast w-full md:max-w-md">
-                  Empower your business with real-time customer insights. Turn feedback into fuel for growth and excellence.
+                  Empower your business with real-time customer insights. Turn feedback into fuel for growth and
+                  excellence.
                 </p>
               </div>
 
@@ -94,7 +82,7 @@
                   </li>
                 </ul>
               </div>
-              
+
             </div>
 
             <hr class="my-8 border-gray-200" />
@@ -106,15 +94,13 @@
             </div>
           </div>
         </footer>
-        
+
       </div>
     </div>
-    <div 
-      class="menu-overlay fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 z-[1040]"
+    <div class="menu-overlay fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 z-[1040]"
       :class="{ 'opacity-100 visible': !isLayoutCollapsed, 'opacity-0 invisible': isLayoutCollapsed }"
-      @click="toggleLayout"
-    ></div>
-    </div>
+      @click="toggleLayout"></div>
+  </div>
 </template>
 
 <script setup>
@@ -134,14 +120,14 @@ const toggleLayout = () => {
   isLayoutCollapsed.value = !isLayoutCollapsed.value;
 };
 watch(isLayoutCollapsed, (isCollapsed) => {
-  if (import.meta.client) { 
+  if (import.meta.client) {
     if (!isCollapsed) {
       document.body.classList.add('menu-open');
     } else {
       document.body.classList.remove('menu-open');
     }
   }
-}, { immediate: true }); 
+}, { immediate: true });
 const defaultAvatar = 'https://www.gravatar.com/avatar/?d=mp&s=100'
 const previewUrl = ref(null)
 const fileInput = ref(null)
@@ -163,19 +149,21 @@ const handleFileChange = (event) => {
     display: none !important;
   }
 }
+
 @media (min-width: 1200px) {
   .nav {
-    padding: 12px 20px 12px 20px !important; 
+    padding: 12px 20px 12px 20px !important;
   }
 }
+
 .nav {
-  z-index: 1020 !important; 
+  z-index: 1020 !important;
 }
 
 @media (max-width: 1200px) {
   .layout-menu {
     position: fixed !important;
-    top: 0; 
+    top: 0;
     left: 0;
     height: 100vh;
     width: 260px;
@@ -214,15 +202,17 @@ const handleFileChange = (event) => {
     pointer-events: none;
   }
 }
+
 @media (min-width: 1200px) {
   .menu-overlay {
     display: none !important;
   }
 }
+
 @media (min-width: 1200px) {
   .layout-menu {
     position: sticky !important;
-    top: 0; 
+    top: 0;
     left: 0;
     height: 100vh;
   }

@@ -1,48 +1,56 @@
 import useApi from "~/composables/useApi";
 import type { BusinessUser, LoginData } from "~/types";
-import { useBusinessUserStore } from "@/store/businessUser"; 
+import useBusinessUser from "./useBusinessUser";
 
 export default function () {
+  const store = useBusinessUser();
   const api = useApi();
+
   const registerBusiness = async (data: BusinessUser) => {
     try {
-      const store = useBusinessUserStore();
-      const res = await api.post('api/User/business', data);
+      const res = await api.post("api/User/business", data);
 
       if (res.status === 201 || res.status === 200) {
-        const user: BusinessUser = res.data 
-        store.setUserData(user); 
+        const user: BusinessUser = res.data;
+        store.setUserData(user);
         return user;
       } else {
-        throw new Error('Registration failed');
+        throw new Error("Registration failed");
       }
     } catch (err: any) {
-      console.error(err?.response?.data?.message || err.message || 'Something went wrong');
+      console.error(
+        err?.response?.data?.message || err.message || "Something went wrong"
+      );
       return null;
     }
-  }
-  const loginUser = async (data: LoginData) => { 
+  };
+  const loginUser = async (data: LoginData) => {
     try {
-      const store = useBusinessUserStore();
-      const res = await api.post('api/auth/login', {
+      const res = await api.post("api/auth/login", {
         email: data.email,
         password: data.password,
       });
 
-      if (res.status === 200) {
-        const { access_token, id_token, role } = res.data;
-        store.setLoginData({ access_token, id_token, role }); 
+      if (res.status === 200 && res.data) {
+        const { access_token, id_token, expires_in, roles } = res.data;
+        const role = roles[0];
+        store.setLoginData({
+          access_token: access_token,
+          id_token: id_token,
+          role: role,
+          expires: new Date(Date.now() + 23 * 60 * 60 * 1000), // 23hrs
+        });
         return res.data;
       } else {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
     } catch (err: any) {
-      console.error(err?.response?.data?.message || err.message || 'Something went wrong');
+      console.error(
+        err?.response?.data?.message || err.message || "Something went wrong"
+      );
       return null;
     }
-  } 
-  
-
+  };
 
   const mockFunction = async () => {
     try {
@@ -75,7 +83,7 @@ export default function () {
   return {
     mockFunction,
     mockFunctionPost,
-    loginUser, 
-    registerBusiness
+    loginUser,
+    registerBusiness,
   };
 }
