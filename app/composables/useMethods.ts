@@ -1,55 +1,48 @@
 import useApi from "~/composables/useApi";
-import useBusinessApi from "~/composables/useBusinessApi";
-import useUser from "~/composables/useUser";
-import type { BusinessData, LoginData } from "~/types";
+import type { BusinessUser, LoginData } from "~/types";
+import { useBusinessUserStore } from "@/store/businessUser"; 
+
 export default function () {
   const api = useApi();
-  const businessApi = useBusinessApi();
-  const user = useUser();
-  const loginUser = async (data: LoginData) => {
-  try {
-    const res = await api.post("api/auth/login", {
-      email: data.email,
-      password: data.password,
-    });
+  const registerBusiness = async (data: BusinessUser) => {
+    try {
+      const store = useBusinessUserStore();
+      const res = await api.post('api/User/business', data);
 
-    if (res.status === 200) {
-      const { token, user } = res.data;
-      if (token) {
-        localStorage.setItem("token", token);
+      if (res.status === 201 || res.status === 200) {
+        const user: BusinessUser = res.data 
+        store.setUserData(user); 
+        return user;
+      } else {
+        throw new Error('Registration failed');
       }
-      localStorage.setItem("user", JSON.stringify(user));
-      console.log("Login successful:", user);
-      navigateTo("/business/profile");
-
-      return user;
-    } else {
-      throw new Error("Login failed");
+    } catch (err: any) {
+      console.error(err?.response?.data?.message || err.message || 'Something went wrong');
+      return null;
     }
-  } catch (error: any) {
-    console.error("Login error:", error);
-    return {
-      error: error.response?.data?.message || "Invalid credentials or network issue",
-    };
   }
-};
-const registerBusiness = async (data: BusinessData) => {
-  try {
-    const res = await api.post("api/User/business", data);
+  const loginUser = async (data: LoginData) => { 
+    try {
+      const store = useBusinessUserStore();
+      const res = await api.post('api/auth/login', {
+        email: data.email,
+        password: data.password,
+      });
 
-    if (res.status === 200 || res.status === 201) {
-      console.log("Business registered successfully:", res.data);
-      return res.data;
-    } else {
-      throw new Error("Registration failed");
+      if (res.status === 200) {
+        const { access_token, id_token, role } = res.data;
+        store.setLoginData({ access_token, id_token, role }); 
+        return res.data;
+      } else {
+        throw new Error('Login failed');
+      }
+    } catch (err: any) {
+      console.error(err?.response?.data?.message || err.message || 'Something went wrong');
+      return null;
     }
-  } catch (error: any) {
-    console.error("Business registration error:", error);
-    return {
-      error: error.response?.data?.message || "Something went wrong during registration",
-    };
-  }
-};
+  } 
+  
+
 
   const mockFunction = async () => {
     try {
@@ -61,6 +54,7 @@ const registerBusiness = async (data: BusinessData) => {
       throw new Error("Error");
     } catch (error) {
       console.log(error);
+      return null;
     }
   };
 
@@ -74,13 +68,14 @@ const registerBusiness = async (data: BusinessData) => {
       throw new Error("Error");
     } catch (error) {
       console.log(error);
+      return null;
     }
   };
 
   return {
     mockFunction,
     mockFunctionPost,
-    loginUser,
+    loginUser, 
     registerBusiness
   };
 }

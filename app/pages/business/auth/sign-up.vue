@@ -35,10 +35,10 @@
             </div>
 
             <div class="form-password-toggle form-control-validation">
-              <InputTextCustom v-model="businessData.confirmPassword" label="Confirm Password" type="password" required />
+              <InputTextCustom v-model="confirmPassword" label="Confirm Password" type="password" required />
             </div>
-            
-            <ButtonCustom label="Register your business" size="lg" primary="true" input-class="p-[10px] text-[15px] mt-8" type="submit" />
+            <div v-if="registrationError" class="text-red-500">{{ registrationError }}</div>
+            <ButtonCustom :label="isLoading ? 'Registering...' : 'Register your business'" :disabled="isLoading" size="lg" primary="true" input-class="p-[10px] text-[15px] mt-8" type="submit" />
             </form>
 
             <p class="text-center md:text-[100%]">
@@ -64,17 +64,19 @@
 </template>
 
 <script setup lang="ts">
-import  useMethods  from '~/composables/useMethods';
-import type { BusinessData } from "~/types";
+import useMethods from '~/composables/useMethods';
+import type { BusinessUser } from "~/types";
+
 const { registerBusiness } = useMethods();
-const businessData = ref<BusinessData>({
+const router = useRouter();
+
+const businessData = ref<BusinessUser>({
     id: '',
     name: '',
     email: '',
     phone: '',
     userType: 'business_user',
     password: '',
-    confirmPassword: '',
     address: null,
     branchName: null,
     branchAddress: null,
@@ -83,15 +85,25 @@ const businessData = ref<BusinessData>({
       null
     ]
 });
-const handleRegistration = async () => {
-  try {
-    const res = await registerBusiness (businessData.value)
-    console.log('Business registered successfully:', res)
-  } catch (error) {
-    console.error('Error registering business:', error)
-  }
-}
+const confirmPassword = ref('')
+const isLoading = ref(false);
+const registrationError = ref<string | null>(null);
 
+const handleRegistration = async () => {
+  isLoading.value = true;
+  registrationError.value = null;
+
+  const res = await registerBusiness(businessData.value);
+  if (res) {
+    alert('Business registered successfully')
+    console.log(res);
+    router.push('/sign-in'); 
+  } else {
+    registrationError.value = 'Registration failed. Check the form data and try again.';
+  }
+  
+  isLoading.value = false;
+}
 </script>
 
 <style scoped>
