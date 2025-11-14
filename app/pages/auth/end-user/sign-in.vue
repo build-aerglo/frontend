@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="flex h-screen overflow-hidden">
     <!-- Left Image Section -->
@@ -11,7 +9,7 @@
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4 bg-gray-50">
+    <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4">
       <div class="w-full max-w-sm space-y-5">
         <div class="flex justify-center mb-4">
           <img

@@ -8,11 +8,11 @@
     <!-- Right Form Section -->
     <div class="flex flex-col justify-center items-center px-8 w-full md:w-1/3">
       <div class="w-full max-w-md">
-        <div class="flex justify-center mb-3 mt-2">
+        <div class="flex justify-center mb-1 mt-2">
           <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] my-4">Clear reviews, Confident decisions.</div>
-        <form @submit.prevent="handleSignup" class="space-y-4">
+        <div class="text-[#008253] text-center font-bold text-[100%] my-1">Clear reviews, Confident decisions.</div>
+        <form @submit.prevent="handleSignup" class="space-y-2">
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-gray-700">
@@ -26,6 +26,7 @@
           </div>
 
           <!-- Email -->
+          
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email
@@ -36,6 +37,8 @@
               required />
 
           </div>
+
+
 
           <!-- Phone -->
           <div>
@@ -48,6 +51,15 @@
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
 
+          </div>
+
+          <div>
+            <label for="address" class="block text-sm font-medium text-gray-700">
+              Address
+            </label>
+            <input id="address" v-model="form.address" type="address"
+              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+              required />
           </div>
 
           <div class="flex space-x-4">
@@ -84,7 +96,7 @@
           </div>
 
           <!-- Terms -->
-          <div class="flex items-center gap-2 text-sm">
+          <div class="flex items-center gap-2 text-xs">
             <input id="terms" type="checkbox" v-model="form.agree"
               class="w-4 h-4 text-[#008253] border-gray-300 rounded" />
             <label for="terms">
@@ -95,8 +107,8 @@
             </label>
           </div>
 
-          <div class="my-4">
-            <NuxtLink to="/"><button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button></NuxtLink>
+          <div class="my-2">
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
           </div>
         </form>
         <p class="text-center text-sm text-gray-800 mb-0">
@@ -125,15 +137,21 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router"; 
+
+const router = useRouter(); 
 
 interface SignupForm {
   username: string;
   email: string;
   phone: string;
+  address: string;
   password: string;
   confirmPassword: string;
+  socialMedia: string;
   agree: boolean;
 }
 
@@ -141,20 +159,54 @@ const form = ref<SignupForm>({
   username: "",
   email: "",
   phone: "",
+  address: "",
   password: "",
   confirmPassword: "",
+  socialMedia: "",
   agree: false,
 });
 
 const showPassword = ref(false);
 const showConfirm = ref(false);
 
-const handleSignup = () => {
+const handleSignup = async () => {
   if (form.value.password !== form.value.confirmPassword) {
     alert("Passwords do not match!");
     return;
   }
-  // Placeholder for backend auth API integration
-  console.log("User data ready for backend:", form.value);
+  if (!form.value.agree) {
+    alert("You must agree to the privacy policy & terms.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://aerglotechnology.com/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: form.value.username,
+        email: form.value.email,
+        phone: form.value.phone,
+        address: form.value.address,
+        password: form.value.password,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      alert("Registration failed: " + (errorData.message || "Unknown error"));
+      return;
+    }
+
+    alert("Registration successful! Redirecting to sign in...");
+
+    // Redirect to sign-in page
+    router.push("/auth/end-user/sign-in");
+
+  } catch (error: any) {
+    alert("Network or server error: " + error.message);
+  }
 };
 </script>
