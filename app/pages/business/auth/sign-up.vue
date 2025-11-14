@@ -129,7 +129,7 @@ watch([password, confirmPassword], () => {
 
 const handleRegistration = async () => {
   if (!allValid.value) return;
-  if (confirmPassword.value !== businessData.value.password) {
+  if (confirmPassword.value !== password.value) {
     return toast.add({
       severity: 'error',
       summary: 'ERROR', detail: 'Password do not match', life: 3000
