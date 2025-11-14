@@ -9,7 +9,7 @@ export interface BusinessUser {
   password: string;
   userType: string;
   website: string | null;
-  categoryIds: (number | null)[];
+  categoryIds: string[] | null;
 }
 export interface LoginData {
   email: string;
