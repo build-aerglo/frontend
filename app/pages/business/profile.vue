@@ -154,12 +154,11 @@
           :label="isEditing ? 'Save Changes' : 'Edit Profile'"
           :primary="true"
           size="lg"
-          icon="pi pi-pencil"
-          input-class="text-[15px] w-auto"
-          @click="toggleEdit"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto"
+          class="mobile-icon-only-button" @click="toggleEdit"
         />
       </div>
-
+  
       <div
         class="absolute bottom-[5%] md:bottom-[8%] left-[2px] transform translate-y-1/2 border-t-[1px] border-gray-200 w-full"
       >
@@ -270,7 +269,7 @@ const business = reactive({
   websiteUrl: '',
   openDays: 'Open Now - Closes at 10:00 PM', 
   openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
-  closeTime: '22:00', // This will hold the time value when editing
+  closeTime: '22:00', 
 })
 
 const handleFileChange = (e: Event) => {
@@ -378,6 +377,15 @@ const scrollRight = () => {
     #tabs-scroll-container {
         padding-left: 8px; 
         padding-right: 8px; 
+    }
+    .mobile-icon-only-button :deep(.p-button-label) {
+        display: none !important;
+    }
+    
+   
+    .mobile-icon-only-button {
+        padding-left: 0.75rem !important; 
+        padding-right: 0.75rem !important; 
     }
 }
 </style>

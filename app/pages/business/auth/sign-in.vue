@@ -34,7 +34,12 @@
                     </NuxtLink>
                 </div>
                 </div>
-                <ButtonCustom label="Sign in" size="lg" primary="true" input-class="p-3 text-[15px]" type="submit" />
+                <div v-if="loginError" class="text-red-500">{{ loginError }}</div>
+                <ButtonCustom :label="isLoading ? 'Authenticating...' : 'Login'"
+                :disabled="isLoading" 
+                size="lg" primary="true" 
+                input-class="p-3 text-[15px]" 
+                type="submit" />
               </form>
 
               <p class="text-center md:text[100%] pt-1">
@@ -52,26 +57,42 @@
 </template>
 
 <script setup lang="ts">
-import  useMethods  from '~/composables/useMethods';
+import { useBusinessUserStore } from '@/store/businessUser' 
+import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
+
 const { loginUser } = useMethods();
+const router = useRouter(); 
+const store = useBusinessUserStore(); 
 
 const loginData = ref<LoginData>({
   email: '',
   password: '',
-
 });
-const HandleLogin = async () => {
-  console.log(useRuntimeConfig().public.apiUrl)
-  const res = await loginUser(loginData.value);
-  if (!res.error) {
-    console.log("Login successful:", res);
-    // navigateTo('./profile')
-  } else {
-    alert(res.error);
-  }
-}
 
+const isLoading = ref(false);
+const loginError = ref<string | null>(null);
+
+const HandleLogin = async () => {
+  isLoading.value = true;
+  loginError.value = null; 
+
+  const res = await loginUser(loginData.value);
+
+  if (res) {
+    alert('login successful')
+    console.log(res);
+    if (store.accessToken) {
+        router.push('../profile');
+    } else {
+        loginError.value = 'Login succeeded, but no token was stored.';
+    }
+  } else {
+    loginError.value = 'Login failed. Please check your credentials and network connection.';
+  }
+
+  isLoading.value = false;
+}
 </script>
 
 <style scoped>

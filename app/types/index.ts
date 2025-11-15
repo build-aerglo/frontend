@@ -1,4 +1,4 @@
-export interface BusinessData {
+export interface BusinessUser {
   id: string;
   name: string;
   email: string;
@@ -7,7 +7,6 @@ export interface BusinessData {
   branchName: string | null;
   branchAddress: string | null;
   password: string;
-  confirmPassword: string;
   userType: string;
   website: string | null;
   categoryIds: (number | null)[];
