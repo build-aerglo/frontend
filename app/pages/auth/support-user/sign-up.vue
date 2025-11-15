@@ -120,10 +120,7 @@
 
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router"; 
-
-const router = useRouter(); 
+import { ref } from "vue"; 
 
 interface SignupForm {
   username: string;
@@ -158,36 +155,6 @@ const handleSignup = async () => {
   if (!form.value.agree) {
     alert("You must agree to the privacy policy & terms.");
     return;
-  }
-
-  try {
-    const response = await fetch("http://aerglotechnology.com/api/User/support", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: form.value.username,
-        email: form.value.email,
-        phone: form.value.phone,
-        address: form.value.address,
-        password: form.value.password,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert("Registration failed: " + (errorData.message || "Unknown error"));
-      return;
-    }
-
-    alert("Registration successful! Redirecting to sign in...");
-
-    // Redirect to sign-in page
-    router.push("/auth/support-user/sign-in");
-
-  } catch (error: any) {
-    alert("Network or server error: " + error.message);
   }
 };
 </script>

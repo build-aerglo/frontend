@@ -125,12 +125,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "~/store/user"; 
-import axios from "axios";
-
-const router = useRouter();
-const userStore = useUserStore();
 
 const email = ref<string>("");
 const password = ref<string>("");
@@ -154,63 +148,6 @@ async function handleSubmit() {
   }
 
   isLoading.value = true;
-
-  try {
-    const loginUrl = "http://aerglotechnology.com/api/auth/login";
-
-    const response = await axios.post(loginUrl, {
-      email: email.value,
-      password: password.value,
-    });
-
-    console.log("Login response:", response.data);
-
-    const token = response.data.access_token;
-    const userId = response.data.user?.id || response.data.id; 
-
-    if (!token) {
-      throw new Error("No authentication token received from server.");
-    }
-
-    // Save token 
-    if (rememberMe.value) {
-      localStorage.setItem("authToken", token);
-    } else {
-      sessionStorage.setItem("authToken", token);
-    }
-
-    // Update user store with logged-in state
-    userStore.setUser({ 
-      id: userId || email.value // Use email as fallback if no ID
-    });
-
-  
-    if (response.data.user) {
-      
-      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-    }
-
-    // Redirect to profile page
-    await router.push("/profile/end-user");
-  } catch (error: any) {
-    console.error("Login error:", error);
-    
-    // Handle different error types
-    if (error.response) {
-      // Server responded with error
-      errorMessage.value = error.response.data?.message || 
-                          error.response.data?.error || 
-                          "Invalid email or password.";
-    } else if (error.request) {
-      // Request was made but no response
-      errorMessage.value = "Unable to connect to server. Please check your internet connection.";
-    } else {
-      // Something else happens
-      errorMessage.value = error.message || "Login failed. Please try again.";
-    }
-  } finally {
-    isLoading.value = false;
-  }
 }
 
 function handleSocialLogin(provider: string) {
