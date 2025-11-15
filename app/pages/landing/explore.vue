@@ -102,122 +102,123 @@
         <div class="md:col-span-2 space-y-6">
           <template v-for="business in filteredBusinesses" :key="business.id">
             <div
-              class="bg-white rounded-2xl shadow-sm border-2 p-6 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
+            class="bg-white rounded-2xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
             >
-              <div class="grid grid-cols-[auto_1fr] gap-6">
+            <div class="grid grid-cols-[auto_1fr] gap-4">
                 <!-- Logo -->
-                <div class="flex flex-col gap-3">
-                  <div class="relative w-32 h-32">
-                    <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
-                      <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
+                <div class="flex flex-col gap-2">
+                <div class="relative w-24 h-24"> <!-- smaller size -->
+                    <div
+                    class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
+                    >
+                    <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
                     </div>
+
                     <!-- Badges -->
                     <div class="absolute -top-2 -right-2 flex flex-col gap-1">
-                      <span
+                    <span
                         v-if="business.verified"
                         class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
-                      >
+                    >
                         <i class="pi pi-check-circle text-xs"></i> Verified
-                      </span>
-                      <span
+                    </span>
+
+                    <span
                         v-if="business.trusted"
                         class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
-                      >
+                    >
                         <i class="pi pi-shield text-xs"></i> Trusted
-                      </span>
+                    </span>
                     </div>
-                  </div>
+                </div>
 
-                  <!-- Rating -->
-                  <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-3 border border-amber-200">
+                <!-- Rating -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-2 border border-amber-200">
                     <div class="flex items-center gap-1 justify-center mb-1">
-                      <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
-                      <div class="flex">
+                    <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
+                    <div class="flex">
                         <i
-                          v-for="star in 5"
-                          :key="star"
-                          class="pi text-xs"
-                          :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                        v-for="star in 5"
+                        :key="star"
+                        class="pi text-xs"
+                        :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
                         ></i>
-                      </div>
+                    </div>
                     </div>
                     <button
-                      @click.stop="focusedBusinessId = business.id"
-                      class="text-xs text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
+                    @click.stop="focusedBusinessId = business.id"
+                    class="text-xs text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
                     >
-                      {{ business.reviewCount }} reviews
+                    {{ business.reviewCount }} reviews
                     </button>
-                  </div>
+                </div>
                 </div>
 
                 <!-- Business Details -->
-                <div class="flex flex-col gap-4">
-                  <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">{{ business.name }}</h3>
-                    <div class="flex flex-wrap gap-1">
-                      <span
-                        v-for="tag in business.tags"
-                        :key="tag"
-                        class="text-xs bg-white px-2 py-1 rounded-lg text-slate-700 border border-slate-300"
-                      >
-                        {{ tag }}
-                      </span>
-                    </div>
-                  </div>
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200 relative">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
 
-                  <div class="flex flex-col md:flex-row gap-4">
-                    <!-- Review Summary -->
-                    <div class="col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
-                      <div class="md:flex-1 items-center gap-2 mb-2">
-                        <i class="pi pi-comment mr-1 text-[#008253]"></i>
-                        <span class="text-xs font-semibold text-slate-700 uppercase tracking-wide">Review Summary</span>
-                      </div>
-                      <p class="text-sm text-slate-700 leading-relaxed">{{ business.reviewSummary }}</p>
-                    </div>
+                    <!-- Contact Icon -->
+                    <div
+                    class="relative group"
+                    @mouseenter="showContact = business.id"
+                    @mouseleave="hideContact()"
+                    >
+                    <i class="pi pi-info-circle text-[#008253] text-xl cursor-pointer hover:text-slate-800"></i>
 
-                    <!-- Contact -->
-                    <div class="col-span-1 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-200">
-                      <div class=" md:flex-none items-left mb-2">
-                        <span class="text-xs font-semibold text-slate-700 uppercase">Contact</span>
-                      </div>
-                      <div class="space-y-2">
-                        <p class="text-xs text-gray-700"><i class="pi pi-phone mr-1"></i>{{ business.phone }}</p>
-                        <p class="text-xs text-gray-700"><i class="pi pi-map-marker mr-1"></i>{{ business.address }}</p>
-                      </div>
+                    <!-- Tooltip -->
+                    <div
+                        v-if="showContact === business.id"
+                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-700 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
+                    >
+                        <p><strong><i class="pi pi-map-marker text-[#008253] mr-2 text-lg"></i>Address:</strong> {{ business.address }}</p>
+                        <p><strong><i class="pi pi-phone text-[#008253] mr-2 text-lg"></i>Phone:</strong> {{ business.phone }}</p>
                     </div>
-                  </div>
+                    </div>
                 </div>
-              </div>
+
+                <div class="flex flex-wrap gap-1">
+                    <span
+                    v-for="tag in business.tags"
+                    :key="tag"
+                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300"
+                    >
+                    {{ tag }}
+                    </span>
+                </div>
+                </div>
+            </div>
             </div>
 
             <div v-if="focusedBusiness && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <!--header-->
             <div class="mb-6 pb-4 border-b border-slate-200">
               <div class="flex items-center gap-3 mb-2">
+                <div>
                 <img 
                   :src="focusedBusiness.logo" 
                   :alt="focusedBusiness.name"
-                  class="w-12 h-12 rounded-lg object-cover border-2 border-slate-200"
+                  class="w-16 h-16 object-cover border-2 border-slate-200"
                 />
-                <div>
-                  <h3 class="text-lg font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
-                  <p class="text-xs text-slate-600">Review Highlights</p>
+                 <i 
+                    v-for="star in 5" 
+                    :key="star"
+                    class="pi text-xs"
+                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                  ></i>
+                  </div> 
+                <div class="ml-2">
+                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
+                  <p class="text-xs mb-1 text-slate-600">Review Summary</p>
+                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2 md:sticky md:top-2">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness.reviewSummary }}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-1">
-                <span class="text-xl font-bold text-slate-900">{{ focusedBusiness.rating }}</span>
-                <div class="flex">
-                  <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-sm"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                </div>
-              </div>
+            <div class="flex items-center justify-between mb-2">
               <div class="flex gap-2">
                 <button 
                   @click="prevReview"
@@ -271,39 +272,10 @@
                 </p>
                 <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
               </div>
-
-              <!-- Review Stats -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-200">
-                  <div class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-up text-emerald-600 text-sm"></i>
-                    <span class="text-xs font-semibold text-slate-700">Positive</span>
-                  </div>
-                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.positivePercent }}%</p>
-                </div>
-                <div class="bg-rose-50 rounded-xl p-2 border border-rose-200">
-                  <div class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-down text-rose-600 text-sm"></i>
-                    <span class="text-xs font-semibold text-slate-700">Negative</span>
-                  </div>
-                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.negativePercent }}%</p>
-                </div>
               </div>
-
-              <!-- Common Keywords -->
-              <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                <p class="text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide">Common Keywords</p>
-                <div class="flex flex-wrap gap-2">
-                  <span 
-                    v-for="keyword in focusedBusiness.keywords" 
-                    :key="keyword"
-                    class="text-xs bg-white px-3 py-1.5 rounded-lg text-slate-700 border border-slate-200"
-                  >
-                    {{ keyword }}
-                  </span>
-                </div>
-              </div>
-            </div>
+               <div>
+                <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+              </div>   
           </div>
           </template>
 
@@ -325,32 +297,32 @@
                 class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
             >
             <!--header-->
-            <div class="mb-6 pb-4 border-b border-slate-200">
-              <div class="flex items-center gap-3 mb-2">
-                <img 
-                  :src="focusedBusiness.logo" 
-                  :alt="focusedBusiness.name"
-                  class="w-12 h-12 rounded-lg object-cover border-2 border-slate-200"
-                />
+            <div class="mb-2 pb-2 border-b border-slate-200">
+              <div class="flex items-center gap-4 mb-2">
                 <div>
-                  <h3 class="text-lg font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
-                  <p class="text-xs text-slate-600">Review Highlights</p>
+                    <img 
+                    :src="focusedBusiness.logo" 
+                    :alt="focusedBusiness.name"
+                    class="w-24 h-full object-cover border-2 border-slate-200"
+                    /> 
+                     <i 
+                    v-for="star in 5" 
+                    :key="star"
+                    class="pi text-xs"
+                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                  ></i> 
+                </div>
+                <div class="ml-2">
+                  <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
+                  <p class="text-xs text-slate-500 mb-1">Review Summary</p>
+                  <div class="bg-slate-50 rounded-lg p-4 md:sticky md:top-2">
+                    <p class="text-xs text-slate-700">{{focusedBusiness.reviewSummary}}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-1">
-                <span class="text-xl font-bold text-slate-900">{{ focusedBusiness.rating }}</span>
-                <div class="flex">
-                  <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-sm"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                </div>
-              </div>
+            <div class="items-left justify-between mb-2">
               <div class="flex gap-2">
                 <button 
                   @click="prevReview"
@@ -404,40 +376,11 @@
                 </p>
                 <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
               </div>
-
-              <!-- Review Stats -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-200">
-                  <div class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-up text-emerald-600 text-sm"></i>
-                    <span class="text-xs font-semibold text-slate-700">Positive</span>
-                  </div>
-                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.positivePercent }}%</p>
-                </div>
-                <div class="bg-rose-50 rounded-xl p-2 border border-rose-200">
-                  <div class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-down text-rose-600 text-sm"></i>
-                    <span class="text-xs font-semibold text-slate-700">Negative</span>
-                  </div>
-                  <p class="text-2xl font-bold text-slate-900">{{ focusedBusiness.negativePercent }}%</p>
-                </div>
-              </div>
-
-              <!-- Common Keywords -->
-              <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                <p class="text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide">Common Keywords</p>
-                <div class="flex flex-wrap gap-2">
-                  <span 
-                    v-for="keyword in focusedBusiness.keywords" 
-                    :key="keyword"
-                    class="text-xs bg-white px-3 py-1.5 rounded-lg text-slate-700 border border-slate-200"
-                  >
-                    {{ keyword }}
-                  </span>
-                </div>
+              <div>
+                <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
               </div>
             </div>
-          </div>
+            </div>  
           <!-- No Business Selected -->
           <div 
                 v-else 
@@ -456,6 +399,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
+const showContact = ref<number | null>(null);
+
+function hideContact() {
+  // hides the tooltip after 2 seconds
+  setTimeout(() => {
+    showContact.value = null;
+  }, 2000);
+}
+
 
 const filters = ref({
   category: '',
@@ -527,4 +480,16 @@ select:focus {
   border-color: transparent !important;
   box-shadow: 0 0 0 2px #008253 !important;
 }
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(4px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(4px); }
+}
+
+.animate-fade {
+  animation: fadeInOut 2.5s forwards;
+}
 </style>
+
