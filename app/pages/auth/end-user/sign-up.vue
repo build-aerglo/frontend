@@ -137,9 +137,13 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref } from "vue";  
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuth } from "~/composables/useEndUser";
+
+const router = useRouter();
+const { register } = useAuth(); 
 
 interface SignupForm {
   username: string;
@@ -148,7 +152,7 @@ interface SignupForm {
   address: string;
   password: string;
   confirmPassword: string;
-  socialMedia: string;
+  socialMedia: boolean | string;
   agree: boolean;
 }
 
@@ -159,7 +163,7 @@ const form = ref<SignupForm>({
   address: "",
   password: "",
   confirmPassword: "",
-  socialMedia: "",
+  socialMedia:false,
   agree: false,
 });
 
@@ -171,9 +175,24 @@ const handleSignup = async () => {
     alert("Passwords do not match!");
     return;
   }
+
   if (!form.value.agree) {
     alert("You must agree to the privacy policy & terms.");
     return;
   }
+
+  try {
+    await register(form.value); 
+
+    alert("Registration successful!");
+    router.push("/auth/end-user/sign-in"); 
+  }
+   catch (error: any) {
+    alert(
+      error.response?.data?.message ||
+      "Registration failed. Try again."
+    );
+  }
 };
 </script>
+
