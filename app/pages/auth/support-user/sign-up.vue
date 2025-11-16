@@ -110,10 +110,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth } from "~/composables/useSupportUser";
+import { useSupportUser } from "~/composables/useSupportUser";
+import { useUserStore } from "~/store/user"; 
 
 const router = useRouter();
-const { register } = useAuth();
+const { signup } = useSupportUser();
+const userStore = useUserStore();
 
 interface SignupForm {
   username: string;
@@ -143,22 +145,21 @@ const handleSignup = async () => {
     alert("Passwords do not match!");
     return;
   }
-
   if (!form.value.agree) {
     alert("You must agree to the privacy policy & terms.");
     return;
   }
-
   try {
-    await register(form.value); 
-
-    alert("Registration successful!");
-    router.push("/auth/end-user/sign-in"); 
-  }
-   catch (error: any) {
+    const response = await signup(form.value);
+    if (response?.id) {
+      userStore.setUser({ id: response.id });
+    }
+    alert("Sign-up successful!");
+    router.push("/auth/support-user/sign-in"); 
+  } catch (error: any) {
     alert(
       error.response?.data?.message ||
-      "Registration failed. Try again."
+      "Sign-up failed. Try again."
     );
   }
 };

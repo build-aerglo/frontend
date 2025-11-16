@@ -1,12 +1,14 @@
-import axios from "axios";
+import { useEndUserApi } from "./useEndUserApi";
 
-export function useAuth() {
-  const login = async (email: string, password: string, rememberMe: boolean) => {
-    const url = "https://aerglotechnology.com/api/auth/login";
+export function useEndUser() {
+  const { api, endpoints } = useEndUserApi();
 
-    const response = await axios.post(url, { email, password });
+  // LOGIN
+  const signin = async (email: string, password: string, rememberMe: boolean) => {
+    const response = await api.post(endpoints.signin, { email, password });
 
-    const token = response.data.access_token;
+    const token = response.data?.access_token;
+    const user = response.data?.user; 
     if (!token) throw new Error("No token received");
 
     if (rememberMe) {
@@ -15,28 +17,23 @@ export function useAuth() {
       sessionStorage.setItem("authToken", token);
     }
 
-    return token;
+    return { token, user };
   };
 
-  const register = async (form: any) => {
-    const url = "https://aerglotechnology.com/api/User/end-user";
-
+  // REGISTER
+  const signup = async (form: any) => {
     const payload = {
-    username: form.username,
-    email: form.email,
-    password: form.password,
-    phone: form.phone,
-    address: form.address,
-    socialMedia: form.socialMedia,
-  };
+      username: form.username,
+      email: form.email,
+      password: form.password,
+      phone: form.phone,
+      address: form.address,
+      socialMedia: form.socialMedia,
+    };
 
-    const response = await axios.post(url, payload);
-
+    const response = await api.post(endpoints.signup, payload);
     return response.data;
   };
 
-  return {
-    login,
-    register,
-  };
+  return { signin, signup };
 }

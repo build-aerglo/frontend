@@ -77,10 +77,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth } from "~/composables/useSupportUser"; 
+import { useSupportUser } from "~/composables/useSupportUser";
+import { useUserStore } from "~/store/user";  
 
 const router = useRouter();
-const { login } = useAuth();  
+const { signin } = useSupportUser(); 
+const userStore = useUserStore();  
 
 const email = ref("");
 const password = ref("");
@@ -94,15 +96,17 @@ function togglePassword() {
 
 async function handleSubmit() {
   isLoading.value = true;
-
   try {
-    await login(email.value, password.value, rememberMe.value);
-    router.push("/links");
+    const { user } = await signin(email.value, password.value, rememberMe.value);
+    if (user?.id) {
+      userStore.setUser({ id: user.id });
+    }
+    router.push("/");
   } catch (error: any) {
     alert(
       error.response?.data?.message ||
       error.message ||
-      "Login failed. Please try again."
+      "Sign-in failed. Please try again."
     );
   } finally {
     isLoading.value = false;
