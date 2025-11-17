@@ -31,6 +31,10 @@
                 <InputTextCustom v-model="businessData.phone" label="Phone Number" type="tel" required />
               </div>
 
+              <div class="form-control-validation">
+                <InputSelect v-model="businessData.categoryIds" label="Business Sector" type="text" />
+              </div>
+
               <div class="form-password-toggle form-control-validation">
                 <InputTextCustom v-model="password" label="Password" type="password" required />
                 <div v-if="!allValid" class="flex flex-col mt-[10px] mb-[10px]">
