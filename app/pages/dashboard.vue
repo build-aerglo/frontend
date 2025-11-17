@@ -1,63 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Enhanced Navbar -->
-    <nav class="bg-white shadow-md border-b border-gray-200 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <!-- Left: Dashboard Title & Menu Toggle -->
-          <div class="flex items-center gap-4">
-            <span class="text-[#008253] text-xl font-bold">Dashboard</span>
-          </div>
-
-          <!-- Right: Actions -->
-          <div class="flex items-center gap-2 sm:gap-3">
-            <button 
-              class="p-2 rounded-lg hover:bg-gray-100 transition relative"
-              title="Notifications"
-            >
-              <i class="pi pi-bell text-xl text-gray-600"></i>
-              <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-            </button>
-            <button 
-              @click="handleSignOut"
-              class="px-3 sm:px-4 py-2 text-[#008253] hover:bg-green-50 rounded-lg transition font-medium flex items-center gap-2"
-            >
-              <i class="pi pi-sign-out"></i>
-              <span class="hidden sm:inline">Sign Out</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div 
-          v-if="mobileMenuOpen"
-          class="lg:hidden py-4 border-t border-gray-200"
-        >
-          <div class="space-y-2">
-            <a href="#insights" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-              <i class="pi pi-chart-bar text-[#008253]"></i>
-              <span class="font-medium">Insights</span>
-            </a>
-            <a href="#performance" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-              <i class="pi pi-chart-line text-[#008253]"></i>
-              <span class="font-medium">Performance</span>
-            </a>
-            <a href="#benchmarking" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-              <i class="pi pi-sitemap text-[#008253]"></i>
-              <span class="font-medium">Benchmarking</span>
-            </a>
-            <a href="#suggestions" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-              <i class="pi pi-lightbulb text-[#deae29]"></i>
-              <span class="font-medium">Suggestions</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
-      <!-- Business Info Header -->
+    <NavDashboard/>
+  <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Business Info Header -->
       <div class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 mb-6 sm:mb-8 border border-gray-100">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div class="flex items-center gap-4 sm:gap-5 w-full sm:w-auto">
@@ -66,7 +11,6 @@
                 :src="businessInfo.image"
                 :alt="businessInfo.name"
                 class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shadow-md ring-4 ring-white"
-                @error="handleImageError"
               />
               <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#008253] rounded-full flex items-center justify-center">
                 <i class="pi pi-check text-white text-xs"></i>
@@ -96,294 +40,86 @@
           </div>
         </div>
       </div>
-
-      <!-- Sentiment Insights Section -->
-      <div id="insights" class="mb-8 sm:mb-10">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#008253] to-[#006640] rounded-xl flex items-center justify-center shadow-lg">
-              <i class="pi pi-chart-bar text-white text-lg sm:text-xl"></i>
-            </div>
-            Sentiment Insights
-          </h2>
-        </div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mb-5 sm:mb-6">
-          <!-- Positive Word Cloud -->
-          <div class="bg-gradient-to-br from-white to-green-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-green-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2">
-              <i class="pi pi-thumbs-up text-green-600 text-xl"></i>
-              Positive Keywords
-            </h3>
-            <div class="flex flex-wrap gap-3 justify-center p-8 sm:p-12 bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 rounded-2xl min-h-[180px] sm:min-h-[220px] items-center shadow-inner">
-              <span 
-                v-for="(word, idx) in positiveWords" 
-                :key="idx"
-                :style="{ fontSize: `${word.size * 0.85}px` }"
-                class="font-black text-green-700 hover:text-green-900 cursor-pointer transition-all hover:scale-125 drop-shadow-sm"
-              >
-                {{ word.text }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Negative Word Cloud -->
-          <div class="bg-gradient-to-br from-white to-red-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-red-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2">
-              <i class="pi pi-thumbs-down text-red-600 text-xl"></i>
-              Negative Keywords
-            </h3>
-            <div class="flex flex-wrap gap-3 justify-center p-8 sm:p-12 bg-gradient-to-br from-red-50 via-rose-50 to-red-100 rounded-2xl min-h-[180px] sm:min-h-[220px] items-center shadow-inner">
-              <span 
-                v-for="(word, idx) in negativeWords" 
-                :key="idx"
-                :style="{ fontSize: `${word.size * 0.85}px` }"
-                class="font-black text-red-700 hover:text-red-900 cursor-pointer transition-all hover:scale-125 drop-shadow-sm"
-              >
-                {{ word.text }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sentiment Bar Chart -->
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6">Sentiment Distribution</h3>
-          <div class="space-y-5">
+      
+      <!-- Key Metrics Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div v-for="metric in keyMetrics" :key="metric.title" 
+          class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+          <div class="flex items-center justify-between">
             <div>
-              <div class="flex justify-between mb-3">
-                <span class="text-sm sm:text-base font-semibold text-gray-700 flex items-center gap-2">
-                  <i class="pi pi-thumbs-up text-green-600"></i>
-                  Positive
-                </span>
-                <span class="text-sm sm:text-base font-black text-gray-900">{{ sentimentData.positive }}%</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-4 sm:h-5 overflow-hidden shadow-inner">
-                <div 
-                  class="bg-gradient-to-r from-green-500 via-green-600 to-green-700 h-full rounded-full transition-all duration-1000 ease-out shadow-md"
-                  :style="{ width: `${sentimentData.positive}%` }"
-                ></div>
-              </div>
+              <p class="text-gray-600 text-sm font-medium">{{ metric.title }}</p>
+              <p class="text-3xl font-bold text-gray-900 mt-2">{{ metric.value }}</p>
+              <p :class="['text-sm mt-2 flex items-center gap-1', metric.trend > 0 ? 'text-green-600' : 'text-red-600']">
+                <i :class="metric.trend > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                {{ Math.abs(metric.trend) }}% vs last period
+              </p>
             </div>
-            <div>
-              <div class="flex justify-between mb-3">
-                <span class="text-sm sm:text-base font-semibold text-gray-700 flex items-center gap-2">
-                  <i class="pi pi-minus-circle text-gray-600"></i>
-                  Neutral
-                </span>
-                <span class="text-sm sm:text-base font-black text-gray-900">{{ sentimentData.neutral }}%</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-4 sm:h-5 overflow-hidden shadow-inner">
-                <div 
-                  class="bg-gradient-to-r from-gray-500 via-gray-600 to-gray-700 h-full rounded-full transition-all duration-1000 ease-out shadow-md"
-                  :style="{ width: `${sentimentData.neutral}%` }"
-                ></div>
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between mb-3">
-                <span class="text-sm sm:text-base font-semibold text-gray-700 flex items-center gap-2">
-                  <i class="pi pi-thumbs-down text-red-600"></i>
-                  Negative
-                </span>
-                <span class="text-sm sm:text-base font-black text-gray-900">{{ sentimentData.negative }}%</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-4 sm:h-5 overflow-hidden shadow-inner">
-                <div 
-                  class="bg-gradient-to-r from-red-500 via-red-600 to-red-700 h-full rounded-full transition-all duration-1000 ease-out shadow-md"
-                  :style="{ width: `${sentimentData.negative}%` }"
-                ></div>
-              </div>
+            <div :class="['w-12 h-12 rounded-full flex items-center justify-center', metric.bgColor]">
+              <i :class="['text-xl', metric.icon, metric.iconColor]"></i>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Performance Insights Section -->
-      <div id="performance" class="mb-8 sm:mb-10">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#008253] to-[#006640] rounded-xl flex items-center justify-center shadow-lg">
-              <i class="pi pi-chart-line text-white text-lg sm:text-xl"></i>
-            </div>
-            Performance Insights
-          </h2>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-          <!-- Average Ratings Over Time -->
-          <div class="bg-gradient-to-br from-white to-green-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6">Average Ratings Over Time</h3>
-            <div class="space-y-4">
-              <div 
-                v-for="(point, idx) in ratingOverTime" 
-                :key="idx"
-                class="flex items-center gap-3"
-              >
-                <span class="text-xs sm:text-sm text-gray-600 w-20 sm:w-24 font-semibold">{{ point.label }}</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-8 sm:h-9 relative overflow-hidden shadow-inner">
-                  <div 
-                    class="bg-gradient-to-r from-[#008253] via-[#007549] to-[#006640] h-full rounded-full flex items-center justify-end pr-3 transition-all duration-1000 ease-out shadow-md"
-                    :style="{ width: `${(point.rating??0 / 5) * 10}%` }"
-                  >
-                    <span class="text-xs font-black text-white drop-shadow">{{ point.rating }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Review Volume Over Time -->
-          <div class="bg-gradient-to-br from-white to-amber-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6">Review Volume Over Time</h3>
-            <div class="space-y-4">
-              <div 
-                v-for="(point, idx) in reviewVolume" 
-                :key="idx"
-                class="flex items-center gap-3"
-              >
-                <span class="text-xs sm:text-sm text-gray-600 w-20 sm:w-24 font-semibold">{{ point.label }}</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-8 sm:h-9 relative overflow-hidden shadow-inner">
-                  <div 
-                    class="bg-gradient-to-r from-[#deae29] via-[#d4a526] to-[#c99a1f] h-full rounded-full flex items-center justify-end pr-3 transition-all duration-1000 ease-out shadow-md"
-                    :style="{ width: `${(point.count??0 / getMaxReviewCount()) * 0.8}%` }"
-                  >
-                    <span class="text-xs font-black text-gray-900 drop-shadow">{{ point.count }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Profile Clicks Over Time -->
-          <div class="bg-gradient-to-br from-white to-blue-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6">Profile Clicks Over Time</h3>
-            <div class="space-y-4">
-              <div 
-                v-for="(point, idx) in profileClicks" 
-                :key="idx"
-                class="flex items-center gap-3"
-              >
-                <span class="text-xs sm:text-sm text-gray-600 w-20 sm:w-24 font-semibold">{{ point.label }}</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-8 sm:h-9 relative overflow-hidden shadow-inner">
-                  <div 
-                    class="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 h-full rounded-full flex items-center justify-end pr-3 transition-all duration-1000 ease-out shadow-md"
-                    :style="{ width: `${(point.clicks??0 / getMaxClicks()) * 0.3}%` }"
-                  >
-                    <span class="text-xs font-black text-white drop-shadow">{{ point.clicks }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Review Sources -->
-          <div class="bg-gradient-to-br from-white to-purple-50/30 rounded-3xl shadow-lg p-5 sm:p-7 hover:shadow-2xl transition-all duration-300 border border-gray-100">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6">Review Sources</h3>
-            <div class="space-y-3">
-              <div 
-                v-for="(source, idx) in reviewSources" 
-                :key="idx"
-                class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl hover:shadow-md transition-all duration-200 border border-gray-100"
-              >
-                <div class="flex items-center gap-3">
-                  <i :class="[source.icon, 'text-xl', source.color]"></i>
-                  <span class="font-semibold text-gray-700 text-sm sm:text-base">{{ source.name }}</span>
-                </div>
-                <span class="text-sm sm:text-base font-black text-gray-900">{{ source.percentage }}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Benchmarking Section -->
-      <div id="benchmarking" class="mb-6 sm:mb-8">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-          <i class="pi pi-sitemap text-[#008253]"></i>
-          Benchmarking
+      <!-- Sentiment Highlights -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="pi pi-chart-bar text-[#008253]"></i>
+          Sentiment Highlights
         </h2>
-
-        <!-- Competitor Ratings Comparison -->
-        <div class="bg-white rounded-2xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6 hover:shadow-xl transition-shadow">
-          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Compare Average Ratings</h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Sentiment Distribution -->
           <div class="space-y-4">
-            <div 
-              v-for="(competitor, idx) in competitorRatings" 
-              :key="idx"
-              class="space-y-2"
-            >
-              <div class="flex items-center justify-between">
-                <span class="font-medium text-gray-700 text-sm sm:text-base">{{ competitor.name }}</span>
-                <span class="text-xs sm:text-sm font-bold text-gray-900">{{ competitor.rating }}/5</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-5 sm:h-6 overflow-hidden">
-                <div 
-                  :class="[
-                    'h-full rounded-full flex items-center justify-center transition-all duration-1000 ease-out',
-                    competitor.isYou ? 'bg-gradient-to-r from-[#008253] to-[#006640]' : 'bg-gradient-to-r from-gray-400 to-gray-500'
-                  ]"
-                  :style="{ width: `${(competitor.rating / 5) * 100}%` }"
-                >
-                  <span v-if="competitor.isYou" class="text-xs font-bold text-white">You</span>
+            <h3 class="font-semibold text-gray-700">Sentiment Distribution</h3>
+            <div class="space-y-3">
+              <div v-for="sentiment in sentimentData" :key="sentiment.name">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700">{{ sentiment.name }}</span>
+                  <span class="text-sm font-bold text-gray-900">{{ sentiment.value }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    :style="{ width: sentiment.value + '%', backgroundColor: sentiment.color }"
+                    class="h-3 rounded-full transition-all duration-500"
+                  ></div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Competitor Word Cloud Comparison -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          <div class="bg-white rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-shadow">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Competitor Positive Keywords</h3>
-            <div class="flex flex-wrap gap-2 justify-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl min-h-[150px] sm:min-h-[180px] items-center">
-              <span 
-                v-for="(word, idx) in competitorPositiveWords" 
-                :key="idx"
-                :style="{ fontSize: `${word.size * 0.75}px` }"
-                class="font-bold text-green-600 hover:text-green-800 cursor-pointer transition-all hover:scale-110"
-              >
-                {{ word.text }}
-              </span>
+          <!-- Word Clouds -->
+          <div class="space-y-4">
+            <div class="bg-green-50 rounded-lg p-4">
+              <h4 class="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                <i class="pi pi-thumbs-up"></i>
+                Positive Keywords
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="word in positiveWords" 
+                  :key="word.text"
+                  :style="{ fontSize: (word.size / 2.5) + 'px' }"
+                  class="text-green-700 font-semibold hover:text-green-900 transition-colors cursor-pointer"
+                >
+                  {{ word.text }}
+                </span>
+              </div>
             </div>
-          </div>
-
-          <div class="bg-white rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-shadow">
-            <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Competitor Negative Keywords</h3>
-            <div class="flex flex-wrap gap-2 justify-center p-4 bg-gradient-to-br from-red-50 to-rose-50 rounded-xl min-h-[150px] sm:min-h-[180px] items-center">
-              <span 
-                v-for="(word, idx) in competitorNegativeWords" 
-                :key="idx"
-                :style="{ fontSize: `${word.size * 0.75}px` }"
-                class="font-bold text-red-600 hover:text-red-800 cursor-pointer transition-all hover:scale-110"
-              >
-                {{ word.text }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3-Month Comparison -->
-        <div class="bg-white rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-shadow">
-          <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Rating Trend (Last 3 Months)</h3>
-          <div class="grid grid-cols-3 gap-3 sm:gap-4">
-            <div 
-              v-for="(month, idx) in monthlyComparison" 
-              :key="idx"
-              class="text-center p-3 sm:p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl hover:shadow-md transition-shadow"
-            >
-              <div class="text-xs sm:text-sm font-medium text-gray-600 mb-2">{{ month.month }}</div>
-              <div class="text-2xl sm:text-3xl font-bold text-[#008253] mb-2">{{ month.rating }}</div>
-              <div class="flex items-center justify-center gap-1 text-xs sm:text-sm">
-                <i :class="[
-                  'pi',
-                  month.change > 0 ? 'pi-arrow-up text-green-600' : month.change < 0 ? 'pi-arrow-down text-red-600' : 'pi-minus text-gray-600'
-                ]"></i>
-                <span :class="[
-                  'font-bold',
-                  month.change > 0 ? 'text-green-600' : month.change < 0 ? 'text-red-600' : 'text-gray-600'
-                ]">
-                  {{ Math.abs(month.change) }}%
+            
+            <div class="bg-red-50 rounded-lg p-4">
+              <h4 class="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                <i class="pi pi-thumbs-down"></i>
+                Negative Keywords
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="word in negativeWords" 
+                  :key="word.text"
+                  :style="{ fontSize: (word.size /2.5) + 'px' }"
+                  class="text-red-700 font-semibold hover:text-red-900 transition-colors cursor-pointer"
+                >
+                  {{ word.text }}
                 </span>
               </div>
             </div>
@@ -391,117 +127,273 @@
         </div>
       </div>
 
-      <!-- Suggestions Section -->
-      <div id="suggestions" class="mb-8 sm:mb-10">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#deae29] to-[#c99a1f] rounded-xl flex items-center justify-center shadow-lg">
-              <i class="pi pi-lightbulb text-white text-lg sm:text-xl"></i>
+      <!-- Performance Insights -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="pi pi-chart-line text-[#008253]"></i>
+          Performance Insights
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-blue-900">Average Rating</p>
+                <p class="text-3xl font-bold text-blue-900 mt-1">{{ currentStats.avgRating }}</p>
+              </div>
+              <i class="pi pi-star-fill text-3xl text-[#deae29]"></i>
             </div>
-            Suggestions
-          </h2>
+          </div>
+          
+          <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-purple-900">Total Reviews</p>
+                <p class="text-3xl font-bold text-purple-900 mt-1">{{ currentStats.totalReviews }}</p>
+              </div>
+              <i class="pi pi-comments text-3xl text-purple-600"></i>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-green-900">Profile Clicks</p>
+                <p class="text-3xl font-bold text-green-900 mt-1">{{ currentStats.totalClicks }}</p>
+              </div>
+              <i class="pi pi-eye text-3xl text-green-600"></i>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-          <!-- What Improved -->
-          <div class="bg-gradient-to-br from-white to-green-50/30 rounded-3xl shadow-lg p-6 sm:p-8 border-l-4 border-green-500 hover:shadow-2xl transition-all duration-300">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2">
-              <i class="pi pi-check-circle text-green-600 text-xl"></i>
-              What Improved
-            </h3>
-            <ul class="space-y-4">
-              <li 
-                v-for="(item, idx) in improvements" 
-                :key="idx"
-                class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100 hover:shadow-md transition-all"
-              >
-                <i class="pi pi-arrow-up text-green-600 mt-1 text-lg"></i>
-                <div>
-                  <p class="font-bold text-gray-900 text-sm sm:text-base mb-1">{{ item.title }}</p>
-                  <p class="text-xs sm:text-sm text-gray-600">{{ item.description }}</p>
-                </div>
-              </li>
-            </ul>
+        <!-- Performance Chart -->
+        <div class="mb-6">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <button 
+              v-for="metric in performanceMetrics" 
+              :key="metric.value"
+              @click="selectedMetric = metric.value"
+              :class="[
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                selectedMetric === metric.value 
+                  ? 'bg-[#008253] text-white' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ]"
+            >
+              {{ metric.label }}
+            </button>
           </div>
-
-          <!-- What Needs Improvement -->
-          <div class="bg-gradient-to-br from-white to-orange-50/30 rounded-3xl shadow-lg p-6 sm:p-8 border-l-4 border-orange-500 hover:shadow-2xl transition-all duration-300">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2">
-              <i class="pi pi-exclamation-triangle text-orange-600 text-xl"></i>
-              What Needs Improvement
-            </h3>
-            <ul class="space-y-4">
-              <li 
-                v-for="(item, idx) in needsImprovement" 
-                :key="idx"
-                class="flex items-start gap-4 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border border-orange-100 hover:shadow-md transition-all"
+          
+          <div class="h-80 bg-gray-50 rounded-lg p-4 flex items-center justify-center">
+            <svg class="w-full h-full" viewBox="0 0 800 300">
+              <line x1="50" y1="250" x2="750" y2="250" stroke="#e5e7eb" stroke-width="2"/>
+              <line x1="50" y1="50" x2="50" y2="250" stroke="#e5e7eb" stroke-width="2"/>
+              
+              <path 
+                :d="chartPath" 
+                fill="none" 
+                stroke="#008253" 
+                stroke-width="3"
+                class="transition-all duration-500"
+              />
+              
+              <circle 
+                v-for="(point, index) in chartPoints" 
+                :key="index"
+                :cx="point.x" 
+                :cy="point.y" 
+                r="5" 
+                fill="#008253"
+                class="hover:r-7 transition-all cursor-pointer"
+              />
+              
+              <text 
+                v-for="(label, index) in performanceData" 
+                :key="'label-' + index"
+                :x="50 + (index * 700 / (performanceData.length - 1))" 
+                y="270" 
+                text-anchor="middle" 
+                class="text-xs fill-gray-600"
               >
-                <i class="pi pi-arrow-down text-orange-600 mt-1 text-lg"></i>
-                <div>
-                  <p class="font-bold text-gray-900 text-sm sm:text-base mb-1">{{ item.title }}</p>
-                  <p class="text-xs sm:text-sm text-gray-600 mb-2">{{ item.description }}</p>
-                  <div class="flex items-start gap-2 p-3 bg-white rounded-xl border border-[#008253]/20">
-                    <i class="pi pi-lightbulb text-[#deae29] mt-0.5 text-sm"></i>
-                    <p class="text-xs sm:text-sm text-[#008253] font-semibold">{{ item.suggestion }}</p>
-                  </div>
-                </div>
-              </li>
-            </ul>
+                {{ label.period }}
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Review Sources -->
+        <div>
+          <h3 class="font-semibold text-gray-700 mb-4">Review Sources</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div v-for="source in reviewSources" :key="source.name"
+              class="bg-gray-50 rounded-lg p-4 text-center hover:bg-gray-100 transition-colors">
+              <i :class="['text-3xl mb-2', source.icon, source.color]"></i>
+              <p class="text-sm font-medium text-gray-700">{{ source.name }}</p>
+              <p class="text-2xl font-bold text-gray-900 mt-1">{{ source.count }}</p>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Benchmarking -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="pi pi-chart-pie text-[#008253]"></i>
+          Competitive Benchmarking
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Your Business vs Competitor -->
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-4">Rating Comparison</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700">Your Business</span>
+                  <span class="text-lg font-bold text-[#008253]">4.6<i class="pi pi-star-fill text-[#deae29]"></i></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                  <div class="bg-[#008253] h-4 rounded-full" style="width: 92%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700">Competitor Average</span>
+                  <span class="text-lg font-bold text-gray-600">4.2<i class="pi pi-star-fill text-[#deae29]"></i></span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                  <div class="bg-gray-600 h-4 rounded-full" style="width: 84%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3-Month Trend -->
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-4">3-Month Rating Trend</h3>
+            <div class="space-y-3">
+              <div v-for="month in monthlyTrend" :key="month.month"
+                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span class="font-medium text-gray-700">{{ month.month }}</span>
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl font-bold text-gray-900">{{ month.rating }}</span>
+                  <i :class="[
+                    'pi', 
+                    month.change > 0 ? 'pi-arrow-up text-green-600' : 'pi-arrow-down text-red-600'
+                  ]"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Competitor Word Clouds -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-900 mb-3">Competitor Positive Keywords</h4>
+            <div class="flex flex-wrap gap-2">
+              <span 
+                v-for="word in competitorPositiveWords" 
+                :key="word.text"
+                :style="{ fontSize: (word.size / 2.5) + 'px' }"
+                class="text-blue-700 font-semibold"
+              >
+                {{ word.text }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="bg-orange-50 rounded-lg p-4">
+            <h4 class="font-semibold text-orange-900 mb-3">Competitor Negative Keywords</h4>
+            <div class="flex flex-wrap gap-2">
+              <span 
+                v-for="word in competitorNegativeWords" 
+                :key="word.text"
+                :style="{ fontSize: (word.size / 2.5) + 'px' }"
+                class="text-orange-700 font-semibold"
+              >
+                {{ word.text }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <i class="pi pi-thumbs-up text-green-600"></i>
+            What Improved
+          </h2>
+          <div class="space-y-4">
+            <div v-for="improvement in improvements" :key="improvement.title"
+              class="flex gap-3 p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+              <div class="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <i class="pi pi-check text-white text-sm"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-green-900">{{ improvement.title }}</h3>
+                <p class="text-sm text-green-800 mt-1">{{ improvement.description }}</p>
+                <span class="inline-block mt-2 text-xs font-medium text-green-700 bg-green-200 px-2 py-1 rounded">
+                  +{{ improvement.impact }}% improvement
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <i class="pi pi-exclamation-triangle text-orange-600"></i>
+            Needs Improvement
+          </h2>
+          <div class="space-y-4">
+            <div v-for="issue in issues" :key="issue.title"
+              class="flex gap-3 p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+              <div class="flex-shrink-0 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
+                <i class="pi pi-times text-white text-sm"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-orange-900">{{ issue.title }}</h3>
+                <p class="text-sm text-orange-800 mt-1">{{ issue.description }}</p>
+                <span class="inline-block mt-2 text-xs font-medium text-orange-700 bg-orange-200 px-2 py-1 rounded">
+                  Priority: {{ issue.priority }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useBusinessDashboard } from '@/composables/useBusinessDashboard'
-
-const mobileMenuOpen = ref(false)
-
+import { useSampleAnalytics } from '@/composables/useSampleAnalytics'
 const {
-  selectedPeriod,
-  timePeriods,
+  selectedMetric,
   businessInfo,
+  performanceMetrics,
+  keyMetrics,
+  sentimentData,
   positiveWords,
   negativeWords,
-  sentimentData,
-  ratingOverTime,
-  reviewVolume,
-  profileClicks,
+  performanceData,
+
+  currentStats,
+  chartPoints,
+  chartPath,
+
   reviewSources,
-  competitorRatings,
+  monthlyTrend,
   competitorPositiveWords,
   competitorNegativeWords,
-  monthlyComparison,
   improvements,
-  needsImprovement,
-  handleSignOut,
-  handleImageError,
-  getMaxReviewCount,
-  getMaxClicks
-} = useBusinessDashboard()
+  issues
+} = useSampleAnalytics()
 </script>
 
-<style scoped>
-/* Smooth animations */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.shadow-md {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
 
-.shadow-xl {
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-}
-</style>
