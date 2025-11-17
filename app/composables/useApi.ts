@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestHeaders } from "axios";
-import useBusinesUser from "./useBusinessUser";
+import useBusinesUser from "./business/useBusinessUser";
 
 export default function () {
   const api_url = useRuntimeConfig().public.apiUrl;

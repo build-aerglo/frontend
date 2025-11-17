@@ -5,6 +5,6 @@
 </template>
 
 <script setup>
-import useBusinessUser from "@/composables/useBusinessUser"
+import useBusinessUser from "~/composables/business/useBusinessUser"
 const store = useBusinessUser(); 
 </script>
