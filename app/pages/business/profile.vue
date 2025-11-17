@@ -154,8 +154,14 @@
           :label="isEditing ? 'Save Changes' : 'Edit Profile'"
           :primary="true"
           size="lg"
-          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto"
-          class="mobile-icon-only-button" @click="toggleEdit"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto hidden md:block"
+          @click="toggleEdit"
+        />
+        <ButtonCustom
+          :primary="true"
+          size="lg"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto md:hidden"
+          @click="toggleEdit"
         />
       </div>
   
@@ -378,14 +384,8 @@ const scrollRight = () => {
         padding-left: 8px; 
         padding-right: 8px; 
     }
-    .mobile-icon-only-button :deep(.p-button-label) {
-        display: none !important;
-    }
-    
-   
-    .mobile-icon-only-button {
-        padding-left: 0.75rem !important; 
-        padding-right: 0.75rem !important; 
-    }
+
 }
+
+
 </style>

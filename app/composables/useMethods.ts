@@ -1,6 +1,6 @@
 import useApi from "~/composables/useApi";
 import type { BusinessUser, LoginData } from "~/types";
-import useBusinessUser from "./useBusinessUser";
+import useBusinessUser from "./business/useBusinessUser";
 
 export default function () {
   const store = useBusinessUser();
