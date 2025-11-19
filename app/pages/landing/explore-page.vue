@@ -92,127 +92,94 @@
       <!-- Results -->
       <div class="mb-4">
         <p class="text-sm text-slate-600">
-          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> results
+          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> result(s)
         </p>
       </div>
 
       <!-- Main Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Business Cards -->
-        <div class="md:col-span-2 space-y-6">
-          <template v-for="business in filteredBusinesses" :key="business.id">
+        <!-- No Results Message -->
+      <div v-if="filteredBusinesses.length === 0" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center mt-8">
+        <i class="pi pi-search text-5xl text-slate-300 mb-4"></i>
+        <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
+        <p class="text-slate-600 mb-4">Try adjusting your filters</p>
+        <button @click="clearAllFilters" class="px-6 py-2 bg-[#008253] text-white rounded-xl hover:bg-[#008258] transition-colors">
+          Clear all filters
+        </button>
+      </div>
+        <!-- Business Cards Column 1 -->
+        <div class="space-y-2">
+          <template v-for="(business, index) in filteredBusinesses" :key="business.id">
             <div
-            class="bg-white rounded-2xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
+              v-if="index % 2 === 0"
+              class="bg-white rounded-2xl shadow-sm border-2 p-6 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
+              @click="focusedBusinessId = business.id"
             >
-            <div class="grid grid-cols-[auto_1fr] gap-4">
-                <!-- Logo -->
-                <div class="flex flex-col gap-2">
-                <div class="relative w-24 h-24"> <!-- smaller size -->
-                    <div
-                    class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
-                    >
+              <div class="flex flex-col items-center">
+                <!-- Logo with Badges -->
+                <div class="relative w-24 h-24">
+                  <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
                     <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
-                    </div>
+                  </div>
 
-                    <!-- Badges -->
-                    <div class="absolute -top-2 -right-2 flex flex-col gap-1">
+                  <!-- Badges -->
+                  <div class="absolute -top-2 -right-2 flex flex-col gap-1">
                     <span
-                        v-if="business.verified"
-                        class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                      v-if="business.verified"
+                      class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-check-circle text-xs"></i> Verified
+                      <i class="pi pi-check-circle text-xs"></i>Verified
                     </span>
 
                     <span
-                        v-if="business.trusted"
-                        class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                      v-if="business.trusted"
+                      class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-shield text-xs"></i> Trusted
+                      <i class="pi pi-shield text-xs"></i>Trusted
                     </span>
-                    </div>
+                  </div>
                 </div>
-
+                <!-- Business Name -->
+                <h3 class="text-sm font-bold text-slate-900 my-0 text-center">{{ business.name }}</h3>
                 <!-- Rating -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-2 border border-amber-200">
-                    <div class="flex items-center gap-1 justify-center mb-1">
-                    <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
-                    <div class="flex">
-                        <i
-                        v-for="star in 5"
-                        :key="star"
-                        class="pi text-xs"
-                        :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                        ></i>
-                    </div>
-                    </div>
-                    <button
-                    @click.stop="focusedBusinessId = business.id"
-                    class="text-xs text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
-                    >
-                    {{ business.reviewCount }} reviews
-                    </button>
-                </div>
+                <div class="flex items-center">
+                  <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
+                  <div class="flex">
+                    <i
+                      v-for="star in 5"
+                      :key="star"
+                      class="pi text-xs"
+                      :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                    ></i>
+                  </div>
                 </div>
 
-                <!-- Business Details -->
-                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200 relative">
-                <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
+                <!-- Reviews Link -->
+                <button
+                  @click.stop="focusedBusinessId = business.id"
+                  class="text-sm text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
+                >
+                  {{ business.reviewCount }} reviews
+                </button>
 
-                    <!-- Contact Icon -->
-                    <div
-                    class="relative group"
-                    @mouseenter="showContact = business.id"
-                    @mouseleave="hideContact()"
-                    >
-                    <i class="pi pi-info-circle text-[#008253] text-xl cursor-pointer hover:text-slate-800"></i>
-
-                    <!-- Tooltip -->
-                    <div
-                        v-if="showContact === business.id"
-                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-700 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
-                    >
-                        <p><strong><i class="pi pi-map-marker text-[#008253] mr-2 text-lg"></i>Address:</strong> {{ business.address }}</p>
-                        <p><strong><i class="pi pi-phone text-[#008253] mr-2 text-lg"></i>Phone:</strong> {{ business.phone }}</p>
-                    </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap gap-1">
-                    <span
-                    v-for="tag in business.tags"
-                    :key="tag"
-                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300"
-                    >
-                    {{ tag }}
-                    </span>
-                </div>
-                </div>
-            </div>
-            </div>
-
-            <div v-if="focusedBusiness && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <!--Mobile view-->
+                <div v-if="business && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-4">
             <!--header-->
             <div class="mb-6 pb-4 border-b border-slate-200">
               <div class="flex items-center gap-3 mb-2">
                 <div>
-                <img 
-                  :src="focusedBusiness.logo" 
-                  :alt="focusedBusiness.name"
-                  class="w-16 h-16 object-cover border-2 border-slate-200"
-                />
-                 <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                  </div> 
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                    class="w-14 h-14 object-cover border-2 border-slate-200 rounded-full"
+                  /> 
+                  <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                </div>
                 <div class="ml-2">
-                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
+                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness?.name }}</h3>
                   <p class="text-xs mb-1 text-slate-600">Review Summary</p>
-                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2 md:sticky md:top-2">
-                    <p class="text-xs text-slate-700">{{ focusedBusiness.reviewSummary }}</p>
+                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness?.reviewSummary }}</p>
                   </div>
                 </div>
               </div>
@@ -272,51 +239,182 @@
                 </p>
                 <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
               </div>
+            </div>
+            <div>
+              <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+            </div>   
+          </div>
               </div>
-               <div>
-                <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
-              </div>   
-          </div>
+            </div>
           </template>
-
-          <div v-if="filteredBusinesses.length === 0" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
-            <i class="pi pi-search text-5xl text-slate-300 mb-4"></i>
-            <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
-            <p class="text-slate-600 mb-4">Try adjusting your filters</p>
-            <button @click="clearAllFilters" class="px-6 py-2 bg-[#008253] text-white rounded-xl hover:bg-[#008258] transition-colors">
-              Clear all filters
-            </button>
-          </div>
         </div>
 
-
-        <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="hidden md:block md:col-span-1">
-            <div 
-                v-if="focusedBusiness" 
-                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
+        <!-- Business Cards Column 2 -->
+        <div class="space-y-2">
+          <template v-for="(business, index) in filteredBusinesses" :key="business.id">
+            <div
+              v-if="index % 2 === 1"
+              class="bg-white rounded-2xl shadow-sm border-2 p-6 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
+              @click="focusedBusinessId = business.id"
             >
+              <div class="flex flex-col items-center">
+                <!-- Logo with Badges -->
+                <div class="relative w-24 h-24">
+                  <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
+                    <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
+                  </div>
+
+                  <!-- Badges -->
+                  <div class="absolute -top-2 -right-2 flex flex-col gap-1">
+                    <span
+                      v-if="business.verified"
+                      class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                    >
+                      <i class="pi pi-check-circle text-xs"></i>Verified
+                    </span>
+
+                    <span
+                      v-if="business.trusted"
+                      class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                    >
+                      <i class="pi pi-shield text-xs"></i>Trusted
+                    </span>
+                  </div>
+                </div>
+                <!-- Business Name -->
+                <h3 class="text-sm font-bold text-slate-900 my-0 text-center">{{ business.name }}</h3>
+                <!-- Rating -->
+                <div class="flex items-center">
+                  <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
+                  <div class="flex">
+                    <i
+                      v-for="star in 5"
+                      :key="star"
+                      class="pi text-xs"
+                      :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                    ></i>
+                  </div>
+                </div>
+
+                <!-- Reviews Link -->
+                <button
+                  @click.stop="focusedBusinessId = business.id"
+                  class="text-sm text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
+                >
+                  {{ business.reviewCount }} reviews
+                </button>
+                <!--Mobile view-->
+                <div v-if="business && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-4">
+            <!--header-->
+            <div class="mb-6 pb-4 border-b border-slate-200">
+              <div class="flex items-center gap-3 mb-2">
+                <div>
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                    class="w-14 h-14 object-cover border-2 border-slate-200 rounded-full"
+                  /> 
+                  <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                </div>
+                <div class="ml-2">
+                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness?.name }}</h3>
+                  <p class="text-xs mb-1 text-slate-600">Review Summary</p>
+                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness?.reviewSummary }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex gap-2">
+                <button 
+                  @click="prevReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-left text-slate-700 text-sm"></i>
+                </button>
+                <button 
+                  @click="nextReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Review Card -->
+              <div v-if="currentReview" :class="[
+                'rounded-xl p-4 border transition-all',
+                currentReview.rating >= 4 
+                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200' 
+                  : currentReview.rating >= 3
+                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
+                    : 'bg-gradient-to-br from-rose-50 to-red-50 border-rose-200'
+              ]">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      :src="currentReview.avatar" 
+                      :alt="currentReview.author"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
+                    <div class="flex items-center gap-1">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="pi text-xs"
+                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                  {{ currentReview.text }}
+                </p>
+                <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
+              </div>
+            </div>
+            <div>
+              <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+            </div>   
+          </div>
+              </div>
+            </div>
+            
+          </template>
+        </div>
+
+        <!-- Right Column - Review Summary (1/3 width) -->
+        <div v-if="filteredBusinesses.length > 0" class="md:col-span-1">
+          <!-- Desktop View -->
+          <div 
+            v-if="focusedBusiness" 
+            class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky top-8"
+          >
             <!--header-->
             <div class="mb-2 pb-2 border-b border-slate-200">
               <div class="flex items-center gap-4 mb-2">
                 <div>
-                    <img 
+                  <img 
                     :src="focusedBusiness.logo" 
                     :alt="focusedBusiness.name"
-                    class="w-24 h-full object-cover border-2 border-slate-200"
-                    /> 
-                     <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i> 
+                    class="w-24 h-16 object-cover border-2 border-slate-200 rounded-full"
+                  /> 
+                  <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
                 </div>
                 <div class="ml-2">
                   <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
                   <p class="text-xs text-slate-500 mb-1">Review Summary</p>
-                  <div class="bg-slate-50 rounded-lg p-4 md:sticky md:top-2">
-                    <p class="text-xs text-slate-700">{{focusedBusiness.reviewSummary}}</p>
+                  <div class="bg-slate-50 rounded-lg p-4">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness.reviewSummary }}</p>
                   </div>
                 </div>
               </div>
@@ -380,18 +478,18 @@
                 <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
               </div>
             </div>
-            </div>  
+          </div>  
+
           <!-- No Business Selected -->
           <div 
-                v-else 
-                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8"
-            >
-                <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
-                <p class="text-sm text-slate-600">Click on number of reviews to view highlights</p>
-            </div>
+            v-else 
+            class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center sticky top-8"
+          >
+            <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
+            <p class="text-sm text-slate-600">Click on number of reviews to view highlights</p>
+          </div>
         </div>
-        
       </div>
     </div>
   </div>
@@ -399,16 +497,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-
-const showContact = ref<number | null>(null);
-
-function hideContact() {
-  // hides the tooltip after 2 seconds
-  setTimeout(() => {
-    showContact.value = null;
-  }, 2000);
-}
-
 
 const filters = ref({
   category: '',
@@ -424,7 +512,6 @@ const currentReviewIndex = ref(0)
 import { useDummyReviews } from '~/composables/useDummyReviews'
 
 const { businesses } = useDummyReviews()
-
 
 const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
@@ -480,16 +567,4 @@ select:focus {
   border-color: transparent !important;
   box-shadow: 0 0 0 2px #008253 !important;
 }
-
-@keyframes fadeInOut {
-  0%   { opacity: 0; transform: translateY(4px); }
-  10%  { opacity: 1; transform: translateY(0); }
-  90%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(4px); }
-}
-
-.animate-fade {
-  animation: fadeInOut 2.5s forwards;
-}
 </style>
-

@@ -137,9 +137,12 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref } from "vue";  
+import { ref } from "vue";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 
 interface SignupForm {
   username: string;
@@ -148,7 +151,7 @@ interface SignupForm {
   address: string;
   password: string;
   confirmPassword: string;
-  socialMedia: string;
+  socialMedia: boolean | string;
   agree: boolean;
 }
 
@@ -159,7 +162,7 @@ const form = ref<SignupForm>({
   address: "",
   password: "",
   confirmPassword: "",
-  socialMedia: "",
+  socialMedia: false,
   agree: false,
 });
 
@@ -174,6 +177,6 @@ const handleSignup = async () => {
   if (!form.value.agree) {
     alert("You must agree to the privacy policy & terms.");
     return;
-  }
+  } 
 };
 </script>
