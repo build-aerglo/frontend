@@ -2,7 +2,6 @@ import axios from "axios";
 
 export function useSupportApi() {
   const api = axios.create({
-    baseURL: "https://aerglotechnology.com/api",
     headers: {
       "Content-Type": "application/json",
     },
