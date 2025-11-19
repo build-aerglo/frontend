@@ -161,6 +161,89 @@
                 >
                   {{ business.reviewCount }} reviews
                 </button>
+
+                        <!--Mobile view-->
+                <div v-if="business && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-4">
+            <!--header-->
+            <div class="mb-6 pb-4 border-b border-slate-200">
+              <div class="flex items-center gap-3 mb-2">
+                <div>
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                    class="w-14 h-14 object-cover border-2 border-slate-200 rounded-full"
+                  /> 
+                  <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                </div>
+                <div class="ml-2">
+                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness?.name }}</h3>
+                  <p class="text-xs mb-1 text-slate-600">Review Summary</p>
+                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness?.reviewSummary }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex gap-2">
+                <button 
+                  @click="prevReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-left text-slate-700 text-sm"></i>
+                </button>
+                <button 
+                  @click="nextReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Review Card -->
+              <div v-if="currentReview" :class="[
+                'rounded-xl p-4 border transition-all',
+                currentReview.rating >= 4 
+                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200' 
+                  : currentReview.rating >= 3
+                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
+                    : 'bg-gradient-to-br from-rose-50 to-red-50 border-rose-200'
+              ]">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      :src="currentReview.avatar" 
+                      :alt="currentReview.author"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
+                    <div class="flex items-center gap-1">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="pi text-xs"
+                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                  {{ currentReview.text }}
+                </p>
+                <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
+              </div>
+            </div>
+            <div>
+              <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+            </div>   
+          </div>
               </div>
             </div>
           </template>
@@ -220,6 +303,88 @@
                 >
                   {{ business.reviewCount }} reviews
                 </button>
+                <!--Mobile view-->
+                <div v-if="business && focusedBusinessId === business.id" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-4">
+            <!--header-->
+            <div class="mb-6 pb-4 border-b border-slate-200">
+              <div class="flex items-center gap-3 mb-2">
+                <div>
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                    class="w-14 h-14 object-cover border-2 border-slate-200 rounded-full"
+                  /> 
+                  <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                </div>
+                <div class="ml-2">
+                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness?.name }}</h3>
+                  <p class="text-xs mb-1 text-slate-600">Review Summary</p>
+                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2">
+                    <p class="text-xs text-slate-700">{{ focusedBusiness?.reviewSummary }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex gap-2">
+                <button 
+                  @click="prevReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-left text-slate-700 text-sm"></i>
+                </button>
+                <button 
+                  @click="nextReview"
+                  :disabled="focusedBusinessReviews.length <= 1"
+                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Review Card -->
+              <div v-if="currentReview" :class="[
+                'rounded-xl p-4 border transition-all',
+                currentReview.rating >= 4 
+                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200' 
+                  : currentReview.rating >= 3
+                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
+                    : 'bg-gradient-to-br from-rose-50 to-red-50 border-rose-200'
+              ]">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <img 
+                      :src="currentReview.avatar" 
+                      :alt="currentReview.author"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
+                    <div class="flex items-center gap-1">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="pi text-xs"
+                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-sm text-slate-700 leading-relaxed">
+                  {{ currentReview.text }}
+                </p>
+                <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
+              </div>
+            </div>
+            <div>
+              <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+            </div>   
+          </div>
               </div>
             </div>
             
@@ -323,94 +488,6 @@
             <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
             <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
             <p class="text-sm text-slate-600">Click on number of reviews to view highlights</p>
-          </div>
-
-          <!-- Mobile Review Display -->
-          <div v-if="focusedBusiness" class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-4">
-            <!--header-->
-            <div class="mb-6 pb-4 border-b border-slate-200">
-              <div class="flex items-center gap-3 mb-2">
-                <div>
-                  <img 
-                    :src="focusedBusiness.logo" 
-                    :alt="focusedBusiness.name"
-                    class="w-16 h-16 object-cover border-2 border-slate-200 rounded-full"
-                  />
-                  <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                </div> 
-                <div class="ml-2">
-                  <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
-                  <p class="text-xs mb-1 text-slate-600">Review Summary</p>
-                  <div class="bg-slate-50 mb-0 border border-slate-100 rounded-lg p-2">
-                    <p class="text-xs text-slate-700">{{ focusedBusiness.reviewSummary }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex gap-2">
-                <button 
-                  @click="prevReview"
-                  :disabled="focusedBusinessReviews.length <= 1"
-                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <i class="pi pi-chevron-left text-slate-700 text-sm"></i>
-                </button>
-                <button 
-                  @click="nextReview"
-                  :disabled="focusedBusinessReviews.length <= 1"
-                  class="w-8 h-8 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="space-y-4">
-              <!-- Review Card -->
-              <div v-if="currentReview" :class="[
-                'rounded-xl p-4 border transition-all',
-                currentReview.rating >= 4 
-                  ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200' 
-                  : currentReview.rating >= 3
-                    ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200'
-                    : 'bg-gradient-to-br from-rose-50 to-red-50 border-rose-200'
-              ]">
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
-                    <img 
-                      :src="currentReview.avatar" 
-                      :alt="currentReview.author"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
-                        :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
-                    </div>
-                  </div>
-                </div>
-                <p class="text-sm text-slate-700 leading-relaxed">
-                  {{ currentReview.text }}
-                </p>
-                <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
-              </div>
-            </div>
-            <div>
-              <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
-            </div>   
           </div>
         </div>
       </div>

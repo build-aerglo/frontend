@@ -10,6 +10,7 @@ export interface BusinessInfo {
 
 export function useBusinessDashboard() {
   
+  
   const businessInfo = ref<BusinessInfo>({
     name: 'The Cozy Cafe',
     category: 'Coffee & Cafes',
