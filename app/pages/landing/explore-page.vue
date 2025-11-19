@@ -405,7 +405,7 @@
                   <img 
                     :src="focusedBusiness.logo" 
                     :alt="focusedBusiness.name"
-                    class="w-24 h-14 object-cover border-2 border-slate-200 rounded-full"
+                    class="w-24 h-16 object-cover border-2 border-slate-200 rounded-full"
                   /> 
                   <span class="text-lg font-bold ml-2 text-slate-900">{{ focusedBusiness.rating }}</span>
                   <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
