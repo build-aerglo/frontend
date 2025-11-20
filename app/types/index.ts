@@ -1,17 +1,13 @@
-export interface BusinessUser {
-  id: string;
-  name: string;
+export interface EndUser {
+  username: string;
   email: string;
   phone: string;
-  address: string | null;
-  branchName: string | null;
-  branchAddress: string | null;
+  address: string;
   password: string;
-  userType: string;
-  website: string | null;
-  categoryIds: string[] | null;
+  socialMedia: string;
 }
-export interface LoginData {
+
+export interface userLoginData {
   email: string;
   password: string;
 }

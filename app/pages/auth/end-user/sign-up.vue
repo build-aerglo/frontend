@@ -12,7 +12,7 @@
           <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] my-1">Clear reviews, Confident decisions.</div>
-        <form @submit.prevent="handleSignup" class="space-y-2">
+        <form @submit.prevent="handleEndUserRegistration" class="space-y-2">
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium text-gray-700">
@@ -64,27 +64,48 @@
 
           <div class="flex space-x-4">
             <!-- Password -->
-            <div class="w-1/2">
-              <label for="password" class="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div class="relative mt-1">
-                <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'"
-                  class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-                  required />
-                <button type="button" @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary">
-                  <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
-                </button>
-              </div>
-            </div>
+             <div>
+               <div class="w-1/2">
+                 <label for="password" class="block text-sm font-medium text-gray-700">
+                   Password
+                 </label>
+                 <div class="relative mt-1">
+                   <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'"
+                     class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+                     required />
+   
+                   <button type="button" @click="showPassword = !showPassword"
+                     class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary">
+                     <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
+                   </button>
+                 </div>
+               </div>
+               <div v-if="!allValid" class="flex flex-col mt-[10px] mb-[10px]">
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validLength ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must be greater than 8 characters
+                 </div>
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validNumeric ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must contain a number
+                 </div>
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validComplexity ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must contain a special character (@#&_$?)
+                 </div>
+               </div>
+               <div v-if="isValid">Password Validated</div>
+             </div>
             <!-- Confirm Password -->
             <div class="w-1/2">
               <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <div class="relative mt-1">
-                <input id="confirmPassword" v-model="form.confirmPassword" :type="showConfirm ? 'text' : 'password'"
+                <input id="confirmPassword" v-model="confirmPassword" :type="showConfirm ? 'text' : 'password'"
                   class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
                   required />
                 <button type="button" @click="showConfirm = !showConfirm"
@@ -97,7 +118,7 @@
 
           <!-- Terms -->
           <div class="flex items-center gap-2 text-xs">
-            <input id="terms" type="checkbox" v-model="form.agree"
+            <input id="terms" type="checkbox" v-model="agree"
               class="w-4 h-4 text-[#008253] border-gray-300 rounded" />
             <label for="terms">
               I agree to
@@ -139,41 +160,75 @@
 
 
 <script setup lang="ts">
-import { ref } from "vue";  
-
-interface SignupForm {
-  username: string;
-  email: string;
-  phone: string;
-  address: string;
-  password: string;
-  confirmPassword: string;
-  socialMedia: string;
-  agree: boolean;
-}
-
-const form = ref<SignupForm>({
+import useMethods from '~/composables/useMethods'; 
+import type { EndUser } from "~/types";
+const { registerEndUser } = useMethods();
+const confirmPassword = ref('')
+const agree = ref(false)
+const form = ref<EndUser>({
   username: "",
   email: "",
   phone: "",
   address: "",
   password: "",
-  confirmPassword: "",
-  socialMedia: "",
-  agree: false,
+  socialMedia: ""
 });
-
+const toast = useToast()
+const isLoading = ref(false);
+const registrationError = ref<string | null>(null);
 const showPassword = ref(false);
 const showConfirm = ref(false);
 
-const handleSignup = async () => {
-  if (form.value.password !== form.value.confirmPassword) {
-    alert("Passwords do not match!");
-    return;
+const validLength = ref(true);
+const validComplexity = ref(true);
+const validNumeric = ref(true);
+const isValid = ref(false)
+const allValid = computed(() => validLength.value && validNumeric.value && validComplexity.value);
+
+watch(() => form.value.password, (newVal) => {
+  validLength.value = newVal.length >= 8;
+  validNumeric.value = /[0-9]/.test(newVal);
+  validComplexity.value = /[@#&$_?]/.test(newVal);
+});
+
+watch([() => form.value.password, confirmPassword], () => {
+  if (isValid.value) isValid.value = false;
+});
+
+
+const handleEndUserRegistration = async () => {
+  if (!allValid.value) return;
+  if (confirmPassword.value !== form.value.password) {
+    return toast.add({
+      severity: 'error',
+      summary: 'ERROR', detail: 'Password do not match', life: 3000
+    });
   }
-  if (!form.value.agree) {
-    alert("You must agree to the privacy policy & terms.");
-    return;
+
+
+  try {
+    isLoading.value = true;
+    registrationError.value = null;
+
+    const res = await registerEndUser(form.value);
+    if (res) {
+      alert('Business registered successfully')
+      console.log(res);
+      navigateTo('sign-in');
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'ERROR', detail: 'Registration failed. Check the form data and try again.', life: 3000
+      });
+    }
+
+    isLoading.value = false;
+  } catch (error) {
+    console.log(error)
+    toast.add({
+      severity: 'error',
+      summary: 'ERROR', detail: 'Registration failed. Check the form data and try again.', life: 3000
+    });
   }
-};
+}
 </script>

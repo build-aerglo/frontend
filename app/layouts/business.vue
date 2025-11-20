@@ -37,7 +37,7 @@
             <slot />
           </div>
         </div>
-        <footer class="footer bg-white border-t border-gray-200 p-8 mt-12">
+        <!-- <footer class="footer bg-white border-t border-gray-200 p-8 mt-12">
           <div class="container-xxl mx-auto">
 
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -93,7 +93,7 @@
               </p>
             </div>
           </div>
-        </footer>
+        </footer> -->
 
       </div>
     </div>

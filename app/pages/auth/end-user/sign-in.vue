@@ -32,11 +32,11 @@
           {{ errorMessage }}
         </div>
 
-        <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
+        <form id="formAuthentication" @submit.prevent="HandleLogin" class="space-y-5">
           <div>
             <input
               id="email"
-              v-model="email"
+              v-model="userData.email"
               name="email"
               type="email"
               placeholder="Email"
@@ -47,7 +47,7 @@
           </div>
           <div class="relative">
             <InputTextCustom
-              v-model="password"
+              v-model="userData.password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
               :disabled="isLoading"
@@ -124,30 +124,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { useUserStore } from '@/store/user' 
+import useMethods from '~/composables/useMethods';
+import type { userLoginData } from "~/types";
 
-const email = ref<string>("");
-const password = ref<string>("");
+const { loginUser } = useMethods();
+const store = useUserStore(); 
+
+const userData = ref<userLoginData>({
+  email: '',
+  password: '',
+});
+
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>("");
 
+const loginError = ref<string | null>(null);
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
 
-async function handleSubmit() {
-  
-  errorMessage.value = "";
-  
-  
-  if (!email.value || !password.value) {
-    errorMessage.value = "Please enter both email and password.";
-    return;
+const HandleLogin = async () => {
+  isLoading.value = true;
+  loginError.value = null; 
+
+  const res = await loginUser(userData.value);
+
+  if (res) {
+    alert('login successful')
+    console.log(res);
+    if (store.accessToken) {
+          navigateTo('../../');
+    } else {
+        loginError.value = 'Login succeeded, but no token was stored.';
+    }
+  } else {
+    loginError.value = 'Login failed. Please check your credentials and network connection.';
   }
 
-  isLoading.value = true;
+  isLoading.value = false;
 }
 
 function handleSocialLogin(provider: string) {

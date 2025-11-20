@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 import useMethods from '~/composables/useMethods';
-import type { BusinessUser } from "~/types";
+import type { BusinessUser } from "~/types/business";
 
 const { registerBusiness } = useMethods();
 const router = useRouter();
