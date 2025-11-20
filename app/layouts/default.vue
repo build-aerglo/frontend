@@ -9,5 +9,5 @@
 import { useUserStore } from "~/store/user";
 
 const userStore = useUserStore();
-userStore.initTheme();
+// userStore.initTheme();
 </script>

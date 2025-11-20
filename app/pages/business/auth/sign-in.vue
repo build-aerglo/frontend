@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { useBusinessUserStore } from '@/store/businessUser' 
 import useMethods from '~/composables/useMethods';
-import type { LoginData } from "~/types";
+import type { LoginData } from "~/types/business";
 
 const { loginUser } = useMethods();
 const router = useRouter(); 

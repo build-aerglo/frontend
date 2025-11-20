@@ -1,10 +1,9 @@
 import axios, { type AxiosRequestHeaders } from "axios";
-import useBusinesUser from "./business/useBusinessUser";
+import useUser from "./useUser";
 
 export default function () {
   const api_url = useRuntimeConfig().public.apiUrl;
-  const user_api_url = useRuntimeConfig().public.apiUrl;
-
+  
   const api = axios.create({
     baseURL: api_url,
     headers: {
@@ -12,7 +11,7 @@ export default function () {
     },
   });
 
-  const store = useBusinesUser();
+  const store = useUser();
 
   api.interceptors.request.use(
     async function (config) {
@@ -29,7 +28,7 @@ export default function () {
       if (expires <= oneHourFromNow) {
         try {
           const response = await axios.post(
-            `${user_api_url}/api/auth/refresh`,
+            `${api_url}/api/auth/refresh`,
             {},
             {
               headers: {

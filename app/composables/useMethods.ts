@@ -1,11 +1,13 @@
 import useApi from "~/composables/useApi";
-import type { BusinessUser, LoginData } from "~/types";
+import type { BusinessUser, LoginData } from "~/types/business";
+import type { EndUser } from "~/types";
 import useBusinessUser from "./business/useBusinessUser";
+import useUser from "./useUser";
 
 export default function () {
   const store = useBusinessUser();
   const api = useApi();
-
+  const userStore = useUser()
   const registerBusiness = async (data: BusinessUser) => {
     try {
       const res = await api.post("api/User/business", data);
@@ -52,38 +54,28 @@ export default function () {
     }
   };
 
-  const mockFunction = async () => {
+  const registerEndUser = async (data: EndUser) => {
     try {
-      const res = await api.get("url");
-      if (res.status === 200) {
-        return res.data;
+      const res = await api.post("api/User/end-user", data);
+
+      if (res.status === 201 || res.status === 200) {
+        const endUser: EndUser = res.data;
+        userStore.setUserData(endUser);
+        return endUser;
+      } else {
+        throw new Error("Registration failed");
       }
-
-      throw new Error("Error");
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  };
-
-  const mockFunctionPost = async () => {
-    try {
-      const res = await api.post("url", JSON.stringify({ name: "test" }));
-      if (res.status === 200) {
-        return res.data;
-      }
-
-      throw new Error("Error");
-    } catch (error) {
-      console.log(error);
+    } catch (err: any) {
+      console.error(
+        err?.response?.data?.message || err.message || "Something went wrong"
+      );
       return null;
     }
   };
 
   return {
-    mockFunction,
-    mockFunctionPost,
     loginUser,
     registerBusiness,
+    registerEndUser,
   };
 }

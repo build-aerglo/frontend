@@ -103,12 +103,12 @@
           <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" class="py-3 px-3">Date</th>
-              <th scope="col" class="py-3 px-3">Business Location</th>
-              <th scope="col" class="py-3 px-3">Review Body</th>
+              <th scope="col" class="py-3 px-3">Location</th>
+              <th scope="col" class="py-3 px-3">Review</th>
               <th scope="col" class="py-3 px-3">Source</th>
               <th scope="col" class="py-3 px-3">Status</th>
               <th scope="col" class="py-3 px-3">Sentiment</th>
-              <th scope="col" class="py-3 px-3">Action</th>
+              <th scope="col" class="py-3 px-3">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -117,7 +117,7 @@
               <td class="py-4 px-3">{{ review.location }}</td>
               
               <td class="py-4 px-3 max-w-xs truncate">
-                {{ review.body.substring(0, 20) }}...
+                {{ review.body.substring(0, 25) }}...
                 <a href="#" class="!text-link hover:underline text-xs" @click.prevent="openActionModal('view', review)">see more</a>
               </td>
               
@@ -136,9 +136,9 @@
               </td>
               
               <td class="py-4 px-3 flex gap-2">
-                <ButtonCustom label="View" size="sm" @click="openActionModal('view', review)" />
-                <ButtonCustom label="Reply" size="sm" @click="openActionModal('reply', review)" />
-                <ButtonCustom label="Flag" size="sm" severity="danger" @click="openActionModal('flag', review)" />
+                <ButtonCustom icon="pi pi-eye" size="sm" @click="openActionModal('view', review)" />
+                <ButtonCustom icon="pi pi-reply" size="sm" @click="openActionModal('reply', review)" />
+                <ButtonCustom icon="pi pi-flag" size="sm" severity="danger" @click="openActionModal('flag', review)" />
               </td>
             </tr>
           </tbody>
@@ -161,7 +161,7 @@
                     {{ currentReview.reviewer.name.substring(0, 1) }}
                 </div>
                 <div>
-                    <p class="font-semibold text-lg text-gray-800">{{ currentReview.reviewer.name }}</p>
+                    <span class="font-semibold text-lg text-gray-800">{{ currentReview.reviewer.name }}</span>
                     <div class="flex items-center gap-2 text-sm text-gray-500">
                         <i v-for="n in currentReview.rating" :key="n" class="pi pi-star-fill text-yellow-400 text-sm"></i>
                         <i v-for="n in (5 - currentReview.rating)" :key="n + 5" class="pi pi-star text-yellow-400 text-sm"></i>

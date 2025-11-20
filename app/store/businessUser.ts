@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { BusinessUser } from "~/types";
+import type { BusinessUser } from "~/types/business";
 
 export interface UserState {
   accessToken: string | null;
