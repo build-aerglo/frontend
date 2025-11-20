@@ -18,37 +18,26 @@
             <input id="username" v-model="form.username" type="text"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
-
           </div>
-
           <!-- Email -->
-          
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email
             </label>
-
             <input id="email" v-model="form.email" type="email"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
-
           </div>
-
-
-
           <!-- Phone -->
           <div>
             <label for="phone" class="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
-
-
             <input id="phone" v-model="form.phone" type="tel" pattern="[0-9]{11}"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
-
           </div>
-
+          <!-- Address -->
           <div>
             <label for="address" class="block text-sm font-medium text-gray-700">
               Address
@@ -118,9 +107,8 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref } from "vue"; 
+import { ref } from "vue";
 
 interface SignupForm {
   username: string;
@@ -129,7 +117,6 @@ interface SignupForm {
   address: string;
   password: string;
   confirmPassword: string;
-  socialMedia: string;
   agree: boolean;
 }
 
@@ -140,7 +127,6 @@ const form = ref<SignupForm>({
   address: "",
   password: "",
   confirmPassword: "",
-  socialMedia: "",
   agree: false,
 });
 

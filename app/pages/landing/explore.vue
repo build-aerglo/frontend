@@ -7,10 +7,10 @@
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
-          <div class="flex-1 min-w-[180px]">
+          <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
             <select v-model="filters.category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Categories</option>
+              <option value="">all</option>
               <option value="restaurant">Restaurant</option>
               <option value="hotel">Hotel</option>
               <option value="retail">Retail</option>
@@ -20,10 +20,10 @@
           </div>
 
           <!-- Tags -->
-          <div class="flex-1 min-w-[180px]">
+          <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Tags</label>
             <select v-model="filters.tags" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Tags</option>
+              <option value="">all</option>
               <option value="family-friendly">Family Friendly</option>
               <option value="luxury">Luxury</option>
               <option value="budget">Budget</option>
@@ -34,10 +34,10 @@
           </div>
 
           <!-- Location -->
-          <div class="flex-1 min-w-[180px]">
+          <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
             <select v-model="filters.location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Locations</option>
+              <option value="">all</option>
               <option value="lagos">Lagos</option>
               <option value="kano">Kano</option>
               <option value="ogun">Ogun</option>
@@ -46,10 +46,10 @@
           </div>
 
           <!-- Stars -->
-          <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Minimum Rating</label>
+          <div class="flex-1 min-w-[100px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Ratings</label>
             <select v-model="filters.stars" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">Any Rating</option>
+              <option value="">any</option>
               <option value="4.5">4.5 Stars</option>
               <option value="4">4 Stars</option>
               <option value="3">3 Stars</option>
@@ -58,10 +58,10 @@
           </div>
 
           <!-- Price -->
-          <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Price Range</label>
+          <div class="flex-1 min-w-[70px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
             <select v-model="filters.priceRange" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Prices</option>
+              <option value="">all</option>
               <option value="budget">Budget</option>
               <option value="moderate">Moderate</option>
               <option value="expensive">Expensive</option>
@@ -92,7 +92,7 @@
       <!-- Results -->
       <div class="mb-4">
         <p class="text-sm text-slate-600">
-          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> results
+          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> result(s)
         </p>
       </div>
 
@@ -106,12 +106,12 @@
             >
             <div class="grid grid-cols-[auto_1fr] gap-4">
                 <!-- Logo -->
-                <div class="flex flex-col gap-2">
-                <div class="relative w-24 h-24"> <!-- smaller size -->
+                <div class="flex flex-col gap-1">
+                <div class="relative w-24 h-24"> 
                     <div
                     class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
                     >
-                    <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
+                    <img :src="business.logo" :alt="business.name" class="w-full h-full mb-0 object-cover" />
                     </div>
 
                     <!-- Badges -->
@@ -133,8 +133,8 @@
                 </div>
 
                 <!-- Rating -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-2 border border-amber-200">
-                    <div class="flex items-center gap-1 justify-center mb-1">
+                <div class="text-center">
+                    <div class="flex items-center gap-1 mt-0 justify-center">
                     <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
                     <div class="flex">
                         <i
@@ -147,7 +147,7 @@
                     </div>
                     <button
                     @click.stop="focusedBusinessId = business.id"
-                    class="text-xs text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
+                    class="text-xs text-[#008253] mt-0 hover:text-[#006b44] font-semibold hover:underline transition-colors"
                     >
                     {{ business.reviewCount }} reviews
                     </button>
@@ -165,15 +165,14 @@
                     @mouseenter="showContact = business.id"
                     @mouseleave="hideContact()"
                     >
-                    <i class="pi pi-info-circle text-[#008253] text-xl cursor-pointer hover:text-slate-800"></i>
+                    <i class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
 
-                    <!-- Tooltip -->
                     <div
                         v-if="showContact === business.id"
-                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-700 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
+                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
                     >
-                        <p><strong><i class="pi pi-map-marker text-[#008253] mr-2 text-lg"></i>Address:</strong> {{ business.address }}</p>
-                        <p><strong><i class="pi pi-phone text-[#008253] mr-2 text-lg"></i>Phone:</strong> {{ business.phone }}</p>
+                     <p><strong>Tel:</strong> {{ business.phone }}</p>   
+                     <p><strong>Address:</strong> {{ business.address }}</p>
                     </div>
                     </div>
                 </div>
@@ -196,18 +195,13 @@
             <div class="mb-6 pb-4 border-b border-slate-200">
               <div class="flex items-center gap-3 mb-2">
                 <div>
-                <img 
-                  :src="focusedBusiness.logo" 
-                  :alt="focusedBusiness.name"
-                  class="w-16 h-16 object-cover border-2 border-slate-200"
-                />
-                 <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                  </div> 
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                  class="w-16 h-16 rounded-full object-cover border-2 border-primary-light flex-shrink-0"
+                  /> 
+                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                </div> 
                 <div class="ml-2">
                   <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
                   <p class="text-xs mb-1 text-slate-600">Review Summary</p>
@@ -299,18 +293,13 @@
             <!--header-->
             <div class="mb-2 pb-2 border-b border-slate-200">
               <div class="flex items-center gap-4 mb-2">
-                <div>
-                    <img 
-                    :src="focusedBusiness.logo" 
-                    :alt="focusedBusiness.name"
-                    class="w-24 h-full object-cover border-2 border-slate-200"
-                    /> 
-                     <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i> 
+                <div >
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                  class="w-24 h-18 rounded-full mb-1 object-cover border-2 border-primary-light flex-shrink-0"
+                  /> 
+                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
+                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
                 </div>
                 <div class="ml-2">
                   <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -382,10 +371,7 @@
             </div>
             </div>  
           <!-- No Business Selected -->
-          <div 
-                v-else 
-                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8"
-            >
+          <div v-else class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8">
                 <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
                 <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
                 <p class="text-sm text-slate-600">Click on number of reviews to view highlights</p>
