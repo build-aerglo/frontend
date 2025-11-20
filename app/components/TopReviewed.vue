@@ -49,32 +49,13 @@
             {{ card.name }}
           </h3>
 
-          <!-- SVG Ratings -->
-          <div class="flex items-center justify-center space-x-1">
+          <!-- Star Ratings -->
+          <div class="flex items-center justify-center space-x-0.25">
             <span v-for="n in 5" :key="n">
-              <svg
-                v-if="n <= card.rating"
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 text-gold"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
-                />
-              </svg>
-
-              <svg
-                v-else
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 text-gray-300 dark:text-gray-600"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
-                />
-              </svg>
+              <Stars
+                :filled="n <= card.rating"
+                :colorLevel="n <= card.rating ? card.rating : 0"
+              />
             </span>
           </div>
 

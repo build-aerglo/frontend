@@ -109,13 +109,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useSupportUser } from "~/composables/useSupportUser";
-import { useUserStore } from "~/store/user"; 
-
-const router = useRouter();
-const { signup } = useSupportUser();
-const userStore = useUserStore();
 
 interface SignupForm {
   username: string;
@@ -148,19 +141,6 @@ const handleSignup = async () => {
   if (!form.value.agree) {
     alert("You must agree to the privacy policy & terms.");
     return;
-  }
-  try {
-    const response = await signup(form.value);
-    if (response?.id) {
-      userStore.setUser({ id: response.id });
-    }
-    alert("Sign-up successful!");
-    router.push("/auth/support-user/sign-in"); 
-  } catch (error: any) {
-    alert(
-      error.response?.data?.message ||
-      "Sign-up failed. Try again."
-    );
   }
 };
 </script>
