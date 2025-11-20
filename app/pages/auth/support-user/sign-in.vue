@@ -75,14 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useSupportUser } from "~/composables/useSupportUser";
-import { useUserStore } from "~/store/user";  
-
-const router = useRouter();
-const { signin } = useSupportUser(); 
-const userStore = useUserStore();  
+import { ref } from "vue"; 
 
 const email = ref("");
 const password = ref("");
@@ -96,20 +89,6 @@ function togglePassword() {
 
 async function handleSubmit() {
   isLoading.value = true;
-  try {
-    const { user } = await signin(email.value, password.value, rememberMe.value);
-    if (user?.id) {
-      userStore.setUser({ id: user.id });
-    }
-    router.push("/");
-  } catch (error: any) {
-    alert(
-      error.response?.data?.message ||
-      error.message ||
-      "Sign-in failed. Please try again."
-    );
-  } finally {
-    isLoading.value = false;
-  }
+  
 }
 </script>
