@@ -50,13 +50,13 @@
           </h3>
 
           <!-- Star Ratings -->
-          <div class="flex items-center justify-center space-x-0.25">
-            <span v-for="n in 5" :key="n">
+          <div class="flex items-center justify-center">
               <Stars
+                v-for="n in 5"
+                :key="n"
                 :filled="n <= card.rating"
                 :colorLevel="n <= card.rating ? card.rating : 0"
               />
-            </span>
           </div>
 
           <div class="text-center text-[80%]">
@@ -94,7 +94,7 @@ const cards = [
   { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
   { icon: ShoppingCart, logo: img4, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
   { icon: Hotel, logo: img6, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: School, logo: img8, name: 'Ace College', rating: 5, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
 ]
 
 </script>

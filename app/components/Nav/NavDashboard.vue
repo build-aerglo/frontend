@@ -66,11 +66,6 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-const toggleBusinessDropdown = (event: MouseEvent) => {
-  event.stopPropagation()
-  showBusinessDropdown.value = !showBusinessDropdown.value
-}
-
 const handleClickOutside = () => {
   showBusinessDropdown.value = false
 }

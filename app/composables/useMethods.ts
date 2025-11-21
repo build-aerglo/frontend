@@ -1,11 +1,14 @@
 import useApi from "~/composables/useApi";
 import type { BusinessUser, LoginData } from "~/types/business";
+import type { SupportUser} from "~/types/support";
 import type { EndUser } from "~/types";
 import useBusinessUser from "./business/useBusinessUser";
+import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
 
 export default function () {
   const store = useBusinessUser();
+  const supportStore = useSupportUser();
   const api = useApi();
   const userStore = useUser()
   const registerBusiness = async (data: BusinessUser) => {
@@ -26,6 +29,25 @@ export default function () {
       return null;
     }
   };
+
+  const registerSupportUser = async (data: SupportUser) => {
+    try {
+      const res = await api.post("api/User/support", data);
+
+      if (res.status === 201 || res.status === 200) {
+        const user: SupportUser = res.data;
+        return user;
+      } else {
+        throw new Error("Registration failed");
+      }
+    } catch (err: any) {
+      console.error(
+        err?.response?.data?.message || err.message || "Something went wrong"
+      );
+      return null;
+    }
+  };
+
   const loginUser = async (data: LoginData) => {
     try {
       const res = await api.post("api/auth/login", {
@@ -77,5 +99,6 @@ export default function () {
     loginUser,
     registerBusiness,
     registerEndUser,
+    registerSupportUser,
   };
 }

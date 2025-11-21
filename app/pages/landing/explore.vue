@@ -99,10 +99,10 @@
       <!-- Main Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Business Cards -->
-        <div class="md:col-span-2 space-y-6">
+        <div class="md:col-span-2 space-y-4">
           <template v-for="business in filteredBusinesses" :key="business.id">
             <div
-            class="bg-white rounded-2xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
+            class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
             >
             <div class="grid grid-cols-[auto_1fr] gap-4">
                 <!-- Logo -->
@@ -137,12 +137,13 @@
                     <div class="flex items-center gap-1 mt-0 justify-center">
                     <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
                     <div class="flex">
-                        <i
+                      <Star
                         v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                        ></i>
+                        :filled="star <= Math.floor(business.rating)"
+                        :colorLevel="star <= Math.floor(business.rating) ? Math.floor(business.rating) : 0"
+                        :class="'w-4 h-4'"
+                      />
                     </div>
                     </div>
                     <button
@@ -155,7 +156,7 @@
                 </div>
 
                 <!-- Business Details -->
-                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200 relative">
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative">
                 <div class="flex justify-between items-start">
                     <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
 
@@ -199,8 +200,14 @@
                     :src="focusedBusiness?.logo" 
                   class="w-16 h-16 rounded-full object-cover border-2 border-primary-light flex-shrink-0"
                   /> 
-                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
-                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
                 </div> 
                 <div class="ml-2">
                   <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -251,13 +258,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -298,8 +306,15 @@
                     :src="focusedBusiness?.logo" 
                   class="w-24 h-18 rounded-full mb-1 object-cover border-2 border-primary-light flex-shrink-0"
                   /> 
-                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
-                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
+
                 </div>
                 <div class="ml-2">
                   <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -350,13 +365,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -385,6 +401,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import Star from '~/components/Stars.vue' 
+
 
 const showContact = ref<number | null>(null);
 

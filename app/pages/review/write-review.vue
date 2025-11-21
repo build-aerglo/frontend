@@ -33,17 +33,17 @@
               </div>
               
               <!-- Star Rating -->
-              <div class="items-center space-x-1 mt-2">
-                <template v-for="star in 5" :key="star">
-                  <i
-                    class="pi text-lg md:text-sm cursor-pointer transition-colors"
-                    :class="star <= (business.hoverRating || business.rating) ? 'pi-star-fill' : 'pi-star'"
-                    :style="{ color: star <= (business.hoverRating || business.rating) ? '#deae29' : '#6b7280' }"
-                    @click="rateBusiness(index, star)"
+              <div class="flex items-center mt-2">
+                <Star
+                    v-for="star in 5"
+                    :key="star"
+                    :filled="star <= (business.hoverRating || business.rating)"
+                    :color-level="star <= (business.hoverRating || business.rating) ? (business.hoverRating || business.rating) : 0"
+                    class="cursor-pointer"
                     @mouseenter="business.hoverRating = star"
                     @mouseleave="business.hoverRating = 0"
-                  ></i>
-                </template>
+                    @click="rateBusiness(index, star)"
+                />
               </div>
               <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
                 {{ ratingLabels[business.rating] }}
@@ -126,17 +126,17 @@
             <!-- Star Rating -->
             <div>
               <label class="block text-xs text-gray-900 mb-1">Rating</label>
-              <div class="flex items-center space-x-2">
-                <template v-for="star in 5" :key="star">
-                  <i
-                    class="pi text-3xl cursor-pointer transition-colors"
-                    :class="star <= (hoverRating || rating) ? 'pi-star-fill' : 'pi-star'"
-                    @click="rating = star"
+              <div class="flex items-center">
+                <Star
+                    v-for="star in 5"
+                    :key="star"
+                    :filled="star <= (hoverRating || rating)"
+                    :color-level="star <= (hoverRating || rating) ? (hoverRating || rating) : 0"
+                    class="cursor-pointer"
                     @mouseenter="hoverRating = star"
                     @mouseleave="hoverRating = 0"
-                    :style="{ color: star <= (hoverRating || rating) ? '#deae29' : '#6b7280' }"
-                  ></i>
-                </template>
+                    @click="rating = star"
+                />
                 <span class="ml-2 text-sm text-gray-800">
                   {{ rating > 0 ? ratingLabels[rating] : ' ' }}
                 </span>
@@ -262,6 +262,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { watch } from "vue";
+import Star from '~/components/Stars.vue'
 
 // Form state
 const businessName = ref("");

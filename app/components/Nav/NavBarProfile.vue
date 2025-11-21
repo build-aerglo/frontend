@@ -122,6 +122,7 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
 
+
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })

@@ -1,25 +1,36 @@
 <template>
-<div class="relative min-h-screen bg-green-100 flex items-center justify-center">
-
-    <!-- Form Section -->
-    <div class="relative w-full max-w-md px-6 py-8">
-      <div class="bg-white rounded-2xl shadow-lg p-8">
+  <div class="relative min-h-screen bg-green-100 flex items-center justify-center">
+  
+      <!-- Form Section -->
+      <div class="relative w-full max-w-md px-6 py-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
         <div class="flex justify-center mb-4">
           <img
             src="~/assets/images/e-user-logo.png"
-            alt="Welcome"
             class="h-12 w-auto object-contain"
           />
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">
           Clear reviews, Confident decisions.
         </div>
-        <form id="formAuthentication" @submit.prevent="handleSubmit" class="space-y-5">
+
+        <!-- Loading State -->
+        <div v-if="isLoading" class="text-center text-gray-600">
+          <i class="pi pi-spin pi-spinner text-2xl"></i>
+          <p class="mt-2">Signing in...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+          {{ errorMessage }}
+        </div>
+
+        <form id="formAuthentication" @submit.prevent="HandleLogin" class="space-y-5">
           <div>
             <!-- Input -->
             <input
               id="email"
-              v-model="email"
+              v-model="userData.email"
               name="email"
               type="text"
               placeholder="Email"
@@ -29,16 +40,10 @@
           </div>
           <div class="relative">
             <InputTextCustom
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
+              v-model="userData.password"
               placeholder="Password"
               inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
             />
-            <i
-              :class="showPassword ? 'pi pi-eye' : 'pi pi-slash'"
-              class="absolute right-3 top-4 cursor-pointer text-gray-500"
-              @click="togglePassword"
-            ></i>
           </div>
 
           <div class="flex justify-between items-center text-xs text-gray-600">
@@ -75,20 +80,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"; 
+import { useSupportUserStore } from '@/store/supportUser'
+import useMethods from '~/composables/useMethods';
+import type { supportLoginData } from "~/types/support";
 
-const email = ref("");
-const password = ref("");
-const rememberMe = ref(false);
-const isLoading = ref(false);
-const showPassword = ref(false);
 
-function togglePassword() {
-  showPassword.value = !showPassword.value;
-}
+const { loginUser } = useMethods();
+const store = useSupportUserStore(); 
+const userData = ref<supportLoginData>({
+  email: '',
+  password: '',
+});
 
-async function handleSubmit() {
+const rememberMe = ref<boolean>(false);
+const showPassword = ref<boolean>(false);
+const isLoading = ref<boolean>(false);
+const errorMessage = ref<string>("");
+
+const loginError = ref<string | null>(null);
+
+const HandleLogin = async () => {
   isLoading.value = true;
-  
+  loginError.value = null; 
+
+  const res = await loginUser(userData.value);
+
+  if (res) {
+    alert('login successful')
+    console.log(res);
+    if (store.accessToken) {
+          navigateTo('./');
+    } else {
+        loginError.value = 'Login succeeded, but no token was stored.';
+    }
+  } else {
+    loginError.value = 'Login failed. Please check your credentials and network connection.';
+  }
+
+  isLoading.value = false;
 }
 </script>
