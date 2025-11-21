@@ -58,18 +58,12 @@ const showBusinessDropdown = ref(false)
 const userStore = useUserStore()
 
 onMounted(() => {
-  userStore.initTheme()
   document.addEventListener('click', handleClickOutside)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
-
-const toggleBusinessDropdown = (event: MouseEvent) => {
-  event.stopPropagation()
-  showBusinessDropdown.value = !showBusinessDropdown.value
-}
 
 const handleClickOutside = () => {
   showBusinessDropdown.value = false

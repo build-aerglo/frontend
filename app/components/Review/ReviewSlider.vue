@@ -44,8 +44,13 @@
                 <p class="text-md text-gray-800 dark:text-gray-100 font-semibold">
                   {{ review.business }}
                 </p>
-                <div class="flex text-gold mb-3">
-                  <i v-for="i in 5" :key="i" class="pi pi-star-fill mr-1"></i>
+              <div class="flex mb-3">
+                  <Stars 
+                    v-for="i in 5"
+                    :key="i"
+                    :filled="i <= 4"
+                    :color-level="5"
+                  />
                 </div>
                 <p class="text-gray-700 dark:text-gray-200 italic">
                   “{{ review.text }}”
@@ -77,8 +82,8 @@
 
 <script setup lang="ts">
 import { NuxtImg } from '#components'
-
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+
 import img1 from '/images/profile-images/1.png'
 import img2 from '/images/profile-images/2.png'
 import img3 from '/images/profile-images/3.png'

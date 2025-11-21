@@ -1,9 +1,9 @@
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 64 64"
+    width="32"
+    height="32"
+    viewBox="8 8 48 48"
     role="img"
     :aria-label="filled ? 'filled star' : 'empty star'"
   >
@@ -19,7 +19,7 @@
     <circle
       cx="32"
       cy="32"
-      r="24"
+      r="22"
       :fill="circleColor"
     />
     <ellipse cx="32" cy="45" rx="10" ry="3" fill="#000" opacity="0.18" filter="url(#blur)" />
@@ -75,6 +75,7 @@ const circleColor = computed(() => {
     case 3:
       return '#FE9900'
     case 4:
+      return '#C39A28'
     case 5:
       return '#deae29'
     default:
