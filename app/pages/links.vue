@@ -19,6 +19,9 @@
             <li>
                 <NuxtLink to="./dashboard" class="text-blue-500">Dashboard</NuxtLink>
             </li>
+            <li>
+                <NuxtLink to="./review/dash" class="text-blue-500">Dashboard</NuxtLink>
+            </li>
         </ul>
     </div>
 
