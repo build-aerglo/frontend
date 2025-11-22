@@ -71,19 +71,19 @@ export function useSampleAnalytics() {
 
   const positiveWords = [
     { text: 'Excellent', size: 48 },
-    { text: 'Great', size: 42 },
-    { text: 'Professional', size: 38 },
-    { text: 'Quality', size: 32 },
-    { text: 'Reliable', size: 28 },
-    { text: 'Helpful', size: 22 }
+    { text: 'Great', size: 44 },
+    { text: 'Professional', size: 40 },
+    { text: 'Quality', size: 36 },
+    { text: 'Reliable', size: 32 },
+    { text: 'Helpful', size: 28 }
   ]
 
   const negativeWords = [
-    { text: 'Slow', size: 32 },
-    { text: 'Expensive', size: 28 },
-    { text: 'Delay', size: 24 },
-    { text: 'Poor', size: 22 },
-    { text: 'Difficult', size: 20 }
+    { text: 'Slow', size: 48 },
+    { text: 'Expensive', size: 44 },
+    { text: 'Delay', size: 40 },
+    { text: 'Poor', size: 36 },
+    { text: 'Difficult', size: 32 }
   ]
 
   const performanceData: PerformanceData[] = [
@@ -134,23 +134,23 @@ export function useSampleAnalytics() {
   ]
 
   const monthlyTrend = [
-    { month: 'January', rating: 4.5, change: +0.2 },
-    { month: 'February', rating: 4.6, change: +0.1 },
-    { month: 'March', rating: 4.4, change: -0.2 }
+    { month: 'September', rating: 4.5, change: +0.2 },
+    { month: 'October', rating: 4.6, change: +0.1 },
+    { month: 'November', rating: 4.4, change: -0.2 }
   ]
 
   const competitorPositiveWords = [
-    { text: 'Affordable', size: 40 },
-    { text: 'Quick', size: 36 },
-    { text: 'Helpful', size: 30 },
-    { text: 'Smooth', size: 28 }
+    { text: 'Affordable', size: 48 },
+    { text: 'Quick', size: 46 },
+    { text: 'Helpful', size: 40 },
+    { text: 'Smooth', size: 38 }
   ]
 
   const competitorNegativeWords = [
-    { text: 'Inconsistent', size: 34 },
-    { text: 'Late', size: 30 },
-    { text: 'Unresponsive', size: 26 },
-    { text: 'Complicated', size: 22 }
+    { text: 'Inconsistent', size: 44 },
+    { text: 'Late', size: 40 },
+    { text: 'Unresponsive', size: 36 },
+    { text: 'Complicated', size: 32 }
   ]
 
   const improvements = [
