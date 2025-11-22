@@ -27,12 +27,12 @@
               <div class="text-center relative z-10">
                 <div class="text-3xl sm:text-4xl font-black mb-1">{{ businessInfo.averageRating }}</div>
                 <div class="flex items-center justify-center mb-2">
-                  <Star 
-                    v-for="n in 5" 
+                  <Star
+                    v-for="n in 5"
                     :key="n"
-                    :filled="n <= Math.floor(businessInfo.averageRating)"
-                    :color-level="n <= Math.floor(businessInfo.averageRating) ? 5 : 0"
-                    :class="'w-6 h-6'"
+                    :value="businessInfo.averageRating - (n - 1)"
+                    :color-level="Math.ceil(businessInfo.averageRating)"
+                    class="w-6 h-6"
                   />
                 </div>
                 <p class="text-xs sm:text-sm opacity-90 font-medium">{{ businessInfo.totalReviews }}K reviews</p>
