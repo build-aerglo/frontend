@@ -138,11 +138,11 @@
                     <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
                     <div class="flex">
                       <Star
-                        v-for="star in 5"
-                        :key="star"
-                        :filled="star <= Math.floor(business.rating)"
-                        :colorLevel="star <= Math.floor(business.rating) ? Math.floor(business.rating) : 0"
-                        :class="'w-4 h-4'"
+                        v-for="n in 5"
+                        :key="n"
+                        :value="business.rating - (n - 1)"
+                        :color-level="Math.ceil(business.rating)"
+                        class="w-4 h-4"
                       />
                     </div>
                     </div>
