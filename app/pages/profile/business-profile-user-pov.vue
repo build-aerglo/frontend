@@ -23,12 +23,12 @@
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ businessData.name }}</h1>
                 <div class="flex items-center gap-2 mb-2">
                   <div class="flex">
-                      <Stars
+                      <Star
                         v-for="n in 5"
                         :key="n"
-                        :filled="n <= 4"
-                        :colorLevel="n <= 4 ? 4: 0"
-                        class="w-5 h-5"
+                        :value="businessData.rating - (n - 1)"
+                        :color-level="Math.ceil(businessData.rating)"
+                        class="w-6 h-6"
                       />
                   </div>
                   <span class="text-lg font-semibold text-gray-700">{{ businessData.rating }}</span>
@@ -234,13 +234,13 @@
                   <div class="text-center">
                     <div class="text-4xl font-bold text-gray-900">{{ businessData.rating }}</div>
                     <div class="flex">
-                          <Stars
-                            v-for="n in 5"
-                            :key="n"
-                            :filled="n <= 4"
-                            :colorLevel="n <= 4 ? 4 : 0"
-                            class="w-4 h-4"
-                          />
+                        <Star
+                          v-for="n in 5"
+                          :key="n"
+                          :value="businessData.rating - (n - 1)"
+                          :color-level="Math.ceil(businessData.rating)"
+                          class="w-4 h-4"
+                        />
                       </div>
                     <p class="text-sm text-gray-600 mt-1">{{ businessData.reviewCount }} reviews</p>
                   </div>

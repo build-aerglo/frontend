@@ -56,6 +56,7 @@
                 :key="n"
                 :filled="n <= card.rating"
                 :colorLevel="n <= card.rating ? card.rating : 0"
+                :class="'w-6 h-6'"
               />
           </div>
 
