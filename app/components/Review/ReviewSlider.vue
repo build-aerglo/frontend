@@ -50,6 +50,7 @@
                     :key="i"
                     :filled="i <= 4"
                     :color-level="5"
+                    :class="'w-6 h-6'"
                   />
                 </div>
                 <p class="text-gray-700 dark:text-gray-200 italic">
