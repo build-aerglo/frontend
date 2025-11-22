@@ -36,6 +36,7 @@ export default function () {
 
       if (res.status === 201 || res.status === 200) {
         const user: SupportUser = res.data;
+        supportStore.setUserData(user)
         return user;
       } else {
         throw new Error("Registration failed");
