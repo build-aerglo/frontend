@@ -75,7 +75,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- Sentiment Distribution -->
             <div class="space-y-4">
-              <h3 class="font-semibold text-gray-700">Sentiment Distribution</h3>
+              <h4 class="font-semibold text-gray-700">Sentiment Distribution</h4>
               <div class="space-y-3">
                 <div v-for="sentiment in sentimentData" :key="sentiment.name">
                   <div class="flex items-center justify-between mb-1">
@@ -95,7 +95,7 @@
             <!-- Word Cloud with Toggle -->
             <div class="space-y-2">
               <div class="flex items-center justify-between mb-1">
-                <h3 class="font-semibold text-gray-700">Keywords</h3>
+                <h4 class="font-semibold text-gray-700">Keywords</h4>
                 <div class="inline-flex rounded-lg border mb-4 border-gray-200 p-1">
                   <button
                     @click="wordCloudView = 'positive'"
@@ -323,7 +323,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-14 mb-10">
             <!-- Your Business vs Competitor -->
             <div>
-              <h3 class="font-semibold text-gray-700 mb-4">Rating Comparison</h3>
+              <h4 class="font-semibold text-gray-700 mb-4">Rating Comparison</h4>
               <div class="space-y-4">
                 <div>
                   <div class="flex items-center justify-between mb-2">
@@ -364,7 +364,7 @@
             <!-- Competitor Word Cloud with Toggle -->
             <div class="space-y-4">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-gray-700">Competitor Keywords</h3>
+                <h4 class="font-semibold text-gray-700">Competitor Keywords</h4>
                 <div class="inline-flex rounded-lg border border-gray-200 p-1">
                   <button
                     @click="competitorWordCloudView = 'positive'"
@@ -419,7 +419,7 @@
           <!-- 3-Month Trend Comparison -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 class="font-semibold text-gray-700 mb-4">Your Average Rating (Past 3 Months)</h3>
+              <h5 class="font-semibold text-gray-700 mb-4">Your Average Rating (Past 3 Months)</h5>
               <div class="space-y-3">
                 <div v-for="month in monthlyTrend" :key="month.month"
                   class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -436,7 +436,7 @@
             </div>
             
             <div v-if="currentCompetitor">
-              <h3 class="font-semibold text-gray-700 mb-4">{{ currentCompetitor.name }} Rating (Past 3 Months)</h3>
+              <h5 class="font-semibold text-gray-700 mb-4">{{ currentCompetitor.name }} Rating (Past 3 Months)</h5>
               <div class="space-y-3">
                 <div v-for="month in currentCompetitorMonthlyTrend" :key="month.month"
                   class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
@@ -455,7 +455,7 @@
         </div>
 
         <!-- Suggestions -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
               <i class="pi pi-thumbs-up text-green-600"></i>
