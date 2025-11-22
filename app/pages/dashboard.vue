@@ -35,7 +35,7 @@
                     :class="'w-6 h-6'"
                   />
                 </div>
-                <p class="text-xs sm:text-sm opacity-90 font-medium">{{ businessInfo.totalReviews }} reviews</p>
+                <p class="text-xs sm:text-sm opacity-90 font-medium">{{ businessInfo.totalReviews }}K reviews</p>
               </div>
             </div>
           </div>
@@ -576,12 +576,12 @@ const performanceDataSets = {
       { period: 'Week 4', value: 4.4 }
     ],
     monthly: [
-      { period: 'Jan', value: 4.1 },
-      { period: 'Feb', value: 4.2 },
-      { period: 'Mar', value: 4.3 },
-      { period: 'Apr', value: 4.5 },
-      { period: 'May', value: 4.4 },
-      { period: 'Jun', value: 4.6 }
+      { period: 'June', value: 4.1 },
+      { period: 'July', value: 4.2 },
+      { period: 'Aug', value: 4.3 },
+      { period: 'Sept', value: 4.5 },
+      { period: 'Oct', value: 4.4 },
+      { period: 'Nov', value: 4.6 }
     ]
   },
   volume: {
@@ -602,7 +602,7 @@ const performanceDataSets = {
     ],
     monthly: [
       { period: 'June', value: 320 },
-      { period: 'Jul', value: 345 },
+      { period: 'July', value: 345 },
       { period: 'Aug', value: 380 },
       { period: 'Sept', value: 365 },
       { period: 'Oct', value: 410 },

@@ -16,7 +16,7 @@ export function useBusinessDashboard() {
     category: 'Coffee & Cafes',
     image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=100&h=100&fit=crop',
     averageRating: 4.6,
-    totalReviews: 127
+    totalReviews: 1
   })
 
   return {
