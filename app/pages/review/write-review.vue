@@ -9,51 +9,8 @@
     <div class="w-full h-full px-6 py-8">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
         
-        <!-- LEFT SECTION - Featured Businesses (3 columns on md+) -->
-        <div class="md:col-span-3 bg-white rounded-lg shadow-md p-2">
-          <h2 class="text-xl font-bold text-center text-gray-400 mb-6">Featured Businesses</h2>
-          
-          <div class="space-y-3">
-            <div
-              v-for="(business, index) in featuredBusinesses"
-              :key="index"
-              class="border rounded-lg p-4 hover:shadow-lg transition-shadow"
-            >
-              <div class="flex items-start justify-between mb-1">
-                <div class="flex-1">
-                  <h4 class="font-semibold mb-0 text-lg text-gray-400">{{ business.name }}</h4>
-                  <p class="text-xs mt-0 text-gray-400">{{ business.location }}</p>
-                </div>
-                <button
-                  @click="removeBusiness(index)"
-                  class="text-gray-400 hover:text-gray-800 transition-colors"
-                >
-                  <i class="pi pi-times text-xs"></i>
-                </button>
-              </div>
-              
-              <!-- Star Rating -->
-              <div class="flex items-center mt-2">
-                <Star
-                    v-for="star in 5"
-                    :key="star"
-                    :filled="star <= (business.hoverRating || business.rating)"
-                    :color-level="star <= (business.hoverRating || business.rating) ? (business.hoverRating || business.rating) : 0"
-                    class="cursor-pointer"
-                    @mouseenter="business.hoverRating = star"
-                    @mouseleave="business.hoverRating = 0"
-                    @click="rateBusiness(index, star)"
-                />
-              </div>
-              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
-                {{ ratingLabels[business.rating] }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- MIDDLE SECTION - Review Form (6 columns on md+) -->
-        <div class="md:col-span-6 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+        <!-- MIDDLE SECTION - Review Form (appears FIRST on mobile, middle on desktop) -->
+        <div class="md:col-span-6 md:order-2 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
           <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
           
           <div class="space-y-4">
@@ -211,8 +168,51 @@
           </div>
         </div>
 
-        <!-- RIGHT SECTION - Ads Placeholder (3 columns on md+) -->
-        <div class="md:col-span-3 space-y-4">
+        <!-- LEFT SECTION - Featured Businesses (appears SECOND on mobile, left on desktop) -->
+        <div class="md:col-span-3 md:order-1 bg-white rounded-lg shadow-md p-2">
+          <h2 class="text-xl font-bold text-center text-gray-400 mb-6">Featured Businesses</h2>
+          
+          <div class="space-y-3">
+            <div
+              v-for="(business, index) in featuredBusinesses"
+              :key="index"
+              class="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+            >
+              <div class="flex items-start justify-between mb-1">
+                <div class="flex-1">
+                  <h4 class="font-semibold mb-0 text-lg text-gray-400">{{ business.name }}</h4>
+                  <p class="text-xs mt-0 text-gray-400">{{ business.location }}</p>
+                </div>
+                <button
+                  @click="removeBusiness(index)"
+                  class="text-gray-400 hover:text-gray-800 transition-colors"
+                >
+                  <i class="pi pi-times text-xs"></i>
+                </button>
+              </div>
+              
+              <!-- Star Rating -->
+              <div class="flex items-center mt-2">
+                <Star
+                    v-for="n in 5"
+                    :key="n"
+                    :value="(business.hoverRating || business.rating) - (n - 1)"
+                    :color-level="Math.ceil(business.hoverRating || business.rating)"
+                    class="cursor-pointer"
+                    @mousemove="business.hoverRating = n - 1 + getFraction($event)"
+                    @mouseleave="business.hoverRating = 0"
+                    @click="rateBusiness(index, n - 1 + getFraction($event))"
+                />
+              </div>
+              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
+                {{ getRatingLabel(business.rating) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SECTION - Ads Placeholder (appears THIRD on mobile, right on desktop) -->
+        <div class="md:col-span-3 md:order-3 space-y-4">
           <div class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
             <div class="text-center text-gray-400">
               <i class="pi pi-image text-3xl mb-2"></i>
@@ -342,14 +342,6 @@ const isLocationInList = computed(() => {
   return locationList.some(l => l.toLowerCase() === businessLocation.value.toLowerCase());
 });
 
-const formattedDate = computed(() =>
-  new Date().toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-);
-
 // Handle click outside to close dropdowns
 const handleClickOutside = (event: MouseEvent) => {
   if (businessDropdownRef.value && !businessDropdownRef.value.contains(event.target as Node)) {
@@ -423,8 +415,12 @@ const removeImage = (index: number) => {
   images.value.splice(index, 1);
 };
 
-const rateBusiness = (index: number, stars: number) => {
-  featuredBusinesses.value[index]!.rating = stars;
+const rateBusiness = (index: number, value: number) => {
+  if (value > 4.5) {
+    featuredBusinesses.value[index]!.rating = 5;
+  } else {
+    featuredBusinesses.value[index]!.rating = Math.round(value * 10) / 10;
+  }
 };
 
 const removeBusiness = (index: number) => {

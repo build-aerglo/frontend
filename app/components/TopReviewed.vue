@@ -16,12 +16,17 @@
 
       <!-- Card Grid -->
       <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        <div
-            v-for="(card, index) in cards"
-            :key="index"
-            class="relative bg-gray-50 dark:bg-gray-800 p-2 rounded-xl transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
-            :class="[card.borderColor, card.shadowColor]"
-          >
+       <div
+              v-for="(card, index) in cards"
+              :key="index"
+              class="relative bg-gray-50 dark:bg-gray-800 p-2 rounded-xl transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
+              :class="[
+                card.borderColor,
+                card.shadowColor,
+                index > 4 ? 'hidden md:block' : 'block'
+              ]"
+            >
+
           <!-- Top-left icon -->
           <div
             class="absolute top-3 left-3 p-2 rounded-lg"
