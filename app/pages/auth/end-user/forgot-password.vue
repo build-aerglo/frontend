@@ -47,25 +47,19 @@
             </div>
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
             <p class="text-gray-600">
-              No worries, we'll send you reset instructions.
+              Type in your email address for reset instructions.
             </p>
           </div>
 
           <form @submit.prevent="handleSubmit" class="space-y-6">
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
               <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i class="pi pi-envelope text-gray-400"></i>
-                </div>
                 <input
                   type="email"
                   id="email"
                   v-model="email"
-                  class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all outline-none"
-                  placeholder="Enter your email"
+                  class="block w-full pl-2 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all outline-none"
+                  placeholder="Email"
                   :class="{ 'ring-2 ring-[#008253]': email }"
                 />
               </div>
@@ -87,7 +81,7 @@
           </form>
 
           <div class="text-center mt-6">
-            <NuxtLink to="/signin" class="text-sm font-medium text-[#008253] hover:underline">
+            <NuxtLink to="/auth/end-user/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
               <i class="pi pi-arrow-left mr-2"></i>
               Back to Sign In
             </NuxtLink>
