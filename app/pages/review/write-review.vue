@@ -21,8 +21,8 @@
             >
               <div class="flex items-start justify-between mb-1">
                 <div class="flex-1">
-                  <h4 class="font-semibold text-lg text-gray-400">{{ business.name }}</h4>
-                  <p class="text-xs text-gray-400">{{ business.location }}</p>
+                  <h4 class="font-semibold mb-0 text-lg text-gray-400">{{ business.name }}</h4>
+                  <p class="text-xs mt-0 text-gray-400">{{ business.location }}</p>
                 </div>
                 <button
                   @click="removeBusiness(index)"
@@ -128,17 +128,17 @@
               <label class="block text-xs text-gray-900 mb-1">Rating</label>
               <div class="flex items-center">
                 <Star
-                    v-for="star in 5"
-                    :key="star"
-                    :filled="star <= (hoverRating || rating)"
-                    :color-level="star <= (hoverRating || rating) ? (hoverRating || rating) : 0"
+                    v-for="n in 5"
+                    :key="n"
+                    :value="(hoverRating || rating) - (n - 1)"
+                    :color-level="Math.ceil(hoverRating || rating)"
                     class="cursor-pointer"
-                    @mouseenter="hoverRating = star"
+                    @mousemove="hoverRating = n - 1 + getFraction($event)"
                     @mouseleave="hoverRating = 0"
-                    @click="rating = star"
-                />
+                    @click="setRating(n - 1 + getFraction($event))"
+                  />
                 <span class="ml-2 text-sm text-gray-800">
-                  {{ rating > 0 ? ratingLabels[rating] : ' ' }}
+                  {{ rating > 0 ? getRatingLabel(rating) : ' ' }}
                 </span>
               </div>
             </div>
@@ -318,6 +318,19 @@ const ratingLabels: Record<number, string> = {
   5: "Fantastic!"
 };
 
+const getRatingLabel = (rating: number) => {
+  const key = Math.min(6, Math.max(1, Math.floor(rating)));
+  return ratingLabels[key] || "";
+};
+
+const setRating = (value: number) => {
+  if (value > 4.5) {
+    rating.value = 5;
+  } else {
+    rating.value = Math.round(value * 10) / 10;
+  }
+};
+
 const filteredBusinesses = ref<string[]>([]);
 const filteredLocations = ref<string[]>([]);
 
@@ -428,4 +441,16 @@ const submitReview = () => {
   anonymous.value = false;
   images.value = [];
 };
+
+const getFraction = (event: MouseEvent) => {
+  const rect = (event.target as HTMLElement).getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const width = rect.width
+
+  const raw = x / width
+  const step = 0.1
+
+  return Math.min(1, Math.max(0, Math.round(raw / step) * step))
+}
+
 </script>
