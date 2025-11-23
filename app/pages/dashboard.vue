@@ -84,7 +84,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- Sentiment Distribution -->
             <div class="space-y-4">
-              <h3 class="text-base font-semibold text-gray-700">Sentiment Distribution</h3>
+              <h3 class="text-base font-semibold text-blue-900">Sentiment Distribution</h3>
               <div class="space-y-3">
                 <div v-for="sentiment in sentimentData" :key="sentiment.name">
                   <div class="flex items-center justify-between mb-1">
@@ -104,7 +104,7 @@
             <!-- Word Cloud with Toggle -->
             <div class="space-y-2">
               <div class="flex items-center justify-between mb-1">
-                <h3 class="text-base font-semibold text-gray-900">Keywords</h3>
+                <h3 class="text-base font-semibold text-blue-900">Keywords</h3>
                 <div class="inline-flex rounded-lg border mb-4 border-gray-200 p-1">
                   <button
                     @click="wordCloudView = 'positive'"
@@ -160,7 +160,7 @@
         <!-- Performance Insights -->
         <div id="charts" class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div class="flex items-center justify-between mb-2">
-            <h2 class="text-2xl font-bold text-[#008253] flex items-center gap-2">
+            <h2 class="text-2xl font-bold text-green-900 flex items-center gap-2">
               <i class="pi pi-chart-line text-gray-600"></i>
               Performance Insights
             </h2>
@@ -244,7 +244,7 @@
 
             <!-- Review Sources -->
             <div>
-              <h3 class="text-base font-bold text-center text-gray-900 mb-6">Review Sources</h3>
+              <h2 class="text-base font-bold text-center text-green-900 mb-6">Review Sources</h2>
               <div class="grid grid-cols-2 gap-4">
                 <div v-for="source in reviewSources" :key="source.name"
                   class="bg-gray-50 rounded-lg p-4 pb-2 text-center hover:bg-gray-100 transition-colors">
@@ -286,7 +286,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-14 mb-10">
             <!-- Average Rating Comparison Table -->
             <div>
-              <h4 class="text-base font-semibold text-gray-700 mb-4">Average Rating (Past 3 Months)</h4>
+              <h4 class="text-base font-semibold text-purple-900 mb-4">Average Rating (Past 3 Months)</h4>
               <div class="overflow-x-auto">
                 <table class="w-full border-collapse">
                   <thead>
@@ -326,7 +326,7 @@
             <!-- Competitor Word Cloud with Toggle -->
             <div class="space-y-4">
               <div class="flex items-center justify-between">
-                <h4 class="text-base font-semibold text-gray-700">Competitor Keywords</h4>
+                <h4 class="text-base font-semibold text-purple-900">Competitor Keywords</h4>
                 <div class="inline-flex rounded-lg border border-gray-200 p-1">
                   <button
                     @click="competitorWordCloudView = 'positive'"
