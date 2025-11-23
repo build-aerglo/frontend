@@ -77,7 +77,7 @@
               class="text-gray-600 hover:text-[#008253] transition-colors"
               title="Export"
             >
-              <i class="pi pi-download text-sm"></i>
+              <i class="pi pi-file-export text-sm"></i>
             </button>
           </div>
           
@@ -169,7 +169,7 @@
               class="text-gray-600 hover:text-[#008253] transition-colors"
               title="Export"
             >
-              <i class="pi pi-download text-sm"></i>
+              <i class="pi pi-file-export text-sm"></i>
             </button>
           </div>
           
@@ -392,7 +392,7 @@
                 class="text-gray-600 hover:text-[#008253] transition-colors"
                 title="Export"
               >
-                <i class="pi pi-download text-sm"></i>
+                <i class="pi pi-file-export text-sm"></i>
               </button>
             </div>
             <div class="space-y-4">
@@ -423,7 +423,7 @@
                 class="text-gray-600 hover:text-[#008253] transition-colors"
                 title="Export"
               >
-                <i class="pi pi-download text-sm"></i>
+                <i class="pi pi-file-export text-sm"></i>
               </button>
             </div>
             <div class="space-y-4">
