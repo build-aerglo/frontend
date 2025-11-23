@@ -106,7 +106,7 @@
 <script setup>
 const route = useRoute()
 const menuItems = [
-  { name: 'Dashboard', to: '/', icon: 'pi pi-home' },
+  { name: 'Dashboard', to: '/dashboard', icon: 'pi pi-home' },
   { name: 'Reviews management', to: '/business/reviews-management', icon: 'pi pi-comments' },
   { name: 'Reports', to: '/reports', icon: 'pi pi-chart-bar' },
   { name: 'Messages', to: '/messages', icon: 'pi pi-envelope' },

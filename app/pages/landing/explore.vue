@@ -4,7 +4,7 @@
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8  sticky top-[80px] z-30">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
           <div class="flex-1 min-w-[70px]">
@@ -108,26 +108,32 @@
                 <!-- Logo -->
                 <div class="flex flex-col gap-1">
                 <div class="relative w-24 h-24"> 
-                    <div
+                    <a @click.stop="focusedBusinessId = business.id"
                     class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
                     >
-                    <img :src="business.logo" :alt="business.name" class="w-full h-full mb-0 object-cover" />
-                    </div>
+                    <img :src="business.logo" class="w-full h-full mb-0 cursor-pointer object-cover" />
+                </a>
 
                     <!-- Badges -->
                     <div class="absolute -top-2 -right-2 flex flex-col gap-1">
                     <span
-                        v-if="business.verified"
+                        v-if="business.trusted"
                         class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-check-circle text-xs"></i> Verified
+                        <i class="pi pi-check-circle text-xs"></i> Trusted
                     </span>
 
                     <span
-                        v-if="business.trusted"
+                        v-if="business.verified"
                         class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-shield text-xs"></i> Trusted
+                        <i class="pi pi-shield text-xs"></i> Verified
+                    </span>
+                    <span
+                        v-if="business.standard"
+                        class="bg-[#023dff] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                    >
+                        <i class="pi pi-thumbs-up text-xs"></i> Standard
                     </span>
                     </div>
                 </div>
@@ -158,8 +164,9 @@
                 <!-- Business Details -->
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative">
                 <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
-
+                    <a @click.stop="focusedBusinessId = business.id">
+                      <h3 class="text-xl font-bold cursor-pointer text-slate-900 mb-3">{{ business.name }}</h3>
+                    </a>
                     <!-- Contact Icon -->
                     <div
                     class="relative group"

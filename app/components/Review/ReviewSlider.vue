@@ -41,7 +41,7 @@
               class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md p-6 h-full flex flex-col justify-between hover:shadow-lg transition-all"
             >
               <div>
-                <p class="text-md text-gray-800 dark:text-gray-100 font-semibold">
+                <p class="text-md text-gray-900 dark:text-gray-100 font-bold">
                   {{ review.business }}
                 </p>
               <div class="flex mb-3">
@@ -50,10 +50,10 @@
                     :key="i"
                     :filled="i <= 4"
                     :color-level="5"
-                    :class="'w-6 h-6'"
+                    :class="'w-5 h-5'"
                   />
                 </div>
-                <p class="text-gray-700 dark:text-gray-200 italic">
+                <p class="text-gray-600 dark:text-gray-200 italic">
                   “{{ review.text }}”
                 </p>
               </div>
