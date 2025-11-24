@@ -64,8 +64,8 @@
 
           <div class="flex space-x-4">
             <!-- Password -->
-             <div>
-               <div class="w-1/2">
+             <div class="w-1/2">
+               <div>
                  <label for="password" class="block text-sm font-medium text-gray-700">
                    Password
                  </label>
@@ -212,8 +212,7 @@ const handleEndUserRegistration = async () => {
 
     const res = await registerEndUser(form.value);
     if (res) {
-      alert('Business registered successfully')
-      console.log(res);
+      toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Registered successfully!', life: 3000 });
       navigateTo('sign-in');
     } else {
       toast.add({

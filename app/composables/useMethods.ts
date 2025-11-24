@@ -1,6 +1,6 @@
 import useApi from "~/composables/useApi";
-import type { BusinessUser, LoginData } from "~/types/business";
-import type { EndUser } from "~/types";
+import type { BusinessUser } from "~/types/business";
+import type { EndUser, LoginData } from "~/types";
 import useBusinessUser from "./business/useBusinessUser";
 import useUser from "./useUser";
 
@@ -13,6 +13,7 @@ export default function () {
       const res = await api.post("api/User/business", data);
 
       if (res.status === 201 || res.status === 200) {
+        console.log(res)
         const user: BusinessUser = res.data;
         store.setUserData(user);
         return user;
@@ -36,7 +37,7 @@ export default function () {
       if (res.status === 200 && res.data) {
         const { access_token, id_token, expires_in, roles } = res.data;
         const role = roles[0];
-        store.setLoginData({
+        userStore.setLoginData({
           access_token: access_token,
           id_token: id_token,
           role: role,
@@ -59,6 +60,7 @@ export default function () {
       const res = await api.post("api/User/end-user", data);
 
       if (res.status === 201 || res.status === 200) {
+        console.log(res)
         const endUser: EndUser = res.data;
         userStore.setUserData(endUser);
         return endUser;
