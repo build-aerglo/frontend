@@ -158,7 +158,6 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import useMethods from '~/composables/useMethods'; 
 import type { EndUser } from "~/types";
