@@ -329,12 +329,14 @@
                       {{ review.date }}
                     </span>
                   </div>
-                  <div class="mb-2">
-                    <i 
-                      v-for="n in review.rating" 
-                      :key="n" 
-                      class="pi pi-star-fill text-gold"
-                    ></i>
+                  <div class="flex">
+                      <Stars
+                        v-for="n in 5"
+                        :key="n"
+                        :filled="n <= review.rating"
+                        :colorLevel="n <= review.rating ? review.rating : 0"
+                         class="w-6 h-6"
+                      />
                   </div>
                   <p class="text-gray-700">{{ review.body }}</p>
                 </div>
@@ -362,12 +364,14 @@
                     <i class="pi pi-map-marker"></i>
                     {{ review.location }}
                   </div>
-                  <div class="mb-2">
-                    <i 
-                      v-for="n in review.rating" 
-                      :key="n" 
-                      class="pi pi-star-fill text-gold"
-                    ></i>
+                  <div class="flex">
+                      <Stars
+                        v-for="n in 5"
+                        :key="n"
+                        :filled="n <= review.rating"
+                        :colorLevel="n <= review.rating ? review.rating : 0"
+                        class="w-6 h-6"
+                      />
                   </div>
                   <p class="text-gray-700">{{ review.body }}</p>
                 </div>

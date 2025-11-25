@@ -7,10 +7,15 @@
         alt="Welcome background"
         class="w-full h-full object-cover"
       />
+       <div class="absolute bottom-3 left-3">
+          <p class="text-blue-800 text-sm drop-shadow">
+            Earn points by writing reviews, making referrals and unlocking achievements across the platform... 
+          </p>
+       </div>
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4 bg-gray-50">
+    <div class="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 px-4">
       <div class="w-full max-w-sm space-y-5">
         <div class="flex justify-center mb-4">
           <img
@@ -48,11 +53,14 @@
             />
           </div>
           <div class="relative">
-            <InputTextCustom
+            <input
               v-model="userData.password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
-              inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition"
+              class="w-full border border-gray-300 rounded-lg p-2 pr-10 
+                        focus:outline-none hover:border-gray-400 
+                        focus:border-primary focus:ring-2 focus:ring-primary"
+              required
             />
             <i
               :class="showPassword ? 'pi pi-eye' : 'pi pi-slash'"
@@ -66,7 +74,7 @@
               <input type="checkbox" id="remember-me" v-model="rememberMe" class="accent-blue-500" />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/" class="text-blue-500 hover:text-gray-600 font-medium">
+            <NuxtLink to="/auth/end-user/forgot-password" class="text-blue-500 hover:text-gray-600 font-medium">
               Forgot Password?
             </NuxtLink>
           </div>
@@ -96,18 +104,18 @@
           <div class="flex-grow border-t border-gray-300"></div>
         </div>
 
-        <div class="flex justify-center space-x-4">
+        <div class="flex justify-center space-x-5">
           <NuxtLink to="/" aria-label="Login with Facebook">
-            <i class="pi pi-facebook text-black text-xl"></i>
+            <i class="pi pi-facebook text-blue-600 text-2xl"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with Twitter">
-            <i class="pi pi-twitter text-black text-xl"></i>
+            <i class="pi pi-twitter text-slate-600 text-2xl"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with GitHub">
-            <i class="pi pi-github text-gray-800 text-xl"></i>
+            <i class="pi pi-github text-gray-800 text-2xl"></i>
           </NuxtLink>
           <NuxtLink to="/" aria-label="Login with Google">
-            <i class="pi pi-google text-black text-xl"></i>
+            <i class="pi pi-google text-amber-600 text-2xl"></i>
           </NuxtLink>
         </div>
         <p class="text-center mt-4 text-sm text-gray-800">

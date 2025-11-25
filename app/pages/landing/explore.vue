@@ -4,7 +4,7 @@
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8  sticky top-[80px] z-30">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
           <div class="flex-1 min-w-[70px]">
@@ -99,35 +99,41 @@
       <!-- Main Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Business Cards -->
-        <div class="md:col-span-2 space-y-6">
+        <div class="md:col-span-2 space-y-4">
           <template v-for="business in filteredBusinesses" :key="business.id">
             <div
-            class="bg-white rounded-2xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
+            class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
             >
             <div class="grid grid-cols-[auto_1fr] gap-4">
                 <!-- Logo -->
                 <div class="flex flex-col gap-1">
                 <div class="relative w-24 h-24"> 
-                    <div
+                    <a @click.stop="focusedBusinessId = business.id"
                     class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
                     >
-                    <img :src="business.logo" :alt="business.name" class="w-full h-full mb-0 object-cover" />
-                    </div>
+                    <img :src="business.logo" class="w-full h-full mb-0 cursor-pointer object-cover" />
+                </a>
 
                     <!-- Badges -->
                     <div class="absolute -top-2 -right-2 flex flex-col gap-1">
                     <span
-                        v-if="business.verified"
+                        v-if="business.trusted"
                         class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-check-circle text-xs"></i> Verified
+                        <i class="pi pi-check-circle text-xs"></i> Trusted
                     </span>
 
                     <span
-                        v-if="business.trusted"
+                        v-if="business.verified"
                         class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-shield text-xs"></i> Trusted
+                        <i class="pi pi-shield text-xs"></i> Verified
+                    </span>
+                    <span
+                        v-if="business.standard"
+                        class="bg-[#023dff] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                    >
+                        <i class="pi pi-thumbs-up text-xs"></i> Standard
                     </span>
                     </div>
                 </div>
@@ -137,12 +143,13 @@
                     <div class="flex items-center gap-1 mt-0 justify-center">
                     <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
                     <div class="flex">
-                        <i
-                        v-for="star in 5"
-                        :key="star"
-                        class="pi text-xs"
-                        :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                        ></i>
+                      <Star
+                        v-for="n in 5"
+                        :key="n"
+                        :value="business.rating - (n - 1)"
+                        :color-level="Math.ceil(business.rating)"
+                        class="w-4 h-4"
+                      />
                     </div>
                     </div>
                     <button
@@ -155,10 +162,11 @@
                 </div>
 
                 <!-- Business Details -->
-                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200 relative">
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative">
                 <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
-
+                    <a @click.stop="focusedBusinessId = business.id">
+                      <h3 class="text-xl font-bold cursor-pointer text-slate-900 mb-3">{{ business.name }}</h3>
+                    </a>
                     <!-- Contact Icon -->
                     <div
                     class="relative group"
@@ -199,8 +207,14 @@
                     :src="focusedBusiness?.logo" 
                   class="w-16 h-16 rounded-full object-cover border-2 border-primary-light flex-shrink-0"
                   /> 
-                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
-                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
                 </div> 
                 <div class="ml-2">
                   <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -251,13 +265,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -298,8 +313,15 @@
                     :src="focusedBusiness?.logo" 
                   class="w-24 h-18 rounded-full mb-1 object-cover border-2 border-primary-light flex-shrink-0"
                   /> 
-                  <span class="text-sm font-bold ml-2 text-slate-900">{{ focusedBusiness?.rating }}</span>
-                  <i class="pi pi-star-fill ml-1 text-[#deae29]"></i>
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
+
                 </div>
                 <div class="ml-2">
                   <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -350,13 +372,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -385,6 +408,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import Star from '~/components/Stars.vue' 
+
 
 const showContact = ref<number | null>(null);
 

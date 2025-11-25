@@ -10,12 +10,13 @@ export interface EndUserState {
 }
 
 export const useUserStore = defineStore("EndUser", {
-  state: (): EndUserState => ({
+  state: (): EndUserState & { theme: string } => ({
       accessToken: null,
       idToken: null,
       role: null,
       expires_in: new Date(),
       userData: null,
+      theme: "light",
     }),
   
     actions: {
@@ -63,25 +64,25 @@ export const useUserStore = defineStore("EndUser", {
         this.role = null;
         this.userData = null;
       },
-    // toggleTheme() {
-    //   this.theme = this.theme === "light" ? "dark" : "light";
+    toggleTheme() {
+    this.theme = this.theme === "light" ? "dark" : "light";
 
       
-    //   if (this.theme === "dark") {
-    //     document.documentElement.classList.add("dark");
-    //   } else {
-    //     document.documentElement.classList.remove("dark");
-    //   }
-    // },
+    if (this.theme === "dark") {
+    document.documentElement.classList.add("dark");
+    } else {
+    document.documentElement.classList.remove("dark");
+     }
+     },
 
-    // initTheme() {
-    //   if (typeof document === "undefined") return;
-    //   if (this.theme === "dark") {
-    //     document.documentElement.classList.add("dark");
-    //   } else {
-    //     document.documentElement.classList.remove("dark");
-    //   }
-    // },
+    initTheme() {
+    if (typeof document === "undefined") return;
+    if (this.theme === "dark") {
+      document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+     }
+   },
   },
 
   persist: true,

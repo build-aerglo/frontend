@@ -22,15 +22,14 @@
               <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ businessData.name }}</h1>
                 <div class="flex items-center gap-2 mb-2">
-                  <div class="flex items-center">
-                    <i 
-                      v-for="n in 5" 
-                      :key="n" 
-                      :class="[
-                        'pi',
-                        n <= Math.floor(businessData.rating) ? 'pi-star-fill text-gold' : 'pi-star text-gray-300'
-                      ]"
-                    ></i>
+                  <div class="flex">
+                      <Star
+                        v-for="n in 5"
+                        :key="n"
+                        :value="businessData.rating - (n - 1)"
+                        :color-level="Math.ceil(businessData.rating)"
+                        class="w-6 h-6"
+                      />
                   </div>
                   <span class="text-lg font-semibold text-gray-700">{{ businessData.rating }}</span>
                   <span class="text-gray-500">({{ businessData.reviewCount }} reviews)</span>
@@ -207,12 +206,14 @@
                         <p class="font-semibold text-gray-900">{{ review.author }}</p>
                         <span class="text-sm text-gray-500">{{ review.date }}</span>
                       </div>
-                      <div class="flex items-center mb-2">
-                        <i 
-                          v-for="n in review.rating" 
-                          :key="n" 
-                          class="pi pi-star-fill text-gold text-sm"
-                        ></i>
+                      <div class="flex">
+                          <Stars
+                            v-for="n in 5"
+                            :key="n"
+                            :filled="n <= review.rating"
+                            :colorLevel="n <= review.rating ? review.rating : 0"
+                            class="w-6 h-6"
+                          />
                       </div>
                       <p class="text-gray-700 text-sm">{{ review.body }}</p>
                     </div>
@@ -232,16 +233,15 @@
                 <div class="flex items-center gap-4">
                   <div class="text-center">
                     <div class="text-4xl font-bold text-gray-900">{{ businessData.rating }}</div>
-                    <div class="flex items-center justify-center mt-1">
-                      <i 
-                        v-for="n in 5" 
-                        :key="n" 
-                        :class="[
-                          'pi text-sm',
-                          n <= Math.floor(businessData.rating) ? 'pi-star-fill text-gold' : 'pi-star text-gray-300'
-                        ]"
-                      ></i>
-                    </div>
+                    <div class="flex">
+                        <Star
+                          v-for="n in 5"
+                          :key="n"
+                          :value="businessData.rating - (n - 1)"
+                          :color-level="Math.ceil(businessData.rating)"
+                          class="w-4 h-4"
+                        />
+                      </div>
                     <p class="text-sm text-gray-600 mt-1">{{ businessData.reviewCount }} reviews</p>
                   </div>
                   <div class="flex-1 space-y-1">
@@ -275,12 +275,14 @@
                         <p class="font-semibold text-gray-900">{{ review.author }}</p>
                         <span class="text-sm text-gray-500">{{ review.date }}</span>
                       </div>
-                      <div class="flex items-center mb-2">
-                        <i 
-                          v-for="n in review.rating" 
-                          :key="n" 
-                          class="pi pi-star-fill text-gold"
-                        ></i>
+                    <div class="flex">
+                          <Stars
+                            v-for="n in 5"
+                            :key="n"
+                            :filled="n <= review.rating"
+                            :colorLevel="n <= review.rating ? review.rating : 0"
+                            class="w-6 h-6"
+                          />
                       </div>
                       <p class="text-gray-700 mb-3">{{ review.body }}</p>
                       <div class="flex items-center gap-4 text-sm">
@@ -408,8 +410,14 @@
                 <div class="flex-1">
                   <h5 class="font-semibold text-gray-900 text-sm">{{ business.name }}</h5>
                   <div class="flex items-center gap-1 text-xs">
-                    <i class="pi pi-star-fill text-gold"></i>
-                    <span class="text-gray-600">{{ business.rating }}</span>
+                    <div>
+                      <Star 
+                        :filled="true" 
+                        :colorLevel="(business.rating) || 0" 
+                        class="w-4 h-4 inline-block" 
+                      />
+                      {{ business.rating }} 
+                    </div>
                   </div>
                   <p class="text-xs text-gray-500">{{ business.category }}</p>
                 </div>
@@ -424,6 +432,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import Star from '~/components/Stars.vue'
 
 interface BusinessData {
   name: string

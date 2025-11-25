@@ -15,8 +15,9 @@ interface Business {
   logo: string
   rating: number
   reviewCount: number
-  verified: boolean
   trusted: boolean
+  verified: boolean
+  standard: boolean
   tags: string[]
   location: string
   priceRange: string
@@ -37,8 +38,9 @@ const businesses = ref<Business[]>([
     logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400',
     rating: 4.8,
     reviewCount: 342,
-    verified: true,
+    verified: false,
     trusted: true,
+    standard: false,
     tags: ['luxury', 'romantic'],
     location: 'lagos',
     priceRange: 'expensive',
@@ -74,6 +76,7 @@ const businesses = ref<Business[]>([
     reviewCount: 698,
     verified: true,
     trusted: false,
+    standard: false,
     tags: ['luxury'],
     location: 'lagos',
     priceRange: 'luxury',
@@ -107,8 +110,9 @@ const businesses = ref<Business[]>([
     logo: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=400&fit=crop",
     rating: 4.3,
     reviewCount: 558,
-    verified: true,
+    verified: false,
     trusted: false,
+    standard: true,
     tags: ['family-friendly', 'luxury'],
     location: 'lagos',
     priceRange: 'moderate',
@@ -144,6 +148,7 @@ const businesses = ref<Business[]>([
     reviewCount: 198,
     verified: false,
     trusted: false,
+    standard: false,
     tags: ['budget'],
     location: 'ogun',
     priceRange: 'budget',
@@ -186,6 +191,7 @@ const businesses = ref<Business[]>([
     reviewCount: 198,
     verified: false,
     trusted: false,
+    standard: false,
     tags: ['budget'],
     location: 'ogun',
     priceRange: 'budget',
@@ -226,8 +232,9 @@ const businesses = ref<Business[]>([
     logo: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=400&fit=crop',
     rating: 4.3,
     reviewCount: 198,
-    verified: true,
+    verified: false,
     trusted: false,
+    standard: true,
     tags: ['family-friendly', 'budget'],
     location: 'kano',
     priceRange: 'budget',
