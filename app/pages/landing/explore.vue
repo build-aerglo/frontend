@@ -4,12 +4,12 @@
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8  sticky top-[80px] z-30">
+      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8  sticky top-[60px] z-30">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-            <select v-model="filters.category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
+            <select v-model="filters.category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
               <option value="">all</option>
               <option value="restaurant">Restaurant</option>
               <option value="hotel">Hotel</option>
@@ -21,22 +21,19 @@
 
           <!-- Tags -->
           <div class="flex-1 min-w-[70px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Tags</label>
-            <select v-model="filters.tags" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+            <select v-model="filters.badges" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
               <option value="">all</option>
-              <option value="family-friendly">Family Friendly</option>
-              <option value="luxury">Luxury</option>
-              <option value="budget">Budget</option>
-              <option value="fast-service">Fast Service</option>
-              <option value="romantic">Romantic</option>
-              <option value="tech">Tech</option>
+              <option value="standard">Standard</option>
+              <option value="verified">Verified</option>
+              <option value="trusted">Trusted</option>
             </select>
           </div>
 
           <!-- Location -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
-            <select v-model="filters.location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
+            <select v-model="filters.location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
               <option value="">all</option>
               <option value="lagos">Lagos</option>
               <option value="kano">Kano</option>
@@ -48,7 +45,7 @@
           <!-- Stars -->
           <div class="flex-1 min-w-[100px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Ratings</label>
-            <select v-model="filters.stars" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
+            <select v-model="filters.stars" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
               <option value="">any</option>
               <option value="4.5">4.5 Stars</option>
               <option value="4">4 Stars</option>
@@ -60,7 +57,7 @@
           <!-- Price -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
-            <select v-model="filters.priceRange" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
+            <select v-model="filters.priceRange" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
               <option value="">all</option>
               <option value="budget">Budget</option>
               <option value="moderate">Moderate</option>
@@ -300,7 +297,7 @@
 
 
         <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="hidden md:block md:col-span-1">
+        <div class="hidden md:block md:col-span-1 sticky top-40 self-start">
             <div 
                 v-if="focusedBusiness" 
                 class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
@@ -423,7 +420,7 @@ function hideContact() {
 
 const filters = ref({
   category: '',
-  tags: '',
+  badges: '',
   location: '',
   stars: '',
   priceRange: ''
@@ -441,7 +438,7 @@ const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
     return (
       (!filters.value.category || b.category === filters.value.category) &&
-      (!filters.value.tags || b.tags.includes(filters.value.tags)) &&
+      (!filters.value.badges || b.badges.includes(filters.value.badges)) &&
       (!filters.value.location || b.location === filters.value.location) &&
       (!filters.value.stars || b.rating >= parseFloat(filters.value.stars)) &&
       (!filters.value.priceRange || b.priceRange === filters.value.priceRange)
@@ -478,7 +475,7 @@ function prevReview() {
 }
 
 function clearAllFilters() {
-  filters.value = { category: '', tags: '', location: '', stars: '', priceRange: '' }
+  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '' }
 }
 </script>
 

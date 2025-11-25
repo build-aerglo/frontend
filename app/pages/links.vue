@@ -11,7 +11,10 @@
                 <NuxtLink to="./profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="./profile/business-profile-user-pov" class="text-blue-500">Business Profile</NuxtLink>
+                <NuxtLink to="./profile/business" class="text-blue-500">Business Profile (Owner POV)</NuxtLink>
+            </li>
+            <li>
+                <NuxtLink to="./profile/business-profile-user-pov" class="text-blue-500">Business Profile (End-User POV)</NuxtLink>
             </li>
             <li>
                 <NuxtLink to="./landing/explore" class="text-blue-500">Explore Page</NuxtLink>

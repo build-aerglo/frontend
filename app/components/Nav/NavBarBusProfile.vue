@@ -11,10 +11,10 @@
       <!-- Right buttons -->
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-            <li><NuxtLink to="/profile/test" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+            <li><NuxtLink to="/dashboard" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
-            >Profile</NuxtLink>
+            >Dashboard</NuxtLink>
         </li>
           <li>
             <NuxtLink to="/profile/get-reviews">
@@ -48,15 +48,15 @@
       <ul
         class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
         <li>
-          <NuxtLink to="/profile/test"
-            class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center">
-            Profile
-          </NuxtLink>
-        </li>
-        <li>
           <NuxtLink to="/profile/get-reviews" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full">Get Reviews</NuxtLink>
+        </li>
+        <li>
+          <NuxtLink to="/dashboard"
+            class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center">
+            Dashboard
+          </NuxtLink>
         </li>
       </ul>
     </div>

@@ -1,8 +1,8 @@
 export interface EndUser {
-  username: string;
+  username: null;
   email: string;
   phone: string;
-  address: string;
+  address: null;
   password: string;
   socialMedia: string;
 }
