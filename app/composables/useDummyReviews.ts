@@ -18,6 +18,7 @@ interface Business {
   trusted: boolean
   verified: boolean
   standard: boolean
+  badges:string[]
   tags: string[]
   location: string
   priceRange: string
@@ -41,6 +42,7 @@ const businesses = ref<Business[]>([
     verified: false,
     trusted: true,
     standard: false,
+    badges:['trusted'],  
     tags: ['luxury', 'romantic'],
     location: 'lagos',
     priceRange: 'expensive',
@@ -79,6 +81,7 @@ const businesses = ref<Business[]>([
     standard: false,
     tags: ['luxury'],
     location: 'lagos',
+    badges:['verified'],
     priceRange: 'luxury',
     positivePercent: 86,
     negativePercent: 14,
@@ -115,6 +118,7 @@ const businesses = ref<Business[]>([
     standard: true,
     tags: ['family-friendly', 'luxury'],
     location: 'lagos',
+    badges:['standard'],
     priceRange: 'moderate',
     positivePercent: 86,
     negativePercent: 14,
@@ -151,6 +155,7 @@ const businesses = ref<Business[]>([
     standard: false,
     tags: ['budget'],
     location: 'ogun',
+    badges:[''],
     priceRange: 'budget',
     positivePercent: 37,
     negativePercent: 63,
@@ -194,6 +199,7 @@ const businesses = ref<Business[]>([
     standard: false,
     tags: ['budget'],
     location: 'ogun',
+    badges:[''],
     priceRange: 'budget',
     positivePercent: 16,
     negativePercent: 84,
@@ -237,6 +243,7 @@ const businesses = ref<Business[]>([
     standard: true,
     tags: ['family-friendly', 'budget'],
     location: 'kano',
+    badges:['standard'],
     priceRange: 'budget',
     positivePercent: 78,
     negativePercent: 22,

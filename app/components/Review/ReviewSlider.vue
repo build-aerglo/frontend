@@ -41,7 +41,7 @@
               class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md p-6 h-full flex flex-col justify-between hover:shadow-lg transition-all"
             >
               <div>
-                <p class="text-md text-gray-900 dark:text-gray-100 font-bold">
+                <p class="text-lg text-black dark:text-gray-100 font-bold">
                   {{ review.business }}
                 </p>
               <div class="flex mb-3">

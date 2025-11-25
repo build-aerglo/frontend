@@ -17,13 +17,13 @@
           <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] my-1">Clear reviews, Confident decisions.</div>
-        <form @submit.prevent="handleEndUserRegistration" class="space-y-4">
-          <!-- Username -->
-          <div>
-            <input id="username" v-model="form.username" type="text" placeholder="Username"
-              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-          </div>
+        
+         <div v-if="isLoading" class="text-center text-gray-600">
+          <i class="pi pi-spin pi-spinner text-2xl"></i>
+          <p class="mt-2">Signing in...</p>
+        </div>
+        
+        <form @submit.prevent="handleEndUserRegistration" class="space-y-5">
           <!-- Email -->
           <div>
             <input id="email" v-model="form.email" type="email" placeholder="Email"
@@ -36,14 +36,9 @@
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
           </div>
-          <div>
-            <input id="address" v-model="form.address" type="address" placeholder="Address"
-              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-          </div>
-          <div class="flex space-x-4">
+          
             <!-- Password -->
-            <div class="w-1/2">
+            <div>
               <div class="relative mt-1">
                 <input
                   id="password"
@@ -79,7 +74,7 @@
               <div v-if="isValid" class="text-green-600 mt-1 text-sm">Password Validated</div>
             </div>
             <!-- Confirm Password -->
-            <div class="w-1/2">
+            <div>
               <div class="relative mt-1">
                 <input
                   id="confirmPassword"
@@ -101,25 +96,23 @@
                   <i :class="showConfirm ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
-            </div>
+            
           </div>
           
-          <!-- Terms -->
-          <div class="flex items-center gap-2 text-xs">
-            <input id="terms" type="checkbox" v-model="agree"
-              class="w-4 h-4 text-[#008253] border-gray-300 rounded" />
-            <label for="terms">
-              By submitting this form you accept our
-              <NuxtLink to="/" class="text-blue-500 hover:underline">
-                privacy policy.
-              </NuxtLink>
-            </label>
-          </div>
-
-          <div class="my-2">
-            <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
-          </div>
+          <!-- Submit Button -->
+            <div class="mb-1">
+              <button 
+                class="btn btn-primary d-grid w-80" 
+                type="submit"
+                :disabled="isLoading"
+              >
+                {{ isLoading ? 'Signing Up...' : 'Sign Up' }}
+              </button>
+            </div>
         </form>
+        <div class="text-center mt-0">
+          <p class="text-xs">By submitting this form you accept our <NuxtLink class="!text-blue-500 cursor-pointer hover:underline">privacy policy</NuxtLink></p> 
+        </div>
         <p class="text-center text-sm text-gray-800 mb-1">
           <span>Already have an account? </span>
           <NuxtLink to="/auth/end-user/sign-in" class="text-blue-500 hover:underline font-medium">
@@ -160,10 +153,10 @@ const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
 const agree = ref(false)
 const form = ref<EndUser>({
-  username: "",
+  username: null,
   email: "",
   phone: "",
-  address: "",
+  address: null,
   password: "",
   socialMedia: ""
 });
@@ -206,7 +199,7 @@ const handleEndUserRegistration = async () => {
 
     const res = await registerEndUser(form.value);
     if (res) {
-      alert('Business registered successfully')
+      alert('Registration successful!');
       console.log(res);
       navigateTo('sign-in');
     } else {

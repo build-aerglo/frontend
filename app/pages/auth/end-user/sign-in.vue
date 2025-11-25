@@ -78,17 +78,15 @@
               Forgot Password?
             </NuxtLink>
           </div>
-          <div class="mb-6">
             <div class="mb-6">
-            <button 
-              class="btn btn-primary d-grid w-100" 
-              type="submit"
-              :disabled="isLoading"
-            >
-              {{ isLoading ? 'Signing In...' : 'Sign In' }}
-            </button>
-          </div>
-          </div>
+              <button 
+                class="btn btn-primary d-grid w-80" 
+                type="submit"
+                :disabled="isLoading"
+              >
+                {{ isLoading ? 'Signing In...' : 'Sign In' }}
+              </button>
+            </div>
         </form>
 
         <p class="text-center text-sm text-gray-800">
