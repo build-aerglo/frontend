@@ -33,16 +33,23 @@ export default function () {
         email: data.email,
         password: data.password,
       });
-
+      console.log(res)
       if (res.status === 200 && res.data) {
         const { access_token, id_token, expires_in, roles } = res.data;
         const role = roles[0];
-        userStore.setLoginData({
+        const loginPayload = {
           access_token: access_token,
           id_token: id_token,
           role: role,
           expires: new Date(Date.now() + 23 * 60 * 60 * 1000), // 23hrs
-        });
+        };
+        if (role === 'business_user') {
+          userStore.clearUser();
+          store.setLoginData(loginPayload)
+        } else if (role === 'end_user') {
+          store.clearUser();         
+          userStore.setLoginData(loginPayload)
+        }
         return res.data;
       } else {
         throw new Error("Login failed");

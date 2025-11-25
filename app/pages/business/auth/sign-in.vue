@@ -57,12 +57,12 @@
 </template>
 
 <script setup lang="ts">
-import useUser  from '~/composables/useUser' 
+import useBusinessUser  from '~/composables/business/useBusinessUser' 
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
 
 const { loginUser } = useMethods();
-const store = useUser(); 
+const store = useBusinessUser(); 
 const toast = useToast()
 const loginData = ref<LoginData>({
   email: '',
@@ -79,7 +79,6 @@ const HandleLogin = async () => {
   const res = await loginUser(loginData.value);
 
   if (res) {
-    console.log(res);
     if (store.accessToken && store.role === 'business_user') {
         toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
         navigateTo('../profile');
