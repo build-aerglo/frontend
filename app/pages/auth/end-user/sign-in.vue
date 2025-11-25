@@ -127,14 +127,14 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/store/user' 
+import useUser  from '~/composables/useUser' 
 import useMethods from '~/composables/useMethods';
-import type { userLoginData } from "~/types";
+import type { LoginData } from "~/types";
 
 const { loginUser } = useMethods();
-const store = useUserStore(); 
-
-const userData = ref<userLoginData>({
+const store = useUser(); 
+const toast = useToast()
+const userData = ref<LoginData>({
   email: '',
   password: '',
 });
@@ -156,10 +156,10 @@ const HandleLogin = async () => {
   const res = await loginUser(userData.value);
 
   if (res) {
-    alert('login successful')
     console.log(res);
-    if (store.accessToken) {
-          navigateTo('../../');
+    if (store.accessToken && store.role === 'end_user') {
+          toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
+          navigateTo('../../business-dashboard');
     } else {
         loginError.value = 'Login succeeded, but no token was stored.';
     }
