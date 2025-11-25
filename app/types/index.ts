@@ -6,8 +6,7 @@ export interface EndUser {
   password: string;
   socialMedia: string;
 }
-
-export interface userLoginData {
+export interface LoginData {
   email: string;
   password: string;
 }

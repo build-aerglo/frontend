@@ -43,41 +43,41 @@
           </div>
           <div class="flex space-x-4">
             <!-- Password -->
-            <div class="w-1/2">
-              <div class="relative mt-1">
-                <input
-                  id="password"
-                  v-model="form.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Password"
-                  class="w-full border border-gray-300 rounded-lg p-2 pr-10 
-                        focus:outline-none hover:border-gray-400 
-                        focus:border-primary focus:ring-2 focus:ring-primary"
-                  required
-                />
-                <!-- Toggle icon -->
-                <button
-                  type="button"
-                  @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 
-                        text-gray-500 hover:text-primary"
-                >
-                  <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
-                </button>
-              </div>
-              <!-- Password validation messages -->
-              <div v-if="!allValid" class="flex flex-col mt-2 space-y-1 text-sm">
-                <div class="flex items-center gap-2">
-                  <i class="text-xs" :class="validLength ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
-                  Password must be greater than 8 characters
-                </div>
-                <div class="flex items-center gap-2">
-                  <i class="text-xs" :class="validNumeric ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
-                  Password must contain a number and a special character (@#&_$?)
-                </div>
-              </div>
-              <div v-if="isValid" class="text-green-600 mt-1 text-sm">Password Validated</div>
-            </div>
+             <div class="w-1/2">
+               <div>
+                 <label for="password" class="block text-sm font-medium text-gray-700">
+                   Password
+                 </label>
+                 <div class="relative mt-1">
+                   <input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'"
+                     class="w-full border border-gray-300 rounded-lg p-2 pr-10 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+                     required />
+   
+                   <button type="button" @click="showPassword = !showPassword"
+                     class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-primary">
+                     <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
+                   </button>
+                 </div>
+               </div>
+               <div v-if="!allValid" class="flex flex-col mt-[10px] mb-[10px]">
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validLength ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must be greater than 8 characters
+                 </div>
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validNumeric ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must contain a number
+                 </div>
+                 <div class="flex items-center gap-2">
+                   <i class="text-[10px]"
+                     :class="validComplexity ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                   Password must contain a special character (@#&_$?)
+                 </div>
+               </div>
+               <div v-if="isValid">Password Validated</div>
+             </div>
             <!-- Confirm Password -->
             <div class="w-1/2">
               <div class="relative mt-1">
@@ -206,8 +206,7 @@ const handleEndUserRegistration = async () => {
 
     const res = await registerEndUser(form.value);
     if (res) {
-      alert('Business registered successfully')
-      console.log(res);
+      toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Registered successfully!', life: 3000 });
       navigateTo('sign-in');
     } else {
       toast.add({
