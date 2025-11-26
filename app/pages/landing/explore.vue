@@ -297,7 +297,7 @@
 
 
         <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="hidden md:block md:col-span-1 sticky top-40 self-start">
+        <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div 
                 v-if="focusedBusiness" 
                 class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"

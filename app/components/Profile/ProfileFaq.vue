@@ -5,7 +5,7 @@
         <span class="text-[130%] text-contrast font-bold">Frequently Asked Questions</span>
         
         <ButtonCustom
-          :label="isFaqEditing ? 'Finish Editing' : 'Edit FAQs'"
+          :label="isFaqEditing ? 'Save' : 'Edit'"
           :primary="!isFaqEditing"
           :secondary="isFaqEditing"
           size="md"
