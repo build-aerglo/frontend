@@ -1,6 +1,5 @@
 <template>
 <NavBar />
-
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
@@ -183,13 +182,14 @@
                 </div>
 
                 <div class="flex flex-wrap gap-1">
-                    <span
+                    <button
                     v-for="tag in business.tags"
                     :key="tag"
-                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300"
+                    @click.stop="filterByTag(tag)"
+                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-black hover:border-[#008253] transition-all cursor-pointer"
                     >
                     {{ tag }}
-                    </span>
+                    </button>
                 </div>
                 </div>
             </div>
@@ -239,6 +239,9 @@
                 >
                   <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
                 </button>
+              </div>
+              <div class="text-xs text-slate-600 font-medium">
+                {{ currentReviewIndex + 1 }} / {{ focusedBusinessReviews.length }}
               </div>
             </div>
 
@@ -297,7 +300,7 @@
 
 
         <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
+        <div v-if="filteredBusinesses.length > 0" class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div 
                 v-if="focusedBusiness" 
                 class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
@@ -330,7 +333,7 @@
               </div>
             </div>
 
-            <div class="items-left justify-between mb-2">
+            <div class="flex items-center justify-between mb-2">
               <div class="flex gap-2">
                 <button 
                   @click="prevReview"
@@ -346,6 +349,9 @@
                 >
                   <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
                 </button>
+              </div>
+              <div class="text-xs text-slate-600 font-medium">
+                {{ currentReviewIndex + 1 }} / {{ focusedBusinessReviews.length }}
               </div>
             </div>
 
@@ -423,7 +429,8 @@ const filters = ref({
   badges: '',
   location: '',
   stars: '',
-  priceRange: ''
+  priceRange: '',
+  tag: ''
 })
 
 const focusedBusinessId = ref<number | null>(null)
@@ -441,7 +448,8 @@ const filteredBusinesses = computed(() => {
       (!filters.value.badges || b.badges.includes(filters.value.badges)) &&
       (!filters.value.location || b.location === filters.value.location) &&
       (!filters.value.stars || b.rating >= parseFloat(filters.value.stars)) &&
-      (!filters.value.priceRange || b.priceRange === filters.value.priceRange)
+      (!filters.value.priceRange || b.priceRange === filters.value.priceRange) &&
+      (!filters.value.tag || b.tags.includes(filters.value.tag))
     )
   })
 })
@@ -475,7 +483,13 @@ function prevReview() {
 }
 
 function clearAllFilters() {
-  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '' }
+  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '', tag: '' }
+}
+
+function filterByTag(tag: string) {
+  filters.value.tag = tag
+  // Scroll to top of page to show filters
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
@@ -500,4 +514,3 @@ select:focus {
   animation: fadeInOut 2.5s forwards;
 }
 </style>
-

@@ -105,36 +105,10 @@
             :is-editing="isEditing"
           />
         </div>
-
-        <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2']">
-          <ProfileField
-              v-if="!isEditing"
-              v-model="business.openDays"
-              icon="pi pi-clock"
-              placeholder="Open Now - Closes at 10:00 PM"
-              :is-editing="isEditing"
-          />
-          
-          <template v-else>
-              <ProfileField
-                  v-model="business.openDaysDetails" 
-                  icon="pi pi-calendar"
-                  placeholder="Select Opening Days (e.g., Mon-Fri)"
-                  :is-editing="true"
-                  input-class="cursor-pointer" 
-                  @click="triggerDayPicker" 
-              />
-              
-              <ProfileField
-                  v-model="business.closeTime"
-                  icon="pi pi-clock"
-                  placeholder="Closing Time (e.g., 10:00 PM)"
-                  :is-editing="true"
-                  input-class="cursor-pointer" 
-                  @click="triggerTimePicker"
-              />
-          </template>
-        </div>
+        <OpeningHoursPicker
+          v-model="business.openingHours"
+          :is-editing="isEditing"
+        />
       </div>
 
       <div class="absolute top-5 right-5">
@@ -158,7 +132,7 @@
     
     <!-- Sticky Navigation Tabs -->
     <div 
-      class="sticky top-10 z-40 bg-white border-b border-gray-200 shadow-sm mb-8"
+      class="sticky top-10 z-40 pt-3 bg-white border-b border-gray-200 shadow-sm mb-8"
     >
       <div class="relative flex items-center py-4 px-4 md:px-0 md:justify-start max-w-7xl mx-auto">
         
@@ -233,6 +207,8 @@ import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import Badge from '~/components/Badge.vue'
 import Star from '~/components/Stars.vue'
 import { useBusinessData } from '@/composables/useBusinessSampleData'
+import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
+
 
 const { 
   activeTab, 
@@ -257,9 +233,11 @@ const business = reactive({
   location: '',
   contact: '',
   websiteUrl: '',
-  openDays: 'Open Now - Closes at 10:00 PM', 
-  openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
-  closeTime: '22:00', 
+  openingHours: {
+    dayKey: 'mon-sat',  // default selection key
+    startTime: '07:00',
+    endTime: '23:00',
+  }, 
 })
 
 const handleFileChange = (e: Event) => {

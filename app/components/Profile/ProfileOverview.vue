@@ -156,7 +156,7 @@
       </div>
   
     </div>
-    <ProfileReview :limit="3" />
+    <ProfileReview :limit="3" :showHeader="true" />
   </div>
 </template>
 
