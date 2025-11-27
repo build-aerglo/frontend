@@ -8,10 +8,10 @@
                 <NuxtLink to="./auth/support-user/sign-up" class="text-blue-500">Register as Support User</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="./profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
+                <NuxtLink to="./auth/end-user/login" class="text-blue-500">User</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="./profile/business" class="text-blue-500">Business Profile (Owner POV)</NuxtLink>
+                <NuxtLink to="./profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
             <li>
                 <NuxtLink to="./profile/business-profile-user-pov" class="text-blue-500">Business Profile (End-User POV)</NuxtLink>
@@ -27,11 +27,10 @@
 
 
     <div class="flex gap-[10px] p-4">
-
         <NuxtLink to="./business/auth/sign-up">Business Registration page</NuxtLink>
         <NuxtLink to="./business/auth/sign-in">Business Login page</NuxtLink>
         <NuxtLink to="./business/settings">Business Settings page</NuxtLink>
-        <NuxtLink to="./business/profile">Business Profile page</NuxtLink>
+        <NuxtLink to="./profile/business">Business Profile page</NuxtLink>
     </div>
 </template>
 

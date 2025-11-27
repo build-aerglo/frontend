@@ -111,7 +111,7 @@ const menuItems = [
   { name: 'Reports', to: '/reports', icon: 'pi pi-chart-bar' },
   { name: 'Messages', to: '/messages', icon: 'pi pi-envelope' },
   { name: 'Access Management', to: '/business/access', icon: 'pi pi-lock' },
-  { name: 'Profile', to: '/business/profile', icon: 'pi pi-user' },
+  { name: 'Profile', to: '/profile/business', icon: 'pi pi-user' },
   { name: 'Settings', to: '/business/settings', icon: 'pi pi-cog' },
   { name: 'Help and support', to: '/help', icon: 'pi pi-question-circle' },
 ];

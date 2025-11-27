@@ -35,7 +35,7 @@
             </div>
           </li>
           <li>
-            <NuxtLink to="/auth/end-user/sign-in">
+            <NuxtLink to="/auth/end-user/login">
               <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition">
                 Write a review
               </button>
@@ -99,7 +99,7 @@
         </li>
 
         <li>
-          <NuxtLink to="/auth/end-user/sign-in"
+          <NuxtLink to="/auth/end-user/login"
             class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center">
             Login/Register
           </NuxtLink>

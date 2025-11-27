@@ -1,6 +1,5 @@
 <template>
   <div>
-    <NavDashboard />
     <div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div class="max-w-7xl mx-auto space-y-6">
         <!-- Business Info Header -->
@@ -465,6 +464,8 @@ const {
   improvements,
   issues
 } = useSampleAnalytics()
+
+definePageMeta({ layout: 'business' })
 
 // Local state
 const wordCloudView = ref<'positive' | 'negative'>('positive')
