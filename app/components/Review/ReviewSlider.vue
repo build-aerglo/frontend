@@ -83,7 +83,7 @@
 
 <script setup lang="ts">
 import { NuxtImg } from '#components'
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount,} from 'vue'
 
 import img1 from '/images/profile-images/1.png'
 import img2 from '/images/profile-images/2.png'
