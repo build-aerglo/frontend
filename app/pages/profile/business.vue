@@ -192,7 +192,7 @@
                 Average Response Time: 12hours
               </button>
               <button class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-                Profile hits(30 days) 3450
+                Profile clicks(30 days) 3450
               </button>
             </div>
           </div>
@@ -210,12 +210,8 @@ import { useBusinessData } from '@/composables/useBusinessSampleData'
 import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
 
 
-const { 
-  activeTab, 
+const {  
   businessData, 
-  businessReviews, 
-  businessPhotos, 
-  similarBusinesses 
 } = useBusinessData()
 
 
