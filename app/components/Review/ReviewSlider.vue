@@ -53,7 +53,7 @@
                     :class="'w-5 h-5'"
                   />
                 </div>
-                <p class="text-gray-600 dark:text-gray-200 italic">
+                <p class="text-gray-500 dark:text-gray-200 italic">
                   “{{ review.text }}”
                 </p>
               </div>
@@ -67,7 +67,7 @@
                   :placeholder="false"
                     />
                 <div class="mt-4">
-                  <h6 class="font-semibold mb-0 text-gray-900 dark:text-white">
+                  <h6 class="font-semibold mb-0 text-gray-700 dark:text-white">
                     {{ review.name }}
                   </h6>
                   <p class="text-gray-400 text-sm">{{ review.time }}</p>
