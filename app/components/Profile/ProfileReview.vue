@@ -41,7 +41,7 @@
       </NuxtLink>
     </div>
 
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
       <div 
         v-for="(review, index) in limitedReviews" 
         :key="review.id"
@@ -64,7 +64,7 @@
               :key="n"
               :filled="n <= review.rating"
               :colorLevel="n <= review.rating ? review.rating : 0"
-              class="w-6 h-6"
+              class="w-5 h-5"
             />
           </div>
           <p class="text-sm text-gray-700 leading-relaxed">
