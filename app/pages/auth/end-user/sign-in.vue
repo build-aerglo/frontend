@@ -29,10 +29,11 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="isLoading" class="text-center text-gray-600">
-          <i class="pi pi-spin pi-spinner text-2xl"></i>
-          <p class="mt-2">Signing in...</p>
+        <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
+          <img :src="spinner" class="h-10 w-10 object-center" />
+          <p class="text-sm mt-2">Signing in...</p>
         </div>
+
 
         <!-- Error Message -->
         <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
@@ -130,6 +131,7 @@
 import useUser  from '~/composables/useUser' 
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
+import spinner from '~/assets/svg/spinner.svg'
 
 const { loginUser } = useMethods();
 const store = useUser(); 

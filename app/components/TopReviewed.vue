@@ -50,7 +50,7 @@
           </div>
 
           <!-- Business name -->
-          <h3 class="text-lg font-semibold text-center text-gray-800 dark:text-white">
+          <h3 class="text-lg font-bold text-center text-black dark:text-white">
             {{ card.name }}
           </h3>
 

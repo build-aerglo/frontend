@@ -18,9 +18,10 @@
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] my-1">Clear reviews, Confident decisions.</div>
         
-         <div v-if="isLoading" class="text-center text-gray-600">
-          <i class="pi pi-spin pi-spinner text-2xl"></i>
-          <p class="mt-2">Signing in...</p>
+        <!-- Loading State -->
+        <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
+          <img :src="spinner" class="h-10 w-10 object-center" />
+          <p class="text-sm mt-2">Signing up...</p>
         </div>
         
         <form @submit.prevent="handleEndUserRegistration" class="space-y-5">
@@ -60,18 +61,6 @@
                   <i :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
               </div>
-              <!-- Password validation messages -->
-              <div v-if="!allValid" class="flex flex-col mt-2 space-y-1 text-sm">
-                <div class="flex items-center gap-2">
-                  <i class="text-xs" :class="validLength ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
-                  Password must be greater than 8 characters
-                </div>
-                <div class="flex items-center gap-2">
-                  <i class="text-xs" :class="validNumeric ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
-                  Password must contain a number and a special character (@#&_$?)
-                </div>
-              </div>
-              <div v-if="isValid" class="text-green-600 mt-1 text-sm">Password Validated</div>
             </div>
             <!-- Confirm Password -->
             <div>
@@ -95,8 +84,7 @@
                 >
                   <i :class="showConfirm ? 'pi pi-eye' : 'pi pi-eye-slash'"></i>
                 </button>
-              </div>
-            
+              </div> 
           </div>
           
           <!-- Submit Button -->
@@ -149,9 +137,10 @@
 <script setup lang="ts">
 import useMethods from '~/composables/useMethods'; 
 import type { EndUser } from "~/types";
+import spinner from '~/assets/svg/spinner.svg'
+
 const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
-const agree = ref(false)
 const form = ref<EndUser>({
   username: null,
   email: "",
