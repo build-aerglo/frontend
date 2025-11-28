@@ -41,9 +41,50 @@
       </NuxtLink>
     </div>
 
+    <!-- Filter Section -->
+    <div v-if="!props.limit" class="mb-6 flex flex-wrap gap-4 items-center">
+      <div>
+        <label class="text-sm font-medium text-gray-700 mr-2">Filter by rating:</label>
+        <select 
+          v-model="filterRating" 
+          class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#008253]"
+        >
+          <option value="all">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="text-sm font-medium text-gray-700 mr-2">Sort by:</label>
+        <select 
+          v-model="sortOrder" 
+          class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#008253]"
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Rating</option>
+          <option value="lowest">Lowest Rating</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input 
+          type="checkbox" 
+          id="flaggedOnly" 
+          v-model="showFlaggedOnly"
+          class="w-4 h-4 text-[#008253] border-gray-300 rounded focus:ring-[#008253]"
+        >
+        <label for="flaggedOnly" class="text-sm font-medium text-gray-700">Show Flagged Only</label>
+      </div>
+    </div>
+
     <div class="flex flex-col gap-2">
       <div 
-        v-for="(review, index) in limitedReviews" 
+        v-for="(review, index) in filteredAndSortedReviews" 
         :key="review.id"
         class="border-b pb-4"
       >
@@ -74,26 +115,46 @@
 
         <!-- Replies -->
         <div class="pl-12 mb-2">
-          <div v-if="replies[review.id]" class="mb-2">
-            <strong>Your reply:</strong>
-            <p class="text-gray-600">{{ replies[review.id] }}</p>
+          <div v-if="replies[review.id]" class="bg-gray-50 p-3 rounded-lg">
+            <div class="flex justify-between items-start mb-1">
+              <strong class="text-sm">Reply:</strong>
+              <div class="flex">
+                <button
+                  @click="deleteReply(review.id)"
+                  class="text-red-600 hover:underline text-xs"
+                  title="Delete reply"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm">{{ replies[review.id] }}</p>
           </div>
         </div>
 
         <!-- Action buttons -->
-        <div class="pl-12 flex gap-4 text-sm">
+        <div class="pl-12 flex gap-4 text-sm items-center">
           <button
             class="text-blue-600 hover:underline"
             @click="toggleReplyForm(review.id)"
           >
-            {{ replyFormVisible[review.id] ? 'Cancel' : 'Reply' }}
+            {{ replyFormVisible[review.id] ? 'Cancel' : (replies[review.id] ? 'Edit' : 'Reply') }}
           </button>
 
           <button
-            :class="flaggedReviews.has(review.id) ? 'text-red-600 font-semibold' : 'text-gray-600 hover:text-red-600'"
             @click="toggleFlag(review.id)"
+            class="relative group"
+            :title="flaggedReviews.has(review.id) ? 'Unflag' : 'Flag comment'"
           >
-            {{ flaggedReviews.has(review.id) ? 'Flagged' : 'Flag' }}
+            <i 
+              class="pi pi-flag transition-colors text-bold text-sm"
+              :class="flaggedReviews.has(review.id) ? 'text-red-600' : 'text-gray-800 hover:text-red-400 hover:text-bold'"
+            ></i>
+            <span 
+              class="absolute left-1/2 -translate-x-1/2 -top-8 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            >
+              Flag comment
+            </span>
           </button>
         </div>
 
@@ -101,16 +162,15 @@
         <div v-if="replyFormVisible[review.id]" class="pl-12 mt-2">
           <textarea
             v-model="replyInputs[review.id]"
-            placeholder="Reply Review..."
             rows="3"
-            class="w-full p-2 border rounded"
+            class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#008253]"
           ></textarea>
           <button
-            class="mt-2 px-4 py-1 bg-[#008253] text-white rounded hover:bg-[#008253] disabled:opacity-50"
+            class="mt-2 px-4 py-1 bg-[#008253] text-white rounded hover:bg-[#006a42] disabled:opacity-50"
             :disabled="!replyInputs[review.id]?.trim()"
             @click="submitReply(review.id)"
           >
-            Post Reply
+            {{ replies[review.id] ? 'Update' : 'Post' }}
           </button>
         </div>
       </div>
@@ -127,7 +187,6 @@ import { useBusinessData } from '@/composables/useBusinessSampleData'
 const { 
   businessData,  
 } = useBusinessData()
-
 
 // Review interface
 interface Review {
@@ -151,10 +210,44 @@ const reviews: Review[] = [
   { id: 6, name: 'Emma D.', rating: 2, date: '2025-10-30', comment: 'Worse place ever!' },
 ]
 
-// Limited reviews computed
-const limitedReviews = computed(() =>
-  props.limit && props.limit > 0 ? reviews.slice(0, props.limit) : reviews
-)
+// Filter and sort state
+const filterRating = ref<string>('all')
+const sortOrder = ref<string>('newest')
+const showFlaggedOnly = ref(false)
+
+// Filtered and sorted reviews
+const filteredAndSortedReviews = computed(() => {
+  let filtered = props.limit && props.limit > 0 ? reviews.slice(0, props.limit) : [...reviews]
+  
+  // Apply rating filter
+  if (filterRating.value !== 'all') {
+    const rating = parseInt(filterRating.value)
+    filtered = filtered.filter(r => r.rating === rating)
+  }
+  
+  // Apply flagged filter
+  if (showFlaggedOnly.value) {
+    filtered = filtered.filter(r => flaggedReviews.value.has(r.id))
+  }
+  
+  // Apply sorting
+  filtered.sort((a, b) => {
+    switch (sortOrder.value) {
+      case 'newest':
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      case 'oldest':
+        return new Date(a.date).getTime() - new Date(b.date).getTime()
+      case 'highest':
+        return b.rating - a.rating
+      case 'lowest':
+        return a.rating - b.rating
+      default:
+        return 0
+    }
+  })
+  
+  return filtered
+})
 
 // Reactive state to track which reply forms are open
 const replyFormVisible = reactive<Record<number, boolean>>({})
@@ -173,6 +266,9 @@ function toggleReplyForm(id: number) {
   replyFormVisible[id] = !replyFormVisible[id]
   if (!replyFormVisible[id]) {
     replyInputs[id] = ''  // clear input on cancel
+  } else if (replies[id]) {
+    // If editing, pre-fill with existing reply
+    replyInputs[id] = replies[id]
   }
 }
 
@@ -182,6 +278,20 @@ function submitReply(id: number) {
     replies[id] = replyInputs[id].trim()
     replyInputs[id] = ''
     replyFormVisible[id] = false
+  }
+}
+
+// Edit an existing reply
+function editReply(id: number) {
+  replyInputs[id] = replies[id]??''
+  replyFormVisible[id] = true
+}
+
+// Delete a reply
+function deleteReply(id: number) {
+  if (confirm('Are you sure you want to delete this reply?')) {
+    delete replies[id]
+    delete replyInputs[id]
   }
 }
 
@@ -197,7 +307,6 @@ function toggleFlag(id: number) {
 // Route for tab detection
 const route = useRoute()
 const isReviewTab = computed(() => route.query.tab === 'review')
-
 
 // Calculate percentage of each star count for the bar widths
 function getStarPercentage(star: number): number {
