@@ -131,6 +131,10 @@
         </div>
       </div>
     </div>
+    <SuccessCard 
+      :show="showSuccessCard" 
+      @close="showSuccessCard = false"
+    />
   </div>
 </template>
 
@@ -140,6 +144,7 @@ import type { EndUser } from "~/types";
 import spinner from '~/assets/svg/spinner.svg'
 
 const { registerEndUser } = useMethods();
+const showSuccessCard = ref<boolean>(false);
 const confirmPassword = ref('')
 const form = ref<EndUser>({
   username: null,
@@ -188,9 +193,7 @@ const handleEndUserRegistration = async () => {
 
     const res = await registerEndUser(form.value);
     if (res) {
-      alert('Registration successful!');
-      console.log(res);
-      navigateTo('sign-in');
+      showSuccessCard.value = true;
     } else {
       toast.add({
         severity: 'error',

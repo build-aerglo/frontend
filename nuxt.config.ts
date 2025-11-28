@@ -31,6 +31,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL!,
       businessApiUrl: process.env.BUSINESS_API_URL!,
+      QR_API_BASE: "https://api.qrserver.com/v1/create-qr-code/",
+      QR_SIZE: "400x400", 
     },
   },
   // nitro: {

@@ -1,71 +1,118 @@
 <template>
-  <div class="flex flex-col md:flex-row md:items-center gap-3">
+  <div class="flex flex-col md:flex-row md:items-center gap-1">
     <div class="flex items-center gap-1">
-      <span class="font-semibold">Opening days:</span>
+      <span class="font-semibold text-gray-700">Opening days:</span>
       <template v-if="!isEditing">
-        <span>{{ dayLabel }}</span>
+        <span class="text-gray-900">{{ dayLabel }}</span>
       </template>
       <template v-else>
-        <select v-model="localDayKey" class="border rounded px-2 py-1">
-          <option v-for="option in dayOptions" :key="option.key" :value="option.key">
-            {{ option.label }}
-          </option>
-        </select>
+        <Dropdown 
+          v-model="localDayKey" 
+          :options="dayOptions" 
+          optionLabel="label" 
+          optionValue="key"
+          placeholder="Select Days"
+          class="w-32"
+        />
       </template>
     </div>
 
     <!-- Divider only on md+ -->
     <span class="hidden md:inline-block text-gray-400 select-none">||</span>
 
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-gray-700">Opening time:</span>
+      <template v-if="!isEditing">
+        <span class="text-gray-900">{{ formattedTime }}</span>
+      </template>
+      <template v-else>
+        <!-- START TIME -->
+        <div class="flex items-center bg-white border border-gray-300 rounded-lg py-2 shadow-sm hover:border-blue-400 transition-colors">
+          <!-- Hour controls -->
+          <button 
+            @click="changeTime('start', 'hour', -1)" 
+            aria-label="Decrease start hour" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getHour(localStartTime) }}</span>
+          <button 
+            @click="changeTime('start', 'hour', 1)" 
+            aria-label="Increase start hour" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
 
+          <span class="text-gray-400 font-small">:</span>
 
-    <div class="flex items-center gap-1">
-  <span class="font-semibold">Opening time:</span>
-  <template v-if="!isEditing">
-    <span>{{ formattedTime }}</span>
-  </template>
-  <template v-else>
-    <!-- START TIME -->
-    <div class="flex items-center gap-1">
-      <!-- Hour controls -->
-      <button @click="changeTime('start', 'hour', -1)" aria-label="Decrease start hour" class="">‹</button>
-      <span class="min-w-[20px] text-center">{{ getHour(localStartTime) }}</span>
-      <button @click="changeTime('start', 'hour', 1)" aria-label="Increase start hour" class="">›</button>
+          <!-- Minute controls -->
+          <button 
+            @click="changeTime('start', 'minute', -15)" 
+            aria-label="Decrease start minutes" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getMinute(localStartTime) }}</span>
+          <button 
+            @click="changeTime('start', 'minute', 15)" 
+            aria-label="Increase start minutes" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
 
-      <span>:</span>
+        <span class="text-gray-400 font-medium">—</span>
 
-      <!-- Minute controls -->
-      <button @click="changeTime('start', 'minute', -15)" aria-label="Decrease start minutes" class="">‹</button>
-      <span class="min-w-[20px] text-center">{{ getMinute(localStartTime) }}</span>
-      <button @click="changeTime('start', 'minute', 15)" aria-label="Increase start minutes" class="">›</button>
+        <!-- END TIME -->
+        <div class="flex items-center bg-white border border-gray-300 rounded-lg px-1 py-2 shadow-sm hover:border-blue-400 transition-colors">
+          <!-- Hour controls -->
+          <button 
+            @click="changeTime('end', 'hour', -1)" 
+            aria-label="Decrease end hour" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getHour(localEndTime) }}</span>
+          <button 
+            @click="changeTime('end', 'hour', 1)" 
+            aria-label="Increase end hour" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+
+          <span class="text-gray-400 font-medium">:</span>
+
+          <!-- Minute controls -->
+          <button 
+            @click="changeTime('end', 'minute', -15)" 
+            aria-label="Decrease end minutes" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getMinute(localEndTime) }}</span>
+          <button 
+            @click="changeTime('end', 'minute', 15)" 
+            aria-label="Increase end minutes" 
+            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </template>
     </div>
-
-    <span>-</span>
-
-    <!-- END TIME -->
-    <div class="flex items-center gap-1">
-      <!-- Hour controls -->
-      <button @click="changeTime('end', 'hour', -1)" aria-label="Decrease end hour" class="">‹</button>
-      <span class="min-w-[20px] text-center">{{ getHour(localEndTime) }}</span>
-      <button @click="changeTime('end', 'hour', 1)" aria-label="Increase end hour" class="">›</button>
-
-      <span>:</span>
-
-      <!-- Minute controls -->
-      <button @click="changeTime('end', 'minute', -15)" aria-label="Decrease end minutes" class="">‹</button>
-      <span class="min-w-[20px] text-center">{{ getMinute(localEndTime) }}</span>
-      <button @click="changeTime('end', 'minute', 15)" aria-label="Increase end minutes" class="">›</button>
-    </div>
-  </template>
-</div>
-
-
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, watch, computed, defineProps, defineEmits } from 'vue'
+import Dropdown from 'primevue/dropdown'
 
 const dayOptions = [
   { key: 'mon-sat', label: 'Mon - Sun' },
@@ -168,7 +215,6 @@ const getMinute = (timeStr: string) => {
   return timeStr.split(':')[1]?.padStart(2, '0')
 }
 
-
 // Compute label for days
 const dayLabel = computed(() => {
   const option = dayOptions.find(o => o.key === localDayKey.value)
@@ -194,10 +240,3 @@ const formattedTime = computed(() => {
   return `${formatTime(localStartTime.value)} - ${formatTime(localEndTime.value)}`
 })
 </script>
-
-<style scoped>
-select,
-input[type="time"] {
-  min-width: 120px;
-}
-</style>
