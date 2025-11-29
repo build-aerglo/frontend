@@ -36,7 +36,7 @@
     
     <div class="card p-6 relative bg-white rounded-lg shadow">
       
-      <div class="flex justify-between items-start mb-4">
+      <div class="flex justify-between items-start">
         <h2 class="text-xl font-bold text-contrast">Highlights</h2>
         
         <div class="z-10">
@@ -60,7 +60,7 @@
 
       <div class="pt-2">
 
-        <div v-if="isEditingHighlights" class="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div v-if="isEditingHighlights" class="grid grid-cols-2 gap-x-6 gap-y-2">
           <div 
             v-for="highlight in highlights" 
             :key="highlight.id" 
@@ -98,7 +98,7 @@
 
     <div class="card p-6 relative bg-white rounded-lg shadow">
       
-      <div class="flex justify-between items-start mb-4">
+      <div class="flex justify-between items-start">
         <h2 class="text-xl font-bold text-contrast">Tags</h2>
         
         <div class="z-10">
@@ -120,7 +120,7 @@
         </div>
     </div>
 
-    <div class="pt-2">
+    <div class="pt-1">
 
         <div 
           v-if="isEditingTags" 
@@ -139,15 +139,14 @@
             </span>
         </div>
         
-        <div v-else class="flex flex-wrap gap-2">
+        <div v-else class="flex flex-wrap gap-1">
             <span 
                 v-for="tag in checkedTags" 
                 :key="tag.id"
-                class="bg-green-50 text-green-600 text-sm font-medium px-3 py-2 rounded-full"
+                class="bg-green-50 text-green-600 text-sm font-medium px-3 rounded-full"
             >
                 {{ tag.name }}
             </span>
-            
             <p v-if="checkedTags.length === 0" class="text-gray-500 text-sm italic">
                 No tags set yet.
             </p>
@@ -182,12 +181,14 @@ const isEditingHighlights = ref(false);
 
 // Initial list of highlights with checked status
 const highlights = ref<Highlight[]>([
-  { id: 1, name: 'Free Wi-Fi', checked: true },
-  { id: 2, name: 'Outdoor Seating', checked: false },
-  { id: 3, name: 'Air Conditioned', checked: true },
-  { id: 4, name: 'Pet Friendly', checked: false },
+  { id: 1, name: 'Wi-Fi', checked: true },
+  { id: 2, name: 'Order online', checked: false },
+  { id: 3, name: 'Accomodates groups', checked: true },
+  { id: 4, name: 'Restrooms', checked: false },
   { id: 5, name: 'Wheelchair Accessible', checked: true },
   { id: 6, name: 'Parking Available', checked: false },
+  { id: 7, name: 'Card Payment', checked: false },
+  { id: 8, name: 'Baby-Changing Facility', checked: true },
 ]);
 
 const checkedHighlights = computed(() => {
