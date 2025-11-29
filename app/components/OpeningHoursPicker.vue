@@ -27,39 +27,39 @@
       </template>
       <template v-else>
         <!-- START TIME -->
-        <div class="flex items-center bg-white border border-gray-300 rounded-lg py-2 shadow-sm hover:border-blue-400 transition-colors">
+        <div class="flex items-center bg-white border border-gray-300 rounded-lg px-1 py-2 shadow-sm hover:border-blue-400 transition-colors">
           <!-- Hour controls -->
           <button 
             @click="changeTime('start', 'hour', -1)" 
             aria-label="Decrease start hour" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 hover:bg-green-400 text-xs rounded transition-colors"
           >
             <i class="pi pi-chevron-left text-xs"></i>
           </button>
-          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getHour(localStartTime) }}</span>
+          <span class="min-w-[20px] text-center font-medium text-gray-900">{{ getHour(localStartTime) }}</span>
           <button 
             @click="changeTime('start', 'hour', 1)" 
             aria-label="Increase start hour" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white  bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-right text-xs"></i>
           </button>
 
-          <span class="text-gray-400 font-small">:</span>
+          <span class="text-gray-800 font-small">:</span>
 
           <!-- Minute controls -->
           <button 
             @click="changeTime('start', 'minute', -15)" 
             aria-label="Decrease start minutes" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-left text-xs"></i>
           </button>
-          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getMinute(localStartTime) }}</span>
+          <span class="min-w-[20px] text-center font-medium text-gray-900">{{ getMinute(localStartTime) }}</span>
           <button 
             @click="changeTime('start', 'minute', 15)" 
             aria-label="Increase start minutes" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white text-xs bg-green-500 hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-right text-xs"></i>
           </button>
@@ -73,34 +73,34 @@
           <button 
             @click="changeTime('end', 'hour', -1)" 
             aria-label="Decrease end hour" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-left text-xs"></i>
           </button>
-          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getHour(localEndTime) }}</span>
+          <span class="min-w-[20px] text-center font-medium text-gray-900">{{ getHour(localEndTime) }}</span>
           <button 
             @click="changeTime('end', 'hour', 1)" 
             aria-label="Increase end hour" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-right text-xs"></i>
           </button>
 
-          <span class="text-gray-400 font-medium">:</span>
+          <span class="text-gray-800 font-medium">:</span>
 
           <!-- Minute controls -->
           <button 
             @click="changeTime('end', 'minute', -15)" 
             aria-label="Decrease end minutes" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-left text-xs"></i>
           </button>
-          <span class="min-w-[24px] text-center font-medium text-gray-900">{{ getMinute(localEndTime) }}</span>
+          <span class="min-w-[20px] text-center font-medium text-gray-900">{{ getMinute(localEndTime) }}</span>
           <button 
             @click="changeTime('end', 'minute', 15)" 
             aria-label="Increase end minutes" 
-            class="text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            class="text-white bg-green-500 text-xs hover:bg-green-400 rounded transition-colors"
           >
             <i class="pi pi-chevron-right text-xs"></i>
           </button>
