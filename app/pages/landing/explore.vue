@@ -3,66 +3,91 @@
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
-      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8  sticky top-[60px] z-30">
+      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8 sticky top-[60px] z-30">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-            <select v-model="filters.category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
-              <option value="">all</option>
-              <option value="restaurant">Restaurant</option>
-              <option value="hotel">Hotel</option>
-              <option value="retail">Retail</option>
-              <option value="service">Service</option>
-              <option value="cafe">Cafe</option>
-            </select>
+            <Dropdown 
+              v-model="filters.category" 
+              :options="categoryOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
-          <!-- Tags -->
+          <!-- Badges -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
-            <select v-model="filters.badges" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
-              <option value="">all</option>
-              <option value="standard">Standard</option>
-              <option value="verified">Verified</option>
-              <option value="trusted">Trusted</option>
-            </select>
+            <Dropdown 
+              v-model="filters.badges" 
+              :options="badgeOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Location -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
-            <select v-model="filters.location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
-              <option value="">all</option>
-              <option value="lagos">Lagos</option>
-              <option value="kano">Kano</option>
-              <option value="ogun">Ogun</option>
-              <option value="jos">Jos</option>
-            </select>
+            <Dropdown 
+              v-model="filters.location" 
+              :options="locationOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Stars -->
           <div class="flex-1 min-w-[100px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Ratings</label>
-            <select v-model="filters.stars" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
-              <option value="">any</option>
-              <option value="4.5">4.5 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="2">2 Stars</option>
-            </select>
+            <Dropdown 
+              v-model="filters.stars" 
+              :options="ratingOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Any"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Price -->
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
-            <select v-model="filters.priceRange" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all appearance-none">
-              <option value="">all</option>
-              <option value="budget">Budget</option>
-              <option value="moderate">Moderate</option>
-              <option value="expensive">Expensive</option>
-              <option value="luxury">Luxury</option>
-            </select>
+            <Dropdown 
+              v-model="filters.priceRange" 
+              :options="priceOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
         </div>
 
@@ -75,7 +100,7 @@
               @click="filters[key] = ''"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
-              {{ value }}
+              {{ getFilterLabel(key, value) }}
               <i class="pi pi-times text-xs"></i>
             </button>
           </template>
@@ -411,18 +436,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import Dropdown from 'primevue/dropdown'
 import Star from '~/components/Stars.vue' 
-
 
 const showContact = ref<number | null>(null);
 
 function hideContact() {
-  // hides the tooltip after 2 seconds
   setTimeout(() => {
     showContact.value = null;
   }, 2000);
 }
-
 
 const filters = ref({
   category: '',
@@ -433,13 +456,53 @@ const filters = ref({
   tag: ''
 })
 
+// Filter options
+const categoryOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Restaurant', value: 'restaurant' },
+  { label: 'Hotel', value: 'hotel' },
+  { label: 'Retail', value: 'retail' },
+  { label: 'Service', value: 'service' },
+  { label: 'Cafe', value: 'cafe' }
+])
+
+const badgeOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Standard', value: 'standard' },
+  { label: 'Verified', value: 'verified' },
+  { label: 'Trusted', value: 'trusted' }
+])
+
+const locationOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Lagos', value: 'lagos' },
+  { label: 'Kano', value: 'kano' },
+  { label: 'Ogun', value: 'ogun' },
+  { label: 'Jos', value: 'jos' }
+])
+
+const ratingOptions = ref([
+  { label: 'Any', value: '' },
+  { label: '4.5+ Stars', value: '4.5' },
+  { label: '4+ Stars', value: '4' },
+  { label: '3+ Stars', value: '3' },
+  { label: '2+ Stars', value: '2' }
+])
+
+const priceOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Budget', value: 'budget' },
+  { label: 'Moderate', value: 'moderate' },
+  { label: 'Expensive', value: 'expensive' },
+  { label: 'Luxury', value: 'luxury' }
+])
+
 const focusedBusinessId = ref<number | null>(null)
 const currentReviewIndex = ref(0)
 
 import { useDummyReviews } from '~/composables/useDummyReviews'
 
 const { businesses } = useDummyReviews()
-
 
 const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
@@ -488,19 +551,26 @@ function clearAllFilters() {
 
 function filterByTag(tag: string) {
   filters.value.tag = tag
-  // Scroll to top of page to show filters
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function getFilterLabel(key: string, value: string): string {
+  const optionsMap: Record<string, any> = {
+    category: categoryOptions.value,
+    badges: badgeOptions.value,
+    location: locationOptions.value,
+    stars: ratingOptions.value,
+    priceRange: priceOptions.value
+  }
+  
+  const option = optionsMap[key]?.find((opt: any) => opt.value === value)
+  return option?.label || value
 }
 </script>
 
 <style scoped>
 .text-gold {
   color: #deae29;
-}
-select:focus {
-  outline: none !important;
-  border-color: transparent !important;
-  box-shadow: 0 0 0 2px #008253 !important;
 }
 
 @keyframes fadeInOut {
@@ -512,5 +582,45 @@ select:focus {
 
 .animate-fade {
   animation: fadeInOut 2.5s forwards;
+}
+
+/* PrimeVue Dropdown custom styling */
+:deep(.p-dropdown) {
+  background: rgb(248 250 252);
+  border-color: rgb(203 213 225);
+  border-radius: 0.75rem;
+}
+
+:deep(.p-dropdown:not(.p-disabled):hover) {
+  border-color: #008253;
+}
+
+:deep(.p-dropdown:not(.p-disabled).p-focus) {
+  outline: none;
+  border-color: #008253;
+  box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2);
+}
+
+:deep(.p-dropdown-label) {
+  padding: 0.625rem 1rem;
+}
+
+:deep(.p-dropdown-panel) {
+  border-radius: 0.75rem;
+  border-color: rgb(203 213 225);
+}
+
+:deep(.p-dropdown-item) {
+  padding: 0.625rem 1rem;
+}
+
+:deep(.p-dropdown-item:not(.p-disabled):hover) {
+  background: rgb(248 250 252);
+  color: #008253;
+}
+
+:deep(.p-dropdown-item.p-highlight) {
+  background: #008253;
+  color: white;
 }
 </style>

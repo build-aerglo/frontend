@@ -1,46 +1,6 @@
 <template>
   <div class="card bg-white rounded-lg shadow p-0">
-    <form class="px-6 py-5">
-      <p class="text-[130%] text-contrast mb-6 font-bold">Media & Branding</p>
-
-      <div class="flex flex-col gap-8">
-        <div>
-          <h2 class="text-lg font-semibold text-gray-800 mb-3">Business Logo</h2>
-          <p class="text-sm text-gray-500 mb-4">Upload your primary business logo (1:1 aspect ratio recommended).</p>
-
-          <div class="flex">
-            <div 
-              class="relative w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer border border-gray-300 image-slot"
-              @click="triggerFileInput('logo')"
-            >
-              
-              <img
-                :src="logoPreviewUrl || 'https://via.placeholder.com/200?text=Business+Logo'"
-                alt="Business Logo"
-                class="w-full h-full object-cover transition-opacity duration-300"
-                :class="{ 'opacity-70': !logoPreviewUrl }" 
-              />
-
-              <div 
-                class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center overlay"
-              >
-                <i class="pi pi-camera text-white text-2xl"></i>
-              </div>
-              
-              <input
-                ref="logoInput"
-                type="file"
-                accept="image/*"
-                class="hidden"
-                @change="(e) => handleFileChange(e, 'logo')"
-              />
-            </div>
-          </div>
-        </div>
-
-        <hr class="border-gray-200" />
-
-        <div>
+        <div class="px-6 py-5">
           <h2 class="text-lg font-semibold text-gray-800 mb-3">Media Files (Gallery)</h2>
           <p class="text-sm text-gray-500 mb-4">Showcase your business with up to {{ maxMediaFiles }} additional images.</p>
 
@@ -84,8 +44,6 @@
         primary="true"
         input-class="p-[10px] text-[15px] mt-8 w-auto"
       />
-    </form>
-  </div>
 </template>
 
 <script setup lang="ts">
