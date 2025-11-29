@@ -11,3 +11,10 @@ export interface BusinessUser {
   website: string | null;
 }
 
+export interface BusinessProfile {
+  name: string;
+  website: string;
+  categoryIds: string[] | null;
+  parentBusinessId: string | null;
+}
+

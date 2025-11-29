@@ -13,20 +13,7 @@
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] my-1">Clear reviews, Confident decisions.</div>
         <form @submit.prevent="handleEndUserRegistration" class="space-y-2">
-          <!-- Username -->
-          <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-
-            <input id="username" v-model="form.username" type="text"
-              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-
-          </div>
-
           <!-- Email -->
-          
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email
@@ -38,31 +25,17 @@
 
           </div>
 
-
-
           <!-- Phone -->
           <div>
             <label for="phone" class="block text-sm font-medium text-gray-700">
               Phone Number
             </label>
-
-
             <input id="phone" v-model="form.phone" type="tel" pattern="[0-9]{11}"
               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
               required />
-
           </div>
 
-          <div>
-            <label for="address" class="block text-sm font-medium text-gray-700">
-              Address
-            </label>
-            <input id="address" v-model="form.address" type="address"
-              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
-              required />
-          </div>
-
-          <div class="flex space-x-4">
+          <div class="flex gap-4">
             <!-- Password -->
              <div class="w-1/2">
                <div>
@@ -165,11 +138,9 @@ import type { EndUser } from "~/types";
 const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
 const agree = ref(false)
-const form = ref<EndUser>({
-  username: "",
+const form = ref<EndUser>({ 
   email: "",
   phone: "",
-  address: "",
   password: "",
   socialMedia: ""
 });

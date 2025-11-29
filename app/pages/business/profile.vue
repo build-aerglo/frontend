@@ -35,7 +35,7 @@
         <div class="flex gap-2 items-center">
           <template v-if="!isEditing">
             <span class="text-contrast text-[150%] font-bold">
-              {{ business.name || 'Business Name' }}
+              {{ businessProfileData.name || 'Business Name' }}
             </span>
             <ProfileVerified :isVerified="false" size="sm" />
           </template>
@@ -102,7 +102,7 @@
 
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
           <ProfileField
-            v-model="business.websiteUrl"
+            v-model="businessProfileData.website"
             icon="pi pi-globe"
             placeholder="Website URL"
             :is-editing="isEditing"
@@ -254,11 +254,14 @@
 </template>
 
 <script setup lang="ts">
+import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import type { BusinessProfile } from "~/types/business";
+import { useBusinessProfileStore } from "~/store/business/businessProfile";
 import { useRoute } from 'vue-router'; 
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 
 definePageMeta({ layout: 'business' })
-
+const store = useBusinessProfileStore();
+const { saveBusinessProfile } = useBusinessMethods();
 const isEditing = ref(false)
 const toggleEdit = () => (isEditing.value = !isEditing.value)
 
@@ -277,7 +280,12 @@ const business = reactive({
   openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
   closeTime: '22:00', 
 })
-
+const businessProfileData = ref<BusinessProfile>({
+  name: '',
+  website: '',
+  categoryIds: null,
+  parentBusinessId: null
+});
 const handleFileChange = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (file) previewUrl.value = URL.createObjectURL(file)
