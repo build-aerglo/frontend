@@ -1,5 +1,5 @@
 import useApi from "~/composables/useApi";
-import type { BusinessUser } from "~/types/business";
+import type { BusinessUser, BusinessUserResponse } from "~/types/business";
 import type { EndUser, LoginData } from "~/types";
 import useBusinessUser from "./business/useBusinessUser";
 import useUser from "./useUser";
@@ -14,7 +14,7 @@ export default function () {
 
       if (res.status === 201 || res.status === 200) {
         console.log(res)
-        const user: BusinessUser = res.data;
+        const user: BusinessUserResponse = res.data;
         store.setUserData(user);
         return user;
       } else {
@@ -46,6 +46,7 @@ export default function () {
         if (role === 'business_user') {
           userStore.clearUser();
           store.setLoginData(loginPayload)
+          store.getUser()
         } else if (role === 'end_user') {
           store.clearUser();         
           userStore.setLoginData(loginPayload)

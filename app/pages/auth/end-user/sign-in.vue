@@ -162,6 +162,7 @@ const HandleLogin = async () => {
     }
   } else {
     loginError.value = 'Login failed. Please check your credentials and network connection.';
+    toast.add({ severity: 'error', summary: 'ERROR', detail: 'sign in Failed', life: 3000});
   }
 
   isLoading.value = false;

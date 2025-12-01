@@ -82,6 +82,7 @@
           primary="true"
           input-class="p-[10px] text-[15px] mt-5 w-auto"
           :disabled="!isEditing"
+          @click="savePreferences"
         />
       </div>
     </div>
@@ -143,6 +144,7 @@
         </form>
       </div>
     </div>
+    <button @click="logout">logout</button>
   </div>
 </template>
 
@@ -150,6 +152,11 @@
 const props = defineProps({
   isEditing: Boolean
 })
+import type { BusinessPreference } from "~/types/business";
+import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import useBusinessUser from '~/composables/business/useBusinessUser';
+const { saveBusinessPreferences } = useBusinessMethods(); 
+const store = useBusinessUser();
 const newPassword = ref("");
 const isPrivateReview = ref(false);
 const isDndMode = ref(false);
@@ -161,4 +168,30 @@ const preferenceToggles = [
   { label: "Do Not Disturb", model: isDndMode },
   { label: "Dark Mode", model: isDndMode },
 ];
+const preferences = ref<BusinessPreference>({
+  reviewsPrivate: isPrivateReview.value,
+  dndModeEnabled: isDndMode.value,
+  dndModeDurationHours: null, // you will later expand this when backend adds it
+})
+  
+const logout = () => {
+  store.clearUser()
+}
+const savePreferences = async () => {
+  try {
+    const businessId = store.userData?.businessId;
+
+    if (!businessId) {
+      console.error("Business ID missing!");
+      return;
+    }
+
+    await saveBusinessPreferences(businessId, preferences.value);
+
+    alert("Preferences updated successfully!");
+  } catch (error) {
+    alert("Failed to update preferences.");
+  }
+};
+
 </script>

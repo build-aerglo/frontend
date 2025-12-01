@@ -35,7 +35,7 @@
         <div class="flex gap-2 items-center">
           <template v-if="!isEditing">
             <span class="text-contrast text-[150%] font-bold">
-              {{ businessProfileData.name || 'Business Name' }}
+              {{ business.name || 'Business Name' }}
             </span>
             <ProfileVerified :isVerified="false" size="sm" />
           </template>
@@ -63,22 +63,41 @@
           <span class="text-[100%] text-gray-500">(120 Reviews)</span>
         </div>
 
-        <ProfileField
-          v-model="business.sector"
-          icon="pi pi-briefcase"
-          placeholder="Sector"
-          :is-editing="isEditing"
-        />
+        <div class="flex items-center gap-2">
+            <i class="pi pi-briefcase !text-primary text-lg flex-shrink-0"></i> <div class="w-full">
+                <template v-if="!isEditing">
+                    <span class="text-contrast">
+                        {{ categoryNames.length > 0 ? categoryNames.join(', ') : 'Sector' }}
+                    </span>
+                </template>
+
+                <template v-else>
+                    <MultiSelect 
+                        v-model="business.categoryIds" 
+                        :options="categories" 
+                        optionLabel="name" 
+                        optionValue="id" 
+                        filter 
+                        required
+                        placeholder="Select Sector"
+                        :maxSelectedLabels="3" 
+                        class="w-[200px] h-[30px] p-0 mt-1 border border-gray-300 outline-none rounded-[5px] 
+                        focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
+                        bg-secondaryLinen" 
+                    /> 
+                </template>
+            </div>
+        </div> 
 
         <ProfileField
-          v-model="business.tag"
+          v-model="uiData.tag"
           icon="pi pi-tag"
           placeholder="Tags"
           :is-editing="isEditing"
         />
 
         <ProfileField
-          v-model="business.location"
+          v-model="uiData.location"
           icon="pi pi-map-marker"
           placeholder="Location"
           :is-editing="isEditing"
@@ -86,14 +105,14 @@
 
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
           <ProfileField
-            v-model="business.contact"
+            v-model="uiData.contact"
             icon="pi pi-phone"
             placeholder="Contact"
             :is-editing="isEditing"
           />
           <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
           <ProfileField
-            v-model="business.contact"
+            v-model="uiData.contact"
             icon="pi pi-whatsapp"
             placeholder="WhatsApp"
             :is-editing="isEditing"
@@ -102,14 +121,14 @@
 
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
           <ProfileField
-            v-model="businessProfileData.website"
+            v-model="business.website"
             icon="pi pi-globe"
             placeholder="Website URL"
             :is-editing="isEditing"
           />
           <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
           <ProfileField
-            v-model="business.websiteUrl"
+            v-model="business.website"
             icon="pi pi-instagram"
             placeholder="Instagram"
             :is-editing="isEditing"
@@ -119,7 +138,7 @@
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2']">
           <ProfileField
               v-if="!isEditing"
-              v-model="business.openDays"
+              v-model="uiData.openDays"
               icon="pi pi-clock"
               placeholder="Open Now - Closes at 10:00 PM"
               :is-editing="isEditing"
@@ -127,7 +146,7 @@
           
           <template v-else>
               <ProfileField
-                  v-model="business.openDaysDetails" 
+                  v-model="uiData.openDaysDetails" 
                   icon="pi pi-calendar"
                   placeholder="Select Opening Days (e.g., Mon-Fri)"
                   :is-editing="true"
@@ -136,7 +155,7 @@
               />
               
               <ProfileField
-                  v-model="business.closeTime"
+                  v-model="uiData.closeTime"
                   icon="pi pi-clock"
                   placeholder="Closing Time (e.g., 10:00 PM)"
                   :is-editing="true"
@@ -261,46 +280,72 @@ import { useRoute } from 'vue-router';
 
 definePageMeta({ layout: 'business' })
 const store = useBusinessProfileStore();
-const { saveBusinessProfile } = useBusinessMethods();
-const isEditing = ref(false)
-const toggleEdit = () => (isEditing.value = !isEditing.value)
+const { saveBusinessProfile, getCategories  } = useBusinessMethods();
+const categories = ref<{ id: string; name: string }[]>([]);
+onMounted(async () => {
+  try {
+    const res = await getCategories();
+    categories.value = res;
+  } catch (error) {
+    console.error("Failed to load categories:", error);
+  }
+});
 
+const categoryNames = computed(() => {
+    // Check if categories are loaded and selection exists
+    if (!categories.value || business.value.categoryIds.length === 0) {
+        return [];
+    }
+    
+    // Filter the full category list to find the names of the selected IDs
+    return categories.value
+        .filter(cat => business.value.categoryIds.includes(cat.id))
+        .map(cat => cat.name);
+});
+
+const isEditing = ref(false)
+const toggleEdit = async () => {
+  // When saving
+  if (isEditing.value) {
+    const payload = business.value
+    const profileData = await saveBusinessProfile(payload);
+    store.setProfileData(profileData);
+  }
+  isEditing.value = !isEditing.value;
+};
+
+// Rating, images
 const ratingValue = ref(4)
 const previewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 
-const business = reactive({
+const business = ref<BusinessProfile>({
   name: '',
-  sector: '',
+  website: '',
+  categoryIds: [],
+  parentBusinessId: null
+});
+
+const uiData = reactive ({
   tag: '',
   location: '',
   contact: '',
-  websiteUrl: '',
-  openDays: 'Open Now - Closes at 10:00 PM', 
+  openDays: 'Open Now - Closes at 10:00 PM',
   openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
-  closeTime: '22:00', 
+  closeTime: '22:00',
 })
-const businessProfileData = ref<BusinessProfile>({
-  name: '',
-  website: '',
-  categoryIds: null,
-  parentBusinessId: null
-});
+// Image handler
 const handleFileChange = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (file) previewUrl.value = URL.createObjectURL(file)
 }
 const triggerFileInput = () => fileInput.value?.click()
 
-// NEW Placeholder Methods for Day/Time Selection
-const triggerDayPicker = () => {
-    console.log("Day Picker component triggered!");
-};
+// Placeholder methods
+const triggerDayPicker = () => console.log("Day Picker triggered!");
+const triggerTimePicker = () => console.log("Time Picker triggered!");
 
-const triggerTimePicker = () => {
-    console.log("Time Picker component triggered!");
-};
-
+// Components
 const ProfileOverview = defineAsyncComponent(() => import('~/components/Profile/ProfileOverview.vue'));
 const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/ProfileReview.vue'));
 const ProfileMedia = defineAsyncComponent(() => import('~/components/Profile/ProfileMedia.vue'));
@@ -335,29 +380,22 @@ const currentComponent = computed(() => {
   const key = currentTabKey.value as keyof typeof componentMap;
   return componentMap[key] || ProfileOverview;
 });
-const tabsContainer = ref<HTMLUListElement | null>(null); 
-const SCROLL_AMOUNT = 150; 
 
-// --- Scrolling Methods ---
+const tabsContainer = ref<HTMLUListElement | null>(null);
+const SCROLL_AMOUNT = 150;
 
 const scrollLeft = () => {
   if (tabsContainer.value) {
-    tabsContainer.value.scrollBy({
-      left: -SCROLL_AMOUNT,
-      behavior: 'smooth'
-    });
+    tabsContainer.value.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
   }
 };
-
 const scrollRight = () => {
   if (tabsContainer.value) {
-    tabsContainer.value.scrollBy({
-      left: SCROLL_AMOUNT,
-      behavior: 'smooth'
-    });
+    tabsContainer.value.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
   }
 };
 </script>
+
 
 <style scoped>
 .overlay-profile {

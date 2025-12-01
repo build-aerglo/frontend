@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import type { BusinessUser } from "~/types/business";
+import type { BusinessUser, BusinessUserResponse } from "~/types/business";
 
 export interface UserState {
   accessToken: string | null;
   idToken: string | null;
   role: string | null;
   expires_in: Date;
-  userData: BusinessUser | null;
+  userData: BusinessUserResponse | null;
 }
 
 export const useBusinessUserStore = defineStore("businessUser", {
@@ -50,7 +50,7 @@ export const useBusinessUserStore = defineStore("businessUser", {
     },
 
     // Called on signup
-    setUserData(user: BusinessUser) {
+    setUserData(user: BusinessUserResponse) {
       // this.userData = user;
       this.$patch((state) => {
         state["userData"] = user;
