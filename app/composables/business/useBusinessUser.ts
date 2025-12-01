@@ -1,4 +1,4 @@
-import { useBusinessUserStore } from "~/store/businessUser";
+import { useBusinessUserStore } from "~/store/business/businessUser";
 export default function () {
   const store = useBusinessUserStore();
   return store;

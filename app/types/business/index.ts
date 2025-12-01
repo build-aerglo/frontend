@@ -10,4 +10,32 @@ export interface BusinessUser {
   branchAddress: string | null;
   website: string | null;
 }
+export interface BusinessUserResponse {
+  id: string;
+  email: string;
+  businessId: string;
 
+  business: {
+    id: string;
+    businessId: string;
+    userId: string;
+    branchName: string | null;
+    branchAddress: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  auth0UserId: string;
+}
+export interface BusinessProfile {
+  name: string;
+  website: string;
+  categoryIds: string[]
+  parentBusinessId: string | null;
+}
+
+export interface BusinessPreference {
+  reviewsPrivate: boolean;
+  dndModeEnabled: boolean;
+  dndModeDurationHours: number | null;
+}
