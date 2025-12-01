@@ -111,11 +111,12 @@ import { ref, computed } from "vue";
 
 const businessName = ref("Business Name");
 const reviewUrl = ref("https://clereview.com/review/business-id-123");
+const config = useRuntimeConfig();
 
 const copied = ref(false);
 
-const qrCodeUrl = computed(() =>
-  `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+const qrCodeUrl = computed(() => 
+  `${config.public.QR_API_BASE}?size=${config.public.QR_SIZE}&data=${encodeURIComponent(
     reviewUrl.value
   )}`
 );

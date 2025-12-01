@@ -1,27 +1,5 @@
 <template>
   <div class="flex h-screen overflow-hidden">
-    <!-- Success Alert Card -->
-    <div 
-      v-if="showSuccessAlert" 
-      class="fixed top-4 right-4 bg-white border-l-4 border-green-500 shadow-lg rounded-md p-4 max-w-sm z-50 animate-slide-in"
-    >
-      <div class="flex items-start">
-        <div class="flex-shrink-0">
-          <i class="pi pi-check-circle text-green-500 text-xl"></i>
-        </div>
-        <div class="ml-3">
-          <p class="text-sm font-medium text-gray-900">Login Successful!</p>
-          <p class="mt-1 text-sm text-gray-600">Redirecting to dashboard...</p>
-        </div>
-        <button 
-          @click="showSuccessAlert = false"
-          class="ml-auto flex-shrink-0 text-gray-400 hover:text-gray-600"
-        >
-          <i class="pi pi-times text-sm"></i>
-        </button>
-      </div>
-    </div>
-
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img
@@ -51,10 +29,11 @@
         </div>
 
         <!-- Loading State -->
-        <div v-if="isLoading" class="text-center text-gray-600">
-          <i class="pi pi-spin pi-spinner text-2xl"></i>
-          <p class="mt-2">Signing in...</p>
+        <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
+          <img :src="spinner" class="h-10 w-10 object-center" />
+          <p class="text-sm mt-2">Signing in...</p>
         </div>
+
 
         <!-- Error Message -->
         <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
@@ -85,7 +64,7 @@
               required
             />
             <i
-              :class="showPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              :class="showPassword ? 'pi pi-eye' : 'pi pi-slash'"
               class="absolute right-3 top-4 cursor-pointer text-gray-500"
               @click="togglePassword"
             ></i>
@@ -152,6 +131,7 @@
 import useUser  from '~/composables/useUser' 
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
+import spinner from '~/assets/svg/spinner.svg'
 
 const { loginUser } = useMethods();
 const store = useUser(); 
@@ -165,7 +145,6 @@ const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>("");
-const showSuccessAlert = ref<boolean>(false);
 
 const loginError = ref<string | null>(null);
 function togglePassword() {
@@ -181,16 +160,8 @@ const HandleLogin = async () => {
   if (res) {
     console.log(res);
     if (store.accessToken && store.role === 'end_user') {
-          // Show success alert
-          showSuccessAlert.value = true;
-          
           toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
-          
-          // Auto-hide alert and navigate after 2 seconds
-          setTimeout(() => {
-            showSuccessAlert.value = false;
-            navigateTo('../../business-dashboard');
-          }, 2000);
+          navigateTo('../../business-dashboard');
     } else {
         loginError.value = 'Login succeeded, but no token was stored.';
     }
@@ -201,20 +172,3 @@ const HandleLogin = async () => {
   isLoading.value = false;
 }
 </script>
-
-<style scoped>
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-in {
-  animation: slide-in 0.3s ease-out;
-}
-</style>

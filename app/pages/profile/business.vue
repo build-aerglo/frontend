@@ -13,6 +13,9 @@
           alt="Profile"
           class="w-[140px] h-[140px] md:w-[160px] md:h-[160px] rounded-[20px] object-cover"
         />
+        <div class="absolute -top-2 -right-2 flex flex-col gap-1">
+          <Badge type="standard" />
+        </div>
         <div v-if="isEditing">
           <div 
             class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center rounded-[20px] overlay-profile"
@@ -35,7 +38,6 @@
             <span class="text-contrast text-[150%] font-bold">
               {{ business.name || 'Business Name' }}
             </span>
-            <Badge type="standard" />
           </template>
           <template v-else>
             <input
@@ -67,10 +69,8 @@
           :is-editing="isEditing"
         />
 
-        <ProfileField
+        <ProfileLocation
           v-model="business.location"
-          icon="pi pi-map-marker"
-          placeholder="Location"
           :is-editing="isEditing"
         />
 
@@ -208,6 +208,7 @@ import Badge from '~/components/Badge.vue'
 import Star from '~/components/Stars.vue'
 import { useBusinessData } from '@/composables/useBusinessSampleData'
 import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
+import ProfileLocation from '~/components/Profile/ProfileLocation.vue'
 
 
 const {  
@@ -226,7 +227,11 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const business = reactive({
   name: '',
   sector: '',
-  location: '',
+  location: {
+    street: '',
+    city: '',
+    state: ''
+  },
   contact: '',
   websiteUrl: '',
   openingHours: {
