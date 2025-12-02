@@ -99,7 +99,7 @@
         </div>
 
         <!-- Socials -->
-        <div class="flex justify-center space-x-2 text-2xl">
+        <div class="flex justify-center space-x-4 text-2xl">
           <NuxtLink to="/"><i class="pi pi-facebook text-blue-800 cursor-pointer"></i></NuxtLink>
           <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
           <NuxtLink to="/"><i class="pi pi-github text-slate-600 cursor-pointer"></i></NuxtLink>
