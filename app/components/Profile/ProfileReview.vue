@@ -103,7 +103,7 @@
           </p>
           
           <!-- Helpful and Flag Actions -->
-          <div class="flex items-center gap-4 mt-2">
+          <div class="flex items-center gap-4 mt-1">
             <button 
               @click="toggleHelpful(review.id)"
               class="flex items-center gap-1.5 text-sm transition-colors hover:text-[#008253]"
