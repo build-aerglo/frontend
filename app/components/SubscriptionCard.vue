@@ -28,7 +28,7 @@
       <div class="mb-6">
         <div class="flex items-baseline">
           <span class="text-5xl font-extrabold text-gray-900">
-            ${{ tier.price }}
+            <img src="~/assets/svg/naira.svg" class="w-10 h-10 mx-0 inline-block" />{{ tier.price }}
           </span>
           <span class="ml-2 text-gray-600">
             /{{ tier.period }}

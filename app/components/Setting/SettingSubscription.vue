@@ -3,9 +3,9 @@
     <!-- Header Section -->
     <div class="pt-4 pb-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto text-center">
-        <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+        <h4 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">
           Choose Your Perfect Plan
-        </h2>
+        </h4>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
           Get started with our flexible pricing options. Upgrade, downgrade, or cancel anytime.
         </p>
@@ -115,7 +115,7 @@ interface SubscriptionTier {
 const subscriptionTiers: SubscriptionTier[] = [
   {
     name: 'Basic',
-    price: 9,
+    price: 10000,
     period: 'month',
     description: 'Perfect for individuals and small projects',
     features: [
@@ -130,7 +130,7 @@ const subscriptionTiers: SubscriptionTier[] = [
   },
   {
     name: 'Premium',
-    price: 29,
+    price: 50000,
     period: 'month',
     description: 'Best for growing businesses and teams',
     features: [
@@ -150,7 +150,7 @@ const subscriptionTiers: SubscriptionTier[] = [
   },
   {
     name: 'Enterprise',
-    price: 99,
+    price: 100000,
     period: 'month',
     description: 'For large organizations with advanced needs',
     features: [
