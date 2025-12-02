@@ -1,72 +1,93 @@
 <template>
 <NavBar />
-
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8 sticky top-[60px] z-30">
         <div class="flex flex-wrap gap-4">
           <!-- Category -->
-          <div class="flex-1 min-w-[180px]">
+          <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-            <select v-model="filters.category" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Categories</option>
-              <option value="restaurant">Restaurant</option>
-              <option value="hotel">Hotel</option>
-              <option value="retail">Retail</option>
-              <option value="service">Service</option>
-              <option value="cafe">Cafe</option>
-            </select>
+            <Dropdown 
+              v-model="filters.category" 
+              :options="categoryOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
-          <!-- Tags -->
-          <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Tags</label>
-            <select v-model="filters.tags" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Tags</option>
-              <option value="family-friendly">Family Friendly</option>
-              <option value="luxury">Luxury</option>
-              <option value="budget">Budget</option>
-              <option value="fast-service">Fast Service</option>
-              <option value="romantic">Romantic</option>
-              <option value="tech">Tech</option>
-            </select>
+          <!-- Badges -->
+          <div class="flex-1 min-w-[70px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+            <Dropdown 
+              v-model="filters.badges" 
+              :options="badgeOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Location -->
-          <div class="flex-1 min-w-[180px]">
+          <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
-            <select v-model="filters.location" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Locations</option>
-              <option value="lagos">Lagos</option>
-              <option value="kano">Kano</option>
-              <option value="ogun">Ogun</option>
-              <option value="jos">Jos</option>
-            </select>
+            <Dropdown 
+              v-model="filters.location" 
+              :options="locationOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Stars -->
-          <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Minimum Rating</label>
-            <select v-model="filters.stars" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">Any Rating</option>
-              <option value="4.5">4.5 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="2">2 Stars</option>
-            </select>
+          <div class="flex-1 min-w-[100px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Ratings</label>
+            <Dropdown 
+              v-model="filters.stars" 
+              :options="ratingOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Any"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
 
           <!-- Price -->
-          <div class="flex-1 min-w-[180px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Price Range</label>
-            <select v-model="filters.priceRange" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-              <option value="">All Prices</option>
-              <option value="budget">Budget</option>
-              <option value="moderate">Moderate</option>
-              <option value="expensive">Expensive</option>
-              <option value="luxury">Luxury</option>
-            </select>
+          <div class="flex-1 min-w-[70px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
+            <Dropdown 
+              v-model="filters.priceRange" 
+              :options="priceOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
           </div>
         </div>
 
@@ -79,7 +100,7 @@
               @click="filters[key] = ''"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
-              {{ value }}
+              {{ getFilterLabel(key, value) }}
               <i class="pi pi-times text-xs"></i>
             </button>
           </template>
@@ -92,62 +113,69 @@
       <!-- Results -->
       <div class="mb-4">
         <p class="text-sm text-slate-600">
-          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> results
+          Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> result(s)
         </p>
       </div>
 
       <!-- Main Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Business Cards -->
-        <div class="md:col-span-2 space-y-6">
+        <div class="md:col-span-2 space-y-4">
           <template v-for="business in filteredBusinesses" :key="business.id">
             <div
-            class="bg-white rounded-2xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
+            class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300"
             >
             <div class="grid grid-cols-[auto_1fr] gap-4">
                 <!-- Logo -->
-                <div class="flex flex-col gap-2">
-                <div class="relative w-24 h-24"> <!-- smaller size -->
-                    <div
+                <div class="flex flex-col gap-1">
+                <div class="relative w-24 h-24"> 
+                    <a @click.stop="focusedBusinessId = business.id"
                     class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden"
                     >
-                    <img :src="business.logo" :alt="business.name" class="w-full h-full object-cover" />
-                    </div>
+                    <img :src="business.logo" class="w-full h-full mb-0 cursor-pointer object-cover" />
+                </a>
 
                     <!-- Badges -->
                     <div class="absolute -top-2 -right-2 flex flex-col gap-1">
                     <span
-                        v-if="business.verified"
+                        v-if="business.trusted"
                         class="bg-[#deae29] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-check-circle text-xs"></i> Verified
+                        <i class="pi pi-check-circle text-xs"></i> Trusted
                     </span>
 
                     <span
-                        v-if="business.trusted"
+                        v-if="business.verified"
                         class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
                     >
-                        <i class="pi pi-shield text-xs"></i> Trusted
+                        <i class="pi pi-shield text-xs"></i> Verified
+                    </span>
+                    <span
+                        v-if="business.standard"
+                        class="bg-[#023dff] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
+                    >
+                        <i class="pi pi-thumbs-up text-xs"></i> Standard
                     </span>
                     </div>
                 </div>
 
                 <!-- Rating -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-2 border border-amber-200">
-                    <div class="flex items-center gap-1 justify-center mb-1">
+                <div class="text-center">
+                    <div class="flex items-center gap-1 mt-0 justify-center">
                     <span class="text-lg font-bold text-slate-900">{{ business.rating }}</span>
                     <div class="flex">
-                        <i
-                        v-for="star in 5"
-                        :key="star"
-                        class="pi text-xs"
-                        :class="star <= Math.floor(business.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                        ></i>
+                      <Star
+                        v-for="n in 5"
+                        :key="n"
+                        :value="business.rating - (n - 1)"
+                        :color-level="Math.ceil(business.rating)"
+                        class="w-4 h-4"
+                      />
                     </div>
                     </div>
                     <button
                     @click.stop="focusedBusinessId = business.id"
-                    class="text-xs text-[#008253] hover:text-[#006b44] font-semibold hover:underline transition-colors"
+                    class="text-xs text-[#008253] mt-0 hover:text-[#006b44] font-semibold hover:underline transition-colors"
                     >
                     {{ business.reviewCount }} reviews
                     </button>
@@ -155,37 +183,38 @@
                 </div>
 
                 <!-- Business Details -->
-                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200 relative">
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative">
                 <div class="flex justify-between items-start">
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
-
+                    <a @click.stop="focusedBusinessId = business.id">
+                      <h3 class="text-xl font-bold cursor-pointer text-slate-900 mb-3">{{ business.name }}</h3>
+                    </a>
                     <!-- Contact Icon -->
                     <div
                     class="relative group"
                     @mouseenter="showContact = business.id"
                     @mouseleave="hideContact()"
                     >
-                    <i class="pi pi-info-circle text-[#008253] text-xl cursor-pointer hover:text-slate-800"></i>
+                    <i class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
 
-                    <!-- Tooltip -->
                     <div
                         v-if="showContact === business.id"
-                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-700 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
+                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade"
                     >
-                        <p><strong><i class="pi pi-map-marker text-[#008253] mr-2 text-lg"></i>Address:</strong> {{ business.address }}</p>
-                        <p><strong><i class="pi pi-phone text-[#008253] mr-2 text-lg"></i>Phone:</strong> {{ business.phone }}</p>
+                     <p><strong>Tel:</strong> {{ business.phone }}</p>   
+                     <p><strong>Address:</strong> {{ business.address }}</p>
                     </div>
                     </div>
                 </div>
 
                 <div class="flex flex-wrap gap-1">
-                    <span
+                    <button
                     v-for="tag in business.tags"
                     :key="tag"
-                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300"
+                    @click.stop="filterByTag(tag)"
+                    class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-black hover:border-[#008253] transition-all cursor-pointer"
                     >
                     {{ tag }}
-                    </span>
+                    </button>
                 </div>
                 </div>
             </div>
@@ -196,18 +225,19 @@
             <div class="mb-6 pb-4 border-b border-slate-200">
               <div class="flex items-center gap-3 mb-2">
                 <div>
-                <img 
-                  :src="focusedBusiness.logo" 
-                  :alt="focusedBusiness.name"
-                  class="w-16 h-16 object-cover border-2 border-slate-200"
-                />
-                 <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i>
-                  </div> 
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                  class="w-16 h-16 rounded-full object-cover border-2 border-primary-light flex-shrink-0"
+                  /> 
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
+                </div> 
                 <div class="ml-2">
                   <h3 class="text-sm font-bold mb-2 text-slate-900">{{ focusedBusiness.name }}</h3>
                   <p class="text-xs mb-1 text-slate-600">Review Summary</p>
@@ -235,6 +265,9 @@
                   <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
                 </button>
               </div>
+              <div class="text-xs text-slate-600 font-medium">
+                {{ currentReviewIndex + 1 }} / {{ focusedBusinessReviews.length }}
+              </div>
             </div>
 
             <div class="space-y-4">
@@ -257,13 +290,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -291,7 +325,7 @@
 
 
         <!-- Right Section - Review Summary (1/3 width) -->
-        <div class="hidden md:block md:col-span-1">
+        <div v-if="filteredBusinesses.length > 0" class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div 
                 v-if="focusedBusiness" 
                 class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky md:top-8"
@@ -299,18 +333,20 @@
             <!--header-->
             <div class="mb-2 pb-2 border-b border-slate-200">
               <div class="flex items-center gap-4 mb-2">
-                <div>
-                    <img 
-                    :src="focusedBusiness.logo" 
-                    :alt="focusedBusiness.name"
-                    class="w-24 h-full object-cover border-2 border-slate-200"
-                    /> 
-                     <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="pi text-xs"
-                    :class="star <= Math.floor(focusedBusiness.rating) ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                  ></i> 
+                <div >
+                  <img 
+                    :src="focusedBusiness?.logo" 
+                  class="w-24 h-18 rounded-full mb-1 object-cover border-2 border-primary-light flex-shrink-0"
+                  /> 
+                <p class="text-sm font-bold ml-2 text-slate-900">
+                  {{ focusedBusiness?.rating }}
+                  <Star 
+                    :filled="true" 
+                    :colorLevel="Math.floor(focusedBusiness?.rating) || 0" 
+                    class="w-4 h-4 inline-block" 
+                  />
+                </p>
+
                 </div>
                 <div class="ml-2">
                   <h3 class="text-sm mb-2 font-bold text-slate-900">{{ focusedBusiness.name }}</h3>
@@ -322,7 +358,7 @@
               </div>
             </div>
 
-            <div class="items-left justify-between mb-2">
+            <div class="flex items-center justify-between mb-2">
               <div class="flex gap-2">
                 <button 
                   @click="prevReview"
@@ -338,6 +374,9 @@
                 >
                   <i class="pi pi-chevron-right text-slate-700 text-sm"></i>
                 </button>
+              </div>
+              <div class="text-xs text-slate-600 font-medium">
+                {{ currentReviewIndex + 1 }} / {{ focusedBusinessReviews.length }}
               </div>
             </div>
 
@@ -361,13 +400,14 @@
                   </div>
                   <div>
                     <p class="font-semibold text-slate-900">{{ currentReview.author }}</p>
-                    <div class="flex items-center gap-1">
-                      <i 
-                        v-for="star in 5" 
+                    <div class="flex items-center">
+                      <Star
+                        v-for="star in 5"
                         :key="star"
-                        class="pi text-xs"
-                        :class="star <= currentReview.rating ? 'pi-star-fill text-gold' : 'pi-star text-slate-300'"
-                      ></i>
+                        :filled="star <= currentReview.rating"
+                        :colorLevel="star <= currentReview.rating ?  currentReview.rating : 0"
+                        :class="'w-5 h-5'"
+                      />
                     </div>
                   </div>
                 </div>
@@ -382,10 +422,7 @@
             </div>
             </div>  
           <!-- No Business Selected -->
-          <div 
-                v-else 
-                class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8"
-            >
+          <div v-else class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center md:sticky md:top-8">
                 <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
                 <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
                 <p class="text-sm text-slate-600">Click on number of reviews to view highlights</p>
@@ -399,24 +436,66 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import Dropdown from 'primevue/dropdown'
+import Star from '~/components/Stars.vue' 
 
 const showContact = ref<number | null>(null);
 
 function hideContact() {
-  // hides the tooltip after 2 seconds
   setTimeout(() => {
     showContact.value = null;
   }, 2000);
 }
 
-
 const filters = ref({
   category: '',
-  tags: '',
+  badges: '',
   location: '',
   stars: '',
-  priceRange: ''
+  priceRange: '',
+  tag: ''
 })
+
+// Filter options
+const categoryOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Restaurant', value: 'restaurant' },
+  { label: 'Hotel', value: 'hotel' },
+  { label: 'Retail', value: 'retail' },
+  { label: 'Service', value: 'service' },
+  { label: 'Cafe', value: 'cafe' }
+])
+
+const badgeOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Standard', value: 'standard' },
+  { label: 'Verified', value: 'verified' },
+  { label: 'Trusted', value: 'trusted' }
+])
+
+const locationOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Lagos', value: 'lagos' },
+  { label: 'Kano', value: 'kano' },
+  { label: 'Ogun', value: 'ogun' },
+  { label: 'Jos', value: 'jos' }
+])
+
+const ratingOptions = ref([
+  { label: 'Any', value: '' },
+  { label: '4.5+ Stars', value: '4.5' },
+  { label: '4+ Stars', value: '4' },
+  { label: '3+ Stars', value: '3' },
+  { label: '2+ Stars', value: '2' }
+])
+
+const priceOptions = ref([
+  { label: 'All', value: '' },
+  { label: 'Budget', value: 'budget' },
+  { label: 'Moderate', value: 'moderate' },
+  { label: 'Expensive', value: 'expensive' },
+  { label: 'Luxury', value: 'luxury' }
+])
 
 const focusedBusinessId = ref<number | null>(null)
 const currentReviewIndex = ref(0)
@@ -425,15 +504,15 @@ import { useDummyReviews } from '~/composables/useDummyReviews'
 
 const { businesses } = useDummyReviews()
 
-
 const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
     return (
       (!filters.value.category || b.category === filters.value.category) &&
-      (!filters.value.tags || b.tags.includes(filters.value.tags)) &&
+      (!filters.value.badges || b.badges.includes(filters.value.badges)) &&
       (!filters.value.location || b.location === filters.value.location) &&
       (!filters.value.stars || b.rating >= parseFloat(filters.value.stars)) &&
-      (!filters.value.priceRange || b.priceRange === filters.value.priceRange)
+      (!filters.value.priceRange || b.priceRange === filters.value.priceRange) &&
+      (!filters.value.tag || b.tags.includes(filters.value.tag))
     )
   })
 })
@@ -467,18 +546,31 @@ function prevReview() {
 }
 
 function clearAllFilters() {
-  filters.value = { category: '', tags: '', location: '', stars: '', priceRange: '' }
+  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '', tag: '' }
+}
+
+function filterByTag(tag: string) {
+  filters.value.tag = tag
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function getFilterLabel(key: string, value: string): string {
+  const optionsMap: Record<string, any> = {
+    category: categoryOptions.value,
+    badges: badgeOptions.value,
+    location: locationOptions.value,
+    stars: ratingOptions.value,
+    priceRange: priceOptions.value
+  }
+  
+  const option = optionsMap[key]?.find((opt: any) => opt.value === value)
+  return option?.label || value
 }
 </script>
 
 <style scoped>
 .text-gold {
   color: #deae29;
-}
-select:focus {
-  outline: none !important;
-  border-color: transparent !important;
-  box-shadow: 0 0 0 2px #008253 !important;
 }
 
 @keyframes fadeInOut {
@@ -491,5 +583,44 @@ select:focus {
 .animate-fade {
   animation: fadeInOut 2.5s forwards;
 }
-</style>
 
+/* PrimeVue Dropdown custom styling */
+:deep(.p-dropdown) {
+  background: rgb(248 250 252);
+  border-color: rgb(203 213 225);
+  border-radius: 0.75rem;
+}
+
+:deep(.p-dropdown:not(.p-disabled):hover) {
+  border-color: #008253;
+}
+
+:deep(.p-dropdown:not(.p-disabled).p-focus) {
+  outline: none;
+  border-color: #008253;
+  box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2);
+}
+
+:deep(.p-dropdown-label) {
+  padding: 0.625rem 1rem;
+}
+
+:deep(.p-dropdown-panel) {
+  border-radius: 0.75rem;
+  border-color: rgb(203 213 225);
+}
+
+:deep(.p-dropdown-item) {
+  padding: 0.625rem 1rem;
+}
+
+:deep(.p-dropdown-item:not(.p-disabled):hover) {
+  background: rgb(248 250 252);
+  color: #008253;
+}
+
+:deep(.p-dropdown-item.p-highlight) {
+  background: #008253;
+  color: white;
+}
+</style>

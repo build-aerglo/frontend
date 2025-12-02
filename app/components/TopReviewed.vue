@@ -16,12 +16,17 @@
 
       <!-- Card Grid -->
       <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        <div
-            v-for="(card, index) in cards"
-            :key="index"
-            class="relative bg-gray-50 dark:bg-gray-800 p-2 rounded-xl transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
-            :class="[card.borderColor, card.shadowColor]"
-          >
+       <div
+              v-for="(card, index) in cards"
+              :key="index"
+              class="relative bg-gray-50 dark:bg-gray-800 p-2 rounded-xl transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
+              :class="[
+                card.borderColor,
+                card.shadowColor,
+                index > 4 ? 'hidden md:block' : 'block'
+              ]"
+            >
+
           <!-- Top-left icon -->
           <div
             class="absolute top-3 left-3 p-2 rounded-lg"
@@ -45,37 +50,19 @@
           </div>
 
           <!-- Business name -->
-          <h3 class="text-lg font-semibold text-center text-gray-800 dark:text-white">
+          <h3 class="text-lg font-bold text-center text-black dark:text-white">
             {{ card.name }}
           </h3>
 
-          <!-- SVG Ratings -->
-          <div class="flex items-center justify-center space-x-1">
-            <span v-for="n in 5" :key="n">
-              <svg
-                v-if="n <= card.rating"
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 text-gold"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
-                />
-              </svg>
-
-              <svg
-                v-else
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 text-gray-300 dark:text-gray-600"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 .587l3.668 7.431L24 9.753l-6 5.847L19.335 24 12 20.201 4.665 24 6 15.6 0 9.753l8.332-1.735z"
-                />
-              </svg>
-            </span>
+          <!-- Star Ratings -->
+          <div class="flex items-center justify-center">
+              <Stars
+                v-for="n in 5"
+                :key="n"
+                :filled="n <= card.rating"
+                :colorLevel="n <= card.rating ? card.rating : 0"
+                :class="'w-6 h-6'"
+              />
           </div>
 
           <div class="text-center text-[80%]">
@@ -113,7 +100,7 @@ const cards = [
   { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
   { icon: ShoppingCart, logo: img4, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
   { icon: Hotel, logo: img6, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 4, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: School, logo: img8, name: 'Ace College', rating: 5, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
 ]
 
 </script>

@@ -118,9 +118,10 @@ const showBusinessDropdown = ref(false)
 const userStore = useUserStore()
 
 onMounted(() => {
-  userStore.initTheme()
+  // userStore.initTheme()
   document.addEventListener('click', handleClickOutside)
 })
+
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)

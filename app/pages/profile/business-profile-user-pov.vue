@@ -22,15 +22,14 @@
               <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ businessData.name }}</h1>
                 <div class="flex items-center gap-2 mb-2">
-                  <div class="flex items-center">
-                    <i 
-                      v-for="n in 5" 
-                      :key="n" 
-                      :class="[
-                        'pi',
-                        n <= Math.floor(businessData.rating) ? 'pi-star-fill text-gold' : 'pi-star text-gray-300'
-                      ]"
-                    ></i>
+                  <div class="flex">
+                      <Star
+                        v-for="n in 5"
+                        :key="n"
+                        :value="businessData.rating - (n - 1)"
+                        :color-level="Math.ceil(businessData.rating)"
+                        class="w-6 h-6"
+                      />
                   </div>
                   <span class="text-lg font-semibold text-gray-700">{{ businessData.rating }}</span>
                   <span class="text-gray-500">({{ businessData.reviewCount }} reviews)</span>
@@ -207,12 +206,14 @@
                         <p class="font-semibold text-gray-900">{{ review.author }}</p>
                         <span class="text-sm text-gray-500">{{ review.date }}</span>
                       </div>
-                      <div class="flex items-center mb-2">
-                        <i 
-                          v-for="n in review.rating" 
-                          :key="n" 
-                          class="pi pi-star-fill text-gold text-sm"
-                        ></i>
+                      <div class="flex">
+                          <Stars
+                            v-for="n in 5"
+                            :key="n"
+                            :filled="n <= review.rating"
+                            :colorLevel="n <= review.rating ? review.rating : 0"
+                            class="w-6 h-6"
+                          />
                       </div>
                       <p class="text-gray-700 text-sm">{{ review.body }}</p>
                     </div>
@@ -232,16 +233,15 @@
                 <div class="flex items-center gap-4">
                   <div class="text-center">
                     <div class="text-4xl font-bold text-gray-900">{{ businessData.rating }}</div>
-                    <div class="flex items-center justify-center mt-1">
-                      <i 
-                        v-for="n in 5" 
-                        :key="n" 
-                        :class="[
-                          'pi text-sm',
-                          n <= Math.floor(businessData.rating) ? 'pi-star-fill text-gold' : 'pi-star text-gray-300'
-                        ]"
-                      ></i>
-                    </div>
+                    <div class="flex">
+                        <Star
+                          v-for="n in 5"
+                          :key="n"
+                          :value="businessData.rating - (n - 1)"
+                          :color-level="Math.ceil(businessData.rating)"
+                          class="w-4 h-4"
+                        />
+                      </div>
                     <p class="text-sm text-gray-600 mt-1">{{ businessData.reviewCount }} reviews</p>
                   </div>
                   <div class="flex-1 space-y-1">
@@ -275,12 +275,14 @@
                         <p class="font-semibold text-gray-900">{{ review.author }}</p>
                         <span class="text-sm text-gray-500">{{ review.date }}</span>
                       </div>
-                      <div class="flex items-center mb-2">
-                        <i 
-                          v-for="n in review.rating" 
-                          :key="n" 
-                          class="pi pi-star-fill text-gold"
-                        ></i>
+                    <div class="flex">
+                          <Stars
+                            v-for="n in 5"
+                            :key="n"
+                            :filled="n <= review.rating"
+                            :colorLevel="n <= review.rating ? review.rating : 0"
+                            class="w-6 h-6"
+                          />
                       </div>
                       <p class="text-gray-700 mb-3">{{ review.body }}</p>
                       <div class="flex items-center gap-4 text-sm">
@@ -408,8 +410,14 @@
                 <div class="flex-1">
                   <h5 class="font-semibold text-gray-900 text-sm">{{ business.name }}</h5>
                   <div class="flex items-center gap-1 text-xs">
-                    <i class="pi pi-star-fill text-gold"></i>
-                    <span class="text-gray-600">{{ business.rating }}</span>
+                    <div>
+                      <Star 
+                        :filled="true" 
+                        :colorLevel="(business.rating) || 0" 
+                        class="w-4 h-4 inline-block" 
+                      />
+                      {{ business.rating }} 
+                    </div>
                   </div>
                   <p class="text-xs text-gray-500">{{ business.category }}</p>
                 </div>
@@ -424,177 +432,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import Star from '~/components/Stars.vue'
+import { useBusinessData } from '@/composables/useBusinessSampleData'
 
-interface BusinessData {
-  name: string
-  image: string
-  rating: number
-  reviewCount: number
-  category: string
-  address: string
-  phone: string
-  website: string
-  isOpen: boolean
-  hours: string
-  description: string
-  highlights: string[]
-  services: string[]
-  businessHours: Record<string, string>
-  amenities: string[]
-}
+const { 
+  activeTab, 
+  businessData, 
+  businessReviews, 
+  businessPhotos, 
+  similarBusinesses 
+} = useBusinessData()
 
-interface Review {
-  id: number
-  author: string
-  date: string
-  rating: number
-  body: string
-  helpful: number
-}
-
-interface SimilarBusiness {
-  id: number
-  name: string
-  image: string
-  rating: number
-  category: string
-}
-
-const activeTab = ref<string>('overview')
-
-const businessData = ref<BusinessData>({
-  name: 'The Cozy Cafe',
-  image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=400&fit=crop',
-  rating: 4.5,
-  reviewCount: 127,
-  category: 'Coffee & Cafes',
-  address: '45 Marina Road, Victoria Island, Lagos',
-  phone: '+234 809-456-7890',
-  website: 'www.cozycafe.ng',
-  isOpen: true,
-  hours: 'Closes at 10:00 PM',
-  description: 'The Cozy Cafe is your perfect spot for premium coffee, delicious pastries, and a warm atmosphere. Whether you\'re looking for a quiet place to work, catch up with friends, or simply enjoy a great cup of coffee, we\'ve got you covered. Our skilled baristas craft each drink with care, using only the finest locally-sourced beans.',
-  highlights: [
-    'Free Wi-Fi',
-    'Outdoor Seating',
-    'Air Conditioned',
-    'Pet Friendly',
-    'Wheelchair Accessible',
-    'Parking Available'
-  ],
-  services: [
-    'Espresso',
-    'Cappuccino',
-    'Latte',
-    'Fresh Pastries',
-    'Sandwiches',
-    'Smoothies'
-  ],
-  businessHours: {
-    'Monday': '7:00 AM - 11:00 PM',
-    'Tuesday': '7:00 AM - 10:00 PM',
-    'Wednesday': '7:00 AM - 10:00 PM',
-    'Thursday': '7:00 AM - 10:00 PM',
-    'Friday': '7:00 AM - 11:00 PM',
-    'Saturday': '8:00 AM - 11:00 PM',
-    'Sunday': '9:00 AM - 9:00 PM'
-  },
-  amenities: [
-    'Free Wi-Fi',
-    'Outdoor Seating',
-    'Air Conditioning',
-    'Wheelchair Accessible',
-    'Pet Friendly',
-    'Parking',
-    'Takeout Available',
-    'Delivery'
-  ]
-})
-
-const businessReviews = ref<Review[]>([
-  {
-    id: 1,
-    author: 'Chioma Okafor',
-    date: '2025-11-08',
-    rating: 5,
-    body: 'Absolutely love this place! The coffee is exceptional and the staff are so friendly. Perfect spot for remote work with fast Wi-Fi.',
-    helpful: 12
-  },
-  {
-    id: 2,
-    author: 'Tunde Adebayo',
-    date: '2025-11-06',
-    rating: 4,
-    body: 'Great coffee and nice ambiance. Can get a bit crowded during lunch hours but overall a solid choice.',
-    helpful: 8
-  },
-  {
-    id: 3,
-    author: 'Sarah Manuel',
-    date: '2025-11-04',
-    rating: 5,
-    body: 'The best cafe in VI! Their cappuccino is to die for and the pastries are always fresh. Highly recommend!',
-    helpful: 15
-  },
-  {
-    id: 4,
-    author: 'Coker Yusuf',
-    date: '2025-11-02',
-    rating: 4,
-    body: 'Good coffee and pleasant atmosphere. Prices are a bit high but worth it for the quality.',
-    helpful: 5
-  },
-  {
-    id: 5,
-    author: 'Johnson Eze',
-    date: '2025-10-30',
-    rating: 5,
-    body: 'My favorite spot in Lagos! The outdoor seating is lovely and the service is always excellent.',
-    helpful: 10
-  }
-])
-
-const businessPhotos = ref<string[]>([
-  'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=400&h=300&fit=crop',
-])
-
-const similarBusinesses = ref<SimilarBusiness[]>([
-  {
-    id: 1,
-    name: 'Cafe Neo',
-    image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=100&h=100&fit=crop',
-    rating: 4.3,
-    category: 'Coffee & Cafes'
-  },
-  {
-    id: 2,
-    name: 'Mocha House',
-    image: 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=100&h=100&fit=crop',
-    rating: 4.6,
-    category: 'Coffee & Cafes'
-  },
-  {
-    id: 3,
-    name: 'Beatrice Bistro',
-    image: 'https://images.unsplash.com/photo-1493857671505-72967e2e2760?w=100&h=100&fit=crop',
-    rating: 4.2,
-    category: 'Coffee & Cafes'
-  }
-])
-
-const goBack = () => {
-  console.log('Go back')
-  // Navigate back to previous page
-}
-
-const handleShare = () => {
-  console.log('Share business')
-  // Implement share functionality
-}
 
 const handleImageError = (e: Event) => {
   const target = e.target as HTMLImageElement
