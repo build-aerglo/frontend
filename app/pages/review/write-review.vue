@@ -94,9 +94,9 @@
                     @mouseleave="hoverRating = 0"
                     @click="setRating(n - 1 + getFraction($event))"
                   />
-                <span class="ml-2 text-sm text-gray-800">
+                <span class="ml-2 text-sm text-gray-700">
                   {{ rating > 0 ? getRatingLabel(rating) : ' ' }}
-                  <span v-if="rating > 0" class="text-sm text-gray-600">({{ rating.toFixed(1) }})</span>
+                  <span v-if="rating > 0" class="text-sm text-gray-500">({{ rating.toFixed(1) }})</span>
                 </span>
               </div>
             </div>
