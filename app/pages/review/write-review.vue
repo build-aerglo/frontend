@@ -96,7 +96,7 @@
                   />
                 <span class="ml-2 text-sm text-gray-800">
                   {{ rating > 0 ? getRatingLabel(rating) : ' ' }}
-                  <span v-if="rating > 0" class="text-xs text-gray-500">({{ rating.toFixed(1) }})</span>
+                  <span v-if="rating > 0" class="text-sm text-gray-600">({{ rating.toFixed(1) }})</span>
                 </span>
               </div>
             </div>
@@ -205,10 +205,10 @@
                     @click="rateBusiness(index, n - 1 + getFraction($event))"
                 />
               </div>
-              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
+              <p v-if="business.rating > 0" class="text-xs text-gray-700 mt-0 mb-0">
                 {{ getRatingLabel(business.rating) }}
               </p>
-              <p v-if="business.rating > 0" class="text-[10px] text-gray-400 mt-0">
+              <p v-if="business.rating > 0" class="text-[12px] text-gray-500 mt-0">
                 ({{ business.rating.toFixed(1) }})
               </p>
             </div>
