@@ -6,10 +6,15 @@
         src="~/assets/images/e-user-bg.png"
         class="w-full h-full object-cover"
       />
+      <div class="absolute bottom-3 left-3">
+            <p class="text-blue-800 text-sm drop-shadow">
+              Earn points by writing reviews, making referrals and unlocking achievements across the platform... 
+            </p>
+      </div>
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center w-full md:w-1/3 px-4">
+    <div class="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 px-4">
       <div class="w-full max-w-sm space-y-5">
         <div class="flex justify-center mb-4">
           <img
@@ -20,13 +25,12 @@
         <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">
           Clear reviews, Confident decisions.
         </div>
-
         <!-- Loading State -->
-        <div v-if="isLoading" class="text-center text-gray-600">
-          <i class="pi pi-spin pi-spinner text-2xl"></i>
-          <p class="mt-2">Signing in...</p>
+        <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
+          <img :src="spinner" class="h-10 w-10 object-center" />
+          <p class="text-sm mt-2">Signing in...</p>
         </div>
-
+        
         <!-- Error Message -->
         <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
           {{ errorMessage }}
@@ -45,16 +49,19 @@
               class="block w-full rounded-md border border-gray-300 p-2 pr-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
+
           <div class="relative">
-            <InputTextCustom
+            <input
               v-model="userData.password"
               :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
-              :disabled="isLoading"
-              inputClass="border border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none rounded-md p-2 w-full text-sm transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+              class="w-full border border-gray-300 rounded-lg p-2 pr-10 
+                        focus:outline-none hover:border-gray-400 
+                        focus:border-primary focus:ring-2 focus:ring-primary"
+              required
             />
             <i
-              :class="showPassword ? 'pi pi-eye' : ''"
+              :class="showPassword ? 'pi pi-eye' : 'pi pi-slash'"
               class="absolute right-3 top-4 cursor-pointer text-gray-500"
               @click="togglePassword"
             ></i>
@@ -71,7 +78,7 @@
               />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/" class="text-blue-500 hover:text-gray-600 font-medium">
+            <NuxtLink to="/auth/end-user/forgot-password" class="text-blue-500 hover:text-gray-600 font-medium">
               Forgot Password?
             </NuxtLink>
           </div>
@@ -101,16 +108,16 @@
 
         <div class="flex justify-center space-x-4">
           <button @click="handleSocialLogin('facebook')" aria-label="Login with Facebook" :disabled="isLoading">
-            <i class="pi pi-facebook text-black text-xl hover:text-blue-600 transition"></i>
+            <i class="pi pi-facebook text-blue-800 text-2xl hover:text-blue-600 transition"></i>
           </button>
           <button @click="handleSocialLogin('twitter')" aria-label="Login with Twitter" :disabled="isLoading">
-            <i class="pi pi-twitter text-black text-xl hover:text-blue-400 transition"></i>
+            <i class="pi pi-twitter text-gray-800 text-2xl hover:text-blue-400 transition"></i>
           </button>
           <button @click="handleSocialLogin('github')" aria-label="Login with GitHub" :disabled="isLoading">
-            <i class="pi pi-github text-gray-800 text-xl hover:text-gray-600 transition"></i>
+            <i class="pi pi-github text-slate-600 text-2xl hover:text-gray-600 transition"></i>
           </button>
           <button @click="handleSocialLogin('google')" aria-label="Login with Google" :disabled="isLoading">
-            <i class="pi pi-google text-black text-xl hover:text-red-600 transition"></i>
+            <i class="pi pi-google text-amber-600 text-2xl hover:text-amber-800 transition"></i>
           </button>
         </div>
         <p class="text-center mt-4 text-sm text-gray-800">
@@ -127,6 +134,7 @@
 import useUser  from '~/composables/useUser' 
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
+import spinner from '~/assets/svg/spinner.svg'
 
 const { loginUser } = useMethods();
 const store = useUser(); 

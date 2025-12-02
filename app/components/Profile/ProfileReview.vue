@@ -101,6 +101,45 @@
           <p class="text-sm text-gray-700 leading-relaxed">
             {{ review.comment }}
           </p>
+          
+          <!-- Helpful and Flag Actions -->
+          <div class="flex items-center gap-4 mt-2">
+            <button 
+              @click="toggleHelpful(review.id)"
+              class="flex items-center gap-1.5 text-sm transition-colors hover:text-[#008253]"
+              :class="helpfulReviews.has(review.id) ? 'text-[#008253] font-medium' : 'text-gray-600'"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                class="w-5 h-5" 
+                :fill="helpfulReviews.has(review.id) ? 'currentColor' : 'none'"
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                stroke-width="1"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+              </svg>
+              <span>Helpful ({{ getHelpfulCount(review.id) }})</span>
+            </button>
+            
+            <button 
+              @click="toggleFlag(review.id)"
+              class="flex items-center gap-1.5 text-sm transition-colors hover:text-red-600"
+              :class="flaggedReviews.has(review.id) ? 'text-red-600 font-medium' : 'text-gray-600'"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                class="w-5 h-5" 
+                :fill="flaggedReviews.has(review.id) ? 'currentColor' : 'none'"
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                stroke-width="1"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+              <span>{{ flaggedReviews.has(review.id) ? 'Flagged' : 'Flag' }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -124,6 +163,7 @@ interface Review {
   rating: number;
   date: string;
   comment: string;
+  helpfulCount?: number;
 }
 
 // Props with limit (optional)
@@ -131,12 +171,12 @@ const props = withDefaults(defineProps<{ limit?: number }>(), { limit: 0 })
 
 // Static reviews
 const reviews: Review[] = [
-  { id: 1, name: 'Emily R.', rating: 5, date: '2025-11-08', comment: 'The best coffee in town! Fast service and the pastries are always fresh.' },
-  { id: 2, name: 'Alex S.', rating: 4, date: '2025-11-06', comment: 'Great atmosphere for working. Strong Wi-Fi.' },
-  { id: 3, name: 'Chloe G.', rating: 5, date: '2025-11-04', comment: 'Absolutely love the outdoor seating area. Perfect spot for a sunny afternoon.' },
-  { id: 4, name: 'Ben K.', rating: 3, date: '2025-11-02', comment: 'Coffee was good, but service was a bit slow today.' },
-  { id: 5, name: 'Mia D.', rating: 5, date: '2025-10-30', comment: 'Best place to relax and enjoy a book.' },
-  { id: 6, name: 'Emma D.', rating: 2, date: '2025-10-30', comment: 'Worse place ever!' },
+  { id: 1, name: 'Emily R.', rating: 5, date: '2025-11-08', comment: 'The best coffee in town! Fast service and the pastries are always fresh.', helpfulCount: 12 },
+  { id: 2, name: 'Alex S.', rating: 4, date: '2025-11-06', comment: 'Great atmosphere for working. Strong Wi-Fi.', helpfulCount: 8 },
+  { id: 3, name: 'Chloe G.', rating: 5, date: '2025-11-04', comment: 'Absolutely love the outdoor seating area. Perfect spot for a sunny afternoon.', helpfulCount: 15 },
+  { id: 4, name: 'Ben K.', rating: 3, date: '2025-11-02', comment: 'Coffee was good, but service was a bit slow today.', helpfulCount: 3 },
+  { id: 5, name: 'Mia D.', rating: 5, date: '2025-10-30', comment: 'Best place to relax and enjoy a book.', helpfulCount: 20 },
+  { id: 6, name: 'Emma D.', rating: 2, date: '2025-10-30', comment: 'Worse place ever!', helpfulCount: 1 },
 ]
 
 // Filter and sort state
@@ -190,6 +230,12 @@ const replies = reactive<Record<number, string>>({})
 // Reactive set to hold flagged review ids
 const flaggedReviews = ref(new Set<number>())
 
+// Reactive set to hold helpful review ids (reviews the user found helpful)
+const helpfulReviews = ref(new Set<number>())
+
+// Reactive object to track additional helpful counts per review
+const additionalHelpfulCounts = reactive<Record<number, number>>({})
+
 // Toggles reply form visibility per review
 function toggleReplyForm(id: number) {
   replyFormVisible[id] = !replyFormVisible[id]
@@ -231,6 +277,25 @@ function toggleFlag(id: number) {
   } else {
     flaggedReviews.value.add(id)
   }
+}
+
+// Toggle helpful state for a review
+function toggleHelpful(id: number) {
+  if (helpfulReviews.value.has(id)) {
+    helpfulReviews.value.delete(id)
+    additionalHelpfulCounts[id] = (additionalHelpfulCounts[id] || 0) - 1
+  } else {
+    helpfulReviews.value.add(id)
+    additionalHelpfulCounts[id] = (additionalHelpfulCounts[id] || 0) + 1
+  }
+}
+
+// Get the total helpful count for a review
+function getHelpfulCount(id: number): number {
+  const review = reviews.find(r => r.id === id)
+  const baseCount = review?.helpfulCount || 0
+  const additionalCount = additionalHelpfulCounts[id] || 0
+  return baseCount + additionalCount
 }
 
 // Route for tab detection
