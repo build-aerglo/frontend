@@ -70,8 +70,14 @@
                 </button>
               </div>
             </div>
-          <div class="mt-5 mb-2">
-            <button class="btn btn-primary d-grid w-100" type="submit">Sign Up</button>
+          <div class="mb-2">
+            <button 
+              class="btn btn-primary d-grid w-100" 
+              type="submit"
+              :disabled="isLoading"
+            >
+              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+            </button>
           </div>
         </form>
 
@@ -93,7 +99,7 @@
         </div>
 
         <!-- Socials -->
-        <div class="flex justify-center space-x-4 text-3xl">
+        <div class="flex justify-center space-x-2 text-2xl">
           <NuxtLink to="/"><i class="pi pi-facebook text-blue-800 cursor-pointer"></i></NuxtLink>
           <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
           <NuxtLink to="/"><i class="pi pi-github text-slate-600 cursor-pointer"></i></NuxtLink>
