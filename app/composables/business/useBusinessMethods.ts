@@ -32,7 +32,7 @@ export default function () {
   
   const saveBusinessPreferences = async (businessId: string, data: BusinessPreference) => {
   try {
-    const res = await businessApi.patch(`api/Business/${businessId}/settings`, data);
+    const res = await businessApi.patch(`api/business/${businessId}/settings`, data);
     console.log("Preferences saved:", res.data);
 
     return res.data;

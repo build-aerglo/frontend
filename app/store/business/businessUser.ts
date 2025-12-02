@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
-
+import { jwtDecode } from 'jwt-decode';
 export interface UserState {
   accessToken: string | null;
   idToken: string | null;
@@ -18,7 +18,29 @@ export const useBusinessUserStore = defineStore("businessUser", {
     expires_in: new Date(),
     userData: null,
   }),
-
+  getters: {
+    /**
+     * 🔑 Decodes the idToken to extract the unique User ID (the 'sub' claim).
+     * Returns the userId string or null if the token is missing or invalid.
+     */
+    userId: (state): string | null => {
+        if (!state.idToken) {
+            return null;
+        }
+        try {
+            const decodedToken = jwtDecode(state.idToken);
+            // The unique User ID is stored in the 'sub' (subject) claim
+            return (decodedToken as any).sub || null; 
+        } catch (error) {
+            console.error("Error decoding id_token:", error);
+            // Return null if decoding fails (e.g., malformed token)
+            return null;
+        }
+    },
+    
+    // NOTE: If you prefer to use getUser() as a getter instead of an action,
+    // you would move its logic here. For now, it remains an action.
+  },
   actions: {
     getUser() {
       return {

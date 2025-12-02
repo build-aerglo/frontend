@@ -46,7 +46,7 @@ export default function () {
         if (role === 'business_user') {
           userStore.clearUser();
           store.setLoginData(loginPayload)
-          store.getUser()
+  
         } else if (role === 'end_user') {
           store.clearUser();         
           userStore.setLoginData(loginPayload)
