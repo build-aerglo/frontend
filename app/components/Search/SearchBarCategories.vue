@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex justify-center ">
     <div
-      class="relative flex items-center w-full sm:max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-4 sm:px-4 py-6 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
+      class="relative flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg bg-white dark:bg-gray-900 shadow-md border border-gray-700 dark:border-gray-700 px-4 sm:px-4 py-6 focus-within:ring-2 focus-within:ring-primary transition-all duration-300"
     >
       <!-- Search Icon -->
       <i class="pi pi-search text-gray-400 mr-3 text-md"></i>
@@ -47,18 +47,13 @@ const showSuggestions = ref(false)
 
 // predefined search suggestions
 const suggestions = ref([
-  'Restuarants',
-  'Fashion',
-  'Hotels',
-  'Business & Finance',
-  'Media',
-  'Medical',
-  'Events',
-  'Academic',
-  'Travel',
-  'Animals & Pets',
-  'Home Services',
-  'Electronics',
+  'Photographers',
+     'Videographers',
+       'Photo Studios',
+      'Photo Printing',
+      'Spas & Massage',
+      'Furniture stores',
+      'Appliances',
 ])
 
 // filtered suggestions based on input
