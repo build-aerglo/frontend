@@ -18,11 +18,29 @@
   </div>
 </template>
 
-<script setup>
-const tabItems = [
+<script setup lang="ts">
+// Define valid tab keys
+type TabKey = 'security' | 'response' | 'subscription'
+
+interface TabItem {
+  key: TabKey
+  name: string
+  icon: string
+}
+
+const tabItems: TabItem[] = [
   { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
-  { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-subscribe' },
+  { key: 'response', name: 'Auto Response', icon: 'pi pi-reply' },
+  { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-credit-card' },
 ]
+
 const route = useRoute()
-const currentTabKey = computed(() => route.query.tab?.toLowerCase() || tabItems[0].key)
+
+const currentTabKey = computed<TabKey>(() => {
+  const tab = route.query.tab as string | undefined
+  const key = tab?.toLowerCase() as TabKey
+  return (key && (key === 'security' || key === 'response' || key === 'subscription')) 
+    ? key 
+    : 'security'
+})
 </script>

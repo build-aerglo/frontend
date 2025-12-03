@@ -44,15 +44,17 @@ const isEditing = ref(false)
 const toggleEdit = () => (isEditing.value = !isEditing.value)
 
 const SettingSecurity = defineAsyncComponent(() => import('~/components/Setting/SettingSecurity.vue'));
+const SettingResponse = defineAsyncComponent(() => import('~/components/Setting/SettingResponse.vue'));
 const SettingSubscription = defineAsyncComponent(() => import('~/components/Setting/SettingSubscription.vue'));
-
 const componentMap = {
   security: SettingSecurity,
+  response: SettingResponse,
   subscription: SettingSubscription,
 };
 const tabItems = [
   { key: 'security', name: 'Account & Security', icon: 'pi pi-lock' },
-  { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-subscribe' },
+  { key: 'response', name: 'Auto Response', icon: 'pi pi-reply' },
+  { key: 'subscription', name: 'Subscriptions', icon: 'pi pi-credit-card' },
 ]
 
 const route = useRoute();

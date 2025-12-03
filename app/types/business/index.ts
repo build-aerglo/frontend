@@ -30,6 +30,18 @@ export interface BusinessUserResponse {
 export interface BusinessProfile {
   name: string;
   website: string;
+  sector: string;
+  contact: string;
+   location: {
+    street:string;
+    city:string;
+    state:string;
+  };
+   openingHours: {
+    dayKey: 'mon-sat', 
+    startTime: '07:00',
+    endTime: '23:00',
+  }; 
   categoryIds: string[]
   parentBusinessId: string | null;
 }

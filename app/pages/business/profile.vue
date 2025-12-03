@@ -322,6 +322,18 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const business = ref<BusinessProfile>({
   name: '',
   website: '',
+  sector: '',
+  contact: '',
+  location: {
+    street: '',
+    city: '',
+    state: ''
+  },
+  openingHours: {
+    dayKey: 'mon-sat',
+    startTime: '07:00',
+    endTime: '23:00'
+  },
   categoryIds: [],
   parentBusinessId: null
 });
