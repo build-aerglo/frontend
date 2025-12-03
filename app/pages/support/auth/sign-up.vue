@@ -128,7 +128,7 @@
         </form>
         <p class="text-center text-sm text-gray-800 mb-0">
           <span>Already have an account? </span>
-          <NuxtLink to="/auth/support-user/sign-in" class="text-blue-500 hover:underline font-medium">
+          <NuxtLink to="/support/auth/sign-in" class="text-blue-500 hover:underline font-medium">
             Sign in
           </NuxtLink>
         </p>

@@ -12,28 +12,6 @@
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
           <!-- For Business Dropdown -->
-          <li class="relative">
-            <button @click="toggleBusinessDropdown" class="flex items-center hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 
-             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
-             hover:after:w-full">
-              For Business
-              <i class="pi pi-chevron-down ml-1 text-sm"></i>
-            </button>
-
-            <div v-if="showBusinessDropdown"
-              class="absolute mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg py-2 w-56 z-50">
-              <NuxtLink to="/"
-                class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <i class="pi pi-briefcase mr-2 text-primary"></i>
-                Add a Business
-              </NuxtLink>
-              <NuxtLink to="/"
-                class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <i class="pi pi-sign-in mr-2 text-primary"></i>
-                Log in to Your Business Account
-              </NuxtLink>
-            </div>
-          </li>
           <li>
             <NuxtLink to="/review/write-review">
               <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition">
@@ -71,7 +49,7 @@
              hover:after:w-full">Write a Review</NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+          <NuxtLink to="/end-user/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full">Categories</NuxtLink>
         </li>

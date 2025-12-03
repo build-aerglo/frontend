@@ -35,7 +35,7 @@
             </div>
           </li>
           <li>
-            <NuxtLink to="/auth/end-user/sign-in">
+            <NuxtLink to="/end-user/auth/sign-in">
               <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition">
                 Write a review
               </button>
@@ -66,12 +66,12 @@
       <ul
         class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
         <li>
-          <NuxtLink to="/auth/end-user/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+          <NuxtLink to="/end-user/auth/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full">Write a Review</NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+          <NuxtLink to="/end-user/landing/categories" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full">Categories</NuxtLink>
         </li>
@@ -99,7 +99,7 @@
         </li>
 
         <li>
-          <NuxtLink to="/auth/end-user/sign-in"
+          <NuxtLink to="/end-user/auth/sign-in"
             class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center">
             Login/Register
           </NuxtLink>

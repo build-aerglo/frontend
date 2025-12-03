@@ -32,7 +32,7 @@
           </button>
 
           <div class="text-center mt-6">
-            <NuxtLink to="/auth/end-user/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
+            <NuxtLink to="/end-user/auth/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
               <i class="pi pi-arrow-left mr-2"></i>
               Back to Sign In
             </NuxtLink>
@@ -81,7 +81,7 @@
           </form>
 
           <div class="text-center mt-6">
-            <NuxtLink to="/auth/end-user/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
+            <NuxtLink to="/end-user/auth/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
               <i class="pi pi-arrow-left mr-2"></i>
               Back to Sign In
             </NuxtLink>
