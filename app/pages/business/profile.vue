@@ -1,26 +1,27 @@
 <template>
   <div>
     <div
-      :class="[isEditing? 'bg-white w-full h-[800px] md:h-[400px] border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative mb-8': 'bg-white w-full h-[650px] md:h-[400px] border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative mb-8' ] "
+      class="bg-white w-full border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative"
     >
       <div 
-        class="relative image-slot-profile"
+        class="relative image-slot-profile flex-shrink-0 w-[140px] h-[140px] md:w-[160px] md:h-[160px]"
         :class="{ 'cursor-pointer': isEditing }"
         @click="isEditing && triggerFileInput()"
       >
         <img
           :src="previewUrl || '/images/profile/profile-picture.jpg'"
           alt="Profile"
-          class="w-full h-[250px] md:w-[260px] rounded-[20px] object-cover"
+          class="w-[140px] h-[140px] md:w-[160px] md:h-[160px] rounded-[20px] object-cover"
         />
-
+        <div class="absolute -top-2 -right-2 flex flex-col gap-1">
+          <Badge type="standard" />
+        </div>
         <div v-if="isEditing">
           <div 
-            class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center rounded-[20px] h-[250px] overlay-profile"
+            class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center rounded-[20px] overlay-profile"
           >
-            <i class="pi pi-camera text-white text-3xl"></i>
+            <i class="pi pi-camera text-white text-xl"></i>
           </div>
-
           <input
             ref="fileInput"
             type="file"
@@ -31,13 +32,12 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-[10px] items-start justify-start">
+      <div class="flex flex-col gap-[10px] items-start justify-start flex-1">
         <div class="flex gap-2 items-center">
           <template v-if="!isEditing">
             <span class="text-contrast text-[150%] font-bold">
               {{ business.name || 'Business Name' }}
             </span>
-            <ProfileVerified :isVerified="false" size="sm" />
           </template>
           <template v-else>
             <input
@@ -48,19 +48,18 @@
             />
           </template>
         </div>
-
-        <div class="flex gap-1">
-          <Rating
-            v-model="ratingValue"
-            :stars="5"
-            style="--p-rating-icon-size: 16px;"
-            :ptOptions="{ mergeProps: true }"
-            :pt="{
-              onIcon: { class: '!text-gold' },
-              offIcon: { class: '!text-gray-500' }
-            }"
-          />
-          <span class="text-[100%] text-gray-500">(120 Reviews)</span>
+        <div class="flex items-center gap-2 mb-2">
+            <div class="flex">
+                 <Star
+                    v-for="n in 5"
+                    :key="n"
+                    :value="businessData.rating - (n - 1)"
+                    :color-level="Math.ceil(businessData.rating)"
+                    class="w-6 h-6"
+                    />
+            </div>
+            <span class="text-lg font-semibold text-gray-700">{{ businessData.rating }}</span>
+            <span class="text-gray-500">({{ businessData.reviewCount }} reviews)</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -89,30 +88,21 @@
             </div>
         </div> 
 
-        <ProfileField
-          v-model="uiData.tag"
-          icon="pi pi-tag"
-          placeholder="Tags"
-          :is-editing="isEditing"
-        />
-
-        <ProfileField
-          v-model="uiData.location"
-          icon="pi pi-map-marker"
-          placeholder="Location"
+        <ProfileLocation
+          v-model="business.location"
           :is-editing="isEditing"
         />
 
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
           <ProfileField
-            v-model="uiData.contact"
+            v-model="business.contact"
             icon="pi pi-phone"
             placeholder="Contact"
             :is-editing="isEditing"
           />
           <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
           <ProfileField
-            v-model="uiData.contact"
+            v-model="business.contact"
             icon="pi pi-whatsapp"
             placeholder="WhatsApp"
             :is-editing="isEditing"
@@ -134,96 +124,69 @@
             :is-editing="isEditing"
           />
         </div>
-
-        <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2']">
-          <ProfileField
-              v-if="!isEditing"
-              v-model="uiData.openDays"
-              icon="pi pi-clock"
-              placeholder="Open Now - Closes at 10:00 PM"
-              :is-editing="isEditing"
-          />
-          
-          <template v-else>
-              <ProfileField
-                  v-model="uiData.openDaysDetails" 
-                  icon="pi pi-calendar"
-                  placeholder="Select Opening Days (e.g., Mon-Fri)"
-                  :is-editing="true"
-                  input-class="cursor-pointer" 
-                  @click="triggerDayPicker" 
-              />
-              
-              <ProfileField
-                  v-model="uiData.closeTime"
-                  icon="pi pi-clock"
-                  placeholder="Closing Time (e.g., 10:00 PM)"
-                  :is-editing="true"
-                  input-class="cursor-pointer" 
-                  @click="triggerTimePicker"
-              />
-          </template>
-        </div>
+        <OpeningHoursPicker
+          v-model="business.openingHours"
+          :is-editing="isEditing"
+        />
       </div>
 
-      <div
-        :class="[isEditing? 'absolute top-[33%] right-0 md:top-0 md:right-[10px] transform translate-y-1/2 px-5': 'absolute top-[41%] right-0 md:top-0 md:right-[10px] transform translate-y-1/2 px-5']"
-      >
+      <div class="absolute top-5 right-5">
         <ButtonCustom
           :label="isEditing ? 'Save Changes' : 'Edit Profile'"
           :primary="true"
           size="lg"
-          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto hidden md:block"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  
+          input-class="text-[15px] w-auto hidden md:block"
           @click="toggleEdit"
         />
         <ButtonCustom
           :primary="true"
           size="lg"
-          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  input-class="text-[15px] w-auto md:hidden"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  
+          input-class="text-[15px] w-auto md:hidden"
           @click="toggleEdit"
         />
       </div>
-  
-      <div
-        class="absolute bottom-[5%] md:bottom-[8%] left-[2px] transform translate-y-1/2 border-t-[1px] border-gray-200 w-full"
-      >
-        <div class="relative flex items-center py-4 px-4 md:px-0 md:justify-start">
-          
-          <div 
-            class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
-            id="scroll-left-btn"
-            @click="scrollLeft"
-          >
-            <i class="pi pi-chevron-left text-lg"></i>
-          </div>
-          
-          <ul 
-            class="nav nav-pills flex flex-nowrap gap-2 overflow-x-scroll hide-scrollbar scroll-smooth w-full px-4 md:px-4"
-            id="tabs-scroll-container"
-            ref="tabsContainer"
-          >
-            <li v-for="tab in tabItems" :key="tab.key" class="nav-item flex-shrink-0">
-              <NuxtLink
-                :to="{ path: $route.path, query: { tab: tab.key } }"
-                class="nav-link"
-                :class="{ active: currentTabKey === tab.key }"
-              >
-                {{ tab.name }}
-              </NuxtLink>
-            </li>
-          </ul>
+    </div>
 
-          <div 
-            class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
-            id="scroll-right-btn"
-            @click="scrollRight"
-          >
-            <i class="pi pi-chevron-right text-lg"></i>
-          </div>
-
+    <!-- Tabs Navigation -->
+    <div class=" sticky top-10 z-50 pt-3 bg-white w-full border-t mb-4 border-gray-200 shadow-sm">
+      <div class="relative flex items-center py-4 px-4 md:px-0 md:justify-start">
+        
+        <div 
+          class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
+          id="scroll-left-btn"
+          @click="scrollLeft"
+        >
+          <i class="pi pi-chevron-left text-lg"></i>
         </div>
+        
+        <ul 
+          class="nav nav-pills flex flex-nowrap gap-2 overflow-x-scroll hide-scrollbar scroll-smooth w-full px-4 md:px-4"
+          id="tabs-scroll-container"
+          ref="tabsContainer"
+        >
+          <li v-for="tab in tabItems" :key="tab.key" class="nav-item flex-shrink-0">
+            <NuxtLink
+              :to="{ path: $route.path, query: { tab: tab.key } }"
+              class="nav-link"
+              :class="{ active: currentTabKey === tab.key }"
+            >
+              {{ tab.name }}
+            </NuxtLink>
+          </li>
+        </ul>
+
+        <div 
+          class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
+          id="scroll-right-btn"
+          @click="scrollRight"
+        >
+          <i class="pi pi-chevron-right text-lg"></i>
+        </div>
+
       </div>
-      </div>
+    </div>
     
     <div class="md:grid grid-cols-1 md:grid-cols-3 gap-6">
       
@@ -232,42 +195,25 @@
           <component :is="currentComponent" />
         </KeepAlive>
       </div>
-      
-      <div class="col-span-1 mb-6 md:mb-0">
-        <div class="card p-6 bg-white rounded-lg shadow sticky top-1">
-          <h1 class="text-xl font-bold text-contrast mb-4">Quick Stats</h1>
-          
-          <ul class="flex flex-col gap-4 text-gray-700">
-            
-            <li class="flex justify-between items-center pb-2 border-b border-gray-100">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-star-fill text-yellow-500"></i>
-                <span class="font-semibold text-base">Total Reviews</span>
-              </div>
-              <span class="text-xl font-bold text-contrast">1,250</span>
-            </li>
-            
-            <li class="flex justify-between items-center pb-2 border-b border-gray-100">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-clock !text-primary"></i>
-                <span class="font-semibold text-base">Avg. Response Time</span>
-              </div>
-              <span class="text-lg font-bold text-contrast">12 hours</span>
-            </li>
-            
-            <li class="flex justify-between items-center">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-eye !text-primary"></i>
-                <span class="font-semibold text-base">Profile Hits (30 Days)</span>
-              </div>
-              <span class="text-xl font-bold text-contrast">3,450</span>
-            </li>
-            
-          </ul>
-          
-        </div>
-      </div>
 
+      <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Quick Actions (Desktop) -->
+          <div class="hidden md:block bg-white rounded-xl shadow-sm p-6 sticky top-24">
+            <h4 class="font-bold text-gray-900 text-center mt-2 mb-4">Quick Stats</h4>
+            <div class="space-y-3">
+              <button class="w-full px-2 py-3 text-sm  bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Total Reviews 1K
+              </button>
+              <button class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Average Response Time: 12hours
+              </button>
+              <button class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Profile clicks(30 days) 3450
+              </button>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
@@ -276,7 +222,17 @@
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
 import type { BusinessProfile } from "~/types/business";
 import { useBusinessProfileStore } from "~/store/business/businessProfile";
-import { useRoute } from 'vue-router'; 
+import { useRoute } from 'vue-router';  
+import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+import Badge from '~/components/Badge.vue'
+import Star from '~/components/Stars.vue'
+import { useBusinessData } from '@/composables/useBusinessSampleData'
+import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
+import ProfileLocation from '~/components/Profile/ProfileLocation.vue'
+
+const {  
+  businessData, 
+} = useBusinessData()
 
 definePageMeta({ layout: 'business' })
 const store = useBusinessProfileStore();
@@ -340,11 +296,17 @@ const business = ref<BusinessProfile>({
 
 const uiData = reactive ({
   tag: '',
-  location: '',
+  location: {
+    street: '',
+    city: '',
+    state: ''
+  },
   contact: '',
-  openDays: 'Open Now - Closes at 10:00 PM',
-  openDaysDetails: 'Mon, Tue, Wed, Thu, Fri',
-  closeTime: '22:00',
+   openingHours: {
+    dayKey: 'mon-sat', 
+    startTime: '07:00',
+    endTime: '23:00',
+  }, 
 })
 // Image handler
 const handleFileChange = (e: Event) => {
@@ -413,11 +375,9 @@ const scrollRight = () => {
 .overlay-profile {
     opacity: 0;
 }
-
 .image-slot-profile:hover .overlay-profile {
     opacity: 1;
 }
-
 .hide-scrollbar {
     -ms-overflow-style: none; 
     scrollbar-width: none;  
@@ -425,7 +385,6 @@ const scrollRight = () => {
 .hide-scrollbar::-webkit-scrollbar {
     display: none; 
 }
-
 
 @media (max-width: 767px) {
     #scroll-left-btn,
@@ -442,8 +401,5 @@ const scrollRight = () => {
         padding-left: 8px; 
         padding-right: 8px; 
     }
-
 }
-
-
 </style>

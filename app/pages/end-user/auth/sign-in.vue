@@ -78,7 +78,7 @@
               />
               <span>Remember Me</span>
             </label>
-            <NuxtLink to="/auth/end-user/forgot-password" class="text-blue-500 hover:text-gray-600 font-medium">
+            <NuxtLink to="/end-user/auth/forgot-password" class="text-blue-500 hover:text-gray-600 font-medium">
               Forgot Password?
             </NuxtLink>
           </div>
@@ -95,7 +95,7 @@
 
         <p class="text-center text-sm text-gray-800">
           <span>Don't have an account? </span>
-          <NuxtLink to="/auth/end-user/sign-up" class="text-blue-500 hover:underline font-medium">
+          <NuxtLink to="/end-user/auth/sign-up" class="text-blue-500 hover:underline font-medium">
             Sign up
           </NuxtLink>
         </p>

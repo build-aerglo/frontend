@@ -86,7 +86,7 @@
         </div>
         <p class="text-center text-sm text-gray-800 mb-0">
           <span>Already have an account? </span>
-          <NuxtLink to="/auth/end-user/sign-in" class="text-blue-500 hover:underline font-medium">
+          <NuxtLink to="/end-user/auth/sign-in" class="text-blue-500 hover:underline font-medium">
             Sign in
           </NuxtLink>
         </p>
@@ -118,7 +118,6 @@ import spinner from '~/assets/svg/spinner.svg'
 
 const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
-const agree = ref(false)
 const form = ref<EndUser>({ 
   email: "",
   phone: "",
