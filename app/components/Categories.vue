@@ -1,10 +1,17 @@
 <template>
-  <div class="w-full max-w-4xl mx-auto p-6">
-    <div class="grid gap-3">
+  <div class="w-full max-w-7xl mx-auto p-6">
+    <!-- Search Component -->
+    <CategorySearch 
+      v-model="searchQuery"
+      @clear="searchQuery = ''"
+    />
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 items-start">
       <div
-        v-for="category in categories"
+        v-for="category in filteredCategories"
         :key="category.id"
-        class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+        class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col"
       >
         <!-- Category Header -->
         <button
@@ -13,29 +20,31 @@
           :class="{ 'bg-gray-50': expandedCategories.has(category.id) }"
         >
           <div class="flex items-center gap-3">
-            <component :is="category.icon" :class="category.color" class="w-6 h-6" />
-            <span class="font-semibold text-gray-800 text-lg">{{ category.name }}</span>
-            <span class="text-sm text-gray-500">
-              ({{ category.subcategories.length }})
-            </span>
+            <component :is="category.icon" :class="category.color" class="w-6 h-6 flex-shrink-0" />
+            <div class="text-left">
+              <span class="font-semibold text-gray-800 text-base block">{{ category.name }}</span>
+              <span class="text-xs text-gray-500">
+                {{ category.subcategories.length }} subcategories
+              </span>
+            </div>
           </div>
           <component
             :is="expandedCategories.has(category.id) ? ChevronDown : ChevronRight"
-            class="w-5 h-5 text-gray-400"
+            class="w-5 h-5 text-gray-400 flex-shrink-0"
           />
         </button>
 
         <!-- Subcategories -->
         <div
           v-show="expandedCategories.has(category.id)"
-          class="border-t border-gray-100 bg-gray-50"
+          class="border-t border-gray-100 bg-gray-50 p-3 flex-grow"
         >
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 p-4">
+          <div class="grid grid-cols-1 gap-2">
             <button
               v-for="subcategory in category.subcategories"
               :key="subcategory.id"
               @click="handleSelection(category.id, subcategory.id)"
-              class="text-left px-4 py-2 rounded-md text-sm transition-colors"
+              class="text-left px-3 py-2 rounded-md text-sm transition-colors"
               :class="[
                 selectedCategory === category.id && selectedSubcategory === subcategory.id
                   ? 'bg-blue-500 text-white font-medium'
@@ -47,6 +56,20 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div
+      v-if="filteredCategories.length === 0"
+      class="text-center py-12"
+    >
+      <p class="text-gray-500 text-lg">No categories found matching "{{ searchQuery }}"</p>
+      <button
+        @click="searchQuery = ''"
+        class="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+      >
+        Clear search
+      </button>
     </div>
 
     <!-- Selected Category Display -->
@@ -66,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
   Utensils,
   ShoppingBag,
@@ -332,6 +355,23 @@ const categories = ref<Category[]>([
 const expandedCategories = ref<Set<string>>(new Set())
 const selectedCategory = ref<string | null>(null)
 const selectedSubcategory = ref<string | null>(null)
+const searchQuery = ref('')
+
+const filteredCategories = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return categories.value
+  }
+
+  const query = searchQuery.value.toLowerCase().trim()
+  
+  return categories.value.filter(category => {
+    const categoryMatch = category.name.toLowerCase().includes(query)
+    const subcategoryMatch = category.subcategories.some(sub => 
+      sub.name.toLowerCase().includes(query)
+    )
+    return categoryMatch || subcategoryMatch
+  })
+})
 
 const toggleCategory = (categoryId: string) => {
   if (expandedCategories.value.has(categoryId)) {

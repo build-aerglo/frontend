@@ -19,7 +19,7 @@
         <h3 class="text-2xl font-bold text-gray-900 mb-2">
           {{ tier.name }}
         </h3>
-        <p class="text-gray-600 text-sm">
+        <p class="text-gray-900 text-sm">
           {{ tier.description }}
         </p>
       </div>
@@ -27,10 +27,10 @@
       <!-- Pricing -->
       <div class="mb-6">
         <div class="flex items-baseline">
-          <span class="text-5xl font-extrabold text-gray-900">
+          <span class="text-4xl font-extrabold text-gray-700">
             <img src="~/assets/svg/naira.svg" class="w-10 h-10 mx-0 inline-block" />{{ tier.price }}
           </span>
-          <span class="ml-2 text-gray-600">
+          <span class="ml-2 text-gray-900">
             /{{ tier.period }}
           </span>
         </div>
