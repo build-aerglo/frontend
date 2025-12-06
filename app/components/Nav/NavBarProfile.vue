@@ -63,12 +63,12 @@
           </button>
 
           <div v-if="showBusinessDropdown" class="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <NuxtLink to="/"
+            <NuxtLink to="/business/auth/sign-up"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
-            <NuxtLink to="/"
+            <NuxtLink to="/business/auth/sign-in"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
               <i class="pi pi-sign-in mr-2 text-primary"></i>
               Log in to Your Business Account
@@ -81,9 +81,6 @@
     <div v-if="isOpen" class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
       @click="isOpen = false"></div>
   </nav>
-  <!-- Overlay when sidebar is open -->
-  <div v-if="isOpen" class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
-    @click="isOpen = false"></div>
 </template>
 
 
