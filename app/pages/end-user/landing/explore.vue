@@ -308,7 +308,7 @@
               </div>
               </div>
                <div>
-                <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+                <NuxtLink to="/end-user/profile/business" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
               </div>   
           </div>
           </template>
@@ -417,7 +417,7 @@
                 <p class="text-xs text-slate-500 mt-3">{{ currentReview.date }}</p>
               </div>
               <div>
-                <NuxtLink to="/profile/business-profile-user-pov" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
+                <NuxtLink to="/end-user/profile/business" class="text-sm cursor-pointer text-blue-500 hover:underline">see more</NuxtLink>
               </div>
             </div>
             </div>  

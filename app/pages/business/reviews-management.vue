@@ -1,6 +1,4 @@
 <template>
-
-    
     <div class="flex flex-col md:flex-row gap-5 mb-8">
       
       <div class="shadow-md rounded flex-1 p-6 flex flex-col justify-between bg-white border-b-4 border-blue-500">
@@ -36,52 +34,78 @@
       
       <div class="pb-4 border-b border-gray-100 mb-6">
         
-        <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+        <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
           
-          <div class="flex flex-col md:flex-row flex-grow gap-3 md:gap-4 w-full">
+          <div class="flex flex-col md:flex-row flex-grow gap-1 md:gap-3 w-full">
             
-            <InputSelect label="Date Range" class="flex-1" v-model="filters.dateRange">
-              <option value="all">All Time</option>
-              <option value="last_7">Last 7 Days</option>
-              <option value="last_30">Last 30 Days</option>
-            </InputSelect>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+              <Dropdown 
+                v-model="filters.dateRange"
+                :options="dateRangeOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Date Range"
+                class="w-full"
+              />
+            </div>
             
-            <InputSelect label="Location" class="flex-1" v-model="filters.location">
-              <option value="all">All Locations</option>
-              <option value="main">Main Branch</option>
-              <option value="east">East Branch</option>
-            </InputSelect>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+              <Dropdown 
+                v-model="filters.location"
+                :options="locationOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Location"
+                class="w-full"
+              />
+            </div>
 
-            <InputSelect label="Sentiment" class="flex-1" v-model="filters.sentiment">
-              <option value="all">All Sentiments</option>
-              <option value="positive">Positive</option>
-              <option value="neutral">Neutral</option>
-              <option value="negative">Negative</option>
-            </InputSelect>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Sentiment</label>
+              <Dropdown 
+                v-model="filters.sentiment"
+                :options="sentimentOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Sentiment"
+                class="w-full"
+              />
+            </div>
 
-            <InputSelect label="Rating" class="flex-1" v-model="filters.rating">
-              <option value="all">All Ratings</option>
-              <option value="5">5 Stars</option>
-              <option value="4">4 Stars & Up</option>
-              <option value="3">3 Stars & Up</option>
-            </InputSelect>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+              <Dropdown 
+                v-model="filters.rating"
+                :options="ratingOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Rating"
+                class="w-full"
+              />
+            </div>
 
-            <InputSelect label="Status" class="flex-1" v-model="filters.status">
-              <option value="all">All Statuses</option>
-              <option value="replied">Posted</option>
-              <option value="unreplied">Flagged</option>
-              <option value="flagged">Removed</option>
-              <option value="awaiting_reply">Awaiting Reply</option>
-            </InputSelect>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <Dropdown 
+                v-model="filters.status"
+                :options="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Status"
+                class="w-full"
+              />
+            </div>
           </div>
           
-          <div class="flex gap-3 w-full md:w-auto mt-0 md:pt-2">
+          <div class="flex gap-1 w-full md:w-auto mt-0 md:pt-2">
             
             <ButtonCustom 
               label="Export"
-              icon="pi pi-download"cdcd
+              icon="pi pi-download"
               :primary="true"
-              size="lg"
+              size="md"
               input-class="w-full md:w-auto"
               @click="exportReviews"
             />
@@ -90,7 +114,7 @@
               label="Reset"
               icon="pi pi-refresh"
               :primary="true"
-              size="lg"
+              size="md"
               input-class="w-full md:w-auto"
               @click="resetFilters"
             />
@@ -112,7 +136,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="review in allReviews" :key="review.id" class="bg-white border-b hover:bg-gray-50">
+            <tr v-for="review in filteredReviews" :key="review.id" class="bg-white border-b hover:bg-gray-50">
               <td class="py-4 px-3">{{ review.date }}</td>
               <td class="py-4 px-3">{{ review.location }}</td>
               
@@ -146,7 +170,9 @@
       </div>
     </div>
     
+    <!-- View/Reply Modal -->
     <Dialog 
+      v-if="currentAction !== 'flag'"
       v-model:visible="modalVisible" 
       :modal="true" 
       :header="`Review Action: ${currentAction}`" 
@@ -162,10 +188,15 @@
                 </div>
                 <div>
                     <span class="font-semibold text-lg text-gray-800">{{ currentReview.reviewer.name }}</span>
-                    <div class="flex items-center gap-2 text-sm text-gray-500">
-                        <i v-for="n in currentReview.rating" :key="n" class="pi pi-star-fill text-yellow-400 text-sm"></i>
-                        <i v-for="n in (5 - currentReview.rating)" :key="n + 5" class="pi pi-star text-yellow-400 text-sm"></i>
-                        <span>({{ currentReview.rating }} / 5)</span>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <Star
+                          v-for="n in 5"
+                          :key="n"
+                          :value="currentReview.rating- (n - 1)"
+                          :color-level="Math.ceil(currentReview.rating)"
+                          class="w-6 h-6"
+                        />
+                        <span>({{ currentReview.rating }})</span>
                     </div>
                 </div>
             </div>
@@ -178,30 +209,165 @@
             <p class="text-gray-700 whitespace-pre-line">{{ currentReview.body }}</p>
         </div>
 
-        <div v-if="currentAction === 'flag'" class="mb-4 p-3 bg-red-50 text-red-600 rounded flex items-center gap-3">
-            <i class="pi pi-flag-fill text-xl"></i>
-            <span>Mark this review for moderation. Add a reason in the reply box below.</span>
-        </div>
-
-        <div v-if="currentAction === 'reply' || currentAction === 'flag'" class="mb-6">
-            <label for="review-reply" class="block text-sm font-medium text-contrast mb-2">Your Reply:</label>
+        <div v-if="currentAction === 'reply'" class="mb-6">
+            <label for="review-reply" class="block text-sm font-medium text-contrast mb-2">Reply Review:</label>
             <InputTextAreaCustom 
                 id="review-reply" 
                 v-model="replyText"
                 rows="4" 
-                placeholder="Type your professional reply here..."
+                placeholder="Type your reply here..."
             />
         </div>
       </div>
       
       <template #footer>
-          
           <ButtonCustom 
-            :label="currentAction === 'reply' ? 'Send Reply' : currentAction === 'flag' ? 'Confirm Flag' : ''"
-            :severity="currentAction === 'flag' ? 'danger' : 'primary'"
-            :icon="currentAction === 'reply' ? 'pi pi-send' : currentAction === 'flag' ? 'pi pi-flag-fill' : 'pi pi-check'"
+            v-if="currentAction === 'reply'"
+            label="Send Reply"
+            severity="primary"
+            icon="pi pi-send"
             @click="handleActionSubmit" 
           />
+      </template>
+    </Dialog>
+
+    <!-- Flag Modal -->
+    <Dialog 
+      v-if="currentAction === 'flag'"
+      v-model:visible="modalVisible" 
+      :modal="true" 
+      header="Flag Review" 
+      :style="{ width: '50vw' }"
+      :breakpoints="{ '1100px': '70vw', '960px': '90vw' }"
+    >
+      <div v-if="currentReview" class="p-4">
+        
+        <!-- Review Header -->
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-lg font-bold">
+              {{ currentReview.reviewer.name.substring(0, 1) }}
+            </div>
+            <div>
+              <span class="font-semibold text-lg text-gray-800">{{ currentReview.reviewer.name }}</span>
+              <div class="flex items-center text-sm text-gray-500">
+                <Star
+                          v-for="n in 5"
+                          :key="n"
+                          :value="currentReview.rating- (n - 1)"
+                          :color-level="Math.ceil(currentReview.rating)"
+                          class="w-6 h-6"
+                        />
+                <span>{{ currentReview.rating }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-sm text-gray-500">
+            Date: {{ currentReview.date }}
+          </div>
+        </div>
+
+        <!-- Review Body -->
+        <div class="mb-6 p-4 bg-gray-50 rounded border border-gray-100">
+          <p class="text-gray-700 whitespace-pre-line">{{ currentReview.body }}</p>
+        </div>
+
+        <!-- Warning Banner -->
+        <div class="mb-4 p-3 bg-red-50 text-red-500 rounded flex items-center gap-3">
+          <i class="pi pi-flag-fill text-sm"></i>
+          <span>Flag this review for moderation review</span>
+        </div>
+
+        <!-- Reason Dropdown -->
+        <div class="mb-4">
+          <label for="flag-reason" class="block text-sm font-medium text-gray-400 mb-2">
+            Reason for Flagging <span class="text-red-500">*</span>
+          </label>
+          <Dropdown 
+            id="flag-reason"
+            v-model="flagReason" 
+            :options="flagReasons" 
+            optionLabel="label" 
+            optionValue="value"
+            placeholder="Select a reason"
+            class="w-full"
+            :class="{ 'p-invalid': showValidation && !flagReason }"
+          />
+          <small v-if="showValidation && !flagReason" class="p-error">Please select a reason</small>
+        </div>
+
+        <!-- Explanation Text Area -->
+        <div class="mb-4">
+          <label for="flag-explanation" class="block text-sm font-medium text-gray-400 mb-2">
+            Brief Explanation <span class="text-red-500">*</span>
+          </label>
+          <Textarea 
+            id="flag-explanation"
+            v-model="flagExplanation"
+            rows="3"
+            placeholder="Provide a brief explanation for flagging this review..."
+            class="w-full"
+            :class="{ 'p-invalid': showValidation && !flagExplanation }"
+          />
+          <small v-if="showValidation && !flagExplanation" class="p-error">Please provide an explanation</small>
+        </div>
+
+        <!-- File Upload -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-400 mb-2">
+            Supporting Image (Optional)
+          </label>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
+            <input 
+              ref="fileInput"
+              type="file" 
+              accept="image/*"
+              @change="handleFileUpload"
+              class="hidden"
+            />
+            
+            <div v-if="!uploadedFile" @click="triggerFileUpload" class="cursor-pointer">
+              <i class="pi pi-cloud-upload text-4xl text-gray-400 mb-2"></i>
+              <p class="text-sm text-gray-600">Click to upload an image</p>
+              <p class="text-xs text-gray-400 mt-1">PNG, JPG, GIF up to 5MB</p>
+            </div>
+
+            <div v-else class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-image text-2xl text-blue-500"></i>
+                <div class="text-left">
+                  <p class="text-sm font-medium text-gray-400">{{ uploadedFile.name }}</p>
+                  <p class="text-xs text-gray-500">{{ formatFileSize(uploadedFile.size) }}</p>
+                </div>
+              </div>
+              <Button 
+                icon="pi pi-times" 
+                @click="removeFile"
+                severity="danger"
+                text
+                rounded
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button 
+            label="Cancel" 
+            icon="pi pi-times"
+            @click="closeModal"
+            severity="secondary"
+            text
+          />
+          <Button 
+            label="Flag"
+            icon="pi pi-flag"
+            @click="handleFlagSubmit" 
+            severity="danger"
+          />
+        </div>
       </template>
     </Dialog>
      
@@ -209,7 +375,8 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'business' })
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import Star from '~/components/Stars.vue'
 
 // --- INTERFACES ---
 interface Reviewer {
@@ -236,6 +403,41 @@ const filters = ref({
     status: 'all',
 });
 
+// Dropdown options
+const dateRangeOptions = [
+  { label: 'all', value: 'all' },
+  { label: 'Last 7 Days', value: 'last_7' },
+  { label: 'Last 30 Days', value: 'last_30' }
+];
+
+const locationOptions = [
+  { label: 'all', value: 'all' },
+  { label: 'Main Branch', value: 'main' },
+  { label: 'East Branch', value: 'east' }
+];
+
+const sentimentOptions = [
+  { label: 'all', value: 'all' },
+  { label: 'Positive', value: 'positive' },
+  { label: 'Neutral', value: 'neutral' },
+  { label: 'Negative', value: 'negative' }
+];
+
+const ratingOptions = [
+  { label: 'all', value: 'all' },
+  { label: '5 Stars', value: '5' },
+  { label: '4 Stars & Up', value: '4' },
+  { label: '3 Stars & Up', value: '3' }
+];
+
+const statusOptions = [
+  { label: 'All', value: 'all' },
+  { label: 'Posted', value: 'replied' },
+  { label: 'Flagged', value: 'unreplied' },
+  { label: 'Removed', value: 'flagged' },
+  { label: 'Awaiting Reply', value: 'awaiting_reply' }
+];
+
 const cardStats = ref({
     awaitingReplies: 12,
     totalLiked: 458,
@@ -247,11 +449,30 @@ const currentAction = ref<'view' | 'reply' | 'flag'>('view');
 const currentReview = ref<Review | null>(null);
 const replyText = ref(''); 
 
+// Flag Modal specific refs
+const showValidation = ref(false);
+const flagReason = ref('');
+const flagExplanation = ref('');
+const uploadedFile = ref<File | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const flagReasons = [
+  { label: 'Spam or Fake Review', value: 'spam' },
+  { label: 'Inappropriate Language', value: 'inappropriate' },
+  { label: 'Off-Topic Content', value: 'off-topic' },
+  { label: 'Personal Attack', value: 'personal-attack' },
+  { label: 'Competitor Promotion', value: 'competitor' },
+  { label: 'False Information', value: 'false-info' },
+  { label: 'Hate Speech', value: 'hate-speech' },
+  { label: 'Privacy Violation', value: 'privacy' },
+  { label: 'Other', value: 'other' }
+];
+
 const mockReview1: Review = {
     id: 101,
     reviewer: { name: 'Sarah J.' },
     date: '2025-11-15',
-    rating: 5,
+    rating: 4.4,
     body: 'The service was excellent and the staff were incredibly friendly! I highly recommend this location. I will definitely be coming back next week. Thank you for a great experience!',
     location: 'Main Branch',
     source: 'Google Maps',
@@ -263,7 +484,7 @@ const mockReview2: Review = {
     id: 102,
     reviewer: { name: 'John A.' },
     date: '2025-11-16',
-    rating: 2,
+    rating: 2.3,
     body: 'I had a terrible experience with the delivery time. It was an hour late and the food was cold. Needs serious improvement.',
     location: 'East Branch',
     source: 'Yelp',
@@ -275,7 +496,7 @@ const mockReview3: Review = {
     id: 103,
     reviewer: { name: 'Alex M.' },
     date: '2025-11-16',
-    rating: 3,
+    rating: 3.1,
     body: 'The atmosphere was nice, but the coffee machine was broken. Everything else was fine.',
     location: 'Main Branch',
     source: 'App Store',
@@ -291,14 +512,92 @@ const allReviews = ref<Review[]>([
         id: 104,
         reviewer: { name: 'Lisa K.' },
         date: '2025-11-14',
-        rating: 1,
+        rating: 1.8,
         body: 'Spam review: This place is absolutely terrible, go to [competitor name] instead.',
         location: 'East Branch',
         source: 'Google Maps',
         status: 'Removed',
         sentiment: 'Negative',
     },
+    {
+        id: 105,
+        reviewer: { name: 'Michael B.' },
+        date: '2025-12-01',
+        rating: 4.9,
+        body: 'Outstanding customer service! The team went above and beyond to help me find exactly what I needed. The store was clean and well-organized.',
+        location: 'Main Branch',
+        source: 'Facebook',
+        status: 'Posted',
+        sentiment: 'Positive',
+    },
+    {
+        id: 106,
+        reviewer: { name: 'Emily R.' },
+        date: '2025-11-28',
+        rating: 4.0,
+        body: 'Good selection of products and reasonable prices. Staff could be more attentive during peak hours, but overall a positive experience.',
+        location: 'East Branch',
+        source: 'Yelp',
+        status: 'Awaiting Reply',
+        sentiment: 'Positive',
+    },
+    {
+        id: 107,
+        reviewer: { name: 'David T.' },
+        date: '2025-11-20',
+        rating: 3.5,
+        body: 'The location is convenient but parking is always a nightmare. The service inside is okay, nothing special.',
+        location: 'Main Branch',
+        source: 'Google Maps',
+        status: 'Posted',
+        sentiment: 'Neutral',
+    },
 ]);
+
+// Computed property for filtered reviews
+const filteredReviews = computed(() => {
+    return allReviews.value.filter(review => {
+        // Date filter
+        if (filters.value.dateRange !== 'all') {
+            const reviewDate = new Date(review.date);
+            const today = new Date();
+            const daysDiff = Math.floor((today.getTime() - reviewDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            if (filters.value.dateRange === 'last_7' && daysDiff > 7) return false;
+            if (filters.value.dateRange === 'last_30' && daysDiff > 30) return false;
+        }
+        
+        // Location filter
+        if (filters.value.location !== 'all' && review.location !== filters.value.location) {
+            return false;
+        }
+        
+        // Sentiment filter
+        if (filters.value.sentiment !== 'all' && review.sentiment.toLowerCase() !== filters.value.sentiment.toLowerCase()) {
+            return false;
+        }
+        
+        // Rating filter
+        if (filters.value.rating !== 'all') {
+            const minRating = parseInt(filters.value.rating);
+            if (review.rating < minRating) return false;
+        }
+        
+        // Status filter
+        if (filters.value.status !== 'all') {
+            const statusMap: Record<string, string> = {
+                'replied': 'Posted',
+                'unreplied': 'Flagged',
+                'flagged': 'Removed',
+                'awaiting_reply': 'Awaiting Reply'
+            };
+            const mappedStatus = statusMap[filters.value.status];
+            if (review.status !== mappedStatus) return false;
+        }
+        
+        return true;
+    });
+});
 
 
 // --- FUNCTIONS ---
@@ -343,12 +642,49 @@ const resetFilters = () => {
 
 const exportReviews = () => {
     console.log('Exporting reviews based on current filters:', filters.value);
+    
+    // Get filtered reviews to export
+    const reviewsToExport = filteredReviews.value;
+    
+    // Create CSV content
+    const headers = ['Date', 'Location', 'Reviewer', 'Rating', 'Review', 'Source', 'Status', 'Sentiment'];
+    const csvRows = [headers.join(',')];
+    
+    reviewsToExport.forEach(review => {
+        const row = [
+            review.date,
+            review.location,
+            review.reviewer.name,
+            review.rating,
+            `"${review.body.replace(/"/g, '""')}"`, // Escape quotes in review text
+            review.source,
+            review.status,
+            review.sentiment
+        ];
+        csvRows.push(row.join(','));
+    });
+    
+    const csvContent = csvRows.join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `reviews_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 };
 
 const openActionModal = (action: 'view' | 'reply' | 'flag', review: Review) => {
     currentAction.value = action;
     currentReview.value = review;
     replyText.value = ''; 
+    resetFlagForm();
     modalVisible.value = true;
     console.log(`Preparing modal for review ID ${review.id} with action: ${action}`);
 };
@@ -358,16 +694,84 @@ const handleActionSubmit = () => {
 
     if (currentAction.value === 'reply') {
         console.log(`Submitting reply for review ID ${currentReview.value.id}: ${replyText.value}`);
-    } else if (currentAction.value === 'flag') {
-        console.log(`Confirming flag for review ID ${currentReview.value.id}. Reason/Note: ${replyText.value}`);
-    } else if (currentAction.value === 'view') {
-
+        modalVisible.value = false;
     }
-    
-    modalVisible.value = false;
 };
 
-</script>
+// Flag Modal Functions
+const triggerFileUpload = () => {
+  fileInput.value?.click();
+};
 
-<style scoped>
-</style>
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  
+  if (file) {
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+    
+    uploadedFile.value = file;
+  }
+};
+
+const removeFile = () => {
+  uploadedFile.value = null;
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+};
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+};
+
+const closeModal = () => {
+  modalVisible.value = false;
+  resetFlagForm();
+};
+
+const resetFlagForm = () => {
+  flagReason.value = '';
+  flagExplanation.value = '';
+  uploadedFile.value = null;
+  showValidation.value = false;
+  if (fileInput.value) {
+    fileInput.value.value = '';
+  }
+};
+
+const handleFlagSubmit = () => {
+  showValidation.value = true;
+  
+  // Validate required fields
+  if (!flagReason.value || !flagExplanation.value) {
+    return;
+  }
+  
+  console.log('Flag submitted:', {
+    reviewId: currentReview.value?.id,
+    reason: flagReason.value,
+    explanation: flagExplanation.value,
+    hasImage: !!uploadedFile.value,
+    fileName: uploadedFile.value?.name
+  });
+  
+  // Show success message or handle submission
+  alert('Review flagged successfully!');
+  closeModal();
+};
+</script>

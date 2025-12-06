@@ -66,7 +66,7 @@
         <h2 class="text-2xl md:text-3xl font-bold text-left text-[#008253] dark:text-white">
           Categories
         </h2>
-        <a href="/landing/categories"
+        <a href="/end-user/landing/categories"
           class="absolute right-0 top-1/2 -translate-y-1/2 text-3xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
           ...
         </a>

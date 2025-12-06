@@ -70,7 +70,7 @@
 
         <p class="text-center text-sm text-gray-800">
           <span>Don't have an account? </span>
-          <NuxtLink to="/auth/support-user/sign-up" class="text-blue-500 hover:underline font-medium">
+          <NuxtLink to="/support/auth/sign-up" class="text-blue-500 hover:underline font-medium">
             Sign up
           </NuxtLink>
         </p>

@@ -94,8 +94,9 @@
                     @mouseleave="hoverRating = 0"
                     @click="setRating(n - 1 + getFraction($event))"
                   />
-                <span class="ml-2 text-sm text-gray-800">
+                <span class="ml-2 text-sm text-gray-700">
                   {{ rating > 0 ? getRatingLabel(rating) : ' ' }}
+                  <span v-if="rating > 0" class="text-sm text-gray-500">({{ rating.toFixed(1) }})</span>
                 </span>
               </div>
             </div>
@@ -198,14 +199,17 @@
                     :key="n"
                     :value="(business.hoverRating || business.rating) - (n - 1)"
                     :color-level="Math.ceil(business.hoverRating || business.rating)"
-                    class="cursor-pointer"
+                    class="cursor-pointer mb-0"
                     @mousemove="business.hoverRating = n - 1 + getFraction($event)"
                     @mouseleave="business.hoverRating = 0"
                     @click="rateBusiness(index, n - 1 + getFraction($event))"
                 />
               </div>
-              <p v-if="business.rating > 0" class="text-xs text-gray-500 mt-0">
+              <p v-if="business.rating > 0" class="text-xs text-gray-700 mt-0 mb-0">
                 {{ getRatingLabel(business.rating) }}
+              </p>
+              <p v-if="business.rating > 0" class="text-[12px] text-gray-500 mt-0">
+                ({{ business.rating.toFixed(1) }})
               </p>
             </div>
           </div>
