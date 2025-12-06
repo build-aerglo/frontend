@@ -260,10 +260,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { watch } from "vue";
+import type { UserReview } from '~/types';
 import Star from '~/components/Stars.vue'
-
+import useUser  from '~/composables/useUser' 
+import useReviewMethods from '~/composables/review/useReviewMethods'
+const { submitUserReview } = useReviewMethods();
+const store = useUser()
 // Form state
 const businessName = ref("");
 const businessLocation = ref("");
@@ -276,7 +278,18 @@ const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
 
-
+const userReviewData = ref<UserReview>({
+  businessId: businessName.value,
+  locationId: businessLocation.value,
+  reviewerId: store.userId || "",
+  email: email.value,
+  starRating: rating.value,
+  reviewBody: reviewBody.value,
+  photoUrls: [
+    ...images.value
+  ],
+  reviewAsAnon: anonymous.value
+})
 // Refs for dropdown containers
 const businessDropdownRef = ref<HTMLElement | null>(null);
 const locationDropdownRef = ref<HTMLElement | null>(null);
@@ -427,15 +440,14 @@ const removeBusiness = (index: number) => {
   featuredBusinesses.value.splice(index, 1);
 };
 
-const submitReview = () => {
-  alert("Review submitted successfully!");
-  // Reset form
-  businessName.value = "";
-  businessLocation.value = "";
-  reviewBody.value = "";
-  rating.value = 0;
-  anonymous.value = false;
-  images.value = [];
+const submitReview = async () => {
+  try {
+    const res = await submitUserReview (userReviewData.value);
+    console.log(res)
+    alert("Review Submitted successfully!");
+  } catch (error) {
+    alert("Failed to submit review.");
+  }
 };
 
 const getFraction = (event: MouseEvent) => {

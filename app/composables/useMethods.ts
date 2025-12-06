@@ -1,6 +1,7 @@
 import useApi from "~/composables/useApi";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
 import type { EndUser, LoginData } from "~/types";
+import type { SupportUser } from "~/types/support";
 import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";

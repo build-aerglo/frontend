@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { EndUser } from "~/types";
-
+import { jwtDecode } from 'jwt-decode';
 export interface EndUserState {
   accessToken: string | null;
   idToken: string | null;
@@ -18,6 +18,21 @@ export const useUserStore = defineStore("EndUser", {
       userData: null,
       theme: "light",
     }),
+  getters: {
+      userId: (state): string | null => {
+          if (!state.idToken) {
+              return null;
+          }
+          try {
+              const decodedToken = jwtDecode(state.idToken);
+              return (decodedToken as any).sub || null; 
+          } catch (error) {
+              console.error("Error decoding id_token:", error);
+              return null;
+          }
+      },
+      
+    },
   
     actions: {
       getUser() {
