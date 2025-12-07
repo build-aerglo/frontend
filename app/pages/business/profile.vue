@@ -72,7 +72,7 @@
 
                 <template v-else>
                     <MultiSelect 
-                        v-model="business.categoryIds" 
+                        v-model="categoryIds" 
                         :options="categories" 
                         optionLabel="name" 
                         optionValue="id" 
@@ -89,20 +89,20 @@
         </div> 
 
         <ProfileLocation
-          v-model="business.location"
+          v-model="business.businessAddress"
           :is-editing="isEditing"
         />
 
         <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2': 'flex gap-2 items-center']">
           <ProfileField
-            v-model="business.contact"
+            v-model="business.businessPhoneNumber"
             icon="pi pi-phone"
             placeholder="Contact"
             :is-editing="isEditing"
           />
           <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
           <ProfileField
-            v-model="business.contact"
+            v-model="business.socialMediaLinks.additionalProp1"
             icon="pi pi-whatsapp"
             placeholder="WhatsApp"
             :is-editing="isEditing"
@@ -118,7 +118,7 @@
           />
           <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
           <ProfileField
-            v-model="business.website"
+            v-model="business.socialMediaLinks.additionalProp2"
             icon="pi pi-instagram"
             placeholder="Instagram"
             :is-editing="isEditing"
@@ -192,7 +192,11 @@
       
       <div class="col-span-1 md:col-span-2 ">
         <KeepAlive>
-          <component :is="currentComponent" />
+          <component
+            :is="currentComponent"
+            v-bind="getPropsForComponent(currentTabKey)"
+            @update="handleComponentUpdate"
+          />
         </KeepAlive>
       </div>
 
@@ -222,13 +226,13 @@
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
 import type { BusinessProfile } from "~/types/business";
 import { useBusinessProfileStore } from "~/store/business/businessProfile";
-import { useRoute } from 'vue-router';  
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+import useBusinessUser from '~/composables/business/useBusinessUser';
 import Badge from '~/components/Badge.vue'
 import Star from '~/components/Stars.vue'
 import { useBusinessData } from '@/composables/useBusinessSampleData'
 import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
 import ProfileLocation from '~/components/Profile/ProfileLocation.vue'
+const businessUserStore = useBusinessUser()
 
 const {  
   businessData, 
@@ -249,26 +253,18 @@ onMounted(async () => {
 
 const categoryNames = computed(() => {
     // Check if categories are loaded and selection exists
-    if (!categories.value || business.value.categoryIds.length === 0) {
+    if (!categories.value || categoryIds.value.length === 0) {
         return [];
     }
     
     // Filter the full category list to find the names of the selected IDs
     return categories.value
-        .filter(cat => business.value.categoryIds.includes(cat.id))
+        .filter(cat => categoryIds.value.includes(cat.id))
         .map(cat => cat.name);
 });
 
 const isEditing = ref(false)
-const toggleEdit = async () => {
-  // When saving
-  if (isEditing.value) {
-    const payload = business.value
-    const profileData = await saveBusinessProfile(payload);
-    store.setProfileData(profileData);
-  }
-  isEditing.value = !isEditing.value;
-};
+
 
 // Rating, images
 const ratingValue = ref(4)
@@ -276,38 +272,82 @@ const previewUrl = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 const business = ref<BusinessProfile>({
-  name: '',
-  website: '',
-  sector: '',
-  contact: '',
-  location: {
-    street: '',
-    city: '',
-    state: ''
-  },
+  name: "",
+  website: "",
+  businessAddress: "",
+  logo: "",
   openingHours: {
-    dayKey: 'mon-sat',
-    startTime: '07:00',
-    endTime: '23:00'
+    additionalProp1: "",
+    additionalProp2: "",
+    additionalProp3: ""
   },
-  categoryIds: [],
-  parentBusinessId: null
+  businessEmail: "",
+  businessPhoneNumber: "",
+  cacNumber: "",
+  accessUsername: "",
+  accessNumber: "",
+  socialMediaLinks: {
+    additionalProp1: "",
+    additionalProp2: "",
+    additionalProp3: ""
+  },
+  businessDescription: "",
+  media: [],
+  isVerified: true,
+  reviewLink: "",
+  preferredContactMethod: "",
+  highlights: [],
+  tags: [],
+  averageResponseTime: "",
+  profileClicks: 0,
+  faqs: []
 });
-
-const uiData = reactive ({
-  tag: '',
-  location: {
-    street: '',
-    city: '',
-    state: ''
-  },
-  contact: '',
-   openingHours: {
-    dayKey: 'mon-sat', 
-    startTime: '07:00',
-    endTime: '23:00',
-  }, 
-})
+const categoryIds = ref<string[]>([])
+const businessId = businessUserStore.businessId
+console.log(businessId)
+const toggleEdit = async () => {
+  // When saving
+  if (isEditing.value) {
+    const payload = business.value
+    const profileData = await saveBusinessProfile(businessId ?? '', payload);
+    console.log(payload)
+    store.setProfileData(profileData);
+  }
+  isEditing.value = !isEditing.value;
+};
+const getPropsForComponent = (tabKey: string) => {
+  switch(tabKey) {
+    case 'overview':
+      return {
+        description: business.value.businessDescription,
+        // 🚨 Pass the MERGED list here
+        highlights: computedHighlightsForOverview.value, 
+        // 🚨 Pass the MERGED list here
+        tags: computedTagsForOverview.value
+      };
+    case 'media':
+      return {
+        media: business.value.media
+      };
+    case 'faq':
+      return {
+        faqs: business.value.faqs
+      };
+    // case 'getreview':
+    //   return {
+    //     reviewLink: business.value.reviewLink
+    //   };
+    default:
+      return {};
+  }
+};
+const handleComponentUpdate = (update: { key: string; value: any }) => {
+  // Use a type guard for safety, but essentially you're updating the business ref
+  if (update.key in business.value) {
+    // Use 'as any' to bypass TypeScript checking the dynamic key update
+    (business.value as any)[update.key] = update.value;
+  }
+};
 // Image handler
 const handleFileChange = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0]
@@ -368,6 +408,57 @@ const scrollRight = () => {
     tabsContainer.value.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
   }
 };
+const ALL_AVAILABLE_HIGHLIGHTS = [
+    { id: 1, name: 'Wi-Fi' },
+    { id: 2, name: 'Order online' },
+    { id: 3, name: 'Accomodates groups' },
+    { id: 4, name: 'Restrooms' },
+    { id: 5, name: 'Wheelchair Accessible' },
+    { id: 6, name: 'Parking Available' },
+    { id: 7, name: 'Card Payment' },
+    { id: 8, name: 'Baby-Changing Facility' },
+];
+
+const ALL_AVAILABLE_TAGS = [
+    { id: 1, name: 'Fast Service' },
+    { id: 2, name: 'Gourmet Coffee' },
+    { id: 3, name: 'Live Music' },
+    { id: 4, name: 'Budget Friendly' },
+    { id: 5, name: 'Event Space' },
+    { id: 6, name: 'Takeaway Only' },
+];
+
+
+// --- New Computed Properties to Merge Saved Data with All Options ---
+
+const computedHighlightsForOverview = computed(() => {
+    // business.value.highlights holds the saved list of highlight strings (e.g., ['Wi-Fi', 'Parking Available'])
+    const savedHighlights = business.value.highlights || []; 
+
+    return ALL_AVAILABLE_HIGHLIGHTS.map(h => ({
+        id: h.id,
+        name: h.name,
+        // Check if the name exists in the saved array
+        checked: savedHighlights.includes(h.name) 
+    }));
+});
+
+const computedTagsForOverview = computed(() => {
+    // business.value.tags holds the saved list of tag strings
+    const savedTags = business.value.tags || [];
+
+    return ALL_AVAILABLE_TAGS.map(t => ({
+        id: t.id,
+        name: t.name,
+        // Check if the name exists in the saved array
+        checked: savedTags.includes(t.name)
+    }));
+});
+
+
+// --- Update getPropsForComponent ---
+
+
 </script>
 
 

@@ -1,6 +1,7 @@
 import useApi from "~/composables/useApi";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
 import type { EndUser, LoginData } from "~/types";
+import type { SupportUser } from "~/types/support";
 import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
@@ -9,13 +10,13 @@ export default function () {
   const store = useBusinessUser();
   const supportStore = useSupportUser();
   const api = useApi();
-  const userStore = useUser()
+  const userStore = useUser();
   const registerBusiness = async (data: BusinessUser) => {
     try {
       const res = await api.post("api/User/business", data);
 
       if (res.status === 201 || res.status === 200) {
-        console.log(res)
+        console.log(res);
         const user: BusinessUserResponse = res.data;
         store.setUserData(user);
         return user;
@@ -36,7 +37,7 @@ export default function () {
 
       if (res.status === 201 || res.status === 200) {
         const user: SupportUser = res.data;
-        supportStore.setUserData(user)
+        supportStore.setUserData(user);
         return user;
       } else {
         throw new Error("Registration failed");
@@ -55,9 +56,9 @@ export default function () {
         email: data.email,
         password: data.password,
       });
-      console.log(res)
+      console.log(res);
       if (res.status === 200 && res.data) {
-        const { access_token, id_token, expires_in, roles } = res.data;
+        const { access_token, id_token, expires_in, roles, id } = res.data;
         const role = roles[0];
         const loginPayload = {
           access_token: access_token,
@@ -65,13 +66,13 @@ export default function () {
           role: role,
           expires: new Date(Date.now() + 23 * 60 * 60 * 1000), // 23hrs
         };
-        if (role === 'business_user') {
+        if (role === "business_user") {
           userStore.clearUser();
-          store.setLoginData(loginPayload)
-          store.getUser()
-        } else if (role === 'end_user') {
-          store.clearUser();         
-          userStore.setLoginData(loginPayload)
+          store.setLoginData(loginPayload);
+          store.setId(id);
+        } else if (role === "end_user") {
+          store.clearUser();
+          userStore.setLoginData(loginPayload);
         }
         return res.data;
       } else {
@@ -90,7 +91,7 @@ export default function () {
       const res = await api.post("api/User/end-user", data);
 
       if (res.status === 201 || res.status === 200) {
-        console.log(res)
+        console.log(res);
         const endUser: EndUser = res.data;
         userStore.setUserData(endUser);
         return endUser;
