@@ -33,14 +33,14 @@
             class="absolute mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg py-2 w-56 z-50"
           >
             <NuxtLink
-              to="/"
+              to="/business/auth/sign-up"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
             <NuxtLink
-              to="/"
+              to="/business/auth/sign-in"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-sign-in mr-2 text-primary"></i>
@@ -97,14 +97,14 @@
 
           <div v-if="showBusinessDropdown" class="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <NuxtLink
-              to="/"
+              to="/business/auth/sign-up"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-briefcase mr-2 text-primary"></i>
               Add a Business
             </NuxtLink>
             <NuxtLink
-              to="/"
+              to="/business/auth/sign-in"
               class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <i class="pi pi-sign-in mr-2 text-primary"></i>
