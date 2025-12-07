@@ -20,19 +20,36 @@ export const useBusinessUserStore = defineStore("businessUser", {
   }),
   getters: {
     userId: (state): string | null => {
-        if (!state.idToken) {
+        // 1. Use the accessToken
+        if (!state.accessToken) { 
             return null;
         }
         try {
-            const decodedToken = jwtDecode(state.idToken);
-            return (decodedToken as any).sub || null; 
+            const decodedToken = jwtDecode(state.accessToken);
+            
+            // Get the 'sub' claim, which is the user ID
+            const sub = (decodedToken as any).sub as string | null;
+            
+            if (!sub) {
+                return null;
+            }
+            
+            // 2. Remove the provider prefix (e.g., "auth0|")
+            const parts = sub.split('|');
+            
+            // Return the last part of the split string (the actual unique ID)
+            // If there's no '|' (e.g., if it's already a clean ID), this returns the whole thing.
+            return parts.length > 1 ? parts.pop()! : sub; 
+
         } catch (error) {
-            console.error("Error decoding id_token:", error);
+            console.error("Error decoding accessToken:", error);
             return null;
         }
     },
-    
-  },
+    businessId: (state): string | null => {
+      return state.userData?.businessId || null;
+    },
+},
   actions: {
     getUser() {
       return {

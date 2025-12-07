@@ -16,9 +16,9 @@ export default function () {
     }
 
   };
-  const saveBusinessProfile = async (data: BusinessProfile) => {
+  const saveBusinessProfile = async (id: string, data: BusinessProfile) => {
     try {
-    const res = await businessApi.post("api/Business", data)
+    const res = await businessApi.patch(`api/Business/${id}`, data);
     console.log(res)
       // Save to store
       profileStore.setProfileData(res.data);

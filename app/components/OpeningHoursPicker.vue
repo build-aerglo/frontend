@@ -111,9 +111,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, defineProps, defineEmits } from 'vue'
-import Dropdown from 'primevue/dropdown'
-
 const dayOptions = [
   { key: 'mon-sat', label: 'Mon - Sun' },
   { key: 'weekdays', label: 'All Week days' },
@@ -121,39 +118,42 @@ const dayOptions = [
 ]
 
 const props = defineProps({
-  modelValue: {
-    type: Object,
-    required: true,
-    // Expected shape: { dayKey: string, startTime: string, endTime: string }
-  },
-  isEditing: Boolean,
+  modelValue: {
+    type: Object,
+    required: true,
+    // 🚨 UPDATED: Now expecting the API's format
+    // Expected shape: { additionalProp1: string, additionalProp2: string, additionalProp3: string }
+  },
+  isEditing: Boolean,
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 // Local copies for editing
-const localDayKey = ref(props.modelValue.dayKey)
-const localStartTime = ref(props.modelValue.startTime)
-const localEndTime = ref(props.modelValue.endTime)
+// 🚨 UPDATED: Initialize local state from the API's cryptic keys
+const localDayKey = ref(props.modelValue.additionalProp1 || '')
+const localStartTime = ref(props.modelValue.additionalProp2 || '09:00') // Default time for a better UX
+const localEndTime = ref(props.modelValue.additionalProp3 || '17:00') // Default time for a better UX
 
 // Watch for external changes to sync local state
 watch(
-  () => props.modelValue,
-  (newVal) => {
-    localDayKey.value = newVal.dayKey
-    localStartTime.value = newVal.startTime
-    localEndTime.value = newVal.endTime
-  },
-  { immediate: true }
+  () => props.modelValue,
+  (newVal) => {
+    // 🚨 UPDATED: Map API keys to local keys
+    localDayKey.value = newVal.additionalProp1 || ''
+    localStartTime.value = newVal.additionalProp2 || '09:00'
+    localEndTime.value = newVal.additionalProp3 || '17:00'
+  },
+  { immediate: true }
 )
-
 // Emit changes when local state changes
 watch([localDayKey, localStartTime, localEndTime], () => {
-  emit('update:modelValue', {
-    dayKey: localDayKey.value,
-    startTime: localStartTime.value,
-    endTime: localEndTime.value,
-  })
+  emit('update:modelValue', {
+    // 🚨 UPDATED: Map local keys back to API keys
+    additionalProp1: localDayKey.value,
+    additionalProp2: localStartTime.value,
+    additionalProp3: localEndTime.value,
+  })
 })
 
 function parseTimeString(time: string): Date | null {

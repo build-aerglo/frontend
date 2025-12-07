@@ -40,7 +40,7 @@
 
       <div class="flex flex-col gap-2">
         <div 
-          v-for="(faq, index) in faqs" 
+          v-for="(faq, index) in localFaqs" 
           :key="index" 
           class="border rounded-lg overflow-hidden transition-all duration-300"
         >
@@ -64,7 +64,7 @@
           </div>
         </div>
         
-        <p v-if="faqs.length === 0" class="text-gray-500 italic p-4 text-center">
+        <p v-if="localFaqs.length === 0" class="text-gray-500 italic p-4 text-center">
             No frequently asked questions have been added yet.
         </p>
       </div>
@@ -91,67 +91,110 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, watch } from 'vue'; 
+// ... (Your other imports like ButtonCustom are assumed)
 
 interface FaqItem {
-    question: string;
-    answer: string;
-    open: boolean;
+    question: string;
+    answer: string;
+    open?: boolean; // Make 'open' optional as we'll remove it when emitting
 }
 
+/* ------------------ PROPS ------------------ */
+const props = defineProps({
+    // 1. Accept the faqs array from the parent
+    faqs: {
+        type: Array as () => FaqItem[],
+        default: () => [],
+    },
+});
+
+/* ------------------ EMITS ------------------ */
+const emit = defineEmits<{
+    (e: 'update', payload: { key: string; value: any }): void;
+}>();
+
+
 const isFaqEditing = ref(false);
-const toggleFaqEditing = () => {
-    isFaqEditing.value = !isFaqEditing.value;
+
+// 2. Use local state, initialized from the prop
+const localFaqs = ref<FaqItem[]>([]);
+const originalFaqs = ref<FaqItem[]>([]); // To store state for cancel
+
+// 3. Watch for initial prop load and updates
+const initializeFaqs = (newFaqs: FaqItem[]) => {
+    // We add the 'open' state for local UI functionality
+    const faqsWithOpenState = newFaqs.map(faq => ({ ...faq, open: faq.open ?? false }));
+    localFaqs.value = JSON.parse(JSON.stringify(faqsWithOpenState));
+    originalFaqs.value = JSON.parse(JSON.stringify(faqsWithOpenState));
 };
 
-const faqs = ref<FaqItem[]>([
-    { question: "What are your operating hours this week?", answer: "Our standard hours are Monday to Friday, 9:00 AM to 5:00 PM. We are closed on public holidays.", open: false },
-    { question: "How do I book an appointment or service?", answer: "You can book directly through our website (link available in the profile) or call us during business hours.", open: false },
-    { question: "Where is your primary location?", answer: "We are located at 123 Main Street. See the map on the Overview tab for exact coordinates.", open: false },
-]);
-const originalFaqs = ref<FaqItem[]>(JSON.parse(JSON.stringify(faqs.value)));
+watch(() => props.faqs, (newVal) => {
+    initializeFaqs(newVal);
+}, { immediate: true }); // Initialize on mount
 
 
 const newFaq = reactive({
-    question: '',
-    answer: ''
+    question: '',
+    answer: ''
 });
 
+// ... (toggleFaq, addFaq, removeFaq logic is fine, just use localFaqs instead of faqs) ...
+
 const toggleFaq = (index: number) => {
-    const item = faqs.value[index];
-    if (item) {
-        item.open = !item.open;
-    }
+    const item = localFaqs.value[index]; // 🚨 Use localFaqs
+    if (item) {
+        item.open = !item.open;
+    }
 };
 
 const addFaq = () => {
-    if (newFaq.question.trim() && newFaq.answer.trim()) {
-        faqs.value.push({
-            question: newFaq.question.trim(),
-            answer: newFaq.answer.trim(),
-            open: false,
-        });
-        // Clear the form
-        newFaq.question = '';
-        newFaq.answer = '';
-    }
+    if (newFaq.question.trim() && newFaq.answer.trim()) {
+        localFaqs.value.push({ // 🚨 Use localFaqs
+            question: newFaq.question.trim(),
+            answer: newFaq.answer.trim(),
+            open: false,
+        });
+        newFaq.question = '';
+        newFaq.answer = '';
+    }
 };
 
 const removeFaq = (index: number) => {
-    if (isFaqEditing.value) {
-        faqs.value.splice(index, 1);
-    }
+    if (isFaqEditing.value) {
+        localFaqs.value.splice(index, 1); // 🚨 Use localFaqs
+    }
 };
 
-
+// 4. Update saveFaqChanges to emit data to parent
 const saveFaqChanges = () => {
-    console.log("Saving changes:", faqs.value);
-    originalFaqs.value = JSON.parse(JSON.stringify(faqs.value));
-    isFaqEditing.value = false;
+    // Clean the data: remove the 'open' property, as it's only for UI
+    const cleanedFaqs = localFaqs.value.map(({ question, answer }) => ({ question, answer }));
+    
+    // Emit the change to the parent component
+    emit("update", { key: "faqs", value: cleanedFaqs }); 
+    
+    // Update original state and close edit mode
+    originalFaqs.value = JSON.parse(JSON.stringify(localFaqs.value));
+    isFaqEditing.value = false;
 };
 
 const cancelFaqChanges = () => {
-    faqs.value = JSON.parse(JSON.stringify(originalFaqs.value));
-    isFaqEditing.value = false;
+    localFaqs.value = JSON.parse(JSON.stringify(originalFaqs.value)); // 🚨 Use localFaqs
+    isFaqEditing.value = false;
+};
+
+const toggleFaqEditing = () => {
+    // If we're entering edit mode, ensure localFaqs is reset from the latest prop data
+    if (!isFaqEditing.value) {
+        initializeFaqs(props.faqs);
+    }
+    // If we are exiting edit mode via this button, save changes (if no dedicated save button is used)
+    if (isFaqEditing.value) {
+        saveFaqChanges();
+    } else {
+        isFaqEditing.value = true;
+    }
 };
 
 </script>
