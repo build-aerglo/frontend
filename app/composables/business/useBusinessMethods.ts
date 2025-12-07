@@ -8,42 +8,61 @@ export default function () {
   const profileStore = useBusinessProfileStore();
   const getCategories = async () => {
     try {
-    const res = await businessApi.get("api/Category/top-level"); 
-    return res.data;
+      const res = await businessApi.get("api/Category/top-level");
+      return res.data;
     } catch (error: any) {
       console.error("Failed to fetch categories:", error);
       throw error;
     }
-
   };
   const saveBusinessProfile = async (id: string, data: BusinessProfile) => {
     try {
-    const res = await businessApi.patch(`api/Business/${id}`, data);
-    console.log(res)
+      const res = await businessApi.patch(`api/Business/${id}`, data);
+      console.log(res);
       // Save to store
-      profileStore.setProfileData(res.data);
+      // profileStore.setProfileData(res.data);
       return res.data;
-
     } catch (error: any) {
       console.error("Error saving business profile:", error);
       throw error;
     }
   };
-  
-  const saveBusinessPreferences = async (businessId: string, data: BusinessPreference) => {
-  try {
-    const res = await businessApi.patch(`api/business/${businessId}/settings`, data);
-    console.log("Preferences saved:", res.data);
 
-    return res.data;
-  } catch (error: any) {
-    console.error("Error saving preferences:", error);
-    throw error;
-  }
-};
+  const saveBusinessPreferences = async (
+    businessId: string,
+    data: BusinessPreference
+  ) => {
+    try {
+      const res = await businessApi.patch(
+        `api/business/${businessId}/settings`,
+        data
+      );
+      console.log("Preferences saved:", res.data);
+
+      return res.data;
+    } catch (error: any) {
+      console.error("Error saving preferences:", error);
+      throw error;
+    }
+  };
+
+  const getBusinessProfile = async (id: string) => {
+    try {
+      const res = await businessApi.get(`api/business/${id}`);
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+
+      throw new Error("Error fetching profile data: ");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
-    saveBusinessPreferences
+    saveBusinessPreferences,
+    getBusinessProfile,
   };
 }

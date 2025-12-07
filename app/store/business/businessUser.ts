@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 export interface UserState {
   accessToken: string | null;
   idToken: string | null;
   role: string | null;
   expires_in: Date;
   userData: BusinessUserResponse | null;
+  id: string | null;
 }
 
 export const useBusinessUserStore = defineStore("businessUser", {
@@ -17,40 +18,45 @@ export const useBusinessUserStore = defineStore("businessUser", {
     role: null,
     expires_in: new Date(),
     userData: null,
+    id: null,
   }),
   getters: {
     userId: (state): string | null => {
-        // 1. Use the accessToken
-        if (!state.accessToken) { 
-            return null;
-        }
-        try {
-            const decodedToken = jwtDecode(state.accessToken);
-            
-            // Get the 'sub' claim, which is the user ID
-            const sub = (decodedToken as any).sub as string | null;
-            
-            if (!sub) {
-                return null;
-            }
-            
-            // 2. Remove the provider prefix (e.g., "auth0|")
-            const parts = sub.split('|');
-            
-            // Return the last part of the split string (the actual unique ID)
-            // If there's no '|' (e.g., if it's already a clean ID), this returns the whole thing.
-            return parts.length > 1 ? parts.pop()! : sub; 
+      // 1. Use the accessToken
+      if (!state.accessToken) {
+        return null;
+      }
+      try {
+        const decodedToken = jwtDecode(state.accessToken);
 
-        } catch (error) {
-            console.error("Error decoding accessToken:", error);
-            return null;
+        // Get the 'sub' claim, which is the user ID
+        const sub = (decodedToken as any).sub as string | null;
+
+        if (!sub) {
+          return null;
         }
+
+        // 2. Remove the provider prefix (e.g., "auth0|")
+        const parts = sub.split("|");
+
+        // Return the last part of the split string (the actual unique ID)
+        // If there's no '|' (e.g., if it's already a clean ID), this returns the whole thing.
+        return parts.length > 1 ? parts.pop()! : sub;
+      } catch (error) {
+        console.error("Error decoding accessToken:", error);
+        return null;
+      }
     },
     businessId: (state): string | null => {
-      return state.userData?.businessId || null;
-    },
-},
+      return state.userData?.businessId || null;
+    },
+  },
   actions: {
+    setId(id: string) {
+      this.$patch((state) => {
+        state["id"] = id;
+      });
+    },
     getUser() {
       return {
         user: this.userData,
