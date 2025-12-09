@@ -75,37 +75,47 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+<!-- WhatsApp -->
+          <div class="flex items-center gap-2" v-if="business.socialMediaLinks">
             <i class="pi pi-whatsapp !text-primary"></i>
             <div>
-              <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp1 || 'WhatsApp' }}</div>
-              <div v-else><ProfileField v-model="business.socialMediaLinks.additionalProp1" placeholder="WhatsApp" :is-editing="isEditing"/></div>
+              <div v-if="!isEditing">{{ business.socialMediaLinks.additionalProp1 || 'WhatsApp' }}</div>
+              <div v-else>
+                <ProfileField v-model="business.socialMediaLinks.additionalProp1" placeholder="WhatsApp" :is-editing="isEditing"/>
+              </div>
             </div>
           </div>
-          
-          <div class="flex items-center gap-2">
+
+          <!-- Instagram -->
+          <div class="flex items-center gap-2" v-if="business.socialMediaLinks">
             <i class="pi pi-instagram !text-primary"></i>
             <div>
-              <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp2 || 'Instagram' }}</div>
-              <div v-else><ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram" :is-editing="isEditing"/></div>
+              <div v-if="!isEditing">{{ business.socialMediaLinks.additionalProp2 || 'Instagram' }}</div>
+              <div v-else>
+                <ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram" :is-editing="isEditing"/>
+              </div>
             </div>
           </div>
-          
+
+          <!-- Website -->
           <div class="flex items-center gap-2">
             <i class="pi pi-globe !text-primary"></i>
             <div>
               <div v-if="!isEditing">{{ business.website || 'Website URL' }}</div>
-              <div v-else><ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing"/></div>
+              <div v-else>
+                <ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing"/>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- Opening Hours -->
         <div class="flex items-center gap-3">
           <i class="pi pi-clock !text-primary"></i>
           <div class="flex-1">
-            <div v-if="!isEditing">
-              Opening Days: {{ business.openingHours?.additionalProp1 || 'Unknown' }} ||
-              Opening Time: {{ business.openingHours?.additionalProp2 || 'Unknown' }}  {{ business.openingHours?.additionalProp3 || '' }}
+            <div v-if="!isEditing && business.openingHours">
+              Opening Days: {{ business.openingHours.additionalProp1 || 'Unknown' }} ||
+              Opening Time: {{ business.openingHours.additionalProp2 || 'Unknown' }} {{ business.openingHours.additionalProp3 || '' }}
             </div>
             <div v-else>
               <OpeningHoursPicker v-model="business.openingHours" :is-editing="isEditing"/>
@@ -113,6 +123,7 @@
           </div>
         </div>
       </div>
+
 <div class="absolute top-4 right-4">
   <ButtonCustom
     :label="isEditing ? 'Save Changes' : 'Edit Profile'"
@@ -179,6 +190,7 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'business' })
+
 import Badge from '~/components/Badge.vue';
 import Star from '~/components/Stars.vue';
 import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue';
@@ -193,8 +205,8 @@ const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/Pr
 const ProfileGetReview = defineAsyncComponent(() => import('~/components/Profile/ProfileGetReview.vue'));
 
 const { getCategories, saveBusinessProfile, getBusinessProfile } = useBusinessMethods();
-
 const store = useBusinessUser()
+
 const businessId = store.id
 const categories = ref<{ id: string; name: string }[]>([]);
 const isLoading = ref(false);
@@ -202,86 +214,89 @@ const isEditing = ref(false)
 
 const categoryId = ref<string | null>(null);
 
+//
+// IMPORTANT: Safe defaults to prevent SSR crash
+//
 const business = ref<BusinessProfileResponse>({
-    id: "",
-    name: "",
-    website: "",
-    isBranch: false,
-    avgRating: 0,
-    reviewCount: 0,
-    parentBusinessId: "",
-    categories: [],
-    businessAddress: "",
-    logo: "",
-    openingHours: null,
-    businessEmail: "",
-    businessPhoneNumber: "",
-    cacNumber: "",
-    accessUsername: "",
-    accessNumber: "",
-    socialMediaLinks: null,
-    businessDescription: "",
-    media: null,
-    isVerified: false,
-    reviewLink: "",
-    preferredContactMethod: "",
-    highlights: [],
-    tags: [],
-    averageResponseTime: null,
-    profileClicks: 0,
-    faqs: [],
-    qrCodeBase64: "",
+  id: "",
+  name: "",
+  website: "",
+  isBranch: false,
+  avgRating: 0,
+  reviewCount: 0,
+  parentBusinessId: "",
+  categories: [],
+  businessAddress: "",
+  logo: "",
+  openingHours: {
+    additionalProp1: "",
+    additionalProp2: "",
+    additionalProp3: "",
+  },
+  businessEmail: "",
+  businessPhoneNumber: "",
+  cacNumber: "",
+  accessUsername: "",
+  accessNumber: "",
+  socialMediaLinks: {
+    additionalProp1: "",
+    additionalProp2: "",
+    additionalProp3: ""
+  },
+  businessDescription: "",
+  media: null,
+  isVerified: false,
+  reviewLink: "",
+  preferredContactMethod: "",
+  highlights: [],
+  tags: [],
+  averageResponseTime: null,
+  profileClicks: 0,
+  faqs: [],
+  qrCodeBase64: "",
 });
 
 onBeforeMount(async () => {
-    try {
-        isLoading.value = true;
+  try {
+    isLoading.value = true;
 
-        const [res, categoryRes] = await Promise.all([
-            getBusinessProfile(businessId || ""),
-            getCategories()
-        ]);
+    const [res, categoryRes] = await Promise.all([
+      getBusinessProfile(businessId || ""),
+      getCategories()
+    ]);
 
-        if (res?.statusCode === 200 && res.data) {
-            business.value = res.data;
+    if (res?.statusCode === 200 && res.data) {
 
-            if (!business.value.tags) business.value.tags = [];
-            if (!business.value.highlights) business.value.highlights = [];
-            if (!business.value.faqs) business.value.faqs = [];
+      // Merge API results instead of overwriting (prevents SSR hydration mismatch)
+      Object.assign(business.value, res.data);
 
-            if (!business.value.socialMediaLinks) {
-                business.value.socialMediaLinks = {
-                    additionalProp1: "",
-                    additionalProp2: "",
-                    additionalProp3: ""
-                };
-            }
+      // Re-apply failsafes
+      if (!business.value.socialMediaLinks) {
+        business.value.socialMediaLinks = { additionalProp1: "", additionalProp2: "", additionalProp3: "" }
+      }
+      if (!business.value.openingHours) {
+        business.value.openingHours = { additionalProp1: "", additionalProp2: "", additionalProp3: "" }
+      }
 
-            if (!business.value.openingHours) {
-                business.value.openingHours = {
-                    additionalProp1: "",
-                    additionalProp2: "",
-                    additionalProp3: ""
-                };
-            }
-
-            categoryId.value = res.data.categoryId ?? null;
-        }
-
-        if (Array.isArray(categoryRes)) {
-            categories.value = categoryRes;
-        }
-
-    } catch (error) {
-        console.log(error);
-    } finally {
-        isLoading.value = false;
+      categoryId.value = res.data.categoryId ?? null;
     }
+
+    if (Array.isArray(categoryRes)) {
+      categories.value = categoryRes;
+    }
+
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 const route = useRoute();
+
 type TabKey = 'overview' | 'review' | 'media' | 'faq' | 'getreview';
-const tabItems: { key: TabKey; name: string }[] = [
+
+const tabItems = [
   { key: 'overview', name: 'Overview' },
   { key: 'review', name: 'Reviews' },
   { key: 'media', name: 'Photos' },
@@ -289,14 +304,13 @@ const tabItems: { key: TabKey; name: string }[] = [
   { key: 'getreview', name: 'Get Reviews' }
 ];
 
-const currentTabKey = computed<TabKey>(() => {
+const currentTabKey = computed(() => {
   const t = route.query.tab;
   const first = Array.isArray(t) ? t[0] : t;
-  const key = first?.toString().toLowerCase() as TabKey;
-  return key || tabItems[0]!.key;
+  return (first?.toString().toLowerCase() as TabKey) || 'overview';
 });
 
-const componentMap: Record<TabKey, any> = {
+const componentMap = {
   overview: ProfileOverview,
   review: ProfileReview,
   media: ProfileMedia,
@@ -307,36 +321,40 @@ const componentMap: Record<TabKey, any> = {
 const currentComponent = computed(() => componentMap[currentTabKey.value]);
 
 const selectedCategoryName = computed(() => {
-    const cat = categories.value.find(c => c.id === categoryId.value);
-    return cat?.name ?? null;
+  const cat = categories.value.find(c => c.id === categoryId.value);
+  return cat?.name ?? null;
 });
 
-const toast = useToast()
+const toast = useToast();
+
 const updateProfile = async () => {
   console.log("UPDATE PROFILE CALLED");
-    try {
-        if (!businessId) {
-            return toast.add({
-                severity: 'error',
-                summary: 'ERROR',
-                detail: 'Business ID is missing',
-                life: 3000
-            });
-        }
-        const res = await saveBusinessProfile(businessId, business.value);
-        if (res) {
-            return toast.add({
-                severity: 'success',
-                summary: 'SUCCESS',
-                detail: 'Profile Updated',
-                life: 3000
-            });
-        }
-    } catch (error) {
-        console.log(error)
+  try {
+    if (!businessId) {
+      return toast.add({
+        severity: 'error',
+        summary: 'ERROR',
+        detail: 'Business ID is missing',
+        life: 3000
+      });
     }
 
-}
+    const res = await saveBusinessProfile(businessId, business.value);
+
+    if (res) {
+      return toast.add({
+        severity: 'success',
+        summary: 'SUCCESS',
+        detail: 'Profile Updated',
+        life: 3000
+      });
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const toggleEdit = async () => {
   if (isEditing.value) {
     await updateProfile();
@@ -345,10 +363,9 @@ const toggleEdit = async () => {
 };
 
 const handleSectionUpdate = (payload: { key: string; value: any }) => {
-    if (!isEditing.value) return;
-    (business.value as any)[payload.key] = payload.value;
+  if (!isEditing.value) return;
+  (business.value as any)[payload.key] = payload.value;
 };
-
 </script>
 
 <style scoped>
@@ -371,5 +388,4 @@ const handleSectionUpdate = (payload: { key: string; value: any }) => {
 .nav-link.active {
   @apply bg-primary text-white !important;
 }
-
 </style>
