@@ -1,35 +1,21 @@
 <template>
   <div class="flex flex-col gap-4">
-    
+
     <!-- DESCRIPTION -->
     <div class="card p-6 relative">
-      
+
       <div class="absolute top-4 right-5 z-10">
-        <button 
-          v-if="!isEditingDescription"
-          @click="isEditingDescription = true"
-          class="text-gray-500 hover:!text-primary transition-colors p-2 rounded-full"
-        >
+        <button v-if="!isEditingDescription" @click="isEditingDescription = true"
+          class="text-gray-500 hover:!text-primary transition-colors p-2 rounded-full">
           <i class="pi pi-pencil text-lg"></i>
         </button>
 
-        <ButtonCustom 
-          v-else
-          :primary="true"
-          @click="saveDescription"
-          label="Save changes"
-        />
+        <ButtonCustom v-else :primary="true" @click="saveDescription" label="Save changes" />
       </div>
 
       <div class="py-4">
-        <ProfileField
-          rows="3"
-          v-model="localDescription"
-          placeholder="Enter a detailed description of your business..."
-          :is-editing="isEditingDescription"
-          inputType="textarea"
-          :class="{ 'mt-6': isEditingDescription }"
-        />
+        <ProfileField rows="3" v-model="localDescription" placeholder="Enter a detailed description of your business..."
+          :is-editing="isEditingDescription" inputType="textarea" :class="{ 'mt-6': isEditingDescription }" />
       </div>
     </div>
 
@@ -39,54 +25,27 @@
         <h2 class="text-xl font-bold text-contrast">Highlights</h2>
 
         <div class="z-10">
-          <button 
-            v-if="!isEditingHighlights"
-            @click="isEditingHighlights = true"
-            class="text-gray-500 hover:!text-primary transition-colors p-2 rounded-full"
-          >
+          <button v-if="!isEditingHighlights" @click="isEditingHighlights = true"
+            class="text-gray-500 hover:!text-primary transition-colors p-2 rounded-full">
             <i class="pi pi-pencil text-lg"></i>
           </button>
 
-          <ButtonCustom 
-            v-else
-            @click="saveHighlights"
-            :primary="true"
-            label="Save Changes"
-          />
+          <ButtonCustom v-else @click="saveHighlights" :primary="true" label="Save Changes" />
         </div>
       </div>
 
       <div class="pt-2">
         <!-- EDIT MODE -->
-        <div v-if="isEditingHighlights" class="grid grid-cols-2 gap-x-6 gap-y-2">
-          <div 
-            v-for="h in localHighlights"
-            :key="h.id"
-            @click="h.checked = !h.checked"
-            class="flex items-center cursor-pointer text-gray-800 hover:text-primary transition-colors"
-          >
-            <div 
-              :class="h.checked ? '!bg-primary !border-primary' : 'bg-white border-gray-400'"
-              class="w-5 h-5 border-2 rounded-full flex items-center justify-center mr-3 transition-colors duration-200"
-            >
-              <i v-if="h.checked" class="pi pi-check text-white text-xs"></i>
-            </div>
-            <span class="text-sm font-medium">{{ h.name }}</span>
-          </div>
+        <div v-if="isEditingHighlights">
+          <AutoComplete v-model="localHighlights" :typeahead="false" class="mt-2.5" multiple fluid />
+          <small>Press "Enter" to select a highlight</small>
         </div>
 
         <!-- VIEW MODE -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-          <span 
-            v-for="h in checkedHighlights"
-            :key="h.id"
-            class="text-contrast text-sm font-medium px-3 py-1 flex items-center"
-          >
-            <i class="pi pi-check text-green-500 text-xs mr-2"></i>
-            {{ h.name }}
-          </span>
+        <div v-else>
+          <Chip v-for="(i, idx) in localHighlights" :key="idx" :label="i" />
 
-          <p v-if="checkedHighlights.length === 0" class="text-gray-500 text-sm italic">
+          <p v-if="checkedHighlights" class="text-gray-500 text-sm italic">
             No features highlighted yet.
           </p>
         </div>
@@ -100,51 +59,28 @@
         <h2 class="text-xl font-bold text-contrast">Tags</h2>
 
         <div class="z-10">
-          <button 
-            v-if="!isEditingTags"
-            @click="isEditingTags = true"
-            class="text-gray-500 hover:text-blue-600 transition-colors p-2 rounded-full"
-          >
+          <button v-if="!isEditingTags" @click="isEditingTags = true"
+            class="text-gray-500 hover:text-blue-600 transition-colors p-2 rounded-full">
             <i class="pi pi-pencil text-lg"></i>
           </button>
 
-          <ButtonCustom 
-            v-else
-            @click="saveTags"
-            :primary="true"
-            label="Save Changes"
-          />
+          <ButtonCustom v-else @click="saveTags" :primary="true" label="Save Changes" />
         </div>
       </div>
 
       <div class="pt-1">
 
-        <!-- EDIT MODE -->
-        <div v-if="isEditingTags" class="flex flex-wrap gap-2 pb-2">
-          <span 
-            v-for="tag in localTags"
-            :key="tag.id"
-            @click="tag.checked = !tag.checked"
-            class="text-sm font-medium px-4 py-2 rounded-full cursor-pointer flex-shrink-0 transition-colors duration-200"
-            :class="tag.checked 
-              ? '!bg-primary text-white border !border-primary' 
-              : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'"
-          >
-            {{ tag.name }}
-          </span>
+
+        <div v-if="isEditingTags">
+          <AutoComplete v-model="localTags" forceSelection :suggestions="tagsContants" class="mt-2.5" multiple fluid />
+          <small>Press "Enter" to select a tag</small>
         </div>
 
         <!-- VIEW MODE -->
-        <div v-else class="flex flex-wrap gap-1">
-          <span 
-            v-for="tag in checkedTags"
-            :key="tag.id"
-            class="bg-green-50 text-green-600 text-sm font-medium px-3 rounded-full"
-          >
-            {{ tag.name }}
-          </span>
+        <div v-else>
+          <Chip v-for="(i, idx) in localTags" :key="idx" :label="i" />
 
-          <p v-if="checkedTags.length === 0" class="text-gray-500 text-sm italic">
+          <p v-if="checkedTags" class="text-gray-500 text-sm italic">
             No tags set yet.
           </p>
         </div>
@@ -157,6 +93,21 @@
 </template>
 
 <script setup lang="ts">
+import { tagsContants } from '../../utils';
+const items = ref([]);
+const search = (event: any) => {
+  setTimeout(() => {
+    if (!event.query.trim().length) {
+      localTags.value = [...tagsContants];
+    } else {
+      localTags.value = tagsContants.filter((country) => {
+        return country.toLowerCase().startsWith(event.query.toLowerCase());
+      });
+    }
+  }, 250);
+}
+
+
 /* ---------- TYPES ---------- */
 type SelectableItem = {
   id: string | number;
@@ -184,11 +135,11 @@ const emit = defineEmits<{
 /* ---------- LOCAL STATE (Editable copies) ---------- */
 const localDescription = ref<string>(props.business.businessDescription ?? "");
 
-const localHighlights = ref<SelectableItem[]>(
+const localHighlights = ref(
   JSON.parse(JSON.stringify(props.business.highlights ?? []))
 );
 
-const localTags = ref<SelectableItem[]>(
+const localTags = ref(
   JSON.parse(JSON.stringify(props.business.tags ?? []))
 );
 
@@ -221,11 +172,12 @@ watch(
 
 /* ---------- Computed Lists ---------- */
 const checkedHighlights = computed(() =>
-  localHighlights.value.filter((h: SelectableItem) => h.checked)
+  // localHighlights.value.filter((h: SelectableItem) => h.checked)
+  localHighlights.value.length <= 0
 );
 
 const checkedTags = computed(() =>
-  localTags.value.filter((t: SelectableItem) => t.checked)
+  localTags.value.length <= 0
 );
 
 /* ---------- SAVE HANDLERS ---------- */
@@ -240,7 +192,7 @@ const saveDescription = () => {
 const saveHighlights = () => {
   emit("update-section", {
     key: "highlights",
-    value: checkedHighlights.value.map((h: SelectableItem) => h.name)
+    value: localHighlights.value
   });
   isEditingHighlights.value = false;
 };
@@ -248,9 +200,8 @@ const saveHighlights = () => {
 const saveTags = () => {
   emit("update-section", {
     key: "tags",
-    value: checkedTags.value.map((t: SelectableItem) => t.name)
+    value: localTags.value
   });
   isEditingTags.value = false;
 };
 </script>
-

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 export interface UserState {
   accessToken: string | null;
   idToken: string | null;
@@ -21,32 +21,32 @@ export const useBusinessUserStore = defineStore("businessUser", {
     id: null,
   }),
   getters: {
-    userId: (state): string | null => {
-      // 1. Use the accessToken
-      if (!state.accessToken) {
-        return null;
-      }
-      try {
-        const decodedToken = jwtDecode(state.accessToken);
+    // userId: (state): string | null => {
+    //   // 1. Use the accessToken
+    //   if (!state.accessToken) {
+    //     return null;
+    //   }
+    //   try {
+    //     const decodedToken = jwtDecode(state.accessToken);
 
-        // Get the 'sub' claim, which is the user ID
-        const sub = (decodedToken as any).sub as string | null;
+    //     // Get the 'sub' claim, which is the user ID
+    //     const sub = (decodedToken as any).sub as string | null;
 
-        if (!sub) {
-          return null;
-        }
+    //     if (!sub) {
+    //       return null;
+    //     }
 
-        // 2. Remove the provider prefix (e.g., "auth0|")
-        const parts = sub.split("|");
+    //     // 2. Remove the provider prefix (e.g., "auth0|")
+    //     const parts = sub.split("|");
 
-        // Return the last part of the split string (the actual unique ID)
-        // If there's no '|' (e.g., if it's already a clean ID), this returns the whole thing.
-        return parts.length > 1 ? parts.pop()! : sub;
-      } catch (error) {
-        console.error("Error decoding accessToken:", error);
-        return null;
-      }
-    },
+    //     // Return the last part of the split string (the actual unique ID)
+    //     // If there's no '|' (e.g., if it's already a clean ID), this returns the whole thing.
+    //     return parts.length > 1 ? parts.pop()! : sub;
+    //   } catch (error) {
+    //     console.error("Error decoding accessToken:", error);
+    //     return null;
+    //   }
+    // },
     businessId: (state): string | null => {
       return state.userData?.businessId || null;
     },

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { EndUser } from "~/types";
-import { jwtDecode } from 'jwt-decode';
+// import { jwtDecode } from 'jwt-decode';
 export interface EndUserState {
   accessToken: string | null;
   idToken: string | null;
@@ -11,93 +11,91 @@ export interface EndUserState {
 
 export const useUserStore = defineStore("EndUser", {
   state: (): EndUserState & { theme: string } => ({
-      accessToken: null,
-      idToken: null,
-      role: null,
-      expires_in: new Date(),
-      userData: null,
-      theme: "light",
-    }),
+    accessToken: null,
+    idToken: null,
+    role: null,
+    expires_in: new Date(),
+    userData: null,
+    theme: "light",
+  }),
   getters: {
-      userId: (state): string | null => {
-          if (!state.idToken) {
-              return null;
-          }
-          try {
-              const decodedToken = jwtDecode(state.idToken);
-              return (decodedToken as any).sub || null; 
-          } catch (error) {
-              console.error("Error decoding id_token:", error);
-              return null;
-          }
-      },
-      
-    },
-  
-    actions: {
-      getUser() {
-        return {
-          user: this.userData,
-          access_token: this.accessToken,
-          role: this.role,
-          expires: this.expires_in,
-        };
-      },
-  
-      // Called on login
-      setLoginData(payload: {
-        access_token: string;
-        id_token: string;
-        role: string;
-        expires: Date;
-      }) {
-        // this.accessToken = payload.access_token
-        // this.idToken = payload.id_token
-        // this.role = payload.role
-        console.log(payload);
-        this.$patch((state) => {
-          // state["loggedIn"] = true;
-          state["accessToken"] = payload.access_token;
-          state["idToken"] = payload.id_token;
-          state["role"] = payload.role;
-          state["expires_in"] = payload.expires;
-        });
-      },
-  
-      // Called on signup
-      setUserData(user: EndUser) {
-        // this.userData = user;
-        this.$patch((state) => {
-          state["userData"] = user;
-        });
-      },
-  
-      // Optional: clear user info (logout)
-      clearUser() {
-        this.accessToken = null;
-        this.idToken = null;
-        this.role = null;
-        this.userData = null;
-      },
+    // userId: (state): string | null => {
+    //     if (!state.idToken) {
+    //         return null;
+    //     }
+    //     try {
+    //         const decodedToken = jwtDecode(state.idToken);
+    //         return (decodedToken as any).sub || null;
+    //     } catch (error) {
+    //         console.error("Error decoding id_token:", error);
+    //         return null;
+    //     }
+    // },
+  },
+
+  actions: {
+    getUser() {
+      return {
+        user: this.userData,
+        access_token: this.accessToken,
+        role: this.role,
+        expires: this.expires_in,
+      };
+    },
+
+    // Called on login
+    setLoginData(payload: {
+      access_token: string;
+      id_token: string;
+      role: string;
+      expires: Date;
+    }) {
+      // this.accessToken = payload.access_token
+      // this.idToken = payload.id_token
+      // this.role = payload.role
+      console.log(payload);
+      this.$patch((state) => {
+        // state["loggedIn"] = true;
+        state["accessToken"] = payload.access_token;
+        state["idToken"] = payload.id_token;
+        state["role"] = payload.role;
+        state["expires_in"] = payload.expires;
+      });
+    },
+
+    // Called on signup
+    setUserData(user: EndUser) {
+      // this.userData = user;
+      this.$patch((state) => {
+        state["userData"] = user;
+      });
+    },
+
+    // Optional: clear user info (logout)
+    clearUser() {
+      this.accessToken = null;
+      this.idToken = null;
+      this.role = null;
+      this.userData = null;
+    },
     toggleTheme() {
-    this.theme = this.theme === "light" ? "dark" : "light";
+      this.theme = this.theme === "light" ? "dark" : "light";
 
-      
-    if (this.theme === "dark") {
-    document.documentElement.classList.add("dark");
-    } else {
-    document.documentElement.classList.remove("dark");
-     }
-     },
-
-    initTheme() {
-    if (typeof document === "undefined") return;
-    if (this.theme === "dark") {
-      document.documentElement.classList.add("dark");
+      if (this.theme === "dark") {
+        document.documentElement.classList.add("dark");
       } else {
         document.documentElement.classList.remove("dark");
-     }
-   },
+      }
+    },
+
+    initTheme() {
+      if (typeof document === "undefined") return;
+      if (this.theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    },
   },
 
   persist: true,
