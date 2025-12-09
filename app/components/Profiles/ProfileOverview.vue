@@ -157,100 +157,82 @@
 </template>
 
 <script setup lang="ts">
-/* ---------- TYPES ---------- */
-type SelectableItem = {
-  id: string | number;
-  name: string;
-  checked: boolean;
-};
+import { ref, computed, watch } from 'vue'; // Import watch for reactivity feedback
 
-/* ---------- PROPS ---------- */
+/* ------------------ PROPS FROM PARENT ------------------ */
 const props = defineProps({
-  business: {
-    type: Object,
-    required: true
+  description: String,
+  highlights: {
+    type: Array as () => { id: string | number; name: string; checked: boolean }[],
+    default: () => [],
   },
-  isEditing: {
-    type: Boolean,
-    required: true
-  }
+  tags: {
+    type: Array as () => { id: string | number; name: string; checked: boolean }[],
+    default: () => [],
+  },
 });
 
-/* ---------- EMITS ---------- */
+/* Emits to notify parent */
 const emit = defineEmits<{
-  (e: "update-section", payload: { key: string; value: any }): void;
+  (e: 'update', payload: { key: string; value: any }): void;
 }>();
 
-/* ---------- LOCAL STATE (Editable copies) ---------- */
-const localDescription = ref<string>(props.business.businessDescription ?? "");
+/* Local copies for edit mode */
+const localDescription = ref(props.description ?? "");
+const localHighlights = ref(JSON.parse(JSON.stringify(props.highlights)));
+const localTags = ref(JSON.parse(JSON.stringify(props.tags)));
 
-const localHighlights = ref<SelectableItem[]>(
-  JSON.parse(JSON.stringify(props.business.highlights ?? []))
-);
-
-const localTags = ref<SelectableItem[]>(
-  JSON.parse(JSON.stringify(props.business.tags ?? []))
-);
-
-/* ---------- UI Editing Toggles ---------- */
 const isEditingDescription = ref(false);
 const isEditingHighlights = ref(false);
 const isEditingTags = ref(false);
 
-/* ---------- Watch for Parent Updates ---------- */
-watch(
-  () => props.business.businessDescription,
-  (value) => {
-    localDescription.value = value ?? "";
-  }
-);
+// Watch for prop changes from the parent to update local state (e.g., after initial load or saving)
+watch(() => props.description, (newVal) => {
+    localDescription.value = newVal ?? "";
+});
 
-watch(
-  () => props.business.highlights,
-  (value) => {
-    localHighlights.value = JSON.parse(JSON.stringify(value ?? []));
-  }
-);
+watch(() => props.highlights, (newVal) => {
+    // Only deep copy if the content changes substantially, for simplicity, we copy everything
+    localHighlights.value = JSON.parse(JSON.stringify(newVal));
+});
 
-watch(
-  () => props.business.tags,
-  (value) => {
-    localTags.value = JSON.parse(JSON.stringify(value ?? []));
-  }
-);
+watch(() => props.tags, (newVal) => {
+    localTags.value = JSON.parse(JSON.stringify(newVal));
+});
 
-/* ---------- Computed Lists ---------- */
-const checkedHighlights = computed(() =>
-  localHighlights.value.filter((h: SelectableItem) => h.checked)
-);
 
-const checkedTags = computed(() =>
-  localTags.value.filter((t: SelectableItem) => t.checked)
-);
+/* Computed for view mode */
+const checkedHighlights = computed(() => {
+  return localHighlights.value.filter(
+    (h: { id: string | number; name: string; checked: boolean }) => h.checked
+  );
+});
 
-/* ---------- SAVE HANDLERS ---------- */
+const checkedTags = computed(() => {
+  return localTags.value.filter(
+    (t: { id: string | number; name: string; checked: boolean }) => t.checked
+  );
+});
+
+/* 🚨 SAVING FUNCTIONS: Emit a generic 'update' event to the parent */
+
 const saveDescription = () => {
-  emit("update-section", {
-    key: "businessDescription",
-    value: localDescription.value
-  });
+  // Key name must match the property in business.value (businessDescription)
+  emit("update", { key: "businessDescription", value: localDescription.value });
   isEditingDescription.value = false;
 };
 
 const saveHighlights = () => {
-  emit("update-section", {
-    key: "highlights",
-    value: checkedHighlights.value.map((h: SelectableItem) => h.name)
-  });
+  // Extract only the names of the checked highlights for the API payload
+  const checkedNames = checkedHighlights.value.map((h: { id: string | number; name: string; checked: boolean }) => h.name);
+  emit("update", { key: "highlights", value: checkedNames });
   isEditingHighlights.value = false;
 };
 
 const saveTags = () => {
-  emit("update-section", {
-    key: "tags",
-    value: checkedTags.value.map((t: SelectableItem) => t.name)
-  });
+  // Extract only the names of the checked tags for the API payload
+  const checkedNames = checkedTags.value.map((t: { id: string | number; name: string; checked: boolean }) => t.name);
+  emit("update", { key: "tags", value: checkedNames });
   isEditingTags.value = false;
 };
 </script>
-

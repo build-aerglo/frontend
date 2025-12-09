@@ -24,7 +24,7 @@
         <NuxtLink to="./business/auth/sign-up">Business Registration page</NuxtLink>
         <NuxtLink to="./business/auth/sign-in">Business Login page</NuxtLink>
         <NuxtLink to="./business/settings">Business Settings page</NuxtLink>
-        <NuxtLink to="./business/profile">Business Profile page</NuxtLink>
+        <NuxtLink to="./business/profiles/">Business Profile page</NuxtLink>
          <NuxtLink to="./business/[id]">Unclaimed Business</NuxtLink>
     </div>
 </template>

@@ -20,7 +20,9 @@
 
       // External custom styles (overrides)
       inputClass
+      
     ]"
+    
   >
     <i v-if="icon" :class="`pi pi-${icon}`" class="px-3"></i>
     {{ label }}
@@ -28,6 +30,6 @@
 </template>
 
 <script setup>
-const props = defineProps(['type', 'primary', 'label', 'disabled', 'icon', 'isLoading', 'size', 'inputClass', 'rounded']);
+const props = defineProps(['type', 'primary', 'label', 'disabled', 'icon', 'isLoading', 'size', 'inputClass', 'rounded', 'isEditing']);
 const events = defineEmits(['clicked'])
 </script>

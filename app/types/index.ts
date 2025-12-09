@@ -8,3 +8,14 @@ export interface LoginData {
   email: string;
   password: string;
 }
+
+export interface UserReview {
+  businessId: String;
+  locationId: String;
+  reviewerId: String;
+  email: String;
+  starRating: Number;
+  reviewBody: String;
+  photoUrls: String[]
+  reviewAsAnon: Boolean;
+}

@@ -179,7 +179,7 @@ const logout = () => {
 }
 const savePreferences = async () => {
   try {
-    const businessId = store.userData?.businessId;
+    const businessId = store.userData?.business?.businessId;
 
     if (!businessId) {
       console.error("Business ID missing!");
