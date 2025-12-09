@@ -108,24 +108,17 @@
           </div>
         </div>
       </div>
-
-      <div class="absolute top-4 right-4">
-        <ButtonCustom
-          :label="isEditing ? 'Save Changes' : 'Edit Profile'"
-          :primary="true"
-          size="lg"
-          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  
-          input-class="text-[15px] w-auto hidden md:block"
-          @click="toggleEdit"
-        />
-        <ButtonCustom
-          :primary="true"
-          size="lg"
-          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"  
-          input-class="text-[15px] w-auto md:hidden"
-          @click="toggleEdit"
-        />
-      </div>
+<div class="absolute top-4 right-4">
+  <ButtonCustom
+    :label="isEditing ? 'Save Changes' : 'Edit Profile'"
+    :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"
+    :primary="true"
+    size="lg"
+    input-class="text-[15px] w-auto"
+    class="whitespace-nowrap"
+    @click="toggleEdit"
+  />
+</div>
     </section>
 
     <div class="sticky top-0 bg-white z-30 border-t">
@@ -179,10 +172,6 @@ const businessId = store.id
 const categories = ref<{ id: string; name: string }[]>([]);
 const isLoading = ref(false);
 const isEditing = ref(false)
-const buttonLabel = computed(() => {
-    return isEditing.value ? 'Save Changes' : 'Edit Profile';
-});
-
 
 const categoryId = ref<string | null>(null);
 
@@ -322,16 +311,10 @@ const updateProfile = async () => {
 
 }
 const toggleEdit = async () => {
+  if (isEditing.value) {
+    await updateProfile();
+  }
   isEditing.value = !isEditing.value;
-    // When saving
-    if (isEditing.value) {
-        const payload = business.value
-        // const profileData = await saveBusinessProfile(businessId ?? '', payload);
-        console.log(payload)
-        // store.setProfileData(profileData);
-        await updateProfile();
-    }
-    
 };
 
 const handleSectionUpdate = (payload: { key: string; value: any }) => {
