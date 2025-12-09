@@ -7,6 +7,19 @@
         <div class="absolute -top-2 -right-2">
           <Badge :type="business.isVerified ? 'verified' : 'standard'" />
         </div>
+        <div class="flex items-center mt-2">
+                 <Star
+                    v-for="n in 5"
+                    :key="n"
+                    :value="business.avgRating - (n - 1)"
+                    :color-level="Math.ceil(business.avgRating)"
+                    class="w-5 h-5"
+                    />
+                    <span class="font-semibold text-sm text-gray-500">{{ business.avgRating?.toFixed(1) ?? '0.0' }}</span>
+        </div>
+        <div class="text-sm text-gray-600">
+          <span class="text-gray-500">({{ business.reviewCount ?? 0 }} reviews)</span>
+        </div>
       </div>
 
       <div class="flex-1 flex flex-col gap-3">
@@ -20,14 +33,6 @@
               <div v-else>
                 <ProfileField v-model="business.name" placeholder="Business Name" :is-editing="isEditing" />
               </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 mt-2">
-            <Star :value="business.avgRating" :class="'w-6 h-6'"/>
-            <div class="text-sm text-gray-600">
-              <span class="font-semibold">{{ business.avgRating?.toFixed(1) ?? '0.0' }}</span>
-              <span class="text-gray-500">({{ business.reviewCount ?? 0 }} reviews)</span>
             </div>
           </div>
         </div>
@@ -137,7 +142,9 @@
       </div>
     </div>
 
-    <div class="mt-6">
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Main Content Area (2/3) -->
+      <div class="lg:col-span-2">
       <KeepAlive>
         <component
           :is="currentComponent"
@@ -147,6 +154,26 @@
         />
       </KeepAlive>
     </div>
+
+    <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <!-- Quick Actions (Desktop) -->
+          <div class="bg-white rounded-xl shadow-sm p-6 md:sticky md:top-24">
+            <h4 class="font-bold text-gray-900 text-center mt-2 mb-4">Quick Stats</h4>
+            <div class="space-y-3">
+              <button class="w-full px-2 py-3 text-sm  bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Total Reviews 1K
+              </button>
+              <button class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Average Response Time: 12hours
+              </button>
+              <button class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                Profile clicks(30 days) 3450
+              </button>
+            </div>
+          </div>
+          </div>
+        </div>
     </div>
 </template>
 
