@@ -48,12 +48,12 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
-    modelValue: string;
-    icon?: string;
-    rows?: string;
-    placeholder: string;
-    isEditing: boolean;
-    inputType?: 'text' | 'textarea'; 
+  modelValue: string;
+  icon?: string;
+  rows?: string;
+  placeholder: string;
+  isEditing: boolean;           // <-- FIXED (optional)
+  inputType?: 'text' | 'textarea';
 }>();
 
 const emit = defineEmits(['update:modelValue']);
