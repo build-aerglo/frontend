@@ -1,276 +1,247 @@
 <template>
-    <div>
-        <div
-            class="bg-white w-full border border-b-2 border-gray-500 p-5 flex flex-col md:flex-row gap-5 md:gap-8 relative">
-            <div class="relative image-slot-profile flex-shrink-0 w-[140px] h-[140px] md:w-[160px] md:h-[160px]"
-                :class="{ 'cursor-pointer': isEditing }" @click="isEditing && triggerFileInput()">
-                <img :src="previewUrl || '/images/profile/profile-picture.jpg'" alt="Profile"
-                    class="w-[140px] h-[140px] md:w-[160px] md:h-[160px] rounded-[20px] object-cover" />
-                <div class="absolute -top-2 -right-2 flex flex-col gap-1">
-                    <Badge type="standard" />
-                </div>
-                <div v-if="isEditing">
-                    <div
-                        class="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-300 flex items-center justify-center rounded-[20px] overlay-profile">
-                        <i class="pi pi-camera text-white text-xl"></i>
-                    </div>
-                    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
-                </div>
+  <div>
+    <section class="bg-white w-full border border-b-2 border-gray-200 p-5 flex flex-col md:flex-row gap-5 relative items-start">
+      <div class="relative flex-shrink-0">
+        <ProfileImageUploader v-model="business.logo" :disabled="!isEditing" />
+
+        <div class="absolute -top-2 -right-2">
+          <Badge :type="business.isVerified ? 'verified' : 'standard'" />
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-3">
+            <div class="flex-1">
+              <div v-if="!isEditing" class="flex items-center gap-3">
+                <h1 class="text-2xl font-semibold text-contrast m-0">{{ business.name || 'Business Name' }}</h1>
+              </div>
+
+              <div v-else>
+                <ProfileField v-model="business.name" placeholder="Business Name" :is-editing="isEditing" />
+              </div>
             </div>
+          </div>
 
-            <div class="flex flex-col gap-[10px] items-start justify-start flex-1">
-                <div class="flex gap-2 items-center">
-                    <template v-if="!isEditing">
-                        <span class="text-contrast text-[150%] font-bold">
-                            {{ business.name || 'Business Name' }}
-                        </span>
-                    </template>
-                    <template v-else>
-                        <input v-model="business.name" type="text" placeholder="Business Name"
-                            class="border border-gray-400 rounded-md px-2 py-1 w-[220px]" />
-                    </template>
-                </div>
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="flex">
-                        <Star v-for="n in 5" :key="n" :value="businessData.rating - (n - 1)"
-                            :color-level="Math.ceil(businessData.rating)" class="w-6 h-6" />
-                    </div>
-                    <span class="text-lg font-semibold text-gray-700">{{ businessData.rating }}</span>
-                    <span class="text-gray-500">({{ businessData.reviewCount }} reviews)</span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-briefcase !text-primary text-lg flex-shrink-0"></i>
-                    <div class="w-full">
-                        <template v-if="!isEditing">
-                            <span class="text-contrast">
-                                {{ categoryNames.length > 0 ? categoryNames.join(', ') : 'Sector' }}
-                            </span>
-                        </template>
-
-                        <template v-else>
-                            <MultiSelect v-model="categoryIds" :options="categories" optionLabel="name" optionValue="id"
-                                filter required placeholder="Select Sector" class="w-[200px] h-[30px] p-0 mt-1 border border-gray-300 outline-none rounded-[5px] 
-                        focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
-                        bg-secondaryLinen" />
-                        </template>
-                    </div>
-                </div>
-
-                <ProfileLocation v-model="business.businessAddress" :is-editing="isEditing" />
-
-                <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2' : 'flex gap-2 items-center']">
-                    <ProfileField v-model="business.businessPhoneNumber" icon="pi pi-phone" placeholder="Contact"
-                        :is-editing="isEditing" />
-                    <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
-                    <ProfileField v-model="socialMediaLinks.whatsapp" icon="pi pi-whatsapp" placeholder="WhatsApp"
-                        :is-editing="isEditing" />
-                </div>
-
-                <div :class="[isEditing ? 'flex flex-col md:flex-row gap-2' : 'flex gap-2 items-center']">
-                    <ProfileField v-model="business.website" icon="pi pi-globe" placeholder="Website URL"
-                        :is-editing="isEditing" />
-                    <span v-if="!isEditing" class="text-gray-400 text-sm mx-1">||</span>
-                    <ProfileField v-model="socialMediaLinks.instagram" icon="pi pi-instagram" placeholder="Instagram"
-                        :is-editing="isEditing" />
-                </div>
-                <!-- <OpeningHoursPicker v-model="business.openingHours" :is-editing="isEditing" /> -->
+          <div class="flex items-center gap-2 mt-2">
+            <Star :value="business.avgRating" :class="'w-6 h-6'"/>
+            <div class="text-sm text-gray-600">
+              <span class="font-semibold">{{ business.avgRating?.toFixed(1) ?? '0.0' }}</span>
+              <span class="text-gray-500">({{ business.reviewCount ?? 0 }} reviews)</span>
             </div>
-
-            <div class="absolute top-5 right-5">
-                <ButtonCustom :label="isEditing ? 'Save Changes' : 'Edit Profile'" :primary="true" size="lg"
-                    :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'" input-class="text-[15px] w-auto hidden md:block"
-                    @click="toggleEdit" />
-                <ButtonCustom :primary="true" size="lg" :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"
-                    input-class="text-[15px] w-auto md:hidden" @click="toggleEdit" />
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <i class="pi pi-briefcase !text-primary"></i>
+          <div class="flex-1">
+            <div v-if="!isEditing" class="text-contrast">
+              {{ selectedCategoryName || 'Sector' }}
             </div>
+            <div v-else class="w-64">
+              <Dropdown
+                v-model="categoryId"
+                :options="categories"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Select sector"
+                class="w-full"
+              />
+            </div>
+          </div>
         </div>
 
-        <!-- Tabs Navigation -->
-        <div class=" sticky top-10 z-50 pt-3 bg-white w-full border-t mb-4 border-gray-200 shadow-sm">
-            <div class="relative flex items-center py-4 px-4 md:px-0 md:justify-start">
-
-                <div class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
-                    id="scroll-left-btn" @click="scrollLeft">
-                    <i class="pi pi-chevron-left text-lg"></i>
-                </div>
-
-                <ul class="nav nav-pills flex flex-nowrap gap-2 overflow-x-scroll hide-scrollbar scroll-smooth w-full px-4 md:px-4"
-                    id="tabs-scroll-container" ref="tabsContainer">
-                    <li v-for="tab in tabItems" :key="tab.key" class="nav-item flex-shrink-0">
-                        <NuxtLink :to="{ path: $route.path, query: { tab: tab.key } }" class="nav-link"
-                            :class="{ active: currentTabKey === tab.key }">
-                            {{ tab.name }}
-                        </NuxtLink>
-                    </li>
-                </ul>
-
-                <div class="hidden sm:flex items-center justify-center p-2 text-gray-600 cursor-pointer z-10 md:hidden"
-                    id="scroll-right-btn" @click="scrollRight">
-                    <i class="pi pi-chevron-right text-lg"></i>
-                </div>
-
+        <div class="flex items-center gap-4">
+          <i class="pi pi-map-marker !text-primary"></i>
+          <div class="flex-1">
+            <div v-if="!isEditing" class="text-contrast">{{ business.businessAddress || 'Add location' }}</div>
+            <div v-else>
+              <input v-model="business.businessAddress" placeholder="Business address" class=" border rounded px-2 py-1" />
             </div>
+          </div>
         </div>
 
-        <div class="md:grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <div class="col-span-1 md:col-span-2 ">
-                <KeepAlive>
-                    <component :is="currentComponent" v-bind="getPropsForComponent(currentTabKey)"
-                        @update="handleComponentUpdate" :description="business.businessDescription"
-                        :tags="business.tags" :highlights="business.highlights" :faqs="business.faqs"
-                        :media="business.media ?? []" :data="business" />
-                </KeepAlive>
+        <div class="flex flex-wrap gap-x-5 gap-y-3">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-phone !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.businessPhoneNumber || 'Contact' }}</div>
+              <div v-else><ProfileField v-model="business.businessPhoneNumber" placeholder="Phone" :is-editing="isEditing"/></div>
             </div>
+          </div>
 
-            <!-- Sidebar -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- Quick Actions (Desktop) -->
-                <div class="hidden md:block bg-white rounded-xl shadow-sm p-6 sticky top-24">
-                    <h4 class="font-bold text-gray-900 text-center mt-2 mb-4">Quick Stats</h4>
-                    <div class="space-y-3">
-                        <button
-                            class="w-full px-2 py-3 text-sm  bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-                            Total Reviews 1K
-                        </button>
-                        <button
-                            class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-                            Average Response Time: 12hours
-                        </button>
-                        <button
-                            class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-                            Profile clicks(30 days) 3450
-                        </button>
-                    </div>
-                </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-whatsapp !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp1 || 'WhatsApp' }}</div>
+              <div v-else><ProfileField v-model="business.socialMediaLinks.additionalProp1" placeholder="WhatsApp" :is-editing="isEditing"/></div>
             </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <i class="pi pi-instagram !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp2 || 'Instagram' }}</div>
+              <div v-else><ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram" :is-editing="isEditing"/></div>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <i class="pi pi-globe !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.website || 'Website URL' }}</div>
+              <div v-else><ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing"/></div>
+            </div>
+          </div>
         </div>
+
+        <div class="flex items-center gap-3">
+          <i class="pi pi-clock !text-primary"></i>
+          <div class="flex-1">
+            <div v-if="!isEditing">
+              Opening Days: {{ business.openingHours?.additionalProp1 || 'Unknown' }} ||
+              Opening Time: {{ business.openingHours?.additionalProp2 || 'Unknown' }}  {{ business.openingHours?.additionalProp3 || '' }}
+            </div>
+            <div v-else>
+              <OpeningHoursPicker v-model="business.openingHours" :is-editing="isEditing"/>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="absolute top-4 right-4">
+  <ButtonCustom
+    :label="isEditing ? 'Save Changes' : 'Edit Profile'"
+    :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'"
+    :primary="true"
+    size="lg"
+    input-class="text-[15px] w-auto"
+    class="whitespace-nowrap"
+    @click="toggleEdit"
+  />
+</div>
+    </section>
+
+    <div class="sticky top-0 bg-white z-30 border-t">
+      <div class="container-px py-4">
+        <ul class="nav nav-pills flex gap-3 overflow-x-auto hide-scrollbar ml-4">
+          <li v-for="tab in tabItems" :key="tab.key">
+            <NuxtLink
+              :to="{ path: $route.path, query: { tab: tab.key } }"
+              class="nav-link"
+              :class="{ active: currentTabKey === tab.key }"
+            >
+              {{ tab.name }}
+            </NuxtLink>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <KeepAlive>
+        <component
+          :is="currentComponent"
+          :business="business"
+          :is-editing="isEditing"
+          @update-section="handleSectionUpdate"
+        />
+      </KeepAlive>
+    </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import useBusinessMethods from '~/composables/business/useBusinessMethods';
-import { useBusinessProfileStore } from "~/store/business/businessProfile";
-import useBusinessUser from '~/composables/business/useBusinessUser';
-import Badge from '~/components/Badge.vue'
-import Star from '~/components/Stars.vue'
-import { useBusinessData } from '@/composables/useBusinessSampleData'
-import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue'
-import ProfileLocation from '~/components/Profile/ProfileLocation.vue'
-const businessUserStore = useBusinessUser()
-
-const {
-    businessData,
-} = useBusinessData()
-
 definePageMeta({ layout: 'business' })
-const store = useBusinessProfileStore();
-const { saveBusinessProfile, getCategories, getBusinessProfile } = useBusinessMethods();
+import Badge from '~/components/Badge.vue';
+import Star from '~/components/Stars.vue';
+import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue';
+import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import useBusinessUser from '~/composables/business/useBusinessUser';
+import type { BusinessProfileResponse } from '~/types/business';
+
+const ProfileOverview = defineAsyncComponent(() => import('~/components/Profile/ProfileOverview.vue'));
+const ProfileMedia = defineAsyncComponent(() => import('~/components/Profile/ProfileMedia.vue'));
+const ProfileFaq = defineAsyncComponent(() => import('~/components/Profile/ProfileFaq.vue'));
+const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/ProfileReview.vue'));
+const ProfileGetReview = defineAsyncComponent(() => import('~/components/Profile/ProfileGetReview.vue'));
+
+const { getCategories, saveBusinessProfile, getBusinessProfile } = useBusinessMethods();
+
+const store = useBusinessUser()
+const businessId = store.id
 const categories = ref<{ id: string; name: string }[]>([]);
-// onMounted(async () => {
-//     try {
-//         const res = await getCategories();
-//         categories.value = res;
-//     } catch (error) {
-//         console.error("Failed to load categories:", error);
-//     }
-// });
-
-const socialMediaLinks = ref({
-    whatsapp: '',
-    instagram: ''
-})
-const categoryNames = computed(() => {
-    // Check if categories are loaded and selection exists
-    if (!categories.value || categoryIds.value.length === 0) {
-        return [];
-    }
-
-    // Filter the full category list to find the names of the selected IDs
-    return categories.value
-        .filter(cat => categoryIds.value.includes(cat.id))
-        .map(cat => cat.name);
-});
-
+const isLoading = ref(false);
 const isEditing = ref(false)
 
+const categoryId = ref<string | null>(null);
 
-// Rating, images
-const ratingValue = ref(4)
-const previewUrl = ref<string | null>(null)
-const fileInput = ref<HTMLInputElement | null>(null)
-
-import type { BusinessProfile, BusinessProfileResponse } from "~/types/business";
-const toast = useToast()
-
-const business = ref<BusinessProfileResponse>(
-    {
-        id: "",
-        name: "",
-        website: "",
-        isBranch: false,
-        avgRating: 0,
-        reviewCount: 0,
-        parentBusinessId: "",
-        categories: [],
-        businessAddress: "",
-        logo: "",
-        openingHours: null,
-        businessEmail: "",
-        businessPhoneNumber: "",
-        cacNumber: "",
-        accessUsername: "",
-        accessNumber: "",
-        socialMediaLinks: null,
-        businessDescription: "",
-        media: null,
-        isVerified: false,
-        reviewLink: "",
-        preferredContactMethod: "",
-        highlights: [],
-        tags: [],
-        averageResponseTime: null,
-        profileClicks: 0,
-        faqs: [],
-        qrCodeBase64: "",
-    }
-);
-
-const isLoading = ref(true);
+const business = ref<BusinessProfileResponse>({
+    id: "",
+    name: "",
+    website: "",
+    isBranch: false,
+    avgRating: 0,
+    reviewCount: 0,
+    parentBusinessId: "",
+    categories: [],
+    businessAddress: "",
+    logo: "",
+    openingHours: null,
+    businessEmail: "",
+    businessPhoneNumber: "",
+    cacNumber: "",
+    accessUsername: "",
+    accessNumber: "",
+    socialMediaLinks: null,
+    businessDescription: "",
+    media: null,
+    isVerified: false,
+    reviewLink: "",
+    preferredContactMethod: "",
+    highlights: [],
+    tags: [],
+    averageResponseTime: null,
+    profileClicks: 0,
+    faqs: [],
+    qrCodeBase64: "",
+});
 
 onBeforeMount(async () => {
     try {
         isLoading.value = true;
+
         const [res, categoryRes] = await Promise.all([
-            getBusinessProfile("e4c33f90-6136-46fe-b1f2-56b032331b91"),
+            getBusinessProfile(businessId || ""),
             getCategories()
         ]);
 
-        if (res?.statusCode === 200) {
-            // business?.value.name = res?.name;
-            // business?.value.website = res?.website;
+        if (res?.statusCode === 200 && res.data) {
             business.value = res.data;
 
-            if (res?.data.tags === null) {
-                res.data.tags = []
+            if (!business.value.tags) business.value.tags = [];
+            if (!business.value.highlights) business.value.highlights = [];
+            if (!business.value.faqs) business.value.faqs = [];
+
+            if (!business.value.socialMediaLinks) {
+                business.value.socialMediaLinks = {
+                    additionalProp1: "",
+                    additionalProp2: "",
+                    additionalProp3: ""
+                };
             }
 
-            if (res?.data.highlights === null) {
-                res.data.highlights = []
+            if (!business.value.openingHours) {
+                business.value.openingHours = {
+                    additionalProp1: "",
+                    additionalProp2: "",
+                    additionalProp3: ""
+                };
             }
 
-            if (res?.data.faqs === null) {
-                res.data.faqs = []
-            }
-
-            // if (res?.data.socialMediaLinks === null) {
-            //     socialMediaLinks.value.whatsapp = res?.data.socialMediaLinks?.whatsapp ?? '';
-            //     socialMediaLinks.value.instagram = res?.data.socialMediaLinks?.instagram ?? '';
-            // }
+            categoryId.value = res.data.categoryId ?? null;
         }
 
-        if (categoryRes) {
+        if (Array.isArray(categoryRes)) {
             categories.value = categoryRes;
         }
 
@@ -279,13 +250,53 @@ onBeforeMount(async () => {
     } finally {
         isLoading.value = false;
     }
-})
+});
 
+const route = useRoute();
+type TabKey = 'overview' | 'review' | 'media' | 'faq' | 'getreview';
+const tabItems: { key: TabKey; name: string }[] = [
+  { key: 'overview', name: 'Overview' },
+  { key: 'review', name: 'Reviews' },
+  { key: 'media', name: 'Photos' },
+  { key: 'faq', name: 'FAQs' },
+  { key: 'getreview', name: 'Get Reviews' }
+];
+
+const currentTabKey = computed<TabKey>(() => {
+  const t = route.query.tab;
+  const first = Array.isArray(t) ? t[0] : t;
+  const key = first?.toString().toLowerCase() as TabKey;
+  return key || tabItems[0]!.key;
+});
+
+const componentMap: Record<TabKey, any> = {
+  overview: ProfileOverview,
+  review: ProfileReview,
+  media: ProfileMedia,
+  faq: ProfileFaq,
+  getreview: ProfileGetReview
+};
+
+const currentComponent = computed(() => componentMap[currentTabKey.value]);
+
+const selectedCategoryName = computed(() => {
+    const cat = categories.value.find(c => c.id === categoryId.value);
+    return cat?.name ?? null;
+});
+
+const toast = useToast()
 const updateProfile = async () => {
-
-    business.value.socialMediaLinks = socialMediaLinks.value;
+  console.log("UPDATE PROFILE CALLED");
     try {
-        const res = await saveBusinessProfile("e4c33f90-6136-46fe-b1f2-56b032331b91", business.value);
+        if (!businessId) {
+            return toast.add({
+                severity: 'error',
+                summary: 'ERROR',
+                detail: 'Business ID is missing',
+                life: 3000
+            });
+        }
+        const res = await saveBusinessProfile(businessId, business.value);
         if (res) {
             return toast.add({
                 severity: 'success',
@@ -299,200 +310,39 @@ const updateProfile = async () => {
     }
 
 }
-
-const categoryIds = ref<string[]>([])
-const businessId = businessUserStore.businessId
-console.log(businessId)
 const toggleEdit = async () => {
-    // When saving
-    if (isEditing.value) {
-        const payload = business.value
-        // const profileData = await saveBusinessProfile(businessId ?? '', payload);
-        console.log(payload)
-        // store.setProfileData(profileData);
-        await updateProfile();
-    }
-    isEditing.value = !isEditing.value;
-};
-const getPropsForComponent = (tabKey: string) => {
-    switch (tabKey) {
-        case 'overview':
-            return {
-                description: business.value.businessDescription,
-                // 🚨 Pass the MERGED list here
-                highlights: computedHighlightsForOverview.value,
-                // 🚨 Pass the MERGED list here
-                tags: computedTagsForOverview.value
-            };
-        case 'media':
-            return {
-                media: business.value.media
-            };
-        case 'faq':
-            return {
-                faqs: business.value.faqs
-            };
-        // case 'getreview':
-        //   return {
-        //     reviewLink: business.value.reviewLink
-        //   };
-        default:
-            return {};
-    }
-};
-const handleComponentUpdate = async (update: { key: string; value: any }) => {
-    // Use a type guard for safety, but essentially you're updating the business ref
-    if (update.key in business.value) {
-        // Use 'as any' to bypass TypeScript checking the dynamic key update
-        (business.value as any)[update.key] = update.value;
-    }
-
+  if (isEditing.value) {
     await updateProfile();
+  }
+  isEditing.value = !isEditing.value;
 };
 
-// Image handler
-const handleFileChange = (e: Event) => {
-    const file = (e.target as HTMLInputElement).files?.[0]
-    if (file) previewUrl.value = URL.createObjectURL(file)
-}
-const triggerFileInput = () => fileInput.value?.click()
-
-// Components
-const ProfileOverview = defineAsyncComponent(() => import('~/components/Profile/ProfileOverview.vue'));
-const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/ProfileReview.vue'));
-const ProfileMedia = defineAsyncComponent(() => import('~/components/Profile/ProfileMedia.vue'));
-const ProfileFaq = defineAsyncComponent(() => import('~/components/Profile/ProfileFaq.vue'));
-const ProfileGetReview = defineAsyncComponent(() => import('~/components/Profiles/ProfileGetReview.vue'));
-
-const route = useRoute();
-
-const componentMap = {
-    overview: ProfileOverview,
-    review: ProfileReview,
-    media: ProfileMedia,
-    faq: ProfileFaq,
-    getreview: ProfileGetReview,
+const handleSectionUpdate = (payload: { key: string; value: any }) => {
+    if (!isEditing.value) return;
+    (business.value as any)[payload.key] = payload.value;
 };
-
-const tabItems = [
-    { key: 'overview', name: 'Overview' },
-    { key: 'review', name: 'Reviews' },
-    { key: 'media', name: 'Photos' },
-    { key: 'faq', name: 'FAQs' },
-    { key: 'getreview', name: 'Get Reviews' }
-]
-
-const currentTabKey = computed(() => {
-    const tab = route.query.tab;
-    const tabValue = Array.isArray(tab) ? tab[0] : tab;
-    return (tabValue?.toString().toLowerCase() || tabItems[0]!.key);
-});
-
-const currentComponent = computed(() => {
-    const key = currentTabKey.value as keyof typeof componentMap;
-    return componentMap[key] || ProfileOverview;
-});
-
-const tabsContainer = ref<HTMLUListElement | null>(null);
-const SCROLL_AMOUNT = 150;
-
-const scrollLeft = () => {
-    if (tabsContainer.value) {
-        tabsContainer.value.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
-    }
-};
-const scrollRight = () => {
-    if (tabsContainer.value) {
-        tabsContainer.value.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
-    }
-};
-const ALL_AVAILABLE_HIGHLIGHTS = [
-    { id: 1, name: 'Wi-Fi' },
-    { id: 2, name: 'Order online' },
-    { id: 3, name: 'Accomodates groups' },
-    { id: 4, name: 'Restrooms' },
-    { id: 5, name: 'Wheelchair Accessible' },
-    { id: 6, name: 'Parking Available' },
-    { id: 7, name: 'Card Payment' },
-    { id: 8, name: 'Baby-Changing Facility' },
-];
-
-const ALL_AVAILABLE_TAGS = [
-    { id: 1, name: 'Fast Service' },
-    { id: 2, name: 'Gourmet Coffee' },
-    { id: 3, name: 'Live Music' },
-    { id: 4, name: 'Budget Friendly' },
-    { id: 5, name: 'Event Space' },
-    { id: 6, name: 'Takeaway Only' },
-];
-
-
-// --- New Computed Properties to Merge Saved Data with All Options ---
-
-const computedHighlightsForOverview = computed(() => {
-    // business.value.highlights holds the saved list of highlight strings (e.g., ['Wi-Fi', 'Parking Available'])
-    const savedHighlights = business.value.highlights || [];
-
-    return ALL_AVAILABLE_HIGHLIGHTS.map(h => ({
-        id: h.id,
-        name: h.name,
-        // Check if the name exists in the saved array
-        checked: savedHighlights.includes(h.name)
-    }));
-});
-
-const computedTagsForOverview = computed(() => {
-    // business.value.tags holds the saved list of tag strings
-    const savedTags = business.value.tags || [];
-
-    return ALL_AVAILABLE_TAGS.map(t => ({
-        id: t.id,
-        name: t.name,
-        // Check if the name exists in the saved array
-        checked: savedTags.includes(t.name)
-    }));
-});
-
-
-// --- Update getPropsForComponent ---
-
 
 </script>
 
-
 <style scoped>
-.overlay-profile {
-    opacity: 0;
-}
-
-.image-slot-profile:hover .overlay-profile {
-    opacity: 1;
-}
-
 .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
-
 .hide-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
-@media (max-width: 767px) {
-
-    #scroll-left-btn,
-    #scroll-right-btn {
-        display: flex !important;
-    }
-
-    .relative.flex.items-center.py-4.px-4 {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    #tabs-scroll-container {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
+.nav-link {
+  @apply text-gray-600 px-4 py-2 rounded-lg transition-all duration-200;
 }
+
+.nav-link:hover {
+  @apply bg-green-100 text-primary;
+}
+
+.nav-link.active {
+  @apply bg-primary text-white !important;
+}
+
 </style>
