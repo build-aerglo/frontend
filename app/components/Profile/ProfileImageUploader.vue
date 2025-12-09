@@ -39,7 +39,7 @@ const props = defineProps<{
 }>()
 const displayImage = computed(() => {
   if (!props.modelValue || props.modelValue.trim() === '') {
-    return '/images/profile/profile-picture.jpg'
+    return '/images/profile/user.jpg'
   }
   return props.modelValue
 })
