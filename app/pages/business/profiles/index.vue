@@ -11,14 +11,6 @@
         <div class="absolute -top-2 -right-2">
           <Badge :type="business.isVerified ? 'verified' : 'standard'" />
         </div>
-        <div class="flex items-center mt-2">
-          <Star v-for="n in 5" :key="n" :value="business.avgRating - (n - 1)"
-            :color-level="Math.ceil(business.avgRating)" class="w-5 h-5" />
-          <span class="font-semibold text-sm text-gray-500">{{ business.avgRating?.toFixed(1) ?? '0.0' }}</span>
-        </div>
-        <div class="text-sm text-gray-600">
-          <span class="text-gray-500">({{ business.reviewCount ?? 0 }} reviews)</span>
-        </div>
       </div>
 
       <div class="flex-1 flex flex-col gap-3">
@@ -79,15 +71,9 @@
             </div>
           </div>
 
-          <!-- WhatsApp -->
-          <div class="flex items-center gap-2" v-if="business.socialMediaLinks">
+          <div class="flex items-center gap-2">
             <i class="pi pi-whatsapp !text-primary"></i>
             <div>
-              <div v-if="!isEditing">{{ business.socialMediaLinks.additionalProp1 || 'WhatsApp' }}</div>
-              <div v-else>
-                <ProfileField v-model="business.socialMediaLinks.additionalProp1" placeholder="WhatsApp"
-                  :is-editing="isEditing" />
-              </div>
               <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp1 || 'WhatsApp' }}</div>
               <div v-else>
                 <ProfileField v-model="business.socialMediaLinks.additionalProp1" placeholder="WhatsApp"
@@ -96,71 +82,47 @@
             </div>
           </div>
 
-          <!-- Instagram -->
-          <div class="flex items-center gap-2" v-if="business.socialMediaLinks">
-
-            <div class="flex items-center gap-2">
-              <i class="pi pi-instagram !text-primary"></i>
-              <div>
-                <div v-if="!isEditing">{{ business.socialMediaLinks.additionalProp2 || 'Instagram' }}</div>
-                <div v-else>
-                  <ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram"
-                    :is-editing="isEditing" />
-                </div>
-                <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp2 || 'Instagram' }}</div>
-                <div v-else>
-                  <ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram"
-                    :is-editing="isEditing" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Website -->
-
-            <div class="flex items-center gap-2">
-              <i class="pi pi-globe !text-primary"></i>
-              <div>
-                <div v-if="!isEditing">{{ business.website || 'Website URL' }}</div>
-                <div v-else>
-                  <ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing" />
-                </div>
-                <div v-else>
-                  <ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing" />
-                </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-instagram !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.socialMediaLinks?.additionalProp2 || 'Instagram' }}</div>
+              <div v-else>
+                <ProfileField v-model="business.socialMediaLinks.additionalProp2" placeholder="Instagram"
+                  :is-editing="isEditing" />
               </div>
             </div>
           </div>
 
-          <!-- Opening Hours -->
-          <div class="flex items-center gap-3">
-            <i class="pi pi-clock !text-primary"></i>
-            <div class="flex-1">
-              <div v-if="!isEditing && business.openingHours">
-                Opening Days: {{ business.openingHours.additionalProp1 || 'Unknown' }} ||
-                Opening Time: {{ business.openingHours.additionalProp2 || 'Unknown' }} {{
-                  business.openingHours.additionalProp3 || '' }}
-                <div v-if="!isEditing">
-                  Opening Days: {{ business.openingHours?.additionalProp1 || 'Unknown' }} ||
-                  Opening Time: {{ business.openingHours?.additionalProp2 || 'Unknown' }}  {{
-                    business.openingHours?.additionalProp3 || '' }}
-                </div>
-                <div v-else>
-                  <OpeningHoursPicker v-model="business.openingHours" :is-editing="isEditing" />
-                </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-globe !text-primary"></i>
+            <div>
+              <div v-if="!isEditing">{{ business.website || 'Website URL' }}</div>
+              <div v-else>
+                <ProfileField v-model="business.website" placeholder="Website" :is-editing="isEditing" />
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="absolute top-4 right-4">
-            <ButtonCustom :label="isEditing ? 'Save Changes' : 'Edit Profile'"
-              :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'" :primary="true" size="lg"
-              input-class="text-[15px] w-auto" class="whitespace-nowrap" @click="toggleEdit" />
+        <div class="flex items-center gap-3">
+          <i class="pi pi-clock !text-primary"></i>
+          <div class="flex-1">
+            <div v-if="!isEditing">
+              Opening Days: {{ business.openingHours?.additionalProp1 || 'Unknown' }} ||
+              Opening Time: {{ business.openingHours?.additionalProp2 || 'Unknown' }}  {{
+                business.openingHours?.additionalProp3 || '' }}
+            </div>
+            <div v-else>
+              <OpeningHoursPicker v-model="business.openingHours" :is-editing="isEditing" />
+            </div>
           </div>
-          <div class="absolute top-4 right-4">
-            <ButtonCustom :label="isEditing ? 'Save Changes' : 'Edit Profile'"
-              :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'" :primary="true" size="lg"
-              input-class="text-[15px] w-auto" class="whitespace-nowrap" @click="toggleEdit" />
-          </div>
+        </div>
+      </div>
+      <div class="absolute top-4 right-4">
+        <ButtonCustom :label="isEditing ? 'Save Changes' : 'Edit Profile'"
+          :icon="isEditing ? 'pi pi-check' : 'pi pi-pencil'" :primary="true" size="lg" input-class="text-[15px] w-auto"
+          class="whitespace-nowrap" @click="toggleEdit" />
+      </div>
     </section>
 
     <div class="sticky top-0 bg-white z-30 border-t">
@@ -176,46 +138,17 @@
       </div>
     </div>
 
-    <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Main Content Area (2/3) -->
-      <div class="lg:col-span-2">
-        <KeepAlive>
-          <component :is="currentComponent" :business="business" :is-editing="isEditing"
-            @update-section="handleSectionUpdate" />
-        </KeepAlive>
-      </div>
+    <div class="mt-6">
+      <KeepAlive>
+        <component :is="currentComponent" :business="business" :is-editing="isEditing"
+          @update-section="handleSectionUpdate" />
+      </KeepAlive>
     </div>
-  </div>
-
-  <!-- Sidebar -->
-  <div class="lg:col-span-1">
-    <!-- Quick Actions (Desktop) -->
-    <div class="bg-white rounded-xl shadow-sm p-6 md:sticky md:top-24">
-      <h4 class="font-bold text-gray-900 text-center mt-2 mb-4">Quick Stats</h4>
-      <div class="space-y-3">
-        <button
-          class="w-full px-2 py-3 text-sm  bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-          Total Reviews 1K
-        </button>
-        <button
-          class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-          Average Response Time: 12hours
-        </button>
-        <button
-          class="w-full text-sm px-2 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
-          Profile clicks(30 days) 3450
-        </button>
-      </div>
-    </div>
-  </div>
-  </div>
   </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({ layout: 'business', middleware: 'businessauth' })
-definePageMeta({ layout: 'business' })
-
 import Badge from '~/components/Badge.vue';
 import Star from '~/components/Stars.vue';
 import OpeningHoursPicker from '~/components/OpeningHoursPicker.vue';
@@ -230,8 +163,8 @@ const ProfileReview = defineAsyncComponent(() => import('~/components/Profile/Pr
 const ProfileGetReview = defineAsyncComponent(() => import('~/components/Profile/ProfileGetReview.vue'));
 
 const { getCategories, saveBusinessProfile, getBusinessProfile } = useBusinessMethods();
-const store = useBusinessUser()
 
+const store = useBusinessUser()
 const businessId = store.id
 const categories = ref<{ id: string; name: string }[]>([]);
 const isLoading = ref(false);
@@ -239,9 +172,6 @@ const isEditing = ref(false)
 
 const categoryId = ref<string | null>(null);
 
-//
-// IMPORTANT: Safe defaults to prevent SSR crash
-//
 const business = ref<BusinessProfileResponse>({
   id: "",
   name: "",
@@ -271,111 +201,49 @@ const business = ref<BusinessProfileResponse>({
   profileClicks: 0,
   faqs: [],
   qrCodeBase64: "",
-  id: "",
-  name: "",
-  website: "",
-  isBranch: false,
-  avgRating: 0,
-  reviewCount: 0,
-  parentBusinessId: "",
-  categories: [],
-  businessAddress: "",
-  logo: "",
-  openingHours: {
-    additionalProp1: "",
-    additionalProp2: "",
-    additionalProp3: "",
-  },
-  businessEmail: "",
-  businessPhoneNumber: "",
-  cacNumber: "",
-  accessUsername: "",
-  accessNumber: "",
-  socialMediaLinks: {
-    additionalProp1: "",
-    additionalProp2: "",
-    additionalProp3: ""
-  },
-  businessDescription: "",
-  media: null,
-  isVerified: false,
-  reviewLink: "",
-  preferredContactMethod: "",
-  highlights: [],
-  tags: [],
-  averageResponseTime: null,
-  profileClicks: 0,
-  faqs: [],
-  qrCodeBase64: "",
 });
 
 onBeforeMount(async () => {
   try {
     isLoading.value = true;
-    try {
-      isLoading.value = true;
 
-      const [res, categoryRes] = await Promise.all([
-        getBusinessProfile(businessId || ""),
-        getCategories()
-      ]);
-      const [res, categoryRes] = await Promise.all([
-        getBusinessProfile(businessId || ""),
-        getCategories()
-      ]);
+    const [res, categoryRes] = await Promise.all([
+      getBusinessProfile(businessId || ""),
+      getCategories()
+    ]);
 
-      if (res?.statusCode === 200 && res.data) {
-        business.value = res.data;
-        if (res?.statusCode === 200 && res.data) {
+    if (res?.statusCode === 200 && res.data) {
+      business.value = res.data;
 
-          if (!business.value.tags) business.value.tags = [];
-          if (!business.value.highlights) business.value.highlights = [];
-          if (!business.value.faqs) business.value.faqs = [];
-          // Merge API results instead of overwriting (prevents SSR hydration mismatch)
-          Object.assign(business.value, res.data);
+      if (!business.value.tags) business.value.tags = [];
+      if (!business.value.highlights) business.value.highlights = [];
+      if (!business.value.faqs) business.value.faqs = [];
 
-          if (!business.value.socialMediaLinks) {
-            // business.value.socialMediaLinks = {
-            //     additionalProp1: "",
-            //     additionalProp2: "",
-            //     additionalProp3: ""
-            // };
-            business.value.socialMediaLinks = null;
-          }
-
-          if (!business.value.openingHours) {
-            // business.value.openingHours = {
-            //     additionalProp1: "",
-            //     additionalProp2: "",
-            //     additionalProp3: ""
-            // };
-            business.value.openingHours = null;
-          }
-          // Re-apply failsafes
-          if (!business.value.socialMediaLinks) {
-            business.value.socialMediaLinks = { additionalProp1: "", additionalProp2: "", additionalProp3: "" }
-          }
-          if (!business.value.openingHours) {
-            business.value.openingHours = { additionalProp1: "", additionalProp2: "", additionalProp3: "" }
-          }
-
-          categoryId.value = res.data.categoryId ?? null;
-        }
-        categoryId.value = res.data.categoryId ?? null;
+      if (!business.value.socialMediaLinks) {
+        // business.value.socialMediaLinks = {
+        //     additionalProp1: "",
+        //     additionalProp2: "",
+        //     additionalProp3: ""
+        // };
+        business.value.socialMediaLinks = null;
       }
 
-      if (Array.isArray(categoryRes)) {
-        categories.value = categoryRes;
-      }
-      if (Array.isArray(categoryRes)) {
-        categories.value = categoryRes;
+      if (!business.value.openingHours) {
+        // business.value.openingHours = {
+        //     additionalProp1: "",
+        //     additionalProp2: "",
+        //     additionalProp3: ""
+        // };
+        business.value.openingHours = null;
       }
 
-    } catch (error) {
-      console.log(error);
-    } finally {
-      isLoading.value = false;
+      categoryId.value = res.data.categoryId ?? null;
     }
+
+    if (Array.isArray(categoryRes)) {
+      categories.value = categoryRes;
+    }
+
   } catch (error) {
     console.log(error);
   } finally {
@@ -384,10 +252,8 @@ onBeforeMount(async () => {
 });
 
 const route = useRoute();
-
 type TabKey = 'overview' | 'review' | 'media' | 'faq' | 'getreview';
-
-const tabItems = [
+const tabItems: { key: TabKey; name: string }[] = [
   { key: 'overview', name: 'Overview' },
   { key: 'review', name: 'Reviews' },
   { key: 'media', name: 'Photos' },
@@ -395,13 +261,14 @@ const tabItems = [
   { key: 'getreview', name: 'Get Reviews' }
 ];
 
-const currentTabKey = computed(() => {
+const currentTabKey = computed<TabKey>(() => {
   const t = route.query.tab;
   const first = Array.isArray(t) ? t[0] : t;
-  return (first?.toString().toLowerCase() as TabKey) || 'overview';
+  const key = first?.toString().toLowerCase() as TabKey;
+  return key || tabItems[0]!.key;
 });
 
-const componentMap = {
+const componentMap: Record<TabKey, any> = {
   overview: ProfileOverview,
   review: ProfileReview,
   media: ProfileMedia,
@@ -414,12 +281,9 @@ const currentComponent = computed(() => componentMap[currentTabKey.value]);
 const selectedCategoryName = computed(() => {
   const cat = categories.value.find(c => c.id === categoryId.value);
   return cat?.name ?? null;
-  const cat = categories.value.find(c => c.id === categoryId.value);
-  return cat?.name ?? null;
 });
 
-const toast = useToast();
-
+const toast = useToast()
 const updateProfile = async () => {
   console.log("UPDATE PROFILE CALLED");
   try {
@@ -431,9 +295,7 @@ const updateProfile = async () => {
         life: 3000
       });
     }
-
     const res = await saveBusinessProfile(businessId, business.value);
-
     if (res) {
       return toast.add({
         severity: 'success',
@@ -442,33 +304,11 @@ const updateProfile = async () => {
         life: 3000
       });
     }
-
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-};
-try {
-  if (!businessId) {
-    return toast.add({
-      severity: 'error',
-      summary: 'ERROR',
-      detail: 'Business ID is missing',
-      life: 3000
-    });
-  }
-  const res = await saveBusinessProfile(businessId, business.value);
-  if (res) {
-    return toast.add({
-      severity: 'success',
-      summary: 'SUCCESS',
-      detail: 'Profile Updated',
-      life: 3000
-    });
-  }
-} catch (error) {
-  console.log(error)
-}
 
+}
 const toggleEdit = async () => {
   if (isEditing.value) {
     await updateProfile();
@@ -476,14 +316,12 @@ const toggleEdit = async () => {
   isEditing.value = !isEditing.value;
 };
 
-const handleSectionUpdate = (payload: { key: string; value: any }) => {
-  if (!isEditing.value) return;
+const handleSectionUpdate = async (payload: { key: string; value: any }) => {
+  // if (!isEditing.value) return;
   (business.value as any)[payload.key] = payload.value;
-  const handleSectionUpdate = async (payload: { key: string; value: any }) => {
-    // if (!isEditing.value) return;
-    (business.value as any)[payload.key] = payload.value;
-    await updateProfile();
-  };
+  await updateProfile();
+};
+
 </script>
 
 <style scoped>
