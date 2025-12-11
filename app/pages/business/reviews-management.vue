@@ -459,11 +459,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const flagReasons = [
   { label: 'Spam or Fake Review', value: 'spam' },
   { label: 'Inappropriate Language', value: 'inappropriate' },
-  { label: 'Off-Topic Content', value: 'off-topic' },
-  { label: 'Personal Attack', value: 'personal-attack' },
-  { label: 'Competitor Promotion', value: 'competitor' },
+  { label: 'Conflict of Interest', value: 'conflict' },
   { label: 'False Information', value: 'false-info' },
-  { label: 'Hate Speech', value: 'hate-speech' },
+  { label: 'Legal', value: 'legal' },
   { label: 'Privacy Violation', value: 'privacy' },
   { label: 'Other', value: 'other' }
 ];

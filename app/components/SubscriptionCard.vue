@@ -2,20 +2,20 @@
   <div 
     class="relative flex flex-col h-full rounded-2xl border transition-all duration-300 hover:shadow-xl"
     :class="tier.highlighted 
-      ? 'border-indigo-600 shadow-lg scale-105 bg-white' 
-      : 'border-gray-200 bg-white hover:border-indigo-300'"
+      ? 'border-green-600 shadow-lg scale-105 bg-white' 
+      : 'border-gray-200 bg-white hover:border-green-300'"
   >
     <!-- Popular Badge -->
     <div 
       v-if="tier.highlighted" 
-      class="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold"
+      class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#deae29] text-white px-4 py-1 rounded-full text-sm font-semibold"
     >
       Most Popular
     </div>
 
     <div class="p-8 flex flex-col h-full">
       <!-- Header -->
-      <div class="mb-6">
+      <div class="mb-1">
         <h3 class="text-2xl font-bold text-gray-900 mb-2">
           {{ tier.name }}
         </h3>
@@ -25,20 +25,20 @@
       </div>
 
       <!-- Pricing -->
-      <div class="mb-6">
+      <div class="mb-1">
         <div class="flex items-baseline">
           <span class="text-4xl font-extrabold text-gray-700">
             <img src="~/assets/svg/naira.svg" class="w-10 h-10 mx-0 inline-block" />{{ tier.price }}
           </span>
-          <span class="ml-2 text-gray-900">
+          <span class="ml-1 text-slate-900">
             /{{ tier.period }}
           </span>
         </div>
       </div>
 
       <!-- Features -->
-      <div class="mb-8 flex-grow">
-        <ul class="space-y-4">
+      <div class="mb-3 flex-grow">
+        <ul class="space-y-3">
           <li 
             v-for="(feature, index) in tier.features" 
             :key="index"
@@ -46,7 +46,7 @@
           >
             <svg 
               class="w-5 h-5 mr-3 flex-shrink-0 mt-0.5"
-              :class="tier.highlighted ? 'text-indigo-600' : 'text-green-500'"
+              :class="tier.highlighted ? 'text-green-600' : 'text-green-500'"
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -102,11 +102,11 @@ const buttonClasses = computed(() => {
   const baseClasses = 'w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200';
   
   if (props.tier.highlighted) {
-    return `${baseClasses} bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-xl`;
+    return `${baseClasses} bg-[#deae29] text-white hover:bg-[#deae29] shadow-lg hover:shadow-xl`;
   }
   
   if (props.tier.buttonVariant === 'enterprise') {
-    return `${baseClasses} bg-purple-600 text-white hover:bg-purple-700 shadow-lg hover:shadow-xl`;
+    return `${baseClasses} bg-[#008253] text-white hover:bg-[#008253] shadow-lg hover:shadow-xl`;
   }
   
   return `${baseClasses} bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300`;

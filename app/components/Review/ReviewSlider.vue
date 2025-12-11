@@ -1,22 +1,22 @@
 <template>
-  <section class="bg-green-50 dark:bg-gray-900 py-7">
+  <section class="bg-gradient-to-r from-green-50 to-green-100 py-7">
     <div class="container mx-auto px-4">
       <!-- Header -->
-      <div class="relative mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold text-left text-gray-700 dark:text-white">
+      <div class="relative mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-left text-slate-900 dark:text-white">
           Recent Reviews
         </h2>
         <div class="absolute right-0 top-1/2 -translate-y-1/2">
           <div class="flex gap-3">
             <button
               @click="prevSlide"
-              class="p-3 rounded-full border border-gray-500 hover:bg-[#008253]/10 text-gray-700 transition"
+              class="p-3 rounded-full border border-slate-900 hover:bg-[#008253]/10 text-slate-800 transition"
             >
               <i class="pi pi-chevron-left text-sm"></i>
             </button>
             <button
               @click="nextSlide"
-              class="p-3 rounded-full border border-gray-500 hover:bg-[#008253]/10 text-gray-700 transition"
+              class="p-3 rounded-full border border-slate-900 hover:bg-[#008253]/10 text-slate-800 transition"
             >
               <i class="pi pi-chevron-right text-sm"></i>
             </button>
@@ -41,16 +41,16 @@
               class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md p-6 h-full flex flex-col justify-between hover:shadow-lg transition-all"
             >
               <div>
-                <p class="text-lg text-black dark:text-gray-100 font-bold">
+                <p class="text-lg text-slate-900 dark:text-gray-100 font-bold">
                   {{ review.business }}
                 </p>
               <div class="flex mb-3">
-                  <Stars 
-                    v-for="i in 5"
-                    :key="i"
-                    :filled="i <= 4"
-                    :color-level="5"
-                    :class="'w-5 h-5'"
+                 <Stars
+                    v-for="n in 5"
+                    :key="n"
+                    :value="review.rating - (n - 1)"
+                    :color-level="Math.ceil(review.rating)"
+                    class="w-5 h-5"
                   />
                 </div>
                 <p class="text-gray-500 dark:text-gray-200 italic">
@@ -92,6 +92,7 @@ import img4 from '/images/profile-images/4.jpg'
 
 interface Review {
   business: string
+  rating: number
   text: string
   avatar: string
   name: string
@@ -99,13 +100,13 @@ interface Review {
 }
 
 const baseReviews: Review[] = [
-  { business: 'OceanView', text: "Ocean View is hands down the best!", avatar: img1, name: 'Nduka John', time: '2 days ago' },
-  { business: 'ShopEase', text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
-  { business: 'Tasty Bites', text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
-  { business: 'Eazi Travels', text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
-  { business: 'Star Academy', text: "A great school with outstanding teaching quality.", avatar: img2, name: 'Sarah Moses', time: '45 minutes ago' },
-  { business: 'Paula Motors', text: "Paula Motors make all my journeys so much easier and stress-free!", avatar: img2, name: 'Julia Mamoa', time: '10 minutes ago' },
-  { business: 'IronFit Gym', text: "All the motivation and equipment required? It's all at IFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
+  { business: 'OceanView',rating: 4.6, text: "Ocean View is hands down the best!", avatar: img1, name: 'Nduka John', time: '2 days ago' },
+  { business: 'ShopEase',rating: 4.0, text: "I still can't imagine a better place to shop for everything at once.", avatar: img2, name: 'Eugenia Moore', time: '28 hours ago' },
+  { business: 'Tasty Bites', rating: 5.0, text: "The Sanitation and customer service here is top-notch!", avatar: img3, name: 'Tife Ryan', time: '1 day ago' },
+  { business: 'Eazi Travels', rating: 3.8, text: "Eazi Travels made my trip so much easier and stress-free. I totally recommend!", avatar: img4, name: 'Sarah Betsy', time: '15 minutes ago' },
+  { business: 'Star Academy', rating: 4.5, text: "A great school with outstanding teaching quality.", avatar: img2, name: 'Sarah Moses', time: '45 minutes ago' },
+  { business: 'Paula Motors', rating: 4.9, text: "Paula Motors make all my journeys so much easier and stress-free!", avatar: img2, name: 'Julia Mamoa', time: '10 minutes ago' },
+  { business: 'IronFit Gym', rating: 5.0, text: "All the motivation and equipment required? It's all at IFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
 ]
 
 const visibleCount = ref(5)

@@ -24,6 +24,24 @@
   </section>
   <!--First Section Ends-->
 
+  <!--Fifth Section begins-->
+  <section class="bg-white pb-10 pt-5">
+    <div class="container mx-auto px-4">
+      <!-- Header -->
+      <div class="relative mb-2">
+        <h2 class="text-xl md:text-2xl font-bold text-left text-slate-900 dark:text-white">
+          Categories
+        </h2>
+        <a href="/end-user/landing/categories"
+          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
+          ...
+        </a>
+      </div>
+      <LandingCategories />
+    </div>
+  </section>
+  <!--Fifth Section ends-->
+
 
   <!--Second Section Starts-->
   <section class="my-0">
@@ -38,12 +56,12 @@
   <!--Third Section Ends-->
 
   <!--Fourth Section begins-->
-  <section id="add-voice" class="bg-gray-100 dark:bg-gray-900 py-12 mb-0">
+  <section id="add-voice" class="bg-gradient-to-r from-blue-50 to-blue-100 py-10 mb-0">
     <div class="container mx-auto px-6 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-[#008253] dark:text-white mb-6">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-6">
         Add Your Voice
       </h2>
-      <p class="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+      <p class="text-gray-800 dark:text-gray-300 max-w-2xl mx-auto mb-8">
         Become part of a growing network of individuals who value transparency and trust. By joining our platform, you
         contribute to shaping authentic conversations, helping others make informed choices while discovering new and
         better experiences every day.
@@ -58,144 +76,10 @@
   </section>
   <!--Fourth Section Ends-->
 
-  <!--Fifth Section begins-->
-  <section class="bg-white dark:bg-gray-900 pb-5 pt-10">
-    <div class="container mx-auto px-4">
-      <!-- Header -->
-      <div class="relative mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold text-left text-[#008253] dark:text-white">
-          Categories
-        </h2>
-        <a href="/end-user/landing/categories"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-3xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
-          ...
-        </a>
-      </div>
-      <div class="container mt-8 mb-11">
-        <div class="row gy-6">
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-primary shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Martini class="w-6 h-6 text-gray-500 " />
-                  </div>
-                  <h4 class="mb-0 text-gray-950">Restuarants</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-primary shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Plane class="w-6 h-6 text-gray-500 " />
-
-                  </div>
-
-                  <h4 class="mb-0 text-gray-950">Travel</h4>
-
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-primary shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Drill class="w-6 h-6 text-gray-500 " />
-
-                  </div>
-
-                  <h4 class="mb-0 text-gray-800">Home Services</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-success shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <School class="w-6 h-6 text-gray-500 " />
-                  </div>
-                  <h4 class="mb-0 text-gray-950">Academic</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-info shadow-none">
-                <div class="card-body text-center">
-
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Handshake class="w-6 h-6 text-gray-500 " />
-                  </div>
-
-                  <h4 class="mb-0 text-gray-950">Business Services</h4>
-
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-warning shadow-none">
-                <div class="card-body text-center">
-
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <ShoppingCart class="w-6 h-6 text-gray-500 " />
-                  </div>
-
-                  <h4 class="mb-0 text-gray-950">Shopping</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-success shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Clapperboard class="w-6 h-6 text-gray-500 " />
-                  </div>
-                  <h4 class="mb-0 text-gray-950">Entertainment</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-
-          <div class="col-sm-6 col-lg-3">
-            <NuxtLink to="/landing/categories" class="cursor-pointer">
-              <div class="card border border-success shadow-none">
-                <div class="card-body text-center">
-                  <div class="flex items-center justify-center mb-2 -mt-1">
-                    <Dumbbell class="w-6 h-6 text-gray-500 " />
-                  </div>
-                  <h4 class="mb-0 text-gray-950">Fitness</h4>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!--sixth Section begins-->
+  <section>
+    
   </section>
-  <!--Fifth Section ends-->
 
 
   <!--Footer-->
@@ -203,7 +87,5 @@
   <!--Footer-->
 
 </template>
-
 <script setup>
-import { Dumbbell, School, Clapperboard, Drill, Martini, Handshake, Plane, ShoppingCart, } from 'lucide-vue-next'
 </script>

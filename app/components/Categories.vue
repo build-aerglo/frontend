@@ -6,53 +6,66 @@
       @clear="searchQuery = ''"
     />
 
-    <!-- Categories Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 items-start">
+    <!-- Categories Grid - 3 Independent Columns -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
       <div
-        v-for="category in filteredCategories"
-        :key="category.id"
-        class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col"
+        v-for="(column, columnIndex) in columnizedCategories"
+        :key="columnIndex"
+        class="flex flex-col gap-4"
       >
-        <!-- Category Header -->
-        <button
-          @click="toggleCategory(category.id)"
-          class="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
-          :class="{ 'bg-gray-50': expandedCategories.has(category.id) }"
-        >
-          <div class="flex items-center gap-3">
-            <component :is="category.icon" :class="category.color" class="w-6 h-6 flex-shrink-0" />
-            <div class="text-left">
-              <span class="font-semibold text-gray-800 text-base block">{{ category.name }}</span>
-              <span class="text-xs text-gray-500">
-                {{ category.subcategories.length }} subcategories
-              </span>
-            </div>
-          </div>
-          <component
-            :is="expandedCategories.has(category.id) ? ChevronDown : ChevronRight"
-            class="w-5 h-5 text-gray-400 flex-shrink-0"
-          />
-        </button>
-
-        <!-- Subcategories -->
         <div
-          v-show="expandedCategories.has(category.id)"
-          class="border-t border-gray-100 bg-gray-50 p-3 flex-grow"
+          v-for="category in column"
+          :key="category.id"
+          class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col"
         >
-          <div class="grid grid-cols-1 gap-2">
-            <button
-              v-for="subcategory in category.subcategories"
-              :key="subcategory.id"
-              @click="handleSelection(category.id, subcategory.id)"
-              class="text-left px-3 py-2 rounded-md text-sm transition-colors"
-              :class="[
-                selectedCategory === category.id && selectedSubcategory === subcategory.id
-                  ? 'bg-blue-500 text-white font-medium'
-                  : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600'
-              ]"
-            >
-              {{ subcategory.name }}
-            </button>
+          <!-- Category Header -->
+          <button
+            @click="toggleCategory(category.id)"
+            class="w-full flex items-center justify-between p-4 transition-colors"
+            :style="{ 
+              backgroundColor: expandedCategories.has(category.id) || hoverCategory === category.id 
+                ? getCategoryBgColor(category.color) 
+                : 'transparent' 
+            }"
+            @mouseenter="hoverCategory = category.id"
+            @mouseleave="hoverCategory = null"
+          >
+            <div class="flex items-center gap-3">
+              <component :is="category.icon" :class="category.color" class="w-6 h-6 flex-shrink-0" />
+              <div class="text-left">
+                <span class="font-semibold text-gray-800 text-base block">{{ category.name }}</span>
+                <span class="text-xs text-gray-500">
+                  {{ category.subcategories.length }} subcategories
+                </span>
+              </div>
+            </div>
+            <component
+              :is="expandedCategories.has(category.id) ? ChevronDown : ChevronRight"
+              class="w-5 h-5 text-gray-400 flex-shrink-0"
+            />
+          </button>
+
+          <!-- Subcategories -->
+          <div
+            v-show="expandedCategories.has(category.id)"
+            class="border-t border-gray-100 p-3 flex-grow"
+            :style="{ backgroundColor: getCategoryBgColor(category.color) }"
+          >
+            <div class="grid grid-cols-1 gap-2">
+              <button
+                v-for="subcategory in category.subcategories"
+                :key="subcategory.id"
+                @click="handleSelection(category.id, subcategory.id)"
+                class="text-left px-3 py-2 rounded-md text-sm transition-colors"
+                :class="[
+                  selectedCategory === category.id && selectedSubcategory === subcategory.id
+                    ? 'bg-blue-500 text-white font-medium'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                ]"
+              >
+                {{ subcategory.name }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -92,22 +105,20 @@
 import { ref, computed } from 'vue'
 import {
   Utensils,
-  ShoppingBag,
-  Dumbbell,
+  ShoppingCart,
   Sparkles,
-  Shirt,
+  HeartPlus,
   Home,
-  Smartphone,
-  Plane,
+  LaptopMinimal,
+  Hotel,
   GraduationCap,
-  Stethoscope,
-  Car,
-  Building2,
+  CarFront,
+  BriefcaseBusiness,
   BookOpen,
   Camera,
-  Music,
+  Clapperboard,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-vue-next'
 
 interface SubCategory {
@@ -126,56 +137,79 @@ interface Category {
 const categories = ref<Category[]>([
   {
     id: 'food-dining',
-    name: 'Food & Dining',
+    name: 'Food & Restaurants',
     icon: Utensils,
     color: 'text-orange-500',
     subcategories: [
-      { id: 'restaurants', name: 'Restaurants' },
-      { id: 'cafes', name: 'Cafes & Coffee Shops' },
-      { id: 'fast-food', name: 'Fast Food' },
-      { id: 'bakeries', name: 'Bakeries & Desserts' },
-      { id: 'bars', name: 'Bars & Pubs' },
+      { id: 'fine-dining', name: 'Fine Dining' },
+      { id: 'bukka', name: 'Bukka' },
+      { id: 'night-life', name: 'Night Life' },
+      { id: 'bakeries', name: 'Bakeries' },
+      { id: 'pastries', name: 'Pasteries' },
       { id: 'food-delivery', name: 'Food Delivery Services' },
+      { id: 'local-flavour', name: 'Local Flavour' },
+      { id: 'food-trucks', name: 'Food Trucks' },
+      { id: 'intercontinental', name: 'Intercontinental' },
+      { id: 'vegetarian', name: 'Vegetarian' },
+      { id: 'desert', name: 'Deserts' },
+      { id: 'italian', name: 'Italian' },
+      { id: 'bars', name: 'Bars & Pubs' },
+      { id: 'premium', name: 'Premium' },
       { id: 'catering', name: 'Catering Services' },
-      { id: 'food-trucks', name: 'Food Trucks' }
+      { id: 'business', name: 'Business' },
+      { id: 'romantic', name: 'Romantic' },
+      { id: 'kid-friendly', name: 'Kid-Friendly' },
+      { id: 'buffet', name:'Buffet'},
+      { id: 'affordable', name: 'Affordable' }
     ]
   },
   {
     id: 'shopping',
     name: 'Shopping & Retail',
-    icon: ShoppingBag,
-    color: 'text-pink-500',
+    icon: ShoppingCart,
+    color: 'text-purple-500',
     subcategories: [
-      { id: 'clothing-stores', name: 'Clothing Stores' },
+       { id: 'malls', name: 'Malls' },
       { id: 'grocery-stores', name: 'Grocery Stores' },
+      { id: 'physical-stores', name: 'Physical Stores' },
+      { id: 'personal-shopper', name: 'Personal Shopper' },
+      { id: 'clothing-stores', name: 'Clothing Stores' },
       { id: 'department-stores', name: 'Department Stores' },
       { id: 'bookstores', name: 'Bookstores' },
       { id: 'toy-stores', name: 'Toy Stores' },
       { id: 'pet-stores', name: 'Pet Stores' },
       { id: 'jewelry-stores', name: 'Jewelry Stores' },
-      { id: 'online-shops', name: 'Online Shops' }
+      { id: 'online-shops', name: 'Online Stores' }
     ]
   },
   {
-    id: 'fitness',
-    name: 'Fitness & Sports',
-    icon: Dumbbell,
-    color: 'text-green-500',
+    id: 'health',
+    name: 'Health & Wellness',
+    icon: HeartPlus,
+    color: 'text-red-500',
     subcategories: [
+      { id: 'clinics', name: 'Clinics & Laboratories' },
+      { id: 'dental', name: 'Dentists' },
+      { id: 'optician', name: 'Opticians' },
+      { id: 'mental-health', name: 'Mental Health' },
+      { id: 'diagnostics', name: 'Diagnostics' },
       { id: 'gyms', name: 'Gyms & Fitness Centers' },
       { id: 'yoga-studios', name: 'Yoga Studios' },
       { id: 'personal-trainers', name: 'Personal Trainers' },
-      { id: 'sports-clubs', name: 'Sports Clubs' },
       { id: 'martial-arts', name: 'Martial Arts' },
       { id: 'swimming-pools', name: 'Swimming Pools' },
-      { id: 'fitness-equipment', name: 'Fitness Equipment' }
+      { id: 'fitness-equipment', name: 'Fitness Equipment' },
+      { id: 'sports-clubs', name: 'Sports Clubs' },
+      { id: 'physiotherapy', name: 'Physiotherapy' },
+      { id: 'pharmacy', name: 'Pharmacists' },
+      { id: 'massage', name: 'Massage' }
     ]
   },
   {
     id: 'beauty',
-    name: 'Beauty & Wellness',
+    name: 'Fashion & Beauty',
     icon: Sparkles,
-    color: 'text-purple-500',
+    color: 'text-pink-500',
     subcategories: [
       { id: 'hair-salons', name: 'Hair Salons' },
       { id: 'nail-salons', name: 'Nail Salons' },
@@ -183,29 +217,26 @@ const categories = ref<Category[]>([
       { id: 'barbers', name: 'Barber Shops' },
       { id: 'skincare', name: 'Skincare Services' },
       { id: 'cosmetics', name: 'Cosmetics & Makeup' },
-      { id: 'tattoo-piercing', name: 'Tattoo & Piercing' }
-    ]
-  },
-  {
-    id: 'fashion',
-    name: 'Fashion & Accessories',
-    icon: Shirt,
-    color: 'text-indigo-500',
-    subcategories: [
-      { id: 'mens-fashion', name: "Men's Fashion" },
+      { id: 'tattoo-piercing', name: 'Tattoo & Piercing' },
+       { id: 'mens-fashion', name: "Men's Fashion" },
       { id: 'womens-fashion', name: "Women's Fashion" },
       { id: 'kids-fashion', name: "Kids' Fashion" },
       { id: 'shoes', name: 'Shoes & Footwear' },
       { id: 'bags', name: 'Bags & Luggage' },
       { id: 'accessories', name: 'Accessories' },
-      { id: 'watches', name: 'Watches' }
+      { id: 'watches', name: 'Watches' },
+       { id: 'costume', name: "Costumes" },
+      { id: 'thrift', name: "Thrift wears" },
+      { id: 'budget-friendly', name: "Budget Friendly" },
+      { id: 'luxury', name: 'Luxury' },
+      { id: 'vintage', name: 'Vintage' },
     ]
   },
   {
     id: 'home',
     name: 'Home & Garden',
     icon: Home,
-    color: 'text-blue-500',
+    color: 'text-indigo-300',
     subcategories: [
       { id: 'furniture', name: 'Furniture Stores' },
       { id: 'home-decor', name: 'Home Decor' },
@@ -219,8 +250,8 @@ const categories = ref<Category[]>([
   {
     id: 'electronics',
     name: 'Electronics & Tech',
-    icon: Smartphone,
-    color: 'text-cyan-500',
+    icon: LaptopMinimal,
+    color: 'text-green-500',
     subcategories: [
       { id: 'mobile-phones', name: 'Mobile Phones' },
       { id: 'computers', name: 'Computers & Laptops' },
@@ -232,25 +263,25 @@ const categories = ref<Category[]>([
     ]
   },
   {
-    id: 'travel',
-    name: 'Travel & Hospitality',
-    icon: Plane,
+    id: 'stay',
+    name: 'Hotels, BnB & Vacation',
+    icon: Hotel,
     color: 'text-sky-500',
     subcategories: [
       { id: 'hotels', name: 'Hotels & Resorts' },
       { id: 'airlines', name: 'Airlines' },
       { id: 'vacation-rentals', name: 'Vacation Rentals' },
       { id: 'travel-agencies', name: 'Travel Agencies' },
-      { id: 'tour-operators', name: 'Tour Operators' },
+      { id: 'tour', name: 'Tour Guides' },
       { id: 'car-rentals', name: 'Car Rentals' },
-      { id: 'hostels', name: 'Hostels & Backpackers' }
+      { id: 'BnB', name: 'BnB' }
     ]
   },
   {
     id: 'education',
     name: 'Education & Training',
     icon: GraduationCap,
-    color: 'text-amber-500',
+    color: 'text-yellow-400',
     subcategories: [
       { id: 'schools', name: 'Schools' },
       { id: 'universities', name: 'Universities & Colleges' },
@@ -258,29 +289,25 @@ const categories = ref<Category[]>([
       { id: 'online-courses', name: 'Online Courses' },
       { id: 'language-schools', name: 'Language Schools' },
       { id: 'music-lessons', name: 'Music Lessons' },
-      { id: 'driving-schools', name: 'Driving Schools' }
-    ]
-  },
-  {
-    id: 'healthcare',
-    name: 'Healthcare & Medical',
-    icon: Stethoscope,
-    color: 'text-red-500',
-    subcategories: [
-      { id: 'doctors', name: 'Doctors & Clinics' },
-      { id: 'dentists', name: 'Dentists' },
-      { id: 'pharmacies', name: 'Pharmacies' },
-      { id: 'hospitals', name: 'Hospitals' },
-      { id: 'opticians', name: 'Opticians' },
-      { id: 'physical-therapy', name: 'Physical Therapy' },
-      { id: 'mental-health', name: 'Mental Health Services' }
+      { id: 'driving-schools', name: 'Driving Schools' },
+      { id: 'swimming', name: 'Swimming Schools' },
+      { id: 'bootcamps', name: 'Bootcamps' },
+      { id: 'vocational', name: 'Vocational Training' },
+      { id: 'professional', name: 'Professional Tutoring' },
+      { id: 'fashion-schools', name: 'Fashion Schools' },
+      { id: 'culinary', name: 'Culinary Schools' },
+      { id: 'it', name: 'Information Technology' },
+      { id: 'certification', name: 'Certification' },
+      { id: 'weekend', name: 'Weekend Classes' },
+      { id: 'physical', name: 'Physical Lessons' },
+      { id: 'hybrid', name: 'Hybrid Learning Platforms' }
     ]
   },
   {
     id: 'automotive',
     name: 'Automotive',
-    icon: Car,
-    color: 'text-gray-600',
+    icon: CarFront,
+    color: 'text-blue-600',
     subcategories: [
       { id: 'car-dealers', name: 'Car Dealers' },
       { id: 'auto-repair', name: 'Auto Repair & Maintenance' },
@@ -294,8 +321,8 @@ const categories = ref<Category[]>([
   {
     id: 'professional',
     name: 'Professional Services',
-    icon: Building2,
-    color: 'text-slate-600',
+    icon: BriefcaseBusiness,
+    color: 'text-slate-500',
     subcategories: [
       { id: 'lawyers', name: 'Lawyers & Legal' },
       { id: 'accountants', name: 'Accountants' },
@@ -309,8 +336,8 @@ const categories = ref<Category[]>([
   {
     id: 'entertainment',
     name: 'Entertainment & Arts',
-    icon: Music,
-    color: 'text-violet-500',
+    icon: Clapperboard,
+    color: 'text-rose-500',
     subcategories: [
       { id: 'cinemas', name: 'Cinemas & Theaters' },
       { id: 'museums', name: 'Museums & Galleries' },
@@ -340,7 +367,7 @@ const categories = ref<Category[]>([
     id: 'photography',
     name: 'Photography & Video',
     icon: Camera,
-    color: 'text-rose-500',
+    color: 'text-amber-600',
     subcategories: [
       { id: 'photographers', name: 'Photographers' },
       { id: 'videographers', name: 'Videographers' },
@@ -356,6 +383,7 @@ const expandedCategories = ref<Set<string>>(new Set())
 const selectedCategory = ref<string | null>(null)
 const selectedSubcategory = ref<string | null>(null)
 const searchQuery = ref('')
+const hoverCategory = ref<string | null>(null)
 
 const filteredCategories = computed(() => {
   if (!searchQuery.value.trim()) {
@@ -372,6 +400,35 @@ const filteredCategories = computed(() => {
     return categoryMatch || subcategoryMatch
   })
 })
+
+const columnizedCategories = computed<Category[][]>(() => {
+  const itemsPerColumn = Math.ceil(filteredCategories.value.length / 3)
+  return [
+    filteredCategories.value.slice(0, itemsPerColumn),
+    filteredCategories.value.slice(itemsPerColumn, itemsPerColumn * 2),
+    filteredCategories.value.slice(itemsPerColumn * 2)
+  ]
+})
+
+const getCategoryBgColor = (colorClass: string): string => {
+  const colorMap: Record<string, string> = {
+    'text-orange-500': 'rgba(249, 115, 22, 0.1)',
+    'text-purple-500': 'rgba(168, 85, 247, 0.1)',
+    'text-red-500': 'rgba(239, 68, 68, 0.1)',
+    'text-pink-500': 'rgba(236, 72, 153, 0.1)',
+    'text-indigo-300': 'rgba(165, 180, 252, 0.1)',
+    'text-green-500': 'rgba(34, 197, 94, 0.1)',
+    'text-sky-500': 'rgba(14, 165, 233, 0.1)',
+    'text-yellow-400': 'rgba(250, 204, 21, 0.1)',
+    'text-blue-600': 'rgba(37, 99, 235, 0.1)',
+    'text-slate-500': 'rgba(100, 116, 139, 0.1)',
+    'text-rose-500': 'rgba(244, 63, 94, 0.1)',
+    'text-teal-500': 'rgba(20, 184, 166, 0.1)',
+    'text-amber-600': 'rgba(217, 119, 6, 0.1)',
+  }
+  
+  return colorMap[colorClass] || 'rgba(243, 244, 246, 1)'
+}
 
 const toggleCategory = (categoryId: string) => {
   if (expandedCategories.value.has(categoryId)) {

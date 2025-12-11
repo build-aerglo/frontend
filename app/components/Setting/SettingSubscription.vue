@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
     <!-- Header Section -->
-    <div class="pt-4 pb-12 px-4 sm:px-6 lg:px-8">
+    <div class="pt-4 pb-8 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto text-center">
-        <h4 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">
+        <h4 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
           Choose Your Perfect Plan
         </h4>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Pricing Cards -->
-    <div class="pb-16 px-4 sm:px-6 lg:px-8">
+    <div class="pb-10 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
           <SubscriptionCard
@@ -27,44 +27,44 @@
     </div>
 
     <!-- FAQ Section -->
-    <div class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <div class="py-8 px-4 sm:px-3 lg:px-4 bg-white">
       <div class="max-w-4xl mx-auto">
         <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">
           Frequently Asked Questions
         </h2>
-        <div class="space-y-6">
-          <details class="group border border-gray-200 rounded-lg p-6 hover:border-indigo-300 transition-colors">
+        <div class="space-y-3">
+          <details class="group border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
             <summary class="font-semibold text-gray-900 cursor-pointer flex justify-between items-center">
               Can I change my plan later?
               <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </summary>
-            <p class="mt-4 text-gray-600">
+            <p class="mt-2 text-gray-600">
               Yes! You can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.
             </p>
           </details>
 
-          <details class="group border border-gray-200 rounded-lg p-6 hover:border-indigo-300 transition-colors">
+          <details class="group border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
             <summary class="font-semibold text-gray-900 cursor-pointer flex justify-between items-center">
               Do you offer a free trial?
               <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </summary>
-            <p class="mt-4 text-gray-600">
+            <p class="mt-3 text-gray-600">
               Yes, we offer a 14-day free trial on all plans. No credit card required to start your trial.
             </p>
           </details>
 
-          <details class="group border border-gray-200 rounded-lg p-6 hover:border-indigo-300 transition-colors">
+          <details class="group border border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-colors">
             <summary class="font-semibold text-gray-900 cursor-pointer flex justify-between items-center">
               What payment methods do you accept?
               <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </summary>
-            <p class="mt-4 text-gray-600">
+            <p class="mt-3 text-gray-600">
               We accept all major credit cards, PayPal, and can arrange invoicing for Enterprise customers.
             </p>
           </details>
@@ -73,7 +73,7 @@
     </div>
 
     <!-- Trust Section -->
-    <div class="py-16 px-4 sm:px-6 lg:px-8 bg-indigo-600">
+    <div class="py-16 px-4 sm:px-6 lg:px-8 bg-[#008253]">
       <div class="max-w-4xl mx-auto text-center">
         <h3 class="text-2xl font-bold text-white mb-4">
           Trusted by 10,000+ businesses worldwide
@@ -122,8 +122,6 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Up to 100 reviews per month',
       'Basic analytics dashboard',
       'Email support',
-      'Standard review templates',
-      'Mobile app access',
       '1 team member'
     ],
     buttonText: 'Start Free Trial'
@@ -137,14 +135,11 @@ const subscriptionTiers: SubscriptionTier[] = [
       'Unlimited reviews',
       'Advanced analytics & insights',
       'Priority email & chat support',
-      'Custom review templates',
       'API access',
       'Up to 10 team members',
-      'White-label options',
-      'Integration with 50+ apps',
       'Automated review requests'
     ],
-    highlighted: true,
+    highlighted:true,
     buttonText: 'Get Premium',
     buttonVariant: 'primary'
   },
@@ -160,7 +155,6 @@ const subscriptionTiers: SubscriptionTier[] = [
       '24/7 phone support',
       'Custom integrations',
       'Advanced security features',
-      'SLA guarantee',
       'Custom contract terms',
       'On-premise deployment option',
       'Training & onboarding'
