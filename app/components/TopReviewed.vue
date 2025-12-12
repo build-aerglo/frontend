@@ -1,17 +1,17 @@
 <template>
-  <section class="bg-white dark:bg-gray-900 pb-5 pt-10">
+  <section class="bg-slate-50 pb-8 pt-6">
     <div class="container mx-auto px-4">
       <!-- Header -->
-      <div class="relative mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold text-left text-[#008253] dark:text-white">
+      <div class="relative mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-left text-slate-900 dark:text-white">
           Top Reviewed
         </h2>
-        <a
-          href="#hero"
+        <NuxtLink
+          to="/landing/explore"
           class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline dark:text-gray-300"
         >
           See more
-        </a>
+      </NuxtLink>
       </div>
 
       <!-- Card Grid -->
@@ -50,19 +50,19 @@
           </div>
 
           <!-- Business name -->
-          <h3 class="text-lg font-bold text-center text-black dark:text-white">
+          <h3 class="text-lg font-bold text-center text-slate-900 dark:text-white">
             {{ card.name }}
           </h3>
 
           <!-- Star Ratings -->
           <div class="flex items-center justify-center">
               <Stars
-                v-for="n in 5"
-                :key="n"
-                :filled="n <= card.rating"
-                :colorLevel="n <= card.rating ? card.rating : 0"
-                :class="'w-6 h-6'"
-              />
+                    v-for="n in 5"
+                    :key="n"
+                    :value="card.rating - (n - 1)"
+                    :color-level="Math.ceil(card.rating)"
+                    class="w-6 h-6"
+                  />
           </div>
 
           <div class="text-center text-[80%]">
@@ -79,7 +79,7 @@
 <script setup>
 import { NuxtImg } from '#components'
 
-import { Dumbbell, Utensils, Hotel, School, ShoppingCart } from 'lucide-vue-next'
+import { HeartPlus, Utensils, Hotel, GraduationCap, ShoppingCart } from 'lucide-vue-next'
 import img1 from '/images/logos/gym1.jpg'
 import img2 from '/images/logos/gym2.jpg'
 import img3 from '/images/logos/shop1.jpg'
@@ -91,16 +91,16 @@ import img8 from '/images/logos/sch2.jpg'
 import img9 from '/images/logos/res1.jpg'
 
 const cards = [
-  { icon: ShoppingCart, logo: img3, name: 'UrbanMart', rating: 5, reviews: 188, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
-  { icon: Dumbbell, logo: img1, name: 'PowerHouse', rating: 5, reviews: 193, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200', shadowColor: 'shadow-[0_4px_12px_rgba(37,99,235,0.25)]' },
-  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
-  { icon: Dumbbell, logo: img2, name: 'IronFit Gym', rating: 4, reviews: 128, iconBg: 'bg-blue-100 text-blue-600', borderColor: 'border border-blue-200', shadowColor: 'shadow-[0_4px_12px_rgba(37,99,235,0.25)]' },
-  { icon: Hotel, logo: img5, name: 'OceanView', rating: 5, reviews: 98, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
-  { icon: School, logo: img7, name: 'Star Academy', rating: 5, reviews: 157, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
-  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 5, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
-  { icon: ShoppingCart, logo: img4, name: 'ShopEase', rating: 4, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
-  { icon: Hotel, logo: img6, name: 'Luxury Stay', rating: 4, reviews: 134, iconBg: 'bg-green-100 text-green-600', borderColor: 'border border-green-200', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
-  { icon: School, logo: img8, name: 'Ace College', rating: 5, reviews: 122, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: ShoppingCart, logo: img3, name: 'UrbanMart', rating: 5.0, reviews: 188, iconBg: 'bg-purple-100 text-purple-500', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
+  { icon: HeartPlus, logo: img1, name: 'PowerHouse', rating: 5.0, reviews: 193, iconBg: 'bg-red-100 text-red-500', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: Utensils, logo: img9, name: 'Savory Spot', rating: 4.6, reviews: 176, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
+  { icon: HeartPlus, logo: img2, name: 'IronFit Gym', rating: 4.4, reviews: 128, iconBg: 'bg-red-100 text-red-600', borderColor: 'border border-red-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: Hotel, logo: img5, name: 'OceanView', rating: 5.0, reviews: 98, iconBg: 'bg-sky-100 text-sky-500', borderColor: 'border border-sky-100', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
+  { icon: GraduationCap, logo: img7, name: 'Star Academy', rating: 5.0, reviews: 157, iconBg: 'bg-yellow-100 text-yellow-600', borderColor: 'border border-yellow-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
+  { icon: Utensils, logo: img9, name: 'TastyBite', rating: 4.9, reviews: 210, iconBg: 'bg-orange-100 text-orange-600', borderColor: 'border border-orange-200', shadowColor: 'shadow-[0_4px_12px_rgba(234,88,12,0.25)]' },
+  { icon: ShoppingCart, logo: img4, name: 'ShopEase', rating: 4.3, reviews: 249, iconBg: 'bg-purple-100 text-purple-600', borderColor: 'border border-purple-200', shadowColor: 'shadow-[0_4px_12px_rgba(147,51,234,0.25)]' },
+  { icon: Hotel, logo: img6, name: 'Luxury Stay', rating: 3.5, reviews: 134, iconBg: 'bg-sky-100 text-sky-500', borderColor: 'border border-sky-100', shadowColor: 'shadow-[0_4px_12px_rgba(22,163,74,0.25)]' },
+  { icon: GraduationCap, logo: img8, name: 'Ace College', rating: 2.8, reviews: 122, iconBg: 'bg-yellow-100 text-yellow-600', borderColor: 'border border-yellow-200', shadowColor: 'shadow-[0_4px_12px_rgba(220,38,38,0.25)]' },
 ]
 
 </script>

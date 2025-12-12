@@ -8,7 +8,7 @@
       <input
         v-model="searchValue"
         type="text"
-        placeholder="Search categories and subcategories..."
+        placeholder="Search categories..."
         class="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008253] focus:border-[#008253] outline-none transition-all text-gray-800 placeholder-gray-400"
         @input="handleInput"
       />

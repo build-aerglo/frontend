@@ -1,5 +1,5 @@
 <template>
-  <footer id="footer" class="bg-gray-300 dark:bg-gray-900 text-gray-700 dark:text-gray-300 mt-0 border-t border-gray-200 dark:border-gray-700">
+  <footer id="footer" class="bg-slate-900 text-white mt-0 border-t border-gray-200 dark:border-gray-700">
     <div class="container mx-auto px-6 py-12">
       <!-- Top Section -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -7,7 +7,7 @@
         <!-- Brand -->
         <div>
           <h2 class="text-2xl font-extrabold text-gold mb-3">CleReview</h2>
-          <p class="text-sm leading-relaxed">
+          <p class="text-sm text-gray-400 leading-relaxed">
             Empowering users to make confident decisions through transparent and authentic reviews. 
             Discover, compare, and share experiences with ease.
           </p>
@@ -15,7 +15,7 @@
 
         <!-- Quick Links -->
         <div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+          <h3 class="font-semibold text-white dark:text-white mb-4">Quick Links</h3>
           <ul class="space-y-2">
             <li><a href="#" class="hover:text-[#008253] transition">Home</a></li>
             <li><a href="#add-voice" class="hover:text-[#008253] transition">About Us</a></li>
@@ -26,7 +26,7 @@
 
         <!-- Support -->
         <div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Support</h3>
+          <h3 class="font-semibold text-white dark:text-white mb-4">Support</h3>
           <ul class="space-y-2">
             <li><NuxtLink to="/" class="hover:text-[#008253] transition">FAQs</NuxtLink></li>
             <li><NuxtLink to="/" class="hover:text-[#008253] transition">Help Center</NuxtLink></li>
@@ -37,8 +37,8 @@
 
         <!-- Contact & Socials -->
         <div>
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Get in Touch</h3>
-          <p class="text-sm mb-3">Email: <a href="mailto:support@clereview.com" class="text-gold hover:underline">support@clereview.com</a></p>
+          <h3 class="font-semibold text-white dark:text-white mb-4">Get in Touch</h3>
+          <p class="text-sm text-gray-400 mb-3">Email: <a href="mailto:support@clereview.com" class="text-gold hover:underline">support@clereview.com</a></p>
 
           <div class="flex gap-4 mt-4">
             <NuxtLink to="/" class="text-gray-500 hover:text-[#008253] transition"><i class="pi pi-facebook text-lg"></i></NuxtLink>
@@ -50,10 +50,10 @@
       </div>
 
       <!-- Divider -->
-      <div class="my-10 border-t border-gray-200 dark:border-gray-700"></div>
+      <div class="mt-5 mb-2 border-t border-gray-400 dark:border-gray-700"></div>
 
       <!-- Bottom Section -->
-      <div class="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex flex-col sm:flex-row justify-between items-center text-sm text-white dark:text-gray-400">
         <p>© {{ new Date().getFullYear() }} <span class="font-semibold text-gold">CleReview</span>. All rights reserved.</p>
       </div>
     </div>
