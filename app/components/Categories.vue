@@ -236,7 +236,7 @@ const categories = ref<Category[]>([
     id: 'home',
     name: 'Home & Garden',
     icon: Home,
-    color: 'text-indigo-300',
+    color: 'text-green-300',
     subcategories: [
       { id: 'furniture', name: 'Furniture Stores' },
       { id: 'home-decor', name: 'Home Decor' },
@@ -251,7 +251,7 @@ const categories = ref<Category[]>([
     id: 'electronics',
     name: 'Electronics & Tech',
     icon: LaptopMinimal,
-    color: 'text-green-500',
+    color: 'text-indigo-300',
     subcategories: [
       { id: 'mobile-phones', name: 'Mobile Phones' },
       { id: 'computers', name: 'Computers & Laptops' },

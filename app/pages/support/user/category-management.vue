@@ -575,7 +575,7 @@ const categories = ref<Category[]>([
     description: 'Tech appliances, household electronics',
     icon: LaptopMinimal,
     iconName: 'LaptopMinimal',
-    color: '#4FEE11',
+    color: '#40A09D',
     businessCount: 134,
     tagCount: 14
   },
@@ -586,7 +586,7 @@ const categories = ref<Category[]>([
     description: 'Domestic services',
     icon: Home,
     iconName: 'Home',
-    color: '#40A09D',
+    color: '#4FEE11',
     businessCount: 201,
     tagCount: 20
   },
@@ -597,7 +597,7 @@ const categories = ref<Category[]>([
     description: 'Outfits, footies, accesories and more',
     icon: Sparkles,
     iconName: 'Sparkles',
-    color: '#F9067F',
+    color: '#F9067F ',
     businessCount: 201,
     tagCount: 20
   }
