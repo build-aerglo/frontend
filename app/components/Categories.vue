@@ -7,7 +7,7 @@
     />
 
     <!-- Categories Grid - 3 Independent Columns -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
       <div
         v-for="(column, columnIndex) in columnizedCategories"
         :key="columnIndex"
@@ -60,7 +60,7 @@
                 :class="[
                   selectedCategory === category.id && selectedSubcategory === subcategory.id
                     ? 'bg-blue-500 text-white font-medium'
-                    : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                    : 'bg-white text-gray-700 hover:bg-emerald-50 hover:text-emerald-600'
                 ]"
               >
                 {{ subcategory.name }}
@@ -79,7 +79,7 @@
       <p class="text-gray-500 text-lg">No categories found matching "{{ searchQuery }}"</p>
       <button
         @click="searchQuery = ''"
-        class="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+        class="mt-4 text-emerald-600 hover:text-emerald-700 font-medium"
       >
         Clear search
       </button>
@@ -91,9 +91,9 @@
       class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
     >
       <p class="text-sm text-gray-600">Selected:</p>
-      <p class="text-lg font-semibold text-blue-700">
+      <p class="text-lg font-semibold text-emerald-700">
         {{ categories.find(c => c.id === selectedCategory)?.name }}
-        <span v-if="selectedSubcategory" class="text-blue-600">
+        <span v-if="selectedSubcategory" class="text-emerald-600">
           → {{ categories.find(c => c.id === selectedCategory)?.subcategories.find(s => s.id === selectedSubcategory)?.name }}
         </span>
       </p>
@@ -236,7 +236,7 @@ const categories = ref<Category[]>([
     id: 'home',
     name: 'Home & Garden',
     icon: Home,
-    color: 'text-indigo-300',
+    color: 'text-green-300',
     subcategories: [
       { id: 'furniture', name: 'Furniture Stores' },
       { id: 'home-decor', name: 'Home Decor' },
@@ -251,7 +251,7 @@ const categories = ref<Category[]>([
     id: 'electronics',
     name: 'Electronics & Tech',
     icon: LaptopMinimal,
-    color: 'text-green-500',
+    color: 'text-indigo-300',
     subcategories: [
       { id: 'mobile-phones', name: 'Mobile Phones' },
       { id: 'computers', name: 'Computers & Laptops' },

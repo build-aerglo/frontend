@@ -7,7 +7,7 @@
           Top Reviewed
         </h2>
         <NuxtLink
-          to="/landing/explore"
+          to="/end-user/landing/explore"
           class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline dark:text-gray-300"
         >
           See more

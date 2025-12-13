@@ -3,43 +3,6 @@
     <div class="min-h-screen bg-green-50 p-4 md:p-6 lg:p-8">
       <div class="max-w-7xl mx-auto space-y-6">
         <!-- Business Info Header -->
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 mb-6 sm:mb-8 border border-gray-200">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div class="flex items-center gap-4 sm:gap-5 w-full sm:w-auto">
-              <div class="relative">
-                <img 
-                  :src="businessInfo.image"
-                  :alt="businessInfo.name"
-                  class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shadow-md ring-4 ring-white"
-                />
-                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#008253] rounded-full flex items-center justify-center">
-                  <i class="pi pi-check text-white text-xs"></i>
-                </div>
-              </div>
-              <div class="flex-1 sm:flex-none">
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{{ businessInfo.name }}</h1>
-                <p class="text-sm sm:text-base text-gray-600 font-medium">{{ businessInfo.category }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 bg-gradient-to-br from-[#008253] via-[#007549] to-[#006640] rounded-2xl p-5 sm:p-6 text-white shadow-xl w-full sm:w-auto justify-center sm:justify-start relative overflow-hidden">
-              <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-              <div class="text-center relative z-10">
-                <div class="text-3xl sm:text-4xl font-black mb-1">{{ businessInfo.averageRating }}</div>
-                <div class="flex items-center justify-center mb-2">
-                  <Star
-                    v-for="n in 5"
-                    :key="n"
-                    :value="businessInfo.averageRating - (n - 1)"
-                    :color-level="Math.ceil(businessInfo.averageRating)"
-                    class="w-6 h-6"
-                  />
-                </div>
-                <p class="text-xs sm:text-sm opacity-90 font-medium">{{ businessInfo.totalReviews }}K reviews</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         <!-- Key Metrics Cards (Clickable) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <button 

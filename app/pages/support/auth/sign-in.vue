@@ -4,14 +4,11 @@
       <!-- Form Section -->
       <div class="relative w-full max-w-md px-6 py-8">
         <div class="bg-white rounded-2xl shadow-lg p-8">
-        <div class="flex justify-center mb-4">
+        <div class="flex justify-center mb-6">
           <img
             src="~/assets/images/e-user-logo.png"
             class="h-12 w-auto object-contain"
           />
-        </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">
-          Clear reviews, Confident decisions.
         </div>
 
         <!-- Loading State -->
