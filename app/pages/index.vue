@@ -5,7 +5,7 @@
 
   <!--First Section Start-->
   <section id="hero"
-    class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6 overflow-hidden">
+    class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6">
     <!-- Background image div -->
     <div class="absolute inset-0 bg-cover bg-top brightness-75 md:bg-fixed"
       style="background-image: url('/images/background/e-user-ldg.png');">
