@@ -1,6 +1,6 @@
 import useSearchApi from "./useSearchApi";
-
-export const useSearch = () => {
+import { dummySearchData, type GroupedSearchResult } from "./useDummySearch";
+export default function () {
   const api = useSearchApi();
   const search = async (q: string) => {
     try {
@@ -13,6 +13,31 @@ export const useSearch = () => {
       console.log(error);
     }
   };
+  const useDummySearch = async (q: string): Promise<GroupedSearchResult> => {
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    const query = q.toLowerCase().trim();
+
+    if (!query) {
+      return { companies: [], categories: [] };
+    }
+
+   const companies = dummySearchData.companies
+      .filter(data => 
+        data.name.toLowerCase().includes(query) || 
+        data.url.toLowerCase().includes(query)
+      )
+      .slice(0, 5);
+    const categories = dummySearchData.categories
+      .filter(name => name.toLowerCase().includes(query))
+      .slice(0, 5);
+    return { companies, categories };
+  };
+  return {
+    search,
+    useDummySearch
+  };
+}
 
   // const getSuggestions = async (query: string) => {
   //   if (!query) return []
@@ -35,6 +60,3 @@ export const useSearch = () => {
 
   //   return res.json()
   // }
-
-  return { search };
-};
