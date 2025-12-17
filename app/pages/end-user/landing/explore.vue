@@ -5,15 +5,17 @@
       <!-- Filters -->
       <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8 sticky top-[60px] z-30">
         <div class="flex flex-wrap gap-4">
-          <!-- Category -->
+          <!-- Business Name (AutoComplete) -->
           <div class="flex-1 min-w-[70px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-            <Dropdown 
-              v-model="filters.category" 
-              :options="categoryOptions" 
+            <label class="block text-sm font-medium text-slate-700 mb-2">Name</label>
+              <Dropdown 
+              v-model="filters.businessName" 
+              :options="businessNameOptions" 
               optionLabel="label" 
               optionValue="value"
               placeholder="All"
+              filter
+              filterPlaceholder="Search business..."
               class="w-full"
               :pt="{
                 root: { class: 'border-slate-300 rounded-xl' },
@@ -22,12 +24,12 @@
             />
           </div>
 
-          <!-- Badges -->
+          <!-- Category -->
           <div class="flex-1 min-w-[70px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
             <Dropdown 
-              v-model="filters.badges" 
-              :options="badgeOptions" 
+              v-model="filters.category" 
+              :options="categoryOptions" 
               optionLabel="label" 
               optionValue="value"
               placeholder="All"
@@ -56,6 +58,23 @@
             />
           </div>
 
+          <!-- Badges -->
+          <div class="flex-1 min-w-[70px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+            <Dropdown 
+              v-model="filters.badges" 
+              :options="badgeOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+
           <!-- Stars -->
           <div class="flex-1 min-w-[100px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Ratings</label>
@@ -65,23 +84,6 @@
               optionLabel="label" 
               optionValue="value"
               placeholder="Any"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
-
-          <!-- Price -->
-          <div class="flex-1 min-w-[70px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
-            <Dropdown 
-              v-model="filters.priceRange" 
-              :options="priceOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="All"
               class="w-full"
               :pt="{
                 root: { class: 'border-slate-300 rounded-xl' },
@@ -436,7 +438,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import Dropdown from 'primevue/dropdown'
 import Star from '~/components/Stars.vue' 
 
 const showContact = ref<number | null>(null);
@@ -448,13 +449,27 @@ function hideContact() {
 }
 
 const filters = ref({
+  businessName: '',
   category: '',
   badges: '',
   location: '',
   stars: '',
-  priceRange: '',
   tag: ''
 })
+
+// Business name autocomplete
+const filteredBusinessNames = ref<string[]>([])
+
+function searchBusinessName(event: any) {
+  const query = event.query.toLowerCase()
+  if (!query) {
+    filteredBusinessNames.value = businesses.value.map(b => b.name)
+  } else {
+    filteredBusinessNames.value = businesses.value
+      .filter(b => b.name.toLowerCase().includes(query))
+      .map(b => b.name)
+  }
+}
 
 // Filter options
 const categoryOptions = ref([
@@ -489,14 +504,6 @@ const ratingOptions = ref([
   { label: '2+ Stars', value: '2' }
 ])
 
-const priceOptions = ref([
-  { label: 'All', value: '' },
-  { label: 'Budget', value: 'budget' },
-  { label: 'Moderate', value: 'moderate' },
-  { label: 'Expensive', value: 'expensive' },
-  { label: 'Luxury', value: 'luxury' }
-])
-
 const focusedBusinessId = ref<number | null>(null)
 const currentReviewIndex = ref(0)
 
@@ -504,14 +511,24 @@ import { useDummyReviews } from '~/composables/useDummyReviews'
 
 const { businesses } = useDummyReviews()
 
+const businessNameOptions = computed(() => {
+  return [
+    { label: 'All businesses', value: '' },
+    ...businesses.value.map(b => ({ 
+      label: b.name, 
+      value: b.name 
+    }))
+  ]
+})
+
 const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
     return (
+      (!filters.value.businessName || b.name.toLowerCase().includes(filters.value.businessName.toLowerCase())) &&
       (!filters.value.category || b.category === filters.value.category) &&
       (!filters.value.badges || b.badges.includes(filters.value.badges)) &&
       (!filters.value.location || b.location === filters.value.location) &&
       (!filters.value.stars || b.rating >= parseFloat(filters.value.stars)) &&
-      (!filters.value.priceRange || b.priceRange === filters.value.priceRange) &&
       (!filters.value.tag || b.tags.includes(filters.value.tag))
     )
   })
@@ -546,7 +563,7 @@ function prevReview() {
 }
 
 function clearAllFilters() {
-  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '', tag: '' }
+  filters.value = { businessName: '', category: '', badges: '', location: '', stars: '', tag: '' }
 }
 
 function filterByTag(tag: string) {
@@ -555,12 +572,15 @@ function filterByTag(tag: string) {
 }
 
 function getFilterLabel(key: string, value: string): string {
+  if (key === 'businessName') {
+    return value
+  }
+  
   const optionsMap: Record<string, any> = {
     category: categoryOptions.value,
     badges: badgeOptions.value,
     location: locationOptions.value,
-    stars: ratingOptions.value,
-    priceRange: priceOptions.value
+    stars: ratingOptions.value
   }
   
   const option = optionsMap[key]?.find((opt: any) => opt.value === value)
@@ -620,6 +640,51 @@ function getFilterLabel(key: string, value: string): string {
 }
 
 :deep(.p-dropdown-item.p-highlight) {
+  background: #008253;
+  color: white;
+}
+
+/* PrimeVue AutoComplete custom styling */
+:deep(.p-autocomplete) {
+  width: 100%;
+}
+
+:deep(.p-autocomplete .p-autocomplete-input) {
+  background: rgb(248 250 252);
+  border-color: rgb(203 213 225);
+  border-radius: 0.75rem;
+}
+
+:deep(.p-autocomplete .p-autocomplete-input:hover) {
+  border-color: #008253;
+}
+
+:deep(.p-autocomplete .p-autocomplete-input:focus) {
+  outline: none;
+  border-color: #008253;
+  box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2);
+}
+
+:deep(.p-autocomplete-panel) {
+  border-radius: 0.75rem;
+  border-color: rgb(203 213 225);
+  margin-top: 0.25rem;
+}
+
+:deep(.p-autocomplete-items) {
+  padding: 0;
+}
+
+:deep(.p-autocomplete-item) {
+  padding: 0.625rem 1rem;
+}
+
+:deep(.p-autocomplete-item:hover) {
+  background: rgb(248 250 252);
+  color: #008253;
+}
+
+:deep(.p-autocomplete-item.p-highlight) {
   background: #008253;
   color: white;
 }
