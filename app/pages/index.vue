@@ -72,6 +72,7 @@
           <span>Login/Register</span>
         </NuxtLink>
       </div>
+      <div></div>
     </div>
   </section>
   <!--Fourth Section Ends-->

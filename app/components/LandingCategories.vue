@@ -45,10 +45,10 @@ interface Category {
 const categories: Category[] = [
   { icon: Utensils, name: 'Restaurants', color: 'text-orange-500' },
   { icon: ShoppingCart, name: 'Shopping', color: 'text-purple-500' },
-  { icon: HeartPlus, name: 'Fitness', color: 'text-red-600' },
+  { icon: HeartPlus, name: 'Wellness', color: 'text-red-600' },
   { icon: Sparkles, name: 'Fashion', color: 'text-pink-400' },
-  { icon: Home, name: 'Home Services', color: 'text-indigo-300' },
-  { icon: LaptopMinimal, name: 'Electronics', color: 'text-green-500' },
+  { icon: Home, name: 'Home Services', color: 'text-green-300' },
+  { icon: LaptopMinimal, name: 'Electronics', color: 'text-indigo-300' },
   { icon: Hotel, name: 'Hotels & Vacation', color: 'text-sky-400' },
   { icon: GraduationCap, name: 'Education', color: 'text-yellow-400' }
 ]
