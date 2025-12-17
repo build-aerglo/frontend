@@ -52,8 +52,8 @@
               <i class="pi pi-user text-white text-sm"></i>
             </div>
             <div class="hidden md:block">
-              <p class="text-sm font-medium text-slate-800">Admin User</p>
-              <p class="text-xs text-slate-500">admin@example.com</p>
+              <p class="text-sm font-medium text-slate-800 mb-0 mt-1">Admin User</p>
+              <p class="text-xs text-slate-500 mt-0">admin@example.com</p>
             </div>
           </div>
         </div>
