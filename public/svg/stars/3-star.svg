@@ -1,0 +1,23 @@
+<svg width="300" height="70" viewBox="0 0 300 70" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Circle + star group -->
+    <g id="circleStar">
+      <circle cx="30" cy="30" r="28" fill="CURRENT_COLOR"/>
+      <g transform="translate(30,30) scale(0.85) translate(-30,-30)">
+        <path fill="#FFFFFF" stroke="#FFFFFF" stroke-linejoin="round" stroke-width="2"
+          d="M30 10l7 14 15 2-11 11 3 15-14-7-14 7 3-15-11-11 15-2 7-14z"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- 3 active (#ffa41c) -->
+  <g style="--c:#ffa41c;">
+    <use href="#circleStar" x="0"   y="0" fill="var(--c)"/>
+    <use href="#circleStar" x="60"  y="0" fill="var(--c)"/>
+    <use href="#circleStar" x="120" y="0" fill="var(--c)"/>
+  </g>
+
+  <!-- 2 inactive (#D3D3D3) -->
+  <use href="#circleStar" x="180" y="0" fill="#D3D3D3"/>
+  <use href="#circleStar" x="240" y="0" fill="#D3D3D3"/>
+</svg>

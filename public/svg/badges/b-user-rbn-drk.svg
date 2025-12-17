@@ -1,0 +1,24 @@
+
+
+
+
+<!-- Chat bubble (white for dark mode) -->
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Chat bubble (white for dark mode) -->
+  <path fill="#FFFFFF" d="M100 10c-48 0-87 35-87 78 0 22 10 41 27 56l-2 37 33-19c9 3 19 5 29 5 48 0 87-35 87-79S148 10 100 10z"/>
+
+  <!-- Ribbon / award badge (Royal Blue #4169E1) -->
+  <g transform="translate(0,-6)">
+    <!-- Circle badge -->
+    <circle cx="100" cy="85" r="28" fill="#4169E1"/>
+    <!-- Ribbon legs -->
+    <path fill="#4169E1" d="
+      M90 108
+      L80 138
+      L100 123
+      L120 138
+      L110 108
+      Z
+    "/>
+  </g>
+</svg>

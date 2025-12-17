@@ -9,13 +9,34 @@
 @font-face {
   font-family: "Satoshi";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-display: swap;
-  src: url("~/assets/font/Satoshi-Variable.ttf") format("truetype");
+  src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Popping-Bold";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("~/assets/font/Poppins/Poppins-Bold.ttf") format("truetype");
 }
 
 * {
-  font-family: "Satoshi", Inter, system-ui, sans-serif;
+  font-family: "Poppins", Inter, system-ui, sans-serif;
+}
+
+.font-bold,
+.font-bolder {
+  font-family: "Popping-Bold" !important;
 }
 
 html {
@@ -27,4 +48,15 @@ html {
 }
 .menu-icon {
   @apply flex items-center justify-center text-[18px] leading-none;
+}
+section.mg {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+@media (max-width: 769px) {
+  section.mg {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
