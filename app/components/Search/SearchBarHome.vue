@@ -1,5 +1,4 @@
 <template>
-  <!-- Overlay (global layer, very light) -->
   <div
     v-if="showSuggestions"
     class="fixed inset-0 bg-black/10 z-[9998]"
@@ -18,7 +17,7 @@
       <input
         v-model="query"
         type="text"
-        placeholder="Search business or category"
+        placeholder="Search business"
         @input="onInput"
         @keydown="handleKeyDown"
         class="flex-1 bg-transparent outline-none
@@ -27,7 +26,7 @@
       />
 
       <button
-        @click="submit()"
+        @click="goToBusinessProfile"
         class="w-1/3 bg-[#008253] text-white
                flex justify-center items-center
                hover:bg-[#006f45]
@@ -39,9 +38,8 @@
         </span>
       </button>
 
-      <!-- Suggestions dropdown -->
       <ul
-        v-if="showSuggestions && hasSuggestions"
+        v-if="showSuggestions"
         class="absolute top-full left-0 w-full mt-2
                bg-white dark:bg-gray-800
                border border-gray-200 dark:border-gray-700
@@ -50,86 +48,54 @@
                z-[10001]
                overflow-hidden"
       >
-        <!-- Companies Header -->
-        <template v-if="suggestions.companies.length">
-          <li
-            class="mt-2 py-2 text-[100%] text-left font-bold tracking-wide
-                   text-contrast dark:bg-gray-700"
-          >
+        <template v-if="hasSuggestions">
+          <li class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400">
             Companies
           </li>
 
           <li
             v-for="(item, index) in suggestions.companies"
             :key="`c-${item.name}`"
-            @mousedown.prevent="select(item.name, 'company')"
+            @mousedown.prevent="populateInput(item.name)"
             @mouseover="activeIndex = index"
             :class="{ 'bg-gray-100 dark:bg-gray-700': activeIndex === index }"
             class="flex items-center justify-between px-4 py-3 cursor-pointer
                    hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
           >
-            <!-- Left -->
             <div class="flex items-center space-x-3 min-w-0">
               <img
                 :src="item.logoUrl"
                 class="w-9 h-9 rounded-md object-cover flex-shrink-0 border border-gray-200"
                 :alt="`${item.name} logo`"
               />
-
               <div class="flex flex-col min-w-0">
                 <span class="text-gray-900 dark:text-gray-100 font-semibold truncate">
                   {{ item.name }}
                 </span>
                 <span class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {{ item.url }} • {{ item.reviewCount }}
+                  {{ item.url }}
                 </span>
               </div>
             </div>
 
-            <!-- Rating -->
             <div
-              class="flex items-center gap-1 px-2 py-1 rounded-md
-                     text-white text-xs font-bold"
+              class="flex items-center gap-1 px-2 py-1 rounded-md text-white text-xs font-bold"
               :class="{
                 'bg-green-600': item.rating >= 4.0,
                 'bg-yellow-500': item.rating >= 3.0 && item.rating < 4.0,
                 'bg-red-600': item.rating < 3.0,
               }"
             >
-              <i class="pi pi-star text-white text-[12px]"></i>
+              <i class="pi pi-star-fill text-white text-[10px]"></i>
               {{ item.rating.toFixed(1) }}
             </div>
           </li>
         </template>
 
-        <!-- Categories Header -->
-        <template v-if="suggestions.categories.length">
-          <li
-            class="mt-2 py-2 text-[100%] text-left tracking-wide
-                   text-contrast dark:bg-gray-700
-                   border-t dark:border-gray-600"
-          >
-            Categories
-          </li>
-
-          <li
-            v-for="(item, index) in suggestions.categories"
-            :key="`cat-${item}`"
-            @mousedown.prevent="select(item, 'category')"
-            @mouseover="activeIndex = suggestions.companies.length + index"
-            :class="{
-              'bg-gray-100 dark:bg-gray-700':
-                activeIndex === suggestions.companies.length + index
-            }"
-            class="flex items-center px-4 py-3 cursor-pointer
-                   hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-          >
-            <i class="pi pi-tag text-[#008253] mr-3 text-sm"></i>
-            <span class="text-gray-800 dark:text-gray-200 text-sm font-medium">
-              {{ item }}
-            </span>
-          </li>
-        </template>
+        <li v-else class="px-4 py-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800">
+          <i class="pi pi-search text-2xl mb-2 block text-gray-300"></i>
+          <p class="text-sm">No results for <span class="font-bold">"{{ query }}"</span></p>
+        </li>
       </ul>
     </div>
   </div>
@@ -139,42 +105,24 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import useSearch from '~/composables/search/useSearch'
 
-const { useDummySearch } = useSearch()
+const { search } = useSearch()
 
 interface CompanyData {
   name: string
   url: string
   logoUrl: string
-  reviewCount: string
   rating: number
 }
 
-interface GroupedSuggestions {
-  companies: CompanyData[]
-  categories: string[]
-}
-
-interface Selection {
-  value: string
-  type: 'company' | 'category'
-}
-
 const query = ref('')
-const suggestions = ref<GroupedSuggestions>({ companies: [], categories: [] })
+const suggestions = ref<{ companies: CompanyData[] }>({ companies: [] })
 const showSuggestions = ref(false)
 const activeIndex = ref(-1)
+const searchContainer = ref<HTMLElement | null>(null)
 
 let debounceTimer: number | null = null
 
-const hasSuggestions = computed(() =>
-  suggestions.value.companies.length > 0 ||
-  suggestions.value.categories.length > 0
-)
-
-const allSuggestionsCount = computed(() =>
-  suggestions.value.companies.length +
-  suggestions.value.categories.length
-)
+const hasSuggestions = computed(() => suggestions.value.companies.length > 0)
 
 const onInput = () => {
   if (debounceTimer) clearTimeout(debounceTimer)
@@ -183,79 +131,77 @@ const onInput = () => {
   debounceTimer = window.setTimeout(async () => {
     const trimmed = query.value.trim()
     if (!trimmed) {
-      suggestions.value = { companies: [], categories: [] }
+      suggestions.value = { companies: [] }
       showSuggestions.value = false
       return
     }
 
     try {
-      suggestions.value = await useDummySearch(trimmed)
+      const res = await search(trimmed)
+      // Extracting real data from DB response
+      const results = Array.isArray(res) ? res : (res.companies || [])
+
+      if (results.length > 0) {
+        suggestions.value.companies = results.slice(0, 6).map((b: any) => ({
+          name: b.name,
+          url: b.website || '',
+          logoUrl: b.logo || '/images/default-logo.png',
+          rating: b.avgRating || 0
+        }))
+      } else {
+        suggestions.value.companies = []
+      }
       showSuggestions.value = true
-    } catch {
+    } catch (error) {
+      console.error("Search fetch error:", error)
       showSuggestions.value = false
     }
   }, 400)
 }
 
-const getSuggestionItem = (index: number): Selection | null => {
-  const companyCount = suggestions.value.companies.length
-
-  if (index < companyCount) {
-    const c = suggestions.value.companies[index]
-    return c ? { value: c.name, type: 'company' } : null
-  }
-
-  const category = suggestions.value.categories[index - companyCount]
-  return category ? { value: category, type: 'category' } : null
-}
-
-const select = (value: string, type: 'company' | 'category') => {
-  query.value = value
+const populateInput = (name: string) => {
+  query.value = name
   showSuggestions.value = false
-  submit(type)
 }
 
-const submit = (type?: string) => {
+const goToExplore = () => {
   const q = query.value.trim()
   if (!q) return
-  window.location.href =
-    `/search?q=${encodeURIComponent(q)}` +
-    (type ? `&type=${type}` : '')
+  showSuggestions.value = false
+  navigateTo({ path: '/end-user/landing/explore', query: { q } })
 }
+const goToBusinessProfile = () => {
+  const q = query.value.trim()
+  if (!q) return
 
-const navigateDown = () => {
-  if (!showSuggestions.value) return
-  activeIndex.value = (activeIndex.value + 1) % allSuggestionsCount.value
-}
-
-const navigateUp = () => {
-  if (!showSuggestions.value) return
-  activeIndex.value =
-    (activeIndex.value - 1 + allSuggestionsCount.value) %
-    allSuggestionsCount.value
-}
-
-const selectSuggestion = () => {
-  if (activeIndex.value >= 0) {
-    const s = getSuggestionItem(activeIndex.value)
-    if (s) select(s.value, s.type)
-  } else submit()
+  navigateTo(`/business/${encodeURIComponent(q)}`)
+  showSuggestions.value = false
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    if (showSuggestions.value && activeIndex.value >= 0) {
+      const c = suggestions.value.companies[activeIndex.value]
+      if (c) query.value = c.name
+    }
+    
+    goToExplore()
+    return
+  }
+
+  if (!showSuggestions.value || !hasSuggestions.value) return
+  
+  const count = suggestions.value.companies.length
+
   if (e.key === 'ArrowDown') {
     e.preventDefault()
-    navigateDown()
+    activeIndex.value = (activeIndex.value + 1) % count
   } else if (e.key === 'ArrowUp') {
     e.preventDefault()
-    navigateUp()
-  } else if (e.key === 'Enter') {
-    e.preventDefault()
-    selectSuggestion()
+    activeIndex.value = (activeIndex.value - 1 + count) % count
   }
 }
-
-const searchContainer = ref<HTMLElement | null>(null)
 
 const handleOutsideClick = (e: MouseEvent) => {
   if (searchContainer.value && !searchContainer.value.contains(e.target as Node)) {
