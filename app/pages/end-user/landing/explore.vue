@@ -4,6 +4,24 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8 sticky top-[60px] z-30">
         <div class="flex flex-wrap gap-4">
+          
+          <div class="flex-1 min-w-[150px]">
+            <label class="block text-sm font-medium text-slate-700 mb-2">Name</label>
+            <Dropdown 
+              v-model="filters.name" 
+              :options="nameOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All"
+              :editable="true"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+
           <div class="flex-1 min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
             <Dropdown 
@@ -67,22 +85,6 @@
               }"
             />
           </div>
-
-          <div class="flex-1 min-w-[70px]">
-            <label class="block text-sm font-medium text-slate-700 mb-2">Prices</label>
-            <Dropdown 
-              v-model="filters.priceRange" 
-              :options="priceOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="All"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
         </div>
 
         <div v-if="hasActiveFilters" class="mt-4 flex items-center gap-2 flex-wrap">
@@ -127,12 +129,8 @@
                     >
                       <img :src="business.logo || '/images/default-logo.png'" class="w-full h-full mb-0 cursor-pointer object-cover" />
                     </a>
-
                     <div class="absolute -top-2 -right-2 flex flex-col gap-1">
-                      <span
-                        v-if="business.isVerified"
-                        class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1"
-                      >
+                      <span v-if="business.isVerified" class="bg-[#008253] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg flex items-center gap-1">
                         <i class="pi pi-shield text-xs"></i> Verified
                       </span>
                     </div>
@@ -142,18 +140,10 @@
                     <div class="flex items-center gap-1 mt-0 justify-center">
                       <span class="text-lg font-bold text-slate-900">{{ business.avgRating }}</span>
                       <div class="flex">
-                        <Star
-                          v-for="n in 5"
-                          :key="n"
-                          :value="business.avgRating - (n - 1)"
-                          class="w-4 h-4"
-                        />
+                        <Star v-for="n in 5" :key="n" :value="business.avgRating - (n - 1)" class="w-4 h-4" />
                       </div>
                     </div>
-                    <button
-                      @click.stop="focusedBusinessId = business.businessId"
-                      class="text-xs text-[#008253] mt-0 hover:text-[#006b44] font-semibold hover:underline transition-colors"
-                    >
+                    <button @click.stop="focusedBusinessId = business.businessId" class="text-xs text-[#008253] mt-0 hover:text-[#006b44] font-semibold hover:underline transition-colors">
                       {{ business.reviewCount }} reviews
                     </button>
                   </div>
@@ -164,16 +154,9 @@
                     <a @click.stop="focusedBusinessId = business.businessId">
                       <h3 class="text-xl font-bold cursor-pointer text-slate-900 mb-3">{{ business.name }}</h3>
                     </a>
-                    <div
-                      class="relative group"
-                      @mouseenter="showContact = business.businessId"
-                      @mouseleave="hideContact()"
-                    >
+                    <div class="relative group" @mouseenter="showContact = business.businessId" @mouseleave="hideContact()">
                       <i class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
-                      <div
-                        v-if="showContact === business.businessId"
-                        class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50"
-                      >
+                      <div v-if="showContact === business.businessId" class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
                         <p><strong>Tel:</strong> {{ business.phone || 'N/A' }}</p>   
                         <p><strong>Address:</strong> {{ business.address || 'N/A' }}</p>
                       </div>
@@ -191,13 +174,6 @@
                     </button>
                   </div>
                 </div>
-              </div>
-              
-              <div v-if="focusedBusinessId === business.businessId" class="md:hidden mt-4 bg-white rounded-2xl border border-slate-200 p-6">
-                 <h3 class="text-sm font-bold mb-2">Review Summary</h3>
-                 <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-700">
-                    {{ business.description || 'No summary available.' }}
-                 </div>
               </div>
             </div>
           </template>
@@ -243,17 +219,19 @@ import useSearch from '~/composables/search/useSearch'
 const route = useRoute()
 const { search } = useSearch()
 
-// API Data State
 const businesses = ref<any[]>([])
 const isLoading = ref(false)
 const showContact = ref<string | null>(null)
 const focusedBusinessId = ref<string | null>(null)
 
-function hideContact() {
-  setTimeout(() => {
-    showContact.value = null;
-  }, 2000);
-}
+const filters = ref({
+  name: '', // Added Name Filter
+  category: '',
+  badges: '',
+  location: '',
+  stars: '',
+  tag: ''
+})
 
 // Logic: Fetch from API
 const fetchResults = async (q: string) => {
@@ -263,50 +241,38 @@ const fetchResults = async (q: string) => {
     const res = await search(q)
     businesses.value = Array.isArray(res) ? res : (res.companies || [])
   } catch (error) {
-    console.error("Search API failed", error)
     businesses.value = []
   } finally {
     isLoading.value = false
   }
 }
 
-const filters = ref({
-  category: '',
-  badges: '',
-  location: '',
-  stars: '',
-  priceRange: '',
-  tag: ''
+// Compute dynamic name options based on the businesses loaded
+const nameOptions = computed(() => {
+  const names = businesses.value.map(b => ({ label: b.name, value: b.name }))
+  return [{ label: 'All', value: '' }, ...names]
 })
 
 const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
+    const matchesName = !filters.value.name || b.name.toLowerCase().includes(filters.value.name.toLowerCase())
     const matchesCategory = !filters.value.category || b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.category.toLowerCase())
     const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && b.isVerified)
     const matchesStars = !filters.value.stars || b.avgRating >= parseFloat(filters.value.stars)
     const matchesTag = !filters.value.tag || b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.tag.toLowerCase())
 
-    return matchesCategory && matchesBadge && matchesStars && matchesTag
+    return matchesName && matchesCategory && matchesBadge && matchesStars && matchesTag
   })
 })
 
-const focusedBusiness = computed(() =>
-  businesses.value.find(b => b.businessId === focusedBusinessId.value)
-)
-
-const hasActiveFilters = computed(() =>
-  Object.values(filters.value).some(v => v)
-)
-
-// Options (Hardcoded for UI as before)
+// Static Options
 const categoryOptions = ref([{ label: 'All', value: '' }, { label: 'Restaurant', value: 'restaurant' }, { label: 'Hotel', value: 'hotel' }])
 const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', value: 'verified' }])
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
-const priceOptions = ref([{ label: 'All', value: '' }, { label: 'Budget', value: 'budget' }])
 
 function clearAllFilters() {
-  filters.value = { category: '', badges: '', location: '', stars: '', priceRange: '', tag: '' }
+  filters.value = { name: '', category: '', badges: '', location: '', stars: '', tag: '' }
 }
 
 function filterByTag(tag: string) {
@@ -316,24 +282,25 @@ function filterByTag(tag: string) {
 
 function getFilterLabel(key: string, value: string): string {
   const optionsMap: Record<string, any> = {
+    name: nameOptions.value,
     category: categoryOptions.value,
     badges: badgeOptions.value,
     location: locationOptions.value,
-    stars: ratingOptions.value,
-    priceRange: priceOptions.value
+    stars: ratingOptions.value
   }
   const option = optionsMap[key]?.find((opt: any) => opt.value === value)
   return option?.label || value
 }
 
-watch(() => route.query.q, (newQ) => {
-  if (newQ) fetchResults(newQ as string)
-})
+function hideContact() {
+  setTimeout(() => { showContact.value = null; }, 2000);
+}
 
-onMounted(() => {
-  const q = route.query.q as string
-  if (q) fetchResults(q)
-})
+const focusedBusiness = computed(() => businesses.value.find(b => b.businessId === focusedBusinessId.value))
+const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v))
+
+watch(() => route.query.q, (newQ) => { if (newQ) fetchResults(newQ as string) })
+onMounted(() => { if (route.query.q) fetchResults(route.query.q as string) })
 </script>
 
 <style scoped>
