@@ -1,0 +1,44 @@
+<svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Defining Gradient -->
+  <defs>
+    <linearGradient id="orbitGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#deae29"/>
+      <stop offset="50%" stop-color="#008253"/>
+      <stop offset="100%" stop-color="#d3d3d3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Star Reduced to 50% size -->
+  <polygon fill="#deae29"
+    points="
+      50,30
+      55,42
+      68,42
+      57,50
+      62,62
+      50,55
+      38,62
+      43,50
+      32,42
+      45,42
+    "
+  />
+
+  <!-- Rotating Orbit Ring -->
+  <circle cx="50" cy="50" r="38"
+    stroke="url(#orbitGradient)"
+    stroke-width="5"
+    fill="none"
+    stroke-linecap="round"
+    stroke-dasharray="80 200">
+
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 50 50"
+      to="360 50 50"
+      dur="1.3s"
+      repeatCount="indefinite"
+    />
+  </circle>
+</svg>
