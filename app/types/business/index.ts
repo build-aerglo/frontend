@@ -79,7 +79,7 @@ export interface BusinessProfileResponse {
   parentBusinessId: string;
   categories: Category[];
   businessAddress: string;
-  logo: string;
+  logo: string | null;
   openingHours: any;
   businessEmail: string;
   businessPhoneNumber: string;

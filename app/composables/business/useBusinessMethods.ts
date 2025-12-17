@@ -53,7 +53,7 @@ export default function () {
     }
   };
 
-  const getBusinessProfile = async (id: string) => {
+  const getBusinessProfile = async (id: any) => {
     try {
       const res = await businessApi.get(`api/business/${id}`);
       if (res.status === 200) {
@@ -66,11 +66,24 @@ export default function () {
     }
   };
 
+  const getCategoryTags = async (id: string) => {
+    try {
+      const res = await businessApi.get(`get-category-tags/${id}`);
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+    } catch (error) {
+      console.error("Error fetching category tags:", error);
+      throw error;
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
     saveBusinessPreferences,
     getBusinessProfile,
     getBusinessUser,
+    getCategoryTags,
   };
 }

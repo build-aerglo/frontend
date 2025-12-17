@@ -1,0 +1,16 @@
+<!-- check (White) -->
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Chat bubble (green #008253) -->
+  <path fill="#008253" d="M100 10c-48 0-87 35-87 78 0 22 10 41 27 56l-2 37 33-19c9 3 19 5 29 5 48 0 87-35 87-79S148 10 100 10z"/>
+
+  <!-- Checkmark (latest positioned version) -->
+  <path fill="white" d="
+    M55 85
+    L79 109
+    L135 52
+    L150 67
+    L79 140
+    L40 101
+    Z
+  " rx="1" ry="1"/>
+</svg>

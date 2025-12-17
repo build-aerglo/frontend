@@ -225,6 +225,7 @@ onBeforeMount(async () => {
         //     additionalProp2: "",
         //     additionalProp3: ""
         // };
+
         business.value.socialMediaLinks = null;
       }
 
