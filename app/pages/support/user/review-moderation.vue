@@ -561,6 +561,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted} from 'vue'
 import Star from '~/components/Stars.vue'
+definePageMeta({ layout: 'support' })
 
 interface Review {
   id: string
@@ -589,7 +590,7 @@ const stats = ref({
   highPriority: 7
 })
 const activeActionMenu = ref<string | null>(null)
-definePageMeta({ layout: 'support' })
+
 // Filters
 const filters = ref({
   status: 'pending',
