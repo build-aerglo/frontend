@@ -26,7 +26,7 @@
       />
 
       <button
-        @click="goToBusinessProfile"
+        @click="handleSearchButton"
         class="w-1/3 bg-[#008253] text-white
                flex justify-center items-center
                hover:bg-[#006f45]
@@ -55,8 +55,8 @@
 
           <li
             v-for="(item, index) in suggestions.companies"
-            :key="`c-${item.name}`"
-            @mousedown.prevent="populateInput(item.name)"
+            :key="item.id"
+            @mousedown.prevent="selectSuggestion(item.name)"
             @mouseover="activeIndex = index"
             :class="{ 'bg-gray-100 dark:bg-gray-700': activeIndex === index }"
             class="flex items-center justify-between px-4 py-3 cursor-pointer
@@ -64,7 +64,7 @@
           >
             <div class="flex items-center space-x-3 min-w-0">
               <img
-                :src="item.logoUrl"
+                :src="item.logoUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'"
                 class="w-9 h-9 rounded-md object-cover flex-shrink-0 border border-gray-200"
                 :alt="`${item.name} logo`"
               />
@@ -108,6 +108,7 @@ import useSearch from '~/composables/search/useSearch'
 const { search } = useSearch()
 
 interface CompanyData {
+  id: string;
   name: string
   url: string
   logoUrl: string
@@ -138,11 +139,11 @@ const onInput = () => {
 
     try {
       const res = await search(trimmed)
-      // Extracting real data from DB response
       const results = Array.isArray(res) ? res : (res.companies || [])
 
       if (results.length > 0) {
         suggestions.value.companies = results.slice(0, 6).map((b: any) => ({
+          id: b.businessId,
           name: b.name,
           url: b.website || '',
           logoUrl: b.logo || '/images/default-logo.png',
@@ -159,34 +160,34 @@ const onInput = () => {
   }, 400)
 }
 
-const populateInput = (name: string) => {
+const selectSuggestion = (name: string) => {
   query.value = name
   showSuggestions.value = false
 }
-
-const goToExplore = () => {
-  const q = query.value.trim()
-  if (!q) return
-  showSuggestions.value = false
-  navigateTo({ path: '/end-user/landing/explore', query: { q } })
-}
-const goToBusinessProfile = () => {
+const handleSearchButton = () => {
   const q = query.value.trim()
   if (!q) return
 
-  navigateTo(`/business/${encodeURIComponent(q)}`)
   showSuggestions.value = false
-}
 
+  const exactMatch = suggestions.value.companies.find(
+    c => c.name.toLowerCase() === q.toLowerCase()
+  )
+
+  if (exactMatch) {
+    navigateTo(`/biz/${exactMatch.id}`)
+  } else {
+    navigateTo(`/business/${encodeURIComponent(q)}`)
+  }
+}
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Enter') {
     e.preventDefault()
-    if (showSuggestions.value && activeIndex.value >= 0) {
-      const c = suggestions.value.companies[activeIndex.value]
-      if (c) query.value = c.name
-    }
+    const q = query.value.trim()
+    if (!q) return
     
-    goToExplore()
+    showSuggestions.value = false
+    navigateTo({ path: '/end-user/landing/explore', query: { q } })
     return
   }
 
