@@ -50,27 +50,28 @@
   <!--Second Section Ends-->
 
   <!--Call to Action Section-->
-  <section class="bg-gradient-to-r from-purple-200 to-violet-50 py-10 px-6 md:px-8">
+  <section class="bg-gradient-to-r from-slate-400 to-slate-100 py-10 px-6 md:px-8">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
       
       <!-- Left Text -->
       <div>
-        <h2 class="text-lg md:text-xl font-semibold text-slate-900">
+        <h2 class="text-lg md:text-xl font-semibold text-white">
           Ready to expand your brand?
         </h2>
-        <p class="text-slate-600 mt-2">
+        <p class="text-white mt-2">
           Boost credibility with authentic reviews.
         </p>
       </div>
 
       <!-- Right Button -->
-      <button
+      <NuxtLink to="/business/landing">
+        <button
         class="px-6 py-3 rounded-xl bg-[#008253] text-white font-medium
                hover:opacity-90 transition"
-      >
-        Get Started
-      </button>
-
+        >
+          Get Started
+        </button>
+      </NuxtLink>
     </div>
   </section>
 
