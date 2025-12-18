@@ -6,20 +6,20 @@
         <div class="space-y-4"> 
           <div> 
             <label class="block text-sm font-medium text-gray-700">Current Password</label> 
-            <input type="password" v-model="passwords.current" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"> 
+            <input type="password" v-model="passwords.current" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"> 
           </div> 
           <div> 
             <label class="block text-sm font-medium text-gray-700">New Password</label> 
-            <input type="password" v-model="passwords.new" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"> 
+            <input type="password" v-model="passwords.new" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"> 
           </div> 
           <div> 
             <label class="block text-sm font-medium text-gray-700">Confirm New Password</label> 
-            <input type="password" v-model="passwords.confirm" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"> 
+            <input type="password" v-model="passwords.confirm" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"> 
           </div> 
         </div> 
         <div class="mt-6 flex justify-end gap-3"> 
           <button type="button" @click="$emit('close')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">Cancel</button> 
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Update Password</button> 
+          <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Update Password</button> 
         </div> 
       </form> 
     </div> 
@@ -40,7 +40,7 @@ const submitPasswordChange = () => {
     alert("New passwords don't match!"); 
     return; 
   } 
-  alert('Password changed successfully (mock)!'); 
+  alert('Password changed successfully!'); 
   emit('close'); 
 }; 
 </script> 

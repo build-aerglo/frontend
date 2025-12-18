@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-gradient-to-r from-green-50 to-green-100 py-7">
+  <section class="bg-gradient-to-r from-blue-50 to-blue-100 py-7">
     <div class="container mx-auto px-4">
       <!-- Header -->
       <div class="relative mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-left text-slate-900 dark:text-white">
+        <h2 class="text-2xl md:text-3xl font-semibold text-left text-slate-900 dark:text-white">
           Recent Reviews
         </h2>
         <div class="absolute right-0 top-1/2 -translate-y-1/2">
