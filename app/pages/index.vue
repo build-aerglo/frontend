@@ -29,7 +29,7 @@
     <div class="container mx-auto px-4">
       <!-- Header -->
       <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-semibold text-left text-slate-900 dark:text-white">
+        <h2 class="text-xl md:text-2xl font-demibold text-left text-gray-700 dark:text-white">
           Categories
         </h2>
         <a href="/end-user/landing/categories"
@@ -44,7 +44,7 @@
 
 
   <!--Second Section Starts-->
-  <section class="my-0 bg-gradient-to-r from-blue-50 to-blue-200">
+  <section >
     <TopReviewed />
   </section>
   <!--Second Section Ends-->
@@ -52,22 +52,22 @@
   <!--Call to Action Section-->
   <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8">
       <div class="container mx-auto px-6 text-center">
-        <h2 class="text-lg md:text-xl font-semibold text-slate-900">
-          Ready to expand your brand?
-        </h2>
-        <p class="text-slate-600 mt-2">
-          Boost credibility with authentic reviews.
-        </p>
-        <div class="flex justify-center space-x-4">
-        <NuxtLink to="/business/landing">
-        <button
-        class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium
-               hover:opacity-90 transition"
-        >
-          Get Started
-        </button>
-      </NuxtLink>
-      </div>
+          <h2 class="text-lg md:text-xl font-semibold text-slate-900">
+            Ready to expand your brand?
+          </h2>
+          <p class="text-slate-600 mt-2">
+            Boost credibility with authentic reviews.
+          </p>
+          <div class="flex justify-center space-x-4">
+          <NuxtLink to="/business/landing">
+          <button
+          class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium
+                hover:opacity-90 transition"
+          >
+            Get Started
+          </button>
+        </NuxtLink>
+        </div>
       </div>
   </section>
 

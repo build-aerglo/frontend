@@ -6,14 +6,15 @@
           v-for="(category, index) in categories"
           :key="index"
           :class="[
-            'flex flex-col items-center justify-center space-y-2',
+            'flex flex-col items-center justify-center space-y-2 cursor-pointer hover:scale-110 transition-transform duration-200',
             index >= 4 ? 'hidden md:flex' : ''
           ]"
+          @click="navigateToCategory(category.name)"
         >
           <component
             :is="category.icon"
             :class="category.color"
-            class="w-5 h-5 md:w-6 md:h-6 cursor-pointer"
+            class="w-5 h-5 md:w-6 md:h-6"
           />
           <span class="text-[13px] md:text-xs text-gray-600 text-center leading-tight">
             {{ category.name }}
@@ -52,4 +53,12 @@ const categories: Category[] = [
   { icon: Hotel, name: 'Hotels & Vacation', color: 'text-sky-400' },
   { icon: GraduationCap, name: 'Education', color: 'text-yellow-400' }
 ]
+
+const navigateToCategory = (categoryName: string) => {
+  // Navigate to explore page with category query parameter
+  navigateTo({
+    path: '/end-user/landing/explore',
+    query: { category: categoryName.toLowerCase() }
+  })
+}
 </script>
