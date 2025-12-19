@@ -14,7 +14,7 @@
               v-for="tab in tabs" 
               :key="tab.id" 
               @click="activeTab = tab.id" 
-              :class="activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
+              :class="activeTab === tab.id ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" 
               class="px-6 py-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap" 
             > 
               <i :class="tab.icon" class="mr-2"></i> 
@@ -38,9 +38,9 @@
               <input 
                 v-model="accountSettings.email" 
                 type="email" 
-                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent" 
               > 
-              <button @click="updateEmail" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+              <button @click="updateEmail" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
                 Update Email 
               </button> 
             </div> 
@@ -63,7 +63,7 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="accountSettings.twoFactorEnabled" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
             <div v-if="accountSettings.twoFactorEnabled" class="bg-green-50 border border-green-200 rounded-lg p-3"> 
@@ -82,7 +82,7 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="accountSettings.loginAlerts" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
           </div> 
@@ -93,7 +93,7 @@
               <div v-for="session in activeSessions" :key="session.id" class="flex items-center justify-between p-4 border border-gray-200 rounded-lg"> 
                 <div class="flex items-center gap-3"> 
                   <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"> 
-                    <i :class="session.device === 'Desktop' ? 'pi pi-desktop' : 'pi pi-mobile'" class="text-blue-600"></i> 
+                    <i :class="session.device === 'Desktop' ? 'pi pi-desktop' : 'pi pi-mobile'" class="text-emerald-600"></i> 
                   </div> 
                   <div> 
                     <p class="text-sm font-medium text-gray-900">{{ session.device }}</p> 
@@ -109,7 +109,7 @@
           </div> 
           <!-- Save Button --> 
           <div class="pt-6 border-t"> 
-            <button @click="saveAccountSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+            <button @click="saveAccountSettings" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
               <i class="pi pi-save mr-2"></i> 
               Save Changes 
             </button> 
@@ -132,7 +132,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.email.newClaim" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -142,7 +142,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.email.flaggedReview" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -152,7 +152,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.email.systemAnnouncements" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -162,7 +162,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.email.dailyDigest" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
             </div> 
@@ -178,7 +178,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.inApp.realTimeAlerts" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -188,14 +188,14 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="notificationSettings.inApp.sound" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
             </div> 
           </div> 
           <!-- Save Button --> 
           <div class="pt-6 border-t"> 
-            <button @click="saveNotificationSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+            <button @click="saveNotificationSettings" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
               <i class="pi pi-save mr-2"></i> 
               Save Changes 
             </button> 
@@ -215,10 +215,10 @@
                 v-for="theme in themeOptions" 
                 :key="theme.value" 
                 @click="interfaceSettings.theme = theme.value" 
-                :class="interfaceSettings.theme === theme.value ? 'border-blue-600 bg-blue-50' : 'border-gray-300'" 
-                class="flex flex-col items-center p-4 border-2 rounded-lg hover:border-blue-400 transition-colors" 
+                :class="interfaceSettings.theme === theme.value ? 'border-emerald-600 bg-emerald-50' : 'border-gray-300'" 
+                class="flex flex-col items-center p-4 border-2 rounded-lg hover:border-emerald-400 transition-colors" 
               > 
-                <i class="text-2xl mb-2" :class="interfaceSettings.theme === theme.value ? 'text-blue-600' : 'text-gray-600'"></i> 
+                <i class="text-2xl mb-2" :class="interfaceSettings.theme === theme.value ? 'text-emerald-600' : 'text-gray-600'"></i> 
                 <span class="text-sm font-medium">{{ theme.label }}</span> 
               </button> 
             </div> 
@@ -244,8 +244,8 @@
                 v-for="density in densityOptions" 
                 :key="density.value" 
                 @click="interfaceSettings.tableDensity = density.value" 
-                :class="interfaceSettings.tableDensity === density.value ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-700'" 
-                class="px-4 py-3 border-2 rounded-lg hover:border-blue-400 transition-colors text-sm font-medium" 
+                :class="interfaceSettings.tableDensity === density.value ? 'border-emerald-600 bg-blue-50 text-emerald-700' : 'border-gray-300 text-gray-700'" 
+                class="px-4 py-3 border-2 rounded-lg hover:border-emerald-400 transition-colors text-sm font-medium" 
               > 
                 {{ density.label }} 
               </button> 
@@ -272,13 +272,13 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="interfaceSettings.autoRefresh" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
           </div> 
           <!-- Save Button --> 
           <div class="pt-6 border-t"> 
-            <button @click="saveInterfaceSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+            <button @click="saveInterfaceSettings" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
               <i class="pi pi-save mr-2"></i> 
               Save Changes 
             </button> 
@@ -299,7 +299,7 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="workflowSettings.requireConfirmation" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
           </div> 
@@ -314,7 +314,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="workflowSettings.mandatoryReasons.rejectingClaims" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -324,7 +324,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="workflowSettings.mandatoryReasons.deletingReviews" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
               <div class="flex items-center justify-between"> 
@@ -334,7 +334,7 @@
                 </div> 
                 <label class="relative inline-flex items-center cursor-pointer"> 
                   <input type="checkbox" v-model="workflowSettings.mandatoryReasons.banningUsers" class="sr-only peer"> 
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
                 </label> 
               </div> 
             </div> 
@@ -348,7 +348,7 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="workflowSettings.autoSaveDrafts" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
           </div> 
@@ -361,12 +361,12 @@
               </div> 
               <label class="relative inline-flex items-center cursor-pointer"> 
                 <input type="checkbox" v-model="workflowSettings.keyboardShortcuts" class="sr-only peer"> 
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div> 
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div> 
               </label> 
             </div> 
-            <div v-if="workflowSettings.keyboardShortcuts" class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4"> 
-              <p class="text-sm font-medium text-blue-900 mb-2">Available Shortcuts:</p> 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-800"> 
+            <div v-if="workflowSettings.keyboardShortcuts" class="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-4"> 
+              <p class="text-sm font-medium text-emerald-900 mb-2">Available Shortcuts:</p> 
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-emerald-800"> 
                 <div><kbd class="px-2 py-1 bg-white rounded">Ctrl + K</kbd> Quick search</div> 
                 <div><kbd class="px-2 py-1 bg-white rounded">Ctrl + /</kbd> Show shortcuts</div> 
                 <div><kbd class="px-2 py-1 bg-white rounded">Esc</kbd> Close modal</div> 
@@ -376,7 +376,7 @@
           </div> 
           <!-- Save Button --> 
           <div class="pt-6 border-t"> 
-            <button @click="saveWorkflowSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+            <button @click="saveWorkflowSettings" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
               <i class="pi pi-save mr-2"></i> 
               Save Changes 
             </button> 
@@ -431,14 +431,14 @@
             <div class="grid grid-cols-2 gap-3"> 
               <button 
                 @click="regionalSettings.timeFormat = '12h'" 
-                :class="regionalSettings.timeFormat === '12h' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-700'" 
-                class="px-4 py-3 border-2 rounded-lg hover:border-blue-400 transition-colors text-sm font-medium" 
+                :class="regionalSettings.timeFormat === '12h' ? 'border-emerald-600 bg-emerald-50 text-emerald-700' : 'border-gray-300 text-gray-700'" 
+                class="px-4 py-3 border-2 rounded-lg hover:border-emerald-400 transition-colors text-sm font-medium" 
               > 
                 12-hour 
               </button> 
               <button 
                 @click="regionalSettings.timeFormat = '24h'" 
-                :class="regionalSettings.timeFormat === '24h' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-700'" 
+                :class="regionalSettings.timeFormat === '24h' ? 'border-emerald-600 bg-blue-50 text-emerald-700' : 'border-gray-300 text-gray-700'" 
                 class="px-4 py-3 border-2 rounded-lg hover:border-blue-400 transition-colors text-sm font-medium" 
               > 
                 24-hour 
@@ -447,7 +447,7 @@
           </div> 
           <!-- Save Button --> 
           <div class="pt-6 border-t"> 
-            <button @click="saveRegionalSettings" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"> 
+            <button @click="saveRegionalSettings" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"> 
               <i class="pi pi-save mr-2"></i> 
               Save Changes 
             </button> 
@@ -488,28 +488,28 @@
           </div> 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
             <a href="#" class="p-4 border rounded-lg hover:bg-gray-50 transition-colors flex items-center"> 
-              <i class="pi pi-book text-xl text-blue-600 mr-4"></i> 
+              <i class="pi pi-book text-xl text-emerald-600 mr-4"></i> 
               <div> 
                 <h3 class="text-sm font-medium text-gray-900">Support Guidelines</h3> 
                 <p class="text-xs text-gray-500">Read the official support documentation</p> 
               </div> 
             </a> 
             <a href="#" class="p-4 border rounded-lg hover:bg-gray-50 transition-colors flex items-center"> 
-              <i class="pi pi-sync text-xl text-blue-600 mr-4"></i> 
+              <i class="pi pi-sync text-xl text-emerald-600 mr-4"></i> 
               <div> 
                 <h3 class="text-sm font-medium text-gray-900">View Changelog</h3> 
                 <p class="text-xs text-gray-500">See what's new in the latest version</p> 
               </div> 
             </a> 
             <a href="#" class="p-4 border rounded-lg hover:bg-gray-50 transition-colors flex items-center"> 
-              <i class="pi pi-flag text-xl text-blue-600 mr-4"></i> 
+              <i class="pi pi-flag text-xl text-emerald-600 mr-4"></i> 
               <div> 
                 <h3 class="text-sm font-medium text-gray-900">Report Internal Issue</h3> 
                 <p class="text-xs text-gray-500">Found a bug? Let the dev team know</p> 
               </div> 
             </a> 
             <a href="#" class="p-4 border rounded-lg hover:bg-gray-50 transition-colors flex items-center"> 
-              <i class="pi pi-envelope text-xl text-blue-600 mr-4"></i> 
+              <i class="pi pi-envelope text-xl text-emerald-600 mr-4"></i> 
               <div> 
                 <h3 class="text-sm font-medium text-gray-900">Contact Super Admin</h3> 
                 <p class="text-xs text-gray-500">Get in touch with a platform administrator</p> 
@@ -553,7 +553,7 @@
                 <h3 class="text-sm font-medium text-gray-900">Download My Settings</h3> 
                 <p class="text-xs text-gray-500">Download a JSON file of your current settings</p> 
               </div> 
-              <button @click="downloadSettings" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"> 
+              <button @click="downloadSettings" class="px-4 py-2 bg-blue-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors"> 
                 Download 
               </button> 
             </div> 
@@ -589,9 +589,9 @@ const accountSettings = reactive({
   loginAlerts: true, 
 }); 
 const activeSessions = ref([ 
-  { id: 1, device: 'Desktop', location: 'New York, USA', lastActive: '2 minutes ago', current: true }, 
-  { id: 2, device: 'iPhone 14 Pro', location: 'London, UK', lastActive: '3 hours ago', current: false }, 
-  { id: 3, device: 'Desktop', location: 'Berlin, DE', lastActive: '1 day ago', current: false }, 
+  { id: 1, device: 'Desktop', location: 'Abeokuta, Ogun', lastActive: '2 minutes ago', current: true }, 
+  { id: 2, device: 'iPhone 14 Pro', location: 'Yaba, Lagos', lastActive: '3 hours ago', current: false }, 
+  { id: 3, device: 'Desktop', location: 'Odeda, Ogun', lastActive: '1 day ago', current: false }, 
 ]); 
 const updateEmail = () => { 
   alert(`Email update request for ${accountSettings.email} sent (mock).`); 
@@ -744,7 +744,8 @@ const downloadSettings = () => {
   border-color: #9CA3AF; /* gray-400 */ 
 } 
 .p-dropdown:not(.p-disabled).p-focus { 
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* ring-2 ring-blue-500 */ 
+  box-shadow:0 0 0 2px rgba(16, 185, 129, 0.5); /* ring-2 ring-emerald-500 */
+
   border-color: transparent; 
 } 
 </style> 

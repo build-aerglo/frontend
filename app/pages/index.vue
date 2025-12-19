@@ -29,7 +29,7 @@
     <div class="container mx-auto px-4">
       <!-- Header -->
       <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-bold text-left text-slate-900 dark:text-white">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-slate-900 dark:text-white">
           Categories
         </h2>
         <a href="/end-user/landing/categories"
@@ -44,35 +44,31 @@
 
 
   <!--Second Section Starts-->
-  <section class="my-0">
+  <section class="my-0 bg-gradient-to-r from-blue-50 to-blue-200">
     <TopReviewed />
   </section>
   <!--Second Section Ends-->
 
   <!--Call to Action Section-->
-  <section class="bg-gradient-to-r from-slate-400 to-slate-100 py-10 px-6 md:px-8">
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-      
-      <!-- Left Text -->
-      <div>
-        <h2 class="text-lg md:text-xl font-semibold text-white">
+  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-lg md:text-xl font-semibold text-slate-900">
           Ready to expand your brand?
         </h2>
-        <p class="text-white mt-2">
+        <p class="text-slate-600 mt-2">
           Boost credibility with authentic reviews.
         </p>
-      </div>
-
-      <!-- Right Button -->
-      <NuxtLink to="/business/landing">
+        <div class="flex justify-center space-x-4">
+        <NuxtLink to="/business/landing">
         <button
-        class="px-6 py-3 rounded-xl bg-[#008253] text-white font-medium
+        class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium
                hover:opacity-90 transition"
         >
           Get Started
         </button>
       </NuxtLink>
-    </div>
+      </div>
+      </div>
   </section>
 
 
@@ -84,9 +80,9 @@
   <!--Third Section Ends-->
 
   <!--Fourth Section begins-->
-  <section id="add-voice" class="bg-gradient-to-r from-blue-50 to-blue-100 py-10 mb-0">
+  <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
     <div class="container mx-auto px-6 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-6">
+      <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
         Add Your Voice
       </h2>
       <p class="text-gray-800 dark:text-gray-300 max-w-2xl mx-auto mb-8">
@@ -96,11 +92,10 @@
       </p>
       <div class="flex justify-center space-x-4">
         <NuxtLink to="/auth/end-user/sign-in"
-          class="flex items-center space-x-2 bg-[#008253] hover:bg-[#006f46] text-white px-6 py-2 rounded-full transition-all duration-300">
+          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300">
           <span>Login/Register</span>
         </NuxtLink>
       </div>
-      <div></div>
     </div>
   </section>
   <!--Fourth Section Ends-->

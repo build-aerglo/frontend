@@ -3,7 +3,7 @@
     <div class="container mx-auto px-4">
       <!-- Header -->
       <div class="relative mb-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-left text-slate-900 dark:text-white">
+        <h2 class="text-2xl md:text-3xl font-semibold text-left text-slate-900 dark:text-white">
           Top Reviewed
         </h2>
         <NuxtLink
