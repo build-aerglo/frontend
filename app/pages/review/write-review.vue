@@ -282,18 +282,7 @@ const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
 
-const userReviewData = ref<UserReview>({
-  businessId: businessName.value,
-  locationId: businessLocation.value,
-  reviewerId: store.userId || "",
-  email: email.value,
-  starRating: rating.value,
-  reviewBody: reviewBody.value,
-  photoUrls: [
-    ...images.value
-  ],
-  reviewAsAnon: anonymous.value
-})
+
 // Refs for dropdown containers
 const businessDropdownRef = ref<HTMLElement | null>(null);
 const locationDropdownRef = ref<HTMLElement | null>(null);
@@ -445,12 +434,39 @@ const removeBusiness = (index: number) => {
 };
 
 const submitReview = async () => {
+  if (!businessName.value || !rating.value || reviewBody.value.length < 20) {
+    alert("Please fill all required fields");
+    return;
+  }
+
+  const userReviewData: UserReview = {
+    businessId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    locationId: null,
+    reviewerId: store.userId || null,
+    email: anonymous.value ? email.value : null,
+    starRating: Math.round(rating.value),
+    reviewBody: reviewBody.value,
+    photoUrls: images.value.length > 0 ? images.value : null,
+    reviewAsAnon: anonymous.value
+  };
+
   try {
-    const res = await submitUserReview (userReviewData.value);
-    console.log(res)
-    alert("Review Submitted successfully!");
-  } catch (error) {
-    alert("Failed to submit review.");
+    const res = await submitUserReview(userReviewData);
+    console.log("Review submitted:", res);
+    alert("Review submitted successfully!");
+
+    // Reset form
+    businessName.value = "";
+    businessLocation.value = "";
+    reviewBody.value = "";
+    rating.value = 0;
+    images.value = [];
+    anonymous.value = false;
+    email.value = "";
+  } catch (error: any) {
+    const errorMsg = error.response?.data?.error || "Failed to submit review";
+    alert(errorMsg);
+    console.error(error);
   }
 };
 
