@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-slate-50 pb-8 pt-6">
+  <section class="bg-purple-50 pb-8 pt-6">
     <div class="container mx-auto px-4">
       <!-- Header -->
       <div class="relative mb-6">
-        <h2 class="text-2xl md:text-3xl font-semibold text-left text-slate-900 dark:text-white">
+        <h2 class="text-2xl md:text-3xl font-demibold text-left text-gray-800 dark:text-white">
           Top Reviewed
         </h2>
         <NuxtLink
@@ -50,7 +50,7 @@
           </div>
 
           <!-- Business name -->
-          <h3 class="text-lg font-bold text-center text-slate-900 dark:text-white">
+          <h3 class="text-lg font-semibold text-center text-slate-800 dark:text-white">
             {{ card.name }}
           </h3>
 

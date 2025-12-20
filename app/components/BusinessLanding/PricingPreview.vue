@@ -8,9 +8,9 @@
         Powerful features starting at just <span class="font-bold text-gray-900"><img src="~/assets/svg/naira.svg" class="w-10 h-10 mx-0 inline-block" />10000/month</span>.
       </p>
       <div class="mt-8">
-        <a href="#" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-blue-600 hover:bg-blue-700">
+        <NuxtLink to="/subscription" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-emerald-600 hover:bg-emerald-700">
           See Full Pricing
-        </a>
+        </NuxtLink>
       </div>
     </div>
   </div>

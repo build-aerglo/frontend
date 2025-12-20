@@ -169,6 +169,11 @@ const router = useRouter()
 // Menu items
 const menuItems = ref<MenuItem[]>([
   {
+    label: 'Profile',
+    path: '/support/user/profile',
+    icon: 'pi pi-user'
+  },
+  {
     label: 'Dashboard',
     path: '/support/user/dashboard',
     icon: 'pi pi-th-large'
