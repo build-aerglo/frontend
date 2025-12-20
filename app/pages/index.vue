@@ -91,7 +91,7 @@
         better experiences every day.
       </p>
       <div class="flex justify-center space-x-4">
-        <NuxtLink to="/auth/end-user/sign-in"
+        <NuxtLink to="/end-user/auth/sign-in"
           class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300">
           <span>Login/Register</span>
         </NuxtLink>

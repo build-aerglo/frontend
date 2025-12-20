@@ -8,7 +8,7 @@
   <div class="w-full flex justify-center mt-1">
     <div
       ref="searchContainer"
-      class="relative flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
+      class="relative rounded-lg overflow-hidden flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
              bg-transparent dark:bg-gray-900 shadow-md
              border border-gray-300 dark:border-gray-700
              focus-within:ring-2 focus-within:ring-[#008253]
@@ -20,20 +20,19 @@
         placeholder="Search business"
         @input="onInput"
         @keydown="handleKeyDown"
-        class="flex-1 bg-transparent outline-none
+        class="flex-1 h-12 sm:h-14 bg-transparent outline-none
                text-white dark:text-white
                placeholder-gray-400 px-4 py-4"
       />
 
       <button
         @click="handleSearchButton"
-        class="w-1/3 bg-[#008253] text-white
+        class="w-1/3 h-12 sm:h-14 px-2 bg-[#008253] text-white
                flex justify-center items-center
                hover:bg-[#006f45]
-               transition-colors duration-200
-               h-full"
+               transition-colors duration-200"
       >
-        <span class="text-sm font-bold tracking-wide">
+        <span class="text-xs sm:text-sm font-bold tracking-wide">
           Search
         </span>
       </button>
