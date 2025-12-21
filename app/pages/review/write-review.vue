@@ -118,12 +118,18 @@
             </div>
 
             <div class="flex items-center space-x-2">
-              <input type="checkbox" id="anonymous" v-model="anonymous" class="w-4 h-4 rounded border-gray-300 accent-[#008253]" />
-              <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">Review as anonymous</label>
+              <input type="checkbox" id="anonymous" v-model="anonymous" :disabled="isGuest"
+                class="w-4 h-4 rounded border-gray-300 accent-[#008253] disabled:opacity-50 disabled:cursor-not-allowed" />
+              <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">
+                Review as anonymous
+                <span v-if="isGuest" class="text-xs text-gray-500">(Required for guest users)</span>
+              </label>
             </div>
 
-            <div v-if="anonymous">
-              <input type="email" v-model="email" placeholder="Email" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
+
+            <div v-if="isGuest || anonymous">
+              <input type="email" v-model="email" placeholder="Email" required
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
             </div>
 
             <button @click="submitReview" class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition">
@@ -167,12 +173,12 @@
 
 <script setup lang="ts">
 import Star from '~/components/Stars.vue'
-import useUser from '~/composables/useUser' 
+import useUser from '~/composables/useUser'
 import useReviewMethods from '~/composables/review/useReviewMethods'
-import useSearch from '~/composables/search/useSearch' 
+import useSearch from '~/composables/search/useSearch'
 
 const { submitUserReview } = useReviewMethods();
-const { search } = useSearch(); 
+const { search } = useSearch();
 const store = useUser()
 
 // Form state
@@ -188,10 +194,11 @@ const showBusinessDropdown = ref(false);
 const showLocationDropdown = ref(false);
 const isSearching = ref(false);
 const selectedBusinessLogo = ref<string>("");
+const selectedBusinessId = ref<string>("");
 let debounceTimer: any = null;
 
 // Search Results
-const filteredBusinesses = ref<any[]>([]); 
+const filteredBusinesses = ref<any[]>([]);
 const filteredLocations = ref<string[]>([]);
 
 const businessDropdownRef = ref<HTMLElement | null>(null);
@@ -205,10 +212,21 @@ const featuredBusinesses = ref([
 
 const locationList = ["Yaba", "Anthony", "Port Harcourt", "Benin City", "Ikeja", "Victoria Island"];
 
+// Check if user is authenticated
+const isAuthenticated = computed(() => store.isAuthenticated);
+const isGuest = computed(() => !isAuthenticated.value);
+
+// For guest users, anonymous checkbox is always checked and disabled
+watch(isGuest, (guest) => {
+  if (guest) {
+    anonymous.value = true;
+  }
+}, { immediate: true });
+
 // ELASTIC SEARCH HANDLER
 const handleBusinessInput = () => {
   showBusinessDropdown.value = true;
-  
+
   if (debounceTimer) clearTimeout(debounceTimer);
   if (!businessName.value.trim()) {
     isSearching.value = false;
@@ -231,11 +249,12 @@ const handleBusinessInput = () => {
     } finally {
       isSearching.value = false;
     }
-  }, 400); 
+  }, 400);
 };
 
 const selectBusiness = (b: any) => {
   businessName.value = b.name;
+  selectedBusinessId.value = b.id || b.businessId || "";
   selectedBusinessLogo.value = b.logo || "";
   showBusinessDropdown.value = false;
   filteredBusinesses.value = [];
@@ -270,22 +289,49 @@ const setRating = (value: number) => {
 };
 
 const submitReview = async () => {
+  // Validation
+  if (!selectedBusinessId.value) {
+    alert("Please select a business from the dropdown");
+    return;
+  }
+  if (rating.value === 0) {
+    alert("Please provide a rating");
+    return;
+  }
+  if (reviewBody.value.length < 20) {
+    alert("Review must be at least 20 characters");
+    return;
+  }
+  if (isGuest.value && !email.value) {
+    alert("Email is required for guest reviews");
+    return;
+  }
+
   const data = {
-    businessId: businessName.value,
-    locationId: businessLocation.value,
-    reviewerId: store.userId || "",
-    email: email.value,
+    businessId: selectedBusinessId.value,
+    locationId: businessLocation.value || null,
+    reviewerId: isAuthenticated.value ? store.userId : null,
+    email: isGuest.value ? email.value : null,
     starRating: rating.value,
     reviewBody: reviewBody.value,
-    photoUrls: [...images.value],
+    photoUrls: images.value.length > 0 ? images.value : null,
     reviewAsAnon: anonymous.value
   };
-  
+
   try {
     await submitUserReview(data);
-    alert("Review Submitted successfully!");
+    alert("Review submitted successfully! It will be published after validation.");
+    // Reset form
+    businessName.value = "";
+    selectedBusinessId.value = "";
+    businessLocation.value = "";
+    rating.value = 0;
+    reviewBody.value = "";
+    images.value = [];
+    if (isGuest.value) email.value = "";
+    else anonymous.value = false;
   } catch (error) {
-    alert("Failed to submit review.");
+    alert("Failed to submit review. Please try again.");
   }
 };
 
@@ -306,6 +352,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 const handleImages = (e: Event) => {
   const files = (e.target as HTMLInputElement).files;
   if (!files) return;
+  if (images.value.length + files.length > 3) {
+    alert("Maximum 3 images allowed");
+    return;
+  }
   Array.from(files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => images.value.push(e.target?.result as string);
@@ -320,6 +370,9 @@ const rateBusiness = (index: number, value: number) => {
 const removeBusiness = (index: number) => featuredBusinesses.value.splice(index, 1);
 
 watch(businessName, (val) => {
-  if (!val) selectedBusinessLogo.value = "";
+  if (!val) {
+    selectedBusinessLogo.value = "";
+    selectedBusinessId.value = "";
+  }
 });
 </script>
