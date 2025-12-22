@@ -6,9 +6,10 @@
           v-for="(category, index) in categories"
           :key="index"
           :class="[
-            'flex flex-col items-center justify-center space-y-2',
+            'flex flex-col items-center justify-center space-y-2 cursor-pointer hover:scale-110 transition-transform duration-200',
             index >= 4 ? 'hidden md:flex' : ''
           ]"
+          @click="navigateToCategory(category.name)"
         >
           <component
             :is="category.icon"
@@ -96,4 +97,11 @@ onMounted(async () => {
     console.error('Error fetching categories:', error)
   }
 })
+const navigateToCategory = (categoryName: string) => {
+  // Navigate to explore page with category query parameter
+  navigateTo({
+    path: '/end-user/landing/explore',
+    query: { category: categoryName.toLowerCase() }
+  })
+}
 </script>
