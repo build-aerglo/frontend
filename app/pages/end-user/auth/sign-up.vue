@@ -24,7 +24,15 @@
           <p class="text-sm mt-2">Signing up...</p>
         </div>
 
-        <form @submit.prevent="handleEndUserRegistration" class="space-y-5">
+        <form @submit.prevent="handleEndUserRegistration" class="space-y-3">
+          <!-- Username -->
+          <div>
+            <input id="username" v-model="form.username" type="username"
+              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+              placeholder="Username"
+              required />
+
+          </div>
           <!-- Email -->
           <div>
             <input id="email" v-model="form.email" type="email"
@@ -119,6 +127,7 @@ import spinner from '~/assets/svg/spinner.svg'
 const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
 const form = ref<EndUser>({ 
+  username: "",
   email: "",
   phone: "",
   password: "",

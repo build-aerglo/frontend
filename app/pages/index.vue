@@ -12,14 +12,23 @@
     </div>
     <div class="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
     <!-- Beginning content -->
-    <div class="relative z-10 max-w-3xl font-sans">
-      <h1 class="text-3xl sm:text-3xl font-bold mb-0 text-white drop-shadow-lg">
-        Let real experiences guide you
-      </h1>
-      <p class="mt-1 text-lg text-[#008253]">
-        Clear reviews. Confident decisions.
-      </p>
-    </div>
+      <div class="relative z-10 max-w-3xl font-sans">
+        <h1 class="font-bold text-white drop-shadow-lg mb-0
+                  text-2xl
+                  sm:text-2xl
+                  md:text-3xl
+                  lg:text-4xl">
+          Let real experiences guide you
+        </h1>
+
+        <p class="mt-1 text-[#008253]
+                  text-base
+                  sm:text-lg
+                  md:text-xl">
+          Clear reviews. Confident decisions.
+        </p>
+      </div>
+
     <SearchBarHome />
   </section>
   <!--First Section Ends-->
