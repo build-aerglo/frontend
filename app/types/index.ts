@@ -1,4 +1,5 @@
 export interface EndUser {
+  username: string;
   email: string;
   phone: string;
   password: string;
