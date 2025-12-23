@@ -31,6 +31,28 @@ export const useUserStore = defineStore("EndUser", {
     //         return null;
     //     }
     // },
+    isAuthenticated: (state): boolean => {
+      return !!state.idToken || !!state.accessToken;
+    },
+
+    userId: (state): string | null => {
+      if (!state.idToken) return null;
+      try {
+        // Decode JWT to get user ID from 'sub' claim
+        const parts = state.idToken.split('.');
+        const base64Url = parts.length > 1 ? parts[1] : null;
+        if (!base64Url) return null;
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const decoded = JSON.parse(jsonPayload);
+        return decoded.sub || null;
+      } catch (error) {
+        console.error("Error decoding id_token:", error);
+        return null;
+      }
+    },
   },
 
   actions: {
