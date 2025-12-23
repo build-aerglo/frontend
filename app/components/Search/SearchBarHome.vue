@@ -8,7 +8,7 @@
   <div class="w-full flex justify-center mt-1">
     <div
       ref="searchContainer"
-      class="relative rounded-lg overflow-hidden flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
+      class="relative rounded-lg flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
              bg-transparent dark:bg-gray-900 shadow-md
              border border-gray-300 dark:border-gray-700
              focus-within:ring-2 focus-within:ring-[#008253]
@@ -21,14 +21,14 @@
         @input="onInput"
         @keydown="handleKeyDown"
         class="flex-1 h-12 sm:h-14 bg-transparent outline-none
-               text-white dark:text-white
+               text-white dark:text-white rounded-l-lg
                placeholder-gray-400 px-4 py-4"
       />
 
       <button
         @click="handleSearchButton"
         class="w-1/3 h-12 sm:h-14 px-2 bg-[#008253] text-white
-               flex justify-center items-center
+               flex justify-center items-center rounded-r-lg
                hover:bg-[#006f45]
                transition-colors duration-200"
       >
