@@ -20,19 +20,19 @@
         placeholder="Search business"
         @input="onInput"
         @keydown="handleKeyDown"
-        class="flex-1 h-12 sm:h-14 bg-transparent outline-none
+        class="w-2/3 flex-1 h-12 sm:h-14 bg-transparent outline-none
                text-white dark:text-white rounded-l-lg
-               placeholder-gray-400 px-4 py-4"
+               placeholder-gray-400 px-2 py-4"
       />
 
       <button
         @click="handleSearchButton"
-        class="w-1/3 h-12 sm:h-14 px-2 bg-[#008253] text-white
-               flex justify-center items-center rounded-r-lg
+        class="w-1/3 h-12 sm:h-14 px-1 bg-[#008253] text-white
+               justify-center items-center rounded-r-lg
                hover:bg-[#006f45]
                transition-colors duration-200"
       >
-        <i v-if="isSmallScreen" class="pi pi-search text-sm"></i>
+        <i v-if="isSmallScreen" class="pi pi-search text-xs"></i>
         <span v-else class="text-xs sm:text-sm font-bold tracking-wide">
           Search
         </span>
