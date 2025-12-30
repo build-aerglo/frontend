@@ -27,7 +27,7 @@
                       <input class="form-check-input" type="checkbox" id="remember-me" />
                       <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
-                  <NuxtLink to="/">
+                  <NuxtLink to="/business/auth/password-reset">
                       <p class="mb-0 text-link">Forgot Password?</p>
                   </NuxtLink>
               </div>
