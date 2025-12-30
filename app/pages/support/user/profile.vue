@@ -39,15 +39,15 @@
                 </div>
                 <div v-else class="space-y-4">
                    <div>
-                      <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                      <input type="text" v-model="editableUser.fullName" class="w-full text-lg font-bold border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500">
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                      <input type="text" v-model="editableUser.fullName" class="w-full px-4 py-3 text-lg font-bold border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500">
                    </div>
                    <div>
-                      <label class="block text-sm font-medium text-gray-700">Username</label>
-                      <input type="text" v-model="editableUser.username" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500">
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                      <input type="text" v-model="editableUser.username" class="w-full px-4 py-3 text-sm border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500">
                    </div>
                    <div>
-                      <label class="block text-sm font-medium text-gray-700">Account Status</label>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Account Status</label>
                       <Dropdown v-model="editableUser.accountStatus" :options="accountStatusOptions" placeholder="Select Status" class="w-full" />
                    </div>
                 </div>
@@ -147,14 +147,14 @@
           </div>
 
           <!-- Recent Personal Activity -->
-          <div class="bg-white p-6 rounded-lg shadow">
+          <div class="bg-white p-5 rounded-lg shadow">
             <h3 class="text-lg font-medium text-gray-900">Recent Personal Activity</h3>
-            <ul class="mt-4 space-y-4">
+            <ul class="mt-3 space-y-2">
               <li v-for="activity in recentActivity" :key="activity.id">
-                <div class="flex items-start space-x-3">
+                <div class="flex items-start space-x-2">
                    <div class="flex-shrink-0">
-                      <span class="inline-flex items-center justify-center h-8 w-8 rounded-full" :class="activity.bgColor">
-                         <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path :d="activity.iconPath" /></svg>
+                      <span class="inline-flex items-center justify-center h-4 w-4 rounded-full" :class="activity.bgColor">
+                         <svg class="h-2 w-2 text-white" fill="currentColor" viewBox="0 0 20 20"><path :d="activity.iconPath" /></svg>
                       </span>
                    </div>
                    <div class="flex-1">
@@ -226,9 +226,9 @@ const performanceStats = ref([
 ]);
 
 const recentActivity = ref([
-  { id: 1, action: 'Approved claim for', target: 'The Grand Café', timestamp: '2 minutes ago', bgColor: 'bg-green-500', iconPath: 'M5 13l4 4L19 7' },
-  { id: 2, action: 'Rejected review on', target: 'City Movers', timestamp: '1 hour ago', bgColor: 'bg-red-500', iconPath: 'M6 18L18 6M6 6l12 12' },
-  { id: 3, action: 'Edited business details for', target: 'Tech Innovate', timestamp: '3 hours ago', bgColor: 'bg-yellow-500', iconPath: 'M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536l12.232-12.232z' },
+  { id: 1, action: 'Approved claim for', target: 'The Grand Café', timestamp: '2 minutes ago', bgColor: 'bg-green-500'},
+  { id: 2, action: 'Rejected review on', target: 'City Movers', timestamp: '1 hour ago', bgColor: 'bg-red-500'},
+  { id: 3, action: 'Edited business details for', target: 'Tech Innovate', timestamp: '3 hours ago', bgColor: 'bg-yellow-500'},
 ]);
 
 const personalNotes = ref('');

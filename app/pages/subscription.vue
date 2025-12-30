@@ -1,27 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-6">
+  <div class="min-h-screen bg-gradient-to-br from-white via-slate-50 to-emerald-50 p-4 md:p-6">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h3 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">Choose Your Plan</h3>
-        <p class="text-lg text-gray-600 mb-6">Get 3 days free trial on any plan. No credit card required.</p>
+        <h3 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Choose Your Plan</h3>
+        <p class="text-md text-[#deae29] mb-6">Get 3 days free trial on any plan. No credit card required.</p>
         
         <!-- Billing Toggle -->
         <div class="inline-flex items-center bg-white rounded-full p-1 shadow-sm border border-gray-200">
           <button 
             @click="billingCycle = 'monthly'"
-            :class="billingCycle === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-700'"
+            :class="billingCycle === 'monthly' ? 'bg-emerald-600 text-white' : 'text-gray-700'"
             class="px-6 py-2 rounded-full text-sm font-medium transition-all"
           >
             Monthly
           </button>
           <button 
             @click="billingCycle = 'yearly'"
-            :class="billingCycle === 'yearly' ? 'bg-blue-600 text-white' : 'text-gray-700'"
+            :class="billingCycle === 'yearly' ? 'bg-emerald-600 text-white' : 'text-gray-700'"
             class="px-6 py-2 rounded-full text-sm font-medium transition-all"
           >
             Yearly
-            <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">Save 20%</span>
+            <span class="ml-2 px-2 py-0.5 bg-amber-100 text-[#deae29] text-xs rounded-full">Save 20%</span>
           </button>
         </div>
       </div>
@@ -31,40 +31,37 @@
         <!-- Basic Plan -->
         <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow">
           <div class="mb-6">
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-              <i class="pi pi-star text-blue-600 text-2xl"></i>
-            </div>
             <h3 class="text-2xl font-bold text-gray-900">Basic</h3>
             <p class="text-gray-600 mt-2">Perfect for small businesses starting out</p>
           </div>
 
           <div class="mb-6">
             <div class="flex items-baseline">
-              <span class="text-4xl font-bold text-gray-900">₦{{ formatPrice(plans.basic[billingCycle]) }}</span>
+              <span class="text-3xl font-bold text-gray-900">₦{{ formatPrice(plans.basic[billingCycle]) }}</span>
               <span class="text-gray-600 ml-2">/{{ billingCycle === 'monthly' ? 'month' : 'year' }}</span>
             </div>
-            <p class="text-sm text-green-600 font-medium mt-2">3 days free trial</p>
+            <p class="text-sm text-[#deae29] font-medium mt-2">3 days free trial</p>
           </div>
 
           <ul class="space-y-4 mb-8">
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Up to 50 reviews/month</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">1 business listing</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Basic analytics</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Email support</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Review widgets</span>
             </li>
             <li class="flex items-start gap-3">
@@ -83,74 +80,71 @@
 
           <button 
             @click="selectPlan('basic')"
-            class="w-full py-3 px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+            class="w-full py-3 px-6 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
           >
             Start Free Trial
           </button>
         </div>
 
         <!-- Premium Plan (Popular) -->
-        <div class="bg-white rounded-2xl shadow-xl border-2 border-blue-600 p-8 relative transform md:scale-105 hover:shadow-2xl transition-all">
+        <div class="bg-white rounded-2xl shadow-xl border-2 border-amber-200 p-8 relative transform md:scale-105 hover:shadow-2xl transition-all">
           <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-            <span class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+            <span class="bg-gradient-to-r from-amber-300 to-[#deae29] text-white px-4 py-1 rounded-full text-sm font-semibold">
               Most Popular
             </span>
           </div>
 
           <div class="mb-6">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4">
-              <i class="pi pi-bolt text-white text-2xl"></i>
-            </div>
             <h3 class="text-2xl font-bold text-gray-900">Premium</h3>
             <p class="text-gray-600 mt-2">Ideal for growing businesses</p>
           </div>
 
           <div class="mb-6">
             <div class="flex items-baseline">
-              <span class="text-4xl font-bold text-gray-900">₦{{ formatPrice(plans.premium[billingCycle]) }}</span>
+              <span class="text-3xl font-bold text-gray-900">₦{{ formatPrice(plans.premium[billingCycle]) }}</span>
               <span class="text-gray-600 ml-2">/{{ billingCycle === 'monthly' ? 'month' : 'year' }}</span>
             </div>
-            <p class="text-sm text-green-600 font-medium mt-2">3 days free trial</p>
+            <p class="text-sm text-[#deae29] font-medium mt-2">3 days free trial</p>
           </div>
 
           <ul class="space-y-4 mb-8">
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Unlimited reviews</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Up to 5 business listings</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Advanced analytics</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Priority email support</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Custom review widgets</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Review moderation tools</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Custom branding</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-medium">Basic API access</span>
             </li>
           </ul>
 
           <button 
             @click="selectPlan('premium')"
-            class="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg"
+            class="w-full py-3 px-6 bg-gradient-to-r from-amber-300 to-[#deae29] text-white rounded-xl font-semibold hover:from-amber-400 hover:to-[#deae29] transition-all shadow-lg"
           >
             Start Free Trial
           </button>
@@ -159,59 +153,56 @@
         <!-- Enterprise Plan -->
         <div class="bg-white rounded-2xl shadow-lg border-2 border-gray-200 p-8 hover:shadow-xl transition-shadow">
           <div class="mb-6">
-            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-              <i class="pi pi-building text-purple-600 text-2xl"></i>
-            </div>
             <h3 class="text-2xl font-bold text-gray-900">Enterprise</h3>
             <p class="text-gray-600 mt-2">For large organizations with custom needs</p>
           </div>
 
           <div class="mb-6">
             <div class="flex items-baseline">
-              <span class="text-4xl font-bold text-gray-900">₦{{ formatPrice(plans.enterprise[billingCycle]) }}</span>
+              <span class="text-3xl font-bold text-gray-900">₦{{ formatPrice(plans.enterprise[billingCycle]) }}</span>
               <span class="text-gray-600 ml-2">/{{ billingCycle === 'monthly' ? 'month' : 'year' }}</span>
             </div>
-            <p class="text-sm text-green-600 font-medium mt-2">3 days free trial</p>
+            <p class="text-sm text-[#deae29] font-medium mt-2">3 days free trial</p>
           </div>
 
           <ul class="space-y-4 mb-8">
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700 font-semibold">Everything in Premium</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Unlimited business listings</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">White-label solution</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Dedicated account manager</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">24/7 phone support</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Full API access</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">Custom integrations</span>
             </li>
             <li class="flex items-start gap-3">
-              <i class="pi pi-check text-green-600 mt-1"></i>
+              <i class="pi pi-check text-[#deae29] mt-1"></i>
               <span class="text-gray-700">SLA guarantee</span>
             </li>
           </ul>
 
           <button 
             @click="selectPlan('enterprise')"
-            class="w-full py-3 px-6 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+            class="w-full py-3 px-6 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
           >
             Start Free Trial
           </button>
@@ -223,19 +214,19 @@
         <p class="text-gray-600 mb-6">Trusted by businesses across Nigeria</p>
         <div class="flex flex-wrap items-center justify-center gap-8">
           <div class="flex items-center gap-2 text-gray-500">
-            <i class="pi pi-shield text-2xl text-green-600"></i>
+            <i class="pi pi-shield text-xl text-emerald-700"></i>
             <span class="text-sm font-medium">Secure Payments</span>
           </div>
           <div class="flex items-center gap-2 text-gray-500">
-            <i class="pi pi-clock text-2xl text-blue-600"></i>
+            <i class="pi pi-clock text-xl text-blue-600"></i>
             <span class="text-sm font-medium">24/7 Support</span>
           </div>
           <div class="flex items-center gap-2 text-gray-500">
-            <i class="pi pi-refresh text-2xl text-purple-600"></i>
+            <i class="pi pi-refresh text-xl text-fuchsia-600"></i>
             <span class="text-sm font-medium">Cancel Anytime</span>
           </div>
           <div class="flex items-center gap-2 text-gray-500">
-            <i class="pi pi-star-fill text-2xl text-yellow-500"></i>
+            <i class="pi pi-star-fill text-xl text-[#deae29]"></i>
             <span class="text-sm font-medium">4.9/5 Rating</span>
           </div>
         </div>
@@ -286,7 +277,7 @@
           </button>
           <button 
             @click="confirmPlan"
-            class="flex-1 py-3 px-6 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+            class="flex-1 py-3 px-6 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
           >
             Continue
           </button>
@@ -350,14 +341,12 @@ const closeModal = () => {
 const confirmPlan = () => {
   alert(`Starting your 3-day free trial for the ${selectedPlan.value} plan!`)
   closeModal()
-  // In production, redirect to signup/payment page
+  // redirect to signup/payment page
 }
 
 </script>
 
 <style>
-@import url('https://unpkg.com/primeicons/primeicons.css');
-
 kbd {
   font-family: monospace;
   font-size: 0.875rem;
