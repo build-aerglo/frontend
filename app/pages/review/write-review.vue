@@ -6,40 +6,29 @@
 
     <div class="w-full h-full px-6 py-8">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
-        
+
         <div class="md:col-span-6 md:order-2 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
           <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
-          
+
           <div class="space-y-4">
             <div ref="businessDropdownRef" class="relative">
               <label class="block text-sm font-medium text-gray-900 mb-1">Business Name</label>
               <div class="relative">
-                <input
-                  type="text"
-                  v-model="businessName"
-                  @input="handleBusinessInput"
-                  @focus="showBusinessDropdown = true"
-                  placeholder="Search for a business..."
-                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
-                />
-                
-                <i v-if="isSearching" class="pi pi-spin pi-spinner absolute right-10 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                
-                <img
-                  v-if="selectedBusinessLogo"
-                  :src="selectedBusinessLogo"
-                  alt="Business Logo"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 object-contain"
-                /> 
+                <input type="text" v-model="businessName" @input="handleBusinessInput"
+                  @focus="showBusinessDropdown = true" placeholder="Search for a business..."
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
+
+                <i v-if="isSearching"
+                  class="pi pi-spin pi-spinner absolute right-10 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+                <img v-if="selectedBusinessLogo" :src="selectedBusinessLogo" alt="Business Logo"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 object-contain" />
               </div>
 
-              <ul v-if="showBusinessDropdown && filteredBusinesses.length" class="bg-white shadow-xl mt-1 rounded-lg border max-h-60 overflow-y-auto absolute z-50 w-full">
-                <li
-                  v-for="(b, i) in filteredBusinesses"
-                  :key="i"
-                  @click="selectBusiness(b)"
-                  class="px-4 py-3 cursor-pointer hover:bg-green-50 border-b last:border-none flex items-center gap-3"
-                >
+              <ul v-if="showBusinessDropdown && filteredBusinesses.length"
+                class="bg-white shadow-xl mt-1 rounded-lg border max-h-60 overflow-y-auto absolute z-50 w-full">
+                <li v-for="(b, i) in filteredBusinesses" :key="i" @click="selectBusiness(b)"
+                  class="px-4 py-3 cursor-pointer hover:bg-green-50 border-b last:border-none flex items-center gap-3">
                   <img v-if="b.logo" :src="b.logo" class="w-6 h-6 rounded-full object-cover" />
                   <span class="font-medium text-gray-800">{{ b.name }}</span>
                 </li>
@@ -49,23 +38,16 @@
             <div ref="locationDropdownRef" class="relative">
               <label class="block text-sm font-medium text-gray-900 mb-1">Business Location</label>
               <div class="relative">
-                <input
-                  type="text"
-                  v-model="businessLocation"
-                  @input="handleLocationInput"
-                  @focus="showLocationDropdown = true"
-                  placeholder="Town/City. e.g, Yaba, Anthony..."
-                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none"
-                />
-                <i v-if="businessLocation && isLocationInList" class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"></i>
+                <input type="text" v-model="businessLocation" @input="handleLocationInput"
+                  @focus="showLocationDropdown = true" placeholder="Town/City. e.g, Yaba, Anthony..."
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
+                <i v-if="businessLocation && isLocationInList"
+                  class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"></i>
               </div>
-              <ul v-if="showLocationDropdown && filteredLocations.length" class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full">
-                <li
-                  v-for="(l, i) in filteredLocations"
-                  :key="i"
-                  @click="selectLocation(l)"
-                  class="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                >
+              <ul v-if="showLocationDropdown && filteredLocations.length"
+                class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full">
+                <li v-for="(l, i) in filteredLocations" :key="i" @click="selectLocation(l)"
+                  class="px-3 py-2 cursor-pointer hover:bg-gray-100">
                   {{ l }}
                 </li>
               </ul>
@@ -74,16 +56,10 @@
             <div>
               <label class="block text-xs text-gray-900 mb-1">Rating</label>
               <div class="flex items-center">
-                <Star
-                    v-for="n in 5"
-                    :key="n"
-                    :value="(hoverRating || rating) - (n - 1)"
-                    :color-level="Math.ceil(hoverRating || rating)"
-                    class="cursor-pointer"
-                    @mousemove="hoverRating = n - 1 + getFraction($event)"
-                    @mouseleave="hoverRating = 0"
-                    @click="setRating(n - 1 + getFraction($event))"
-                  />
+                <Star v-for="n in 5" :key="n" :value="(hoverRating || rating) - (n - 1)"
+                  :color-level="Math.ceil(hoverRating || rating)" class="cursor-pointer"
+                  @mousemove="hoverRating = n - 1 + getFraction($event)" @mouseleave="hoverRating = 0"
+                  @click="setRating(n - 1 + getFraction($event))" />
                 <span class="ml-2 text-sm text-gray-700">
                   {{ rating > 0 ? getRatingLabel(rating) : ' ' }}
                   <span v-if="rating > 0" class="text-sm text-gray-500">({{ rating.toFixed(1) }})</span>
@@ -93,29 +69,15 @@
 
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-900 mb-1">Your Review</label>
-              <textarea
-                v-model="reviewBody"
-                maxlength="500"
-                minlength="20"
-                rows="4"
+              <textarea v-model="reviewBody" maxlength="500" minlength="20" rows="4"
                 placeholder="Tell us what you loved (or didn't)."
-                class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
-              ></textarea>
+                class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"></textarea>
               <p class="text-xs text-gray-400 text-right">
                 {{ reviewBody.length }}/500
               </p>
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Add Images (max 3)</label>
-              <input type="file" multiple accept="image/*" @change="handleImages" class="text-sm text-gray-600" />
-              <div class="flex mt-2 gap-2 flex-wrap">
-                <div v-for="(img, index) in images" :key="index" class="relative w-20 h-20 rounded-lg overflow-hidden border">
-                  <img :src="img" class="object-cover w-full h-full" />
-                  <i class="pi pi-times absolute top-1 right-1 bg-white rounded-full p-1 text-xs cursor-pointer" @click="removeImage(index)"></i>
-                </div>
-              </div>
-            </div>
+            <ImageUploader v-model="images" path="reviews" label="Add Images" :max="3" />
 
             <div class="flex items-center space-x-2">
               <input type="checkbox" id="anonymous" v-model="anonymous" :disabled="isGuest"
@@ -126,13 +88,13 @@
               </label>
             </div>
 
-
             <div v-if="isGuest || anonymous">
               <input type="email" v-model="email" placeholder="Email" required
                 class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
             </div>
 
-            <button @click="submitReview" class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition">
+            <button @click="submitReview"
+              class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition">
               Submit Review
             </button>
           </div>
@@ -141,7 +103,8 @@
         <div class="md:col-span-3 md:order-1 bg-white rounded-lg shadow-md p-2">
           <h2 class="text-xl font-bold text-center text-gray-400 mb-6">Featured Businesses</h2>
           <div class="space-y-3">
-            <div v-for="(business, index) in featuredBusinesses" :key="index" class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+            <div v-for="(business, index) in featuredBusinesses" :key="index"
+              class="border rounded-lg p-4 hover:shadow-lg transition-shadow">
               <div class="flex items-start justify-between mb-1">
                 <div class="flex-1">
                   <h4 class="font-semibold mb-0 text-lg text-gray-400">{{ business.name }}</h4>
@@ -152,14 +115,18 @@
                 </button>
               </div>
               <div class="flex items-center mt-2">
-                <Star v-for="n in 5" :key="n" :value="(business.hoverRating || business.rating) - (n - 1)" :color-level="Math.ceil(business.hoverRating || business.rating)" class="cursor-pointer mb-0" @mousemove="business.hoverRating = n - 1 + getFraction($event)" @mouseleave="business.hoverRating = 0" @click="rateBusiness(index, n - 1 + getFraction($event))" />
+                <Star v-for="n in 5" :key="n" :value="(business.hoverRating || business.rating) - (n - 1)"
+                  :color-level="Math.ceil(business.hoverRating || business.rating)" class="cursor-pointer mb-0"
+                  @mousemove="business.hoverRating = n - 1 + getFraction($event)" @mouseleave="business.hoverRating = 0"
+                  @click="rateBusiness(index, n - 1 + getFraction($event))" />
               </div>
             </div>
           </div>
         </div>
 
         <div class="md:col-span-3 md:order-3 space-y-4">
-          <div v-for="i in 5" :key="i" class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
+          <div v-for="i in 5" :key="i"
+            class="bg-white rounded-lg shadow-md p-6 h-32 flex items-center justify-center border-2 border-dashed border-gray-300">
             <div class="text-center text-gray-400">
               <i class="pi pi-image text-3xl mb-2"></i>
               <p class="text-sm">Ad Space</p>
@@ -176,6 +143,7 @@ import Star from '~/components/Stars.vue'
 import useUser from '~/composables/useUser'
 import useReviewMethods from '~/composables/review/useReviewMethods'
 import useSearch from '~/composables/search/useSearch'
+import ImageUploader from '~/components/Input/ImageUploader.vue'
 
 const { submitUserReview } = useReviewMethods();
 const { search } = useSearch();
@@ -349,24 +317,10 @@ const handleClickOutside = (event: MouseEvent) => {
 onMounted(() => document.addEventListener('click', handleClickOutside));
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
-const handleImages = (e: Event) => {
-  const files = (e.target as HTMLInputElement).files;
-  if (!files) return;
-  if (images.value.length + files.length > 3) {
-    alert("Maximum 3 images allowed");
-    return;
-  }
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => images.value.push(e.target?.result as string);
-    reader.readAsDataURL(file);
-  });
-};
-
-const removeImage = (index: number) => images.value.splice(index, 1);
 const rateBusiness = (index: number, value: number) => {
   featuredBusinesses.value[index]!.rating = value > 4.5 ? 5 : Math.round(value * 10) / 10;
 };
+
 const removeBusiness = (index: number) => featuredBusinesses.value.splice(index, 1);
 
 watch(businessName, (val) => {
