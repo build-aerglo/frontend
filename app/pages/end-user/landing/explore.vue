@@ -337,12 +337,25 @@ watch(() => route.query.q, (newQ) => {
   }
 })
 
+// watcher for category query parameter
+watch(() => route.query.category, (newCategory) => { 
+  if (newCategory) {
+    filters.value.category = newCategory as string
+  }
+})
+
 onMounted(async () => { 
   isLoading.value = true
   
   try {
     const res = await getCategories();
     categories.value = res;
+
+    // Check for category query parameter and set filter
+    if (route.query.category) {
+      filters.value.category = route.query.category as string
+    }
+
     if (route.query.q) {
       await fetchResults(route.query.q as string)
     } else {

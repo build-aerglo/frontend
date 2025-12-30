@@ -1,18 +1,18 @@
 <template>
   <div
     v-if="showSuggestions"
-    class="fixed inset-0 bg-black/10 z-[9998]"
+    class="fixed inset-0 bg-black/10 z-[9]"
     @click="showSuggestions = false"
   ></div>
 
   <div class="w-full flex justify-center mt-1">
     <div
       ref="searchContainer"
-      class="relative flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
+      class="relative rounded-lg flex items-center w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg
              bg-transparent dark:bg-gray-900 shadow-md
              border border-gray-300 dark:border-gray-700
              focus-within:ring-2 focus-within:ring-[#008253]
-             transition-all duration-300 z-[10000]"
+             transition-all duration-300 z-[10]"
     >
       <input
         v-model="query"
@@ -20,20 +20,20 @@
         placeholder="Search business"
         @input="onInput"
         @keydown="handleKeyDown"
-        class="flex-1 bg-transparent outline-none
-               text-white dark:text-white
-               placeholder-gray-400 px-4 py-4"
+        class="w-2/3 flex-1 h-12 sm:h-14 bg-transparent outline-none
+               text-white dark:text-white rounded-l-lg
+               placeholder-gray-400 px-2 py-4"
       />
 
       <button
         @click="handleSearchButton"
-        class="w-1/3 bg-[#008253] text-white
-               flex justify-center items-center
+        class="w-1/3 h-12 sm:h-14 px-1 bg-[#008253] text-white
+               justify-center items-center rounded-r-lg
                hover:bg-[#006f45]
-               transition-colors duration-200
-               h-full"
+               transition-colors duration-200"
       >
-        <span class="text-sm font-bold tracking-wide">
+        <i v-if="isSmallScreen" class="pi pi-search text-xs"></i>
+        <span v-else class="text-xs sm:text-sm font-bold tracking-wide">
           Search
         </span>
       </button>
@@ -45,7 +45,7 @@
                border border-gray-200 dark:border-gray-700
                rounded-xl
                shadow-[0_20px_40px_rgba(0,0,0,0.15)]
-               z-[10001]
+               z-[20]
                overflow-hidden"
       >
         <template v-if="hasSuggestions">
@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import useSearch from '~/composables/search/useSearch'
 
 const { search } = useSearch()
@@ -120,10 +120,12 @@ const suggestions = ref<{ companies: CompanyData[] }>({ companies: [] })
 const showSuggestions = ref(false)
 const activeIndex = ref(-1)
 const searchContainer = ref<HTMLElement | null>(null)
+const windowWidth = ref(0)
 
 let debounceTimer: number | null = null
 
 const hasSuggestions = computed(() => suggestions.value.companies.length > 0)
+const isSmallScreen = computed(() => windowWidth.value < 343)
 
 const onInput = () => {
   if (debounceTimer) clearTimeout(debounceTimer)
@@ -164,6 +166,7 @@ const selectSuggestion = (name: string) => {
   query.value = name
   showSuggestions.value = false
 }
+
 const handleSearchButton = () => {
   const q = query.value.trim()
   if (!q) return
@@ -180,6 +183,7 @@ const handleSearchButton = () => {
     navigateTo(`/business/${encodeURIComponent(q)}`)
   }
 }
+
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Enter') {
     e.preventDefault()
@@ -210,6 +214,18 @@ const handleOutsideClick = (e: MouseEvent) => {
   }
 }
 
-onMounted(() => document.addEventListener('click', handleOutsideClick))
-onUnmounted(() => document.removeEventListener('click', handleOutsideClick))
+const updateWindowWidth = () => {
+  windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleOutsideClick)
+  updateWindowWidth()
+  window.addEventListener('resize', updateWindowWidth)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleOutsideClick)
+  window.removeEventListener('resize', updateWindowWidth)
+})
 </script>
