@@ -84,8 +84,8 @@
           <span class="text-sm text-slate-600">Active filters:</span>
           <template v-for="(value, key) in filters" :key="key">
             <button
-              v-if="value"
-              @click="filters[key] = ''"
+              v-if="value && String(key) !== 'tagName' && String(key) !== 'tag'"
+              @click="clearFilter(String(key))"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
               {{ getFilterLabel(key, value) }}
@@ -125,32 +125,33 @@
 
           <template v-else-if="filteredBusinesses.length > 0">
             <div
-              v-for="business in filteredBusinesses" :key="business.businessId"
-              @click="navigateToBiz(business.businessId)"
+              v-for="business in filteredBusinesses" 
+              :key="business.id"
+              @click="navigateToBiz(business)"
               class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
             >
               <div class="grid grid-cols-[auto_1fr] gap-4">
                 <div class="flex flex-col gap-1">
                   <div class="relative w-24 h-24"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
-                      <img :src="business.logo || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
+                      <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
                     </div>
                     <div class="absolute -top-2 -right-2">
                       <Badge 
-                        :type="business.isTrusted ? 'trusted' : (business.isVerified ? 'verified' : 'standard')" 
+                        :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" 
                       />
                     </div>
                   </div>
 
                   <div class="text-center">
                     <div class="flex items-center gap-1 justify-center">
-                      <span class="text-lg font-bold text-slate-900">{{ business.avgRating }}</span>
+                      <span class="text-lg font-bold text-slate-900">{{ business.avgRating ?? 0 }}</span>
                       <div class="flex">
-                        <Star v-for="n in 5" :key="n" :value="business.avgRating - (n - 1)" class="w-4 h-4" :color-level="Math.floor(business.avgRating)" />
+                        <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
                       </div>
                     </div>
-                    <button @click.stop="focusedBusinessId = business.businessId" class="text-xs text-[#008253] font-semibold hover:underline">
-                      {{ business.reviewCount }} reviews
+                    <button @click.stop="focusedBusinessId = business.id" class="text-xs text-[#008253] font-semibold hover:underline">
+                      {{ business.reviewCount ?? 0 }} reviews
                     </button>
                   </div>
                 </div>
@@ -160,24 +161,26 @@
                     <div>
                       <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
                     </div>
-                    <div class="relative group" @mouseenter="showContact = business.businessId" @mouseleave="hideContact()">
+                    <div class="relative group" @mouseenter="showContact = business.id" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
-                      <div v-if="showContact === business.businessId" class="absolute right-0 mt-2 w-48 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
-                        <p><strong>Tel:</strong> {{ business.phone || 'N/A' }}</p>   
-                        <p><strong>Address:</strong> {{ business.address || 'N/A' }}</p>
+                      <div v-if="showContact === business.id" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
+                        <p><strong>Tel:</strong> {{ ('businessPhoneNumber' in business ? business.businessPhoneNumber : 'N/A') ?? 'N/A' }}</p>   
+                        <p><strong>Address:</strong> {{ ('businessAddress' in business ? business.businessAddress : 'N/A') ?? 'N/A' }}</p>
                       </div>
                     </div>
                   </div>
 
                   <div class="flex flex-wrap gap-1">
-                    <button
-                      v-for="cat in business.categories"
-                      :key="cat.id"
-                      @click.stop="filterByTag(cat.name)"
-                      class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-primary transition-all"
-                    >
-                      {{ cat.name }}
-                    </button>
+                    <template v-if="'categories' in business && business.categories">
+                      <button
+                        v-for="cat in business.categories"
+                        :key="cat.id"
+                        @click.stop="filterByTag(cat.name)"
+                        class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-white transition-all"
+                      >
+                        {{ cat.name }}
+                      </button>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -197,17 +200,17 @@
         <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-                  <img :src="focusedBusiness.logo || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
+                  <img :src="('logo' in focusedBusiness ? focusedBusiness.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
                   <div>
                     <h3 class="text-sm font-bold">{{ focusedBusiness.name }}</h3>
                     <p class="text-xs text-slate-500">Review Summary</p>
                   </div>
                 </div>
                 <div class="bg-slate-50 rounded-lg p-4">
-                  <p class="text-xs text-slate-700">{{ focusedBusiness.description || 'No description provided.' }}</p>
+                  <p class="text-xs text-slate-700">{{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No description provided.' }}</p>
                 </div>
                 <button 
-                  @click="navigateToBiz(focusedBusiness.businessId)"
+                  @click="navigateToBiz(focusedBusiness.id)"
                   class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
                 >
                   View Full Profile
@@ -229,13 +232,14 @@ import Star from '~/components/Stars.vue'
 import Badge from '~/components/Badge.vue'
 import useSearch from '~/composables/search/useSearch'
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import type { Business } from '~/types/business';
 
 const route = useRoute()
 const { search } = useSearch()
-const { getCategories } = useBusinessMethods(); 
-const toast = useToast() 
+const { getCategories, getBusinessByCategory, getBusinessByTag } = useBusinessMethods(); 
 
-const businesses = ref<any[]>([])
+// State
+const businesses = ref<Business[]>([])
 const categories = ref<any[]>([]) 
 const isLoading = ref(true) 
 const isSearchingName = ref(false)
@@ -245,174 +249,207 @@ let debounceTimer: any = null
 
 const filters = ref<any>({
   name: route.query.q || '',
-  category: '',
+  category: '', 
   badges: '',
   location: '',
   stars: '',
-  tag: ''
+  tag: '',
+  tagId: route.query.tagId || '',
+  tagName: route.query.tagName || ''
 })
 
-watch(() => filters.value.name, (newVal) => {
-  isSearchingName.value = true
-  if (debounceTimer) clearTimeout(debounceTimer)
-  
-  debounceTimer = setTimeout(async () => {
-    const query = newVal || (route.query.q as string) || 'a' 
-    await fetchResults(query)
-    isSearchingName.value = false
-  }, 400)
-})
+// --- API ACTIONS ---
+const performMainFetch = async () => {
+  isLoading.value = true;
+  if (filters.value.category) {
+    const targetCategory = categories.value.find(
+      c => (c.name || '').toLowerCase() === filters.value.category.toLowerCase()
+    );
+    const categoryId = targetCategory?.categoryId || targetCategory?.id;
+
+    if (categoryId) {
+      try {
+        const res = await getBusinessByCategory(categoryId);
+        businesses.value = res?.data || [];
+      } catch (e) { 
+        businesses.value = []; 
+      } finally { 
+        isLoading.value = false; 
+      }
+      return;
+    }
+  }
+  await fetchResults(filters.value.name || 'a');
+}
+
+const fetchByTag = async (tagId: string) => {
+  isLoading.value = true;
+  try {
+    const res = await getBusinessByTag(tagId);
+    businesses.value = res?.data || [];
+  } catch (error) {
+    businesses.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 const fetchResults = async (q: string) => {
-  if (!q) return
+  isLoading.value = true
   try {
     const res = await search(q)
     businesses.value = Array.isArray(res) ? res : (res.companies || [])
   } catch (error) {
     businesses.value = []
+  } finally {
+    isLoading.value = false
   }
 }
 
-const navigateToBiz = (id: string) => {
-  if (!id) return;
-  navigateTo(`/biz/${id}`);
-}
+watch(() => filters.value.category, async (newVal) => {
+  if (newVal === undefined) return;
+  filters.value.tagId = '';
+  await performMainFetch();
+})
 
+watch(() => filters.value.name, (newVal) => {
+  if (filters.value.category || filters.value.tagId) return; 
+
+  isSearchingName.value = true
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(async () => {
+    await fetchResults(newVal || 'a')
+    isSearchingName.value = false
+  }, 400)
+})
+
+watch(categories, (newVal) => {
+  if (newVal.length > 0 && route.query.category) {
+    const matchingCat = newVal.find(c => c.name.toLowerCase() === (route.query.category as string).toLowerCase());
+    if (matchingCat) {
+      filters.value.category = matchingCat.name;
+    }
+  }
+}, { immediate: true })
+
+// --- COMPUTED ---
 const categoryOptions = computed(() => {
   const baseOptions = [{ label: 'All', value: '' }]
   const dynamicOptions = categories.value.map(cat => ({
     label: cat.name,
-    value: cat.name.toLowerCase()
+    value: cat.name 
   }))
   return [...baseOptions, ...dynamicOptions]
 })
 
+const filteredBusinesses = computed(() => {
+  return businesses.value.filter(b => {
+    const searchName = (filters.value.name || '').toLowerCase();
+    const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
+
+    const matchesCategory = !filters.value.category || 
+      ('categories' in b && b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.category.toLowerCase()));
+
+    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && 'isVerified' in b && b.isVerified);
+    
+    const rating = typeof b.avgRating === 'string' ? parseFloat(b.avgRating) : (b.avgRating ?? 0);
+    const matchesStars = !filters.value.stars || rating >= parseFloat(filters.value.stars);
+    
+    const matchesTag = !filters.value.tag || ('categories' in b && b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.tag.toLowerCase()));
+
+    return matchesName && matchesCategory && matchesBadge && matchesStars && matchesTag;
+  });
+})
+
+const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v));
+const focusedBusiness = computed(() => businesses.value.find(b => b.id === focusedBusinessId.value));
+
+// --- UTILS ---
 const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', value: 'verified' }])
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
-const filteredBusinesses = computed(() => {
-  return businesses.value.filter(b => {
-    const matchesCategory = !filters.value.category || b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.category.toLowerCase())
-    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && b.isVerified)
-    const matchesStars = !filters.value.stars || b.avgRating >= parseFloat(filters.value.stars)
-    const matchesTag = !filters.value.tag || b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.tag.toLowerCase())
+const navigateToBiz = (business: any) => {
+  // Check for all possible ID variations
+  const id = business.id || business.businessId;
+  
+  if (!id) {
+    console.warn("Navigation attempted but no ID found in:", business);
+    return;
+  }
+  
+  return navigateTo(`/biz/${id}`);
+};
+const clearAllFilters = () => filters.value = { name: '', category: '', badges: '', location: '', stars: '', tag: '', tagId: '', tagName: '' };
+const filterByTag = (tag: string) => { filters.value.tag = tag; window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
-    return matchesCategory && matchesBadge && matchesStars && matchesTag
-  })
-})
+function getFilterLabel(key: any, value: any): string {
+  const k = String(key);
+  const v = String(value);
+  
+  if (k === 'name') return v; 
 
-function clearAllFilters() {
-  filters.value = { name: '', category: '', badges: '', location: '', stars: '', tag: '' }
-}
+  // If the key is tagId, return the tagName from our filters if we have it
+  if (k === 'tagId') {
+    return filters.value.tagName || 'Selected Tag';
+  }
 
-function filterByTag(tag: string) {
-  filters.value.tag = tag
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-function getFilterLabel(key: any, value: string): string {
-  if (key === 'name') return value
-  const optionsMap: Record<string, any> = {
+  // We don't want to show a separate chip for 'tagName' itself
+  if (k === 'tagName') return '';
+  
+  const optionsMap: Record<string, any> = { 
     category: categoryOptions.value, 
-    badges: badgeOptions.value,
-    location: locationOptions.value,
-    stars: ratingOptions.value
-  }
-  const option = optionsMap[key]?.find((opt: any) => opt.value === value)
-  return option?.label || value
+    badges: badgeOptions.value, 
+    location: locationOptions.value, 
+    stars: ratingOptions.value 
+  };
+  
+  return optionsMap[k]?.find((opt: any) => opt.value === v)?.label || v;
 }
 
-function hideContact() {
-  setTimeout(() => { showContact.value = null; }, 2000);
-}
-
-const focusedBusiness = computed(() => businesses.value.find(b => b.businessId === focusedBusinessId.value))
-const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v))
-
-watch(() => route.query.q, (newQ) => { 
-  if (newQ) {
-    filters.value.name = newQ as string
-    fetchResults(newQ as string) 
-  }
-})
-
-// watcher for category query parameter
-watch(() => route.query.category, (newCategory) => { 
-  if (newCategory) {
-    filters.value.category = newCategory as string
-  }
-})
+function hideContact() { setTimeout(() => { showContact.value = null; }, 2000); }
 
 onMounted(async () => { 
   isLoading.value = true
-  
   try {
     const res = await getCategories();
-    categories.value = res;
-
-    // Check for category query parameter and set filter
-    if (route.query.category) {
-      filters.value.category = route.query.category as string
-    }
-
-    if (route.query.q) {
-      await fetchResults(route.query.q as string)
+    categories.value = Array.isArray(res) ? res : (res.data || []);
+    const tagId = route.query.tagId as string;
+    
+    if (tagId) {
+      filters.value.tagId = tagId;
+      await fetchByTag(tagId);
     } else {
-      // Fetch default results if no query to avoid empty page on load
-      await fetchResults('a') 
+      await performMainFetch();
     }
+    
   } catch (error) {
-    console.error("Failed to load data:", error);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Unable to fetch data', life: 3000 });
-  } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
 })
+const clearFilter = (key: string) => {
+  filters.value[key] = '';
+  if (key === 'tagId') {
+    filters.value.tagName = '';
+  }
+};
 </script>
 
 <style scoped>
 .text-gold { color: #deae29; }
-
 @keyframes fadeInOut {
   0%   { opacity: 0; transform: translateY(4px); }
   10%  { opacity: 1; transform: translateY(0); }
   90%  { opacity: 1; }
   100% { opacity: 0; transform: translateY(4px); }
 }
-
 .animate-fade { animation: fadeInOut 2.5s forwards; }
-
-:deep(.p-dropdown) {
-  background: rgb(248 250 252);
-  border-color: rgb(203 213 225);
-  border-radius: 0.75rem;
-}
-
+:deep(.p-dropdown) { background: rgb(248 250 252); border-color: rgb(203 213 225); border-radius: 0.75rem; }
 :deep(.p-dropdown:not(.p-disabled):hover) { border-color: #008253; }
-
-:deep(.p-dropdown:not(.p-disabled).p-focus) {
-  outline: none;
-  border-color: #008253;
-  box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2);
-}
-
+:deep(.p-dropdown:not(.p-disabled).p-focus) { outline: none; border-color: #008253; box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2); }
 :deep(.p-dropdown-label) { padding: 0.625rem 1rem; }
-
-:deep(.p-dropdown-panel) {
-  border-radius: 0.75rem;
-  border-color: rgb(203 213 225);
-}
-
+:deep(.p-dropdown-panel) { border-radius: 0.75rem; border-color: rgb(203 213 225); }
 :deep(.p-dropdown-item) { padding: 0.625rem 1rem; }
-
-:deep(.p-dropdown-item:not(.p-disabled):hover) {
-  background: rgb(248 250 252);
-  color: #008253;
-}
-
-:deep(.p-dropdown-item.p-highlight) {
-  background: #008253;
-  color: white;
-}
+:deep(.p-dropdown-item:not(.p-disabled):hover) { background: rgb(248 250 252); color: #008253; }
+:deep(.p-dropdown-item.p-highlight) { background: #008253; color: white; }
 </style>

@@ -105,3 +105,45 @@ export interface BusinessPreference {
   dndModeEnabled: boolean;
   dndModeDurationHours: number;
 }
+
+export interface TagBusiness {
+  id: string;
+  name: string;
+  website: string | null;
+  isBranch: boolean;
+  avgRating: number;
+  reviewCount: number;
+  parentBusinessId: string | null;
+  categories: Array<{ id: string; name: string }> | null;
+  businessAddress: string | null;
+  logo: string | null;
+  openingHours: any | null; // Can be more specific if you have the internal structure
+  businessEmail: string | null;
+  businessPhoneNumber: string | null;
+  cacNumber: string | null;
+  accessUsername: string | null;
+  accessNumber: string | null;
+  socialMediaLinks: any | null; 
+  businessDescription: string | null;
+  media: any | null;
+  isVerified: boolean;
+  reviewLink: string | null;
+  preferredContactMethod: string | null;
+  highlights: any | null;
+  tags: any | null;
+  averageResponseTime: string | null;
+  profileClicks: number;
+  faqs: any | null;
+  qrCodeBase64: string | null;
+}
+
+export interface CategoryBusiness {
+  id: string;
+  name: string;
+  avgRating: number;
+  reviewCount: number;
+  isBranch: boolean;
+  parentBusinessId: string | null;
+}
+
+export type Business = TagBusiness | CategoryBusiness;
