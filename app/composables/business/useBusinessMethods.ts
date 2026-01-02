@@ -88,6 +88,41 @@ export default function () {
     }
   };
 
+  const getCategoryWithTags = async () => {
+    try {
+      const res = await businessApi.get('api/Category/with-tags');
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+    } catch (error) {
+      console.error("Error fetching category tags:", error);
+      throw error;
+    }
+  };
+  const getBusinessByCategory = async (id: string) => {
+    try {
+      const res = await businessApi.get(`api/Business/category/${id}`);
+      console.log(res)
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+    } catch (error) {
+      console.error("Error fetching businesses by category:", error);
+      throw error;
+    }
+  };
+    const getBusinessByTag = async (tagId: string) => {
+    try {
+      const res = await businessApi.get(`api/Business/by-tag/${tagId}`);
+      console.log(res)
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+    } catch (error) {
+      console.error("Error fetching businesses by category:", error);
+      throw error;
+    }
+  }
   return {
     getCategories,
     saveBusinessProfile,
@@ -96,5 +131,8 @@ export default function () {
     getBusinessUser,
     getCategoryTags,
     getBusinessBranches,
+    getCategoryWithTags,
+    getBusinessByCategory,
+    getBusinessByTag
   };
 }

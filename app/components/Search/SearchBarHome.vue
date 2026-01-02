@@ -22,7 +22,7 @@
         @keydown="handleKeyDown"
         class="w-2/3 flex-1 h-12 sm:h-14 bg-transparent outline-none
                text-white dark:text-white rounded-l-lg
-               placeholder-gray-400 px-2 py-4"
+               placeholder-gray-400 px-4 py-4"
       />
 
       <button
