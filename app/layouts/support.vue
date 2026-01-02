@@ -6,7 +6,8 @@
         <!-- Left: Menu Button (Mobile) / Logo (Desktop) -->
         <div class="flex items-center gap-4">
           <!-- Mobile Menu Button -->
-          <button
+      <button
+            v-if="!isSidebarOpen"
             @click="toggleSidebar"
             class="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
             aria-label="Toggle menu"
@@ -15,13 +16,12 @@
           </button>
 
           <!-- Logo (Desktop) -->
-          <div class="hidden md:flex items-center gap-2">
-            <div class="flex items-left justify-center">
-              <img
-                    src="~/assets/images/e-user-logo.png"
-                    class="object-contain w-16 h-16"
-                />
-            </div>
+          <div class="hidden md:flex items-center">
+            <img
+              src="~/assets/images/e-user-logo.png"
+              class="object-contain w-24 h-24"
+              alt="Logo"
+            />
           </div>
         </div>
 
@@ -79,22 +79,22 @@
     >
 
       <!-- Logo Area (Mobile) -->
-      <div class="md:hidden px-6 py-2 border-b border-slate-200">
-        <!-- Close Button (Mobile) -->
-        <div class="flex justify-between p-2">
+      <div class="md:hidden px-6 border-b border-slate-200">
+        <div class="flex justify-between items-center">
           <img
             src="~/assets/images/e-user-logo.png"
-              class="object-contain w-16 h-16"
-            />
+            class="object-contain w-24 h-24"
+            alt="Logo"
+          />
           <button
             @click="closeSidebar"
             class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
             aria-label="Close menu"
           >
-            <i class="pi pi-times text-xs text-slate-700"></i>
+            <i class="pi pi-times text-lg text-slate-700"></i>
           </button>
         </div>
-    </div>
+      </div>
 
       <!-- Navigation Links -->
       <nav class="flex-1 overflow-y-auto p-4 space-y-1">
@@ -231,13 +231,33 @@ const handleNavClick = (): void => {
   }
 }
 
-const handleLogout = (): void => {
-  console.log('Logging out...')
-  // Add your logout logic here
-  // For example: router.push('/login')
-  
-  // Close sidebar on mobile
-  closeSidebar()
+const handleLogout = async (): Promise<void> => {
+  try {
+    // Show confirmation dialog
+    const confirmed = confirm('Are you sure you want to logout?')
+    if (!confirmed) return
+    
+    // Close sidebar first (for mobile)
+    closeSidebar()
+    
+    // Clear any stored auth tokens
+    if (process.client) {
+      localStorage.removeItem('authToken')
+      sessionStorage.clear()
+    }
+    
+    // Call logout API 
+    // await $fetch('/api/auth/logout', { method: 'POST' })
+    
+    // Redirect to home page
+    await router.push('/') // or '/' for home page
+    
+    // Show success message
+    console.log('Logged out successfully')
+  } catch (error) {
+    console.error('Logout failed:', error)
+    alert('Logout failed. Please try again.')
+  }
 }
 </script>
 
