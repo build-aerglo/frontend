@@ -35,28 +35,30 @@
       <div v-if="activeTab === 'categories'" class="space-y-6">
         <!-- Category Actions Bar -->
         <div class="bg-white rounded-lg shadow-sm p-4">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex flex-col gap-4">
             <div class="flex-1">
               <input
                 v-model="categorySearch"
                 type="text"
                 placeholder="Search categories..."
-                class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
               >
             </div>
-            <div class="flex gap-1">
-              <button @click="openMergeCategoriesModal" class="flex items-center px-2 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                <i class="pi pi-clone text-xs"></i>
+            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <button @click="openMergeCategoriesModal" class="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                <i class="pi pi-clone text-sm"></i>
+                <span class="text-sm">Merge</span>
               </button>
-              <button @click="openCategoryModal()" class="flex items-center px-2 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                <i class="pi pi-plus text-xs"></i>
+              <button @click="openCategoryModal()" class="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                <i class="pi pi-plus text-sm"></i>
+                <span class="text-sm">Add Category</span>
               </button>
             </div>
           </div>
         </div>
 
         <!-- Categories Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
           <div
             v-for="category in filteredCategories"
             :key="category.id"
@@ -72,10 +74,10 @@
                 </div>
               </div>
               <div class="flex gap-1">
-                <button @click="openCategoryModal(category)" class="p-2 text-emerald-600 hover:bg-blue-50 rounded transition-colors">
+                <button @click="openCategoryModal(category)" class="p-1 text-emerald-600 hover:bg-blue-50 rounded transition-colors">
                   <i class="pi pi-pencil"></i>
                 </button>
-                <button @click="deleteCategory(category.id)" class="p-2 text-red-600 hover:bg-red-50 rounded transition-colors">
+                <button @click="deleteCategory(category.id)" class="p-1 text-red-600 hover:bg-red-50 rounded transition-colors">
                   <i class="pi pi-trash"></i>
                 </button>
               </div>
@@ -99,13 +101,13 @@
       <div v-if="activeTab === 'tags'" class="space-y-6">
         <!-- Tag Actions Bar -->
         <div class="bg-white rounded-lg shadow-sm p-4">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="flex-1 flex gap-4">
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row gap-4">
               <input
                 v-model="tagSearch"
                 type="text"
                 placeholder="Search tags..."
-                class="flex-1 md:max-w-96 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
               >
               <Dropdown 
                 v-model="tagCategoryFilter" 
@@ -113,11 +115,12 @@
                 optionLabel="label" 
                 optionValue="value"
                 placeholder="All Categories"
-                class="w-48"
+                class="w-full sm:w-48"
               />
             </div>
-            <button @click="openTagModal()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+            <button @click="openTagModal()" class="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
               <i class="pi pi-plus text-sm"></i>
+              <span>Add New Tag</span>
             </button>
           </div>
         </div>
