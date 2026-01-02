@@ -285,3 +285,276 @@ export const truncateDate = (s: string) => {
 
   return returnDay;
 };
+
+// type RawHours = {
+//   monday: string;
+//   tuesday: string;
+//   wednesday: string;
+//   thursday: string;
+//   friday: string;
+//   saturday: string;
+//   sunday: string;
+// };
+
+// type DayBlock = {
+//   open: string | null;
+//   close: string | null;
+//   closed: boolean;
+// };
+
+// type NormalizedHours = {
+//   same: boolean;
+//   same_time: DayBlock;
+
+//   monday: DayBlock;
+//   tuesday: DayBlock;
+//   wednesday: DayBlock;
+//   thursday: DayBlock;
+//   friday: DayBlock;
+//   saturday: DayBlock;
+//   sunday: DayBlock;
+// };
+
+// const DAYS = [
+//   "monday",
+//   "tuesday",
+//   "wednesday",
+//   "thursday",
+//   "friday",
+//   "saturday",
+//   "sunday",
+// ] as const;
+
+// function parseRange(range: string) {
+//   if (!range || range === "00:00 - 00:00") return null;
+//   const [open, close] = range.split(" - ");
+//   return { open, close };
+// }
+
+// function toISO(time: string) {
+//   const d = new Date().toISOString().split("T")[0];
+//   return new Date(`${d}T${time}:00.000Z`).toISOString();
+// }
+
+// export function rawToNormalized(raw: RawHours): NormalizedHours | null {
+//   const out: any = {};
+//   const weekdayRanges: string[] = [];
+
+//   for (const day of DAYS) {
+//     const range = raw[day];
+//     const parsed = parseRange(range);
+//     // if (!parsed?.close || !parsed?.open) return null;
+
+//     if (!parsed) {
+//       out[day] = { open: null, close: null, closed: true };
+//     } else {
+//       out[day] = {
+//         open: toISO(parsed.open),
+//         close: toISO(parsed.close),
+//         closed: false,
+//       };
+
+//       if (
+//         ["monday", "tuesday", "wednesday", "thursday", "friday"].includes(day)
+//       ) {
+//         weekdayRanges.push(range);
+//       }
+//     }
+//   }
+
+//   const same =
+//     weekdayRanges.length === 5 &&
+//     weekdayRanges.every((r) => r === weekdayRanges[0]);
+
+//   if (same) {
+//     const { open, close } = parseRange(weekdayRanges[0])!;
+//     out.same_time = {
+//       open: toISO(open),
+//       close: toISO(close),
+//       closed: false,
+//     };
+
+//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
+//       out[d] = { open: null, close: null, closed: true };
+//     }
+//   } else {
+//     out.same_time = { open: null, close: null, closed: true };
+//   }
+
+//   out.same = same;
+
+//   return out;
+// }
+
+// export function normalizedToRaw(n: NormalizedHours): RawHours {
+//   const out: any = {};
+
+//   function isoToRange(open: string | null, close: string | null) {
+//     if (!open || !close) return "00:00 - 00:00";
+//     return `${open.slice(11, 16)} - ${close.slice(11, 16)}`;
+//   }
+
+//   if (n.same && !n.same_time.closed) {
+//     const range = isoToRange(n.same_time.open, n.same_time.close);
+
+//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
+//       out[d] = range;
+//     }
+//   } else {
+//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
+//       out[d] = isoToRange(n[d].open, n[d].close);
+//     }
+//   }
+
+//   out.saturday = isoToRange(n.saturday.open, n.saturday.close);
+//   out.sunday = isoToRange(n.sunday.open, n.sunday.close);
+
+//   return out;
+// }
+
+type Day =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+type RawHours = Record<Day, string>;
+
+type DayBlock = {
+  open: string | null;
+  close: string | null;
+  closed: boolean;
+};
+
+type NormalizedHours = {
+  same: boolean;
+  same_time: DayBlock;
+} & Record<Day, DayBlock>;
+
+const DAYS: readonly Day[] = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+const WEEKDAYS: readonly Day[] = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+];
+
+function parseRange(range: string): { open: string; close: string } | null {
+  if (range === "00:00 - 00:00") return null;
+  const [open, close] = range.split(" - ");
+  // @ts-ignore
+  return { open, close };
+}
+
+function toISO(time: string): string {
+  const d = new Date().toISOString().split("T")[0];
+  return new Date(`${d}T${time}:00.000Z`).toISOString();
+}
+
+// function isoToRange(open: string | null, close: string | null): string {
+//   if (!open || open === null || close === null || !close)
+//     return "00:00 - 00:00";
+//   return `${open.slice(11, 16)} - ${close.slice(11, 16)}`;
+// }
+function isoToRange(
+  open: string | Date | null,
+  close: string | Date | null
+): string {
+  if (!open || !close) {
+    return "00:00 - 00:00";
+  }
+
+  const openStr = typeof open === "string" ? open : open.toISOString();
+
+  const closeStr = typeof close === "string" ? close : close.toISOString();
+
+  return `${openStr.slice(11, 16)} - ${closeStr.slice(11, 16)}`;
+}
+
+export function rawToNormalized(raw: RawHours): NormalizedHours {
+  const out = {} as NormalizedHours;
+  const weekdayRanges: string[] = [];
+
+  for (const day of DAYS) {
+    const parsed = parseRange(raw[day]);
+
+    if (!parsed) {
+      out[day] = { open: null, close: null, closed: true };
+    } else {
+      out[day] = {
+        open: toISO(parsed.open),
+        close: toISO(parsed.close),
+        closed: false,
+      };
+
+      if (WEEKDAYS.includes(day)) {
+        weekdayRanges.push(raw[day]);
+      }
+    }
+  }
+
+  const same =
+    weekdayRanges.length === 5 &&
+    weekdayRanges.every((r) => r === weekdayRanges[0]);
+
+  if (same) {
+    // @ts-ignore
+    const parsed = parseRange(weekdayRanges[0]);
+    if (!parsed) throw new Error("Invalid weekday range");
+
+    out.same_time = {
+      open: toISO(parsed.open),
+      close: toISO(parsed.close),
+      closed: false,
+    };
+
+    for (const d of WEEKDAYS) {
+      out[d] = { open: null, close: null, closed: true };
+    }
+  } else {
+    out.same_time = { open: null, close: null, closed: true };
+  }
+
+  out.same = same;
+  return out;
+}
+
+export function normalizedToRaw(n: NormalizedHours): RawHours {
+  const out = {} as RawHours;
+
+  if (n.same && !n.same_time.closed) {
+    const range = isoToRange(n.same_time.open, n.same_time.close);
+    for (const d of WEEKDAYS) {
+      out[d] = range;
+    }
+  } else {
+    for (const d of WEEKDAYS) {
+      out[d] = isoToRange(n[d].open, n[d].close);
+    }
+  }
+
+  out.saturday = isoToRange(n.saturday.open, n.saturday.close);
+  out.sunday = isoToRange(n.sunday.open, n.sunday.close);
+
+  return out;
+}
+
+export const businessClaim = (s: string) => {
+  const status = s.toLowerCase();
+  if (status === "approved") return "Claimed Business";
+  if (status === "in_progress") return "Claim in Progress";
+  if (status === "unclaimed") return "Unclaimed Business";
+};

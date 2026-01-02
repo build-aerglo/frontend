@@ -98,6 +98,7 @@ export interface BusinessProfileResponse {
   profileClicks: number;
   faqs: any;
   qrCodeBase64: string;
+  businessStatus?: string;
 }
 
 export interface BusinessPreference {

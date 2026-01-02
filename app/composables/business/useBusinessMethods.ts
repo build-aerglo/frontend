@@ -78,6 +78,18 @@ export default function () {
     }
   };
 
+  const claimBusinessAsync = async (data: any) => {
+    try {
+      const res = await businessApi.post(
+        `api/business/claim-business`,
+        JSON.stringify(data)
+      );
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      console.error("Error claiming business:", error);
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -85,5 +97,6 @@ export default function () {
     getBusinessProfile,
     getBusinessUser,
     getCategoryTags,
+    claimBusinessAsync,
   };
 }

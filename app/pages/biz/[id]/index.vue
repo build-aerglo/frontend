@@ -6,10 +6,16 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    layout: "biz"
+})
 import { onBeforeMount } from "vue"
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import { usePageData } from "~/composables/method/usePageData";
 import useReviewMethods from "~/composables/method/useReviewMethods";
 import type { BusinessProfileResponse } from '~/types/business';
+
+const pageData = usePageData()
 
 const route = useRoute()
 const { getBusinessProfile, getBusinessUser, saveBusinessProfile, getCategories } = useBusinessMethods()
@@ -24,6 +30,7 @@ const categories = ref([])
 const reviews = ref<any[]>([])
 
 const business = ref<BusinessProfileResponse>()
+
 const loadBusinessData = async () => {
     const id = route.params.id;
     if (!id) {
@@ -58,6 +65,7 @@ const loadBusinessData = async () => {
                 page.value = 'profile'
             }
 
+            pageData.value = res.data;
             business.value = res.data;
             return;
         }
@@ -67,6 +75,10 @@ const loadBusinessData = async () => {
             statusMessage: "Business Not Found"
         })
     } catch (error) {
+        throw createError({
+            statusCode: 404,
+            statusMessage: "Business Not Found"
+        })
     } finally {
         isLoading.value = false;
     }
@@ -83,5 +95,14 @@ onBeforeMount(async () => {
     await loadBusinessData();
 })
 
+// // #push data
+// provide('businessData', business.value)
+// const count = ref(0)
+// provide('key', count)
 
+// // #push data
+// definePageMeta({
+//     businessId: computed(() => business.value?.id),
+//     isBusiness: computed(() => isBusiness.value)
+// })
 </script>

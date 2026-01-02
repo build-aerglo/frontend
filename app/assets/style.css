@@ -6,6 +6,10 @@
   border-bottom: 1px solid theme("colors.primary");
 }
 
+:root {
+  --primary: theme("colors.primary") !important;
+}
+
 @font-face {
   font-family: "Satoshi";
   font-style: normal;
@@ -32,6 +36,7 @@
 
 * {
   font-family: "Poppins", Inter, system-ui, sans-serif;
+  font-size: 15px;
 }
 
 .font-bold,
@@ -58,5 +63,9 @@ section.mg {
   section.mg {
     padding-left: 30px;
     padding-right: 30px;
+  }
+
+  * {
+    font-size: 13px;
   }
 }

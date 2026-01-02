@@ -37,6 +37,13 @@
         </div>
     </Dialog>
 
+    <Dialog v-model:visible="addLogo" :draggable="false" modal header="Update Business Logo"
+        :style="{ width: '20rem' }">
+        <div class="flex justify-center items-center pb-[30px]">
+            <BusinessMedia @uploaded="insertImageLogo" @deleted="removeImageLogo" path="profile" :url="null" />
+        </div>
+    </Dialog>
+
     <Dialog v-model:visible="editBusiness" position="top" :draggable="false" modal header="Update Business Profile"
         :style="{ width: '50rem' }">
         <div v-if="businessData" class="flex flex-col gap-[20px]">
@@ -46,12 +53,6 @@
                     <div class="text-[120%] font-bold">Profile</div>
                 </template>
                 <div class="m-0 flex flex-col gap-[20px]">
-                    <div>
-                        <BusinessMedia @uploaded="insertImageLogo" @deleted="removeImageLogo" path="profile"
-                            :url="businessData.logo" />
-
-                        logo: {{ businessData.logo }}
-                    </div>
                     <div>
                         <label>Business Name:</label>
                         <InputText fluid class="flex-auto" autocomplete="off" v-model="businessData.name" />
@@ -87,6 +88,18 @@
                                     @click="removeTag(tag)" />
                             </Chip>
 
+                        </div>
+                    </div>
+                    <div>
+                        <label>Business Highlights</label>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                            <div v-for="(i, idx) in highlights" :key="idx" :class="{
+                                'border-primary': businessData.highlights.includes(i.title)
+                            }" class="flex gap-2.5 p-2.5 border rounded-md">
+                                <Checkbox binary :modelValue="isChecked(i.title)"
+                                    @update:modelValue="(val: boolean) => toggleHighlight(val, i.title)" />
+                                <span>{{ i.title }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,7 +186,117 @@
                 <template #header>
                     <div class="text-[120%] font-bold">Opening Hours</div>
                 </template>
-                {{ businessData.openingHours }}
+                <div>
+                    <div class="flex gap-[20px] justify-between items-center mb-[30px]">
+                        <h1 class="font-bold"></h1>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center gap-2">
+                                <RadioButton v-model="businessData.openingHours.same" inputId="gen" name="time"
+                                    :value="true" />
+                                <label for="gen">General Time For All Days</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <RadioButton v-model="businessData.openingHours.same" inputId="spec" name="time"
+                                    :value="false" />
+                                <label for="spec">Specific Time Per Day</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="businessData?.openingHours.same" class="flex flex-col gap-[10px]">
+                        <div class="flex justify-between items-start gap-[20px]">
+                            <div class="flex items-center gap-[20px]">
+                                Mon - Fri
+                                <div class="flex items-center gap-[5px]">
+                                    (
+                                    <Checkbox v-model="businessData.openingHours.same_time.closed"
+                                        inputId="same_closed_mon_to_fri" name="same_closed_mon_to_fri" :binary="true" />
+                                    <label for="same_closed_mon_to_fri" class="ml-[5px]">Closed</label>
+                                    )
+                                </div>
+                            </div>
+                            <div v-if="businessData?.openingHours.same_time.closed !== true">
+                                <div class="flex gap-[10px] items-end">
+                                    <div>
+                                        <label class="label">Opens:</label>
+                                        <DatePicker id="datepicker-timeonly" hourFormat="12"
+                                            v-model="businessData.openingHours.same_time.open" timeOnly fluid />
+                                    </div>
+                                    <div>
+                                        <label class="label">Closes:</label>
+                                        <DatePicker id="datepicker-timeonly" hourFormat="12"
+                                            v-model="businessData.openingHours.same_time.close" timeOnly fluid />
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                Closed on Mondays to Fridays!
+                            </div>
+                        </div>
+                        <!-- weekend -->
+                        <div class="flex justify-between items-start gap-[20px]" v-for="item in weekends"
+                            :key="genRand()">
+                            <div class="flex items-center gap-[20px]">
+                                <div class="capitalize">{{ item }}</div>
+                                <div class="flex items-center gap-[5px]">
+                                    (
+                                    <Checkbox v-model="businessData.openingHours[item].closed" :name="item"
+                                        :binary="true" />
+                                    <label :for="item" class="ml-[5px]">Closed</label>
+                                    )
+                                </div>
+                            </div>
+                            <div v-if="businessData?.openingHours[item].closed !== true">
+                                <div class="flex gap-[10px] items-end">
+                                    <div>
+                                        <label class="label">Opens:</label>
+                                        <DatePicker hourFormat="12" v-model="businessData.openingHours[item].open"
+                                            timeOnly fluid />
+                                    </div>
+                                    <div>
+                                        <label class="label">Closes:</label>
+                                        <DatePicker hourFormat="12" v-model="businessData.openingHours[item].close"
+                                            timeOnly fluid />
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="capitalize">
+                                Closed on {{ item }}!
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="flex flex-col gap-[10px]">
+                        <div class="flex justify-between items-start gap-[20px]" v-for="item in allDays"
+                            :key="genRand()">
+                            <div class="flex items-center gap-[20px]">
+                                <div class="capitalize">{{ item }}</div>
+                                <div class="flex items-center gap-[5px]">
+                                    (
+                                    <Checkbox v-model="businessData.openingHours[item].closed" :name="item"
+                                        :binary="true" :inputId="item" />
+                                    <label :for="item" class="ml-[5px]">Closed</label>
+                                    )
+                                </div>
+                            </div>
+                            <div v-if="businessData?.openingHours[item].closed !== true">
+                                <div class="flex gap-[10px] items-end">
+                                    <div>
+                                        <label class="label">Opens:</label>
+                                        <DatePicker hourFormat="12" v-model="businessData.openingHours[item].open"
+                                            timeOnly fluid />
+                                    </div>
+                                    <div>
+                                        <label class="label">Closes:</label>
+                                        <DatePicker hourFormat="12" v-model="businessData.openingHours[item].close"
+                                            timeOnly fluid />
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="capitalize">
+                                Closed on {{ item }}!
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Panel>
 
             <!-- media -->
@@ -181,10 +304,17 @@
                 <template #header>
                     <div class="text-[120%] font-bold">Business Media</div>
                 </template>
-                <div class="flex justify-start mb-[20px]">
-                    <ButtonCustom icon="plus" label="Add Media" primary="true" @click="initImage" />
+                <div class="flex justify-between gap-2.5 mb-[20px]">
+                    <ButtonCustom icon="pencil" label="Update Logo" input-class="!w-max" @clicked="addLogo = true" />
+                    <ButtonCustom icon="plus" class="flex-1" label="Add Media" primary="true" @clicked="initImage" />
                 </div>
                 <div class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
+                    <img v-if="businessData.logo"
+                        class="border rounded-md h-[210px] w-[210px] object-center object-cover"
+                        :src="businessData.logo" :alt="`${businessData.name} Logo`" />
+                    <div v-else
+                        class="h-[210px] w-[210px] flex justify-center items-center p-[20px] border rounded-md shadow-md">
+                        NO LOGO UPLOADED!</div>
                     <BusinessMedia v-for="i in businessData.media" :key="i" @deleted="removeImage" path="media"
                         :url="i" />
                 </div>
@@ -223,7 +353,7 @@
         </template>
     </Dialog>
 
-    <section class="mg py-[50px]" v-if="business">
+    <section class="..mg ..py-[50px]" v-if="business">
         <Card class="w-full">
             <template #content>
                 <div class="flex sm:flex-row flex-col gap-[20px]">
@@ -238,7 +368,7 @@
                         <div class="flex flex-col gap-2.5 justify-center w-[150px]">
                             <Star :count="business?.avgRating ?? 0" />
                             <div class="text-center mt-[-10px]">
-                                {{ business?.reviewCount }}
+                                {{ business?.reviewCount ?? 0 }}
                                 Review(s)
                             </div>
                         </div>
@@ -246,11 +376,19 @@
                     <div class="flex-1">
                         <div class="flex flex-col gap-[10px]">
                             <div class="text-[200%] font-bold flex justify-between">
-                                {{ business?.name }}
-                                <div>
+                                <div class="flex gap-3 items-center">
+                                    {{ business?.name }}
+                                    <div class="border rounded-sm !font-thin !text-[40%] p-1">
+                                        {{ businessClaim(business?.businessStatus) }}</div>
+                                </div>
+                                <div class="flex gap-2.5">
+                                    <NuxtLink to="claim-business" v-if="business?.businessStatus === 'unclaimed'">
+                                        <ButtonCustom label="Claim Business" size="lg" input-class="!w-max" />
+                                    </NuxtLink>
                                     <ButtonCustom v-if="isBusiness" @click="editBusiness = true"
-                                        label="Edit Business Profile" size="lg" primary="true" />
-                                    <ButtonCustom v-else label="Write a review" size="lg" primary="true" />
+                                        label="Edit Business Profile" size="lg" primary="true" input-class="!w-max" />
+                                    <ButtonCustom v-else label="Write a review" size="lg" primary="true"
+                                        input-class="!w-max" />
                                 </div>
                             </div>
                             <div>
@@ -263,11 +401,11 @@
 
                         <div class="w-full sm:w-[20px] border my-[10px]"></div>
 
-                        <div class="flex gap-2.5">
+                        <div class="flex gap-2.5" v-if="business?.tags">
                             <NuxtLink v-for="(i, idx) in business?.tags" :to="`/tags/${i}`" :key="idx">
                                 <Chip
-                                    class="hover:bg-primary hover:text-white !border !border-primary !py-[5px] !px-[10px]">
-                                    <span class="text-[80%]">{{ i }}</span>
+                                    class="hover:bg-primary hover:text-white !border !border-primary sm:!py-[5px] sm:!px-[10px] !py-[3px] !px-[5px]">
+                                    <span class="sm:text-[80%] text-[70%]">{{ i }}</span>
                                 </Chip>
                             </NuxtLink>
                         </div>
@@ -313,6 +451,8 @@
                 @clicked="setSection('review')" />
             <ButtonCustom v-if="isBusiness" label="Get Reviews" inputClass="w-max"
                 :primary="currentPage === 'qr' ? true : false" @clicked="setSection('qr')" />
+            <!-- <ButtonCustom v-if="isBusiness" label="Manage Branches" inputClass="w-max"
+                :primary="currentPage === 'branches' ? true : false" @clicked="setSection('branches')" /> -->
         </div>
 
         <Divider class="mb-[20px]" />
@@ -322,7 +462,8 @@
         <BusinessReviews v-if="currentPage === 'review'" :reviews="reviews" :business="business"
             :isBusiness="isBusiness" />
         <BusinessQr v-if="isBusiness && currentPage === 'qr'" :business="business" />
-
+        <!-- <BusinessBranches v-if="isBusiness && currentPage === 'branches'" :isBusiness="isBusiness" :business="business"
+            :branches="[]" /> -->
         <!-- {{ business }} -->
     </section>
 </template>
@@ -339,10 +480,29 @@ const editBusiness = ref(false)
 const addSocial = ref(false)
 const addFaq = ref(false)
 const addImage = ref(false)
+const addLogo = ref(false)
 const isLoading = ref(false);
 
 const { saveBusinessProfile, getCategoryTags } = useBusinessMethods()
 const toast = useToast()
+
+function isChecked(title: string): boolean {
+    if (!businessData.value) return false;
+    return businessData.value.highlights.includes(title)
+}
+
+function toggleHighlight(val: boolean, title: string): void {
+    if (!businessData.value) return;
+    if (val) {
+        if (!businessData.value.highlights.includes(title)) {
+            businessData.value.highlights.push(title)
+        }
+    } else {
+        businessData.value.highlights = businessData.value.highlights.filter(
+            (t: string) => t !== title
+        )
+    }
+}
 
 const insertImage = (url: string) => {
     if (!businessData.value) return;
@@ -363,7 +523,7 @@ const removeImage = (url: string) => {
 
 const removeImageLogo = (url: string) => {
     if (!businessData.value) return;
-    businessData.value.logo = ''
+    businessData.value.logo = null
 }
 
 const MAX_TAGS = 5;
@@ -466,6 +626,19 @@ const badge = ref<{
     badge: string
 }>()
 
+function parseOpeningHours(raw: any) {
+    const h = raw;
+
+    if (h.same_time.open) h.same_time.open = new Date(h.same_time.open)
+    if (h.same_time.close) h.same_time.close = new Date(h.same_time.close)
+
+    for (const d of allDays) {
+        if (h[d].open) h[d].open = new Date(h[d].open)
+        if (h[d].close) h[d].close = new Date(h[d].close)
+    }
+    return h;
+}
+
 onBeforeMount(async () => {
     currentPage.value = props.page ?? 'review';
     if (props.business) {
@@ -479,49 +652,20 @@ onBeforeMount(async () => {
 
         await fetchTags(businessData.value?.categories[0]?.id!);
 
-        //@ts-ignore
-        businessData.value.openingHours = {
-            "same_time": {
-                "open": "2025-03-20T09:00:00.918Z",
-                "close": "2025-03-20T21:00:00.451Z",
-                "closed": false
-            },
-            "monday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "tuesday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "wednesday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "thursday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "friday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "saturday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "sunday": {
-                "open": null,
-                "close": null,
-                "closed": true
-            },
-            "same": true
+        if (businessData.value) {
+            if (!props.business.openingHours) {
+                businessData.value.openingHours = parseOpeningHours(rawToNormalized({
+                    "monday": "00:00 - 00:00",
+                    "tuesday": "00:00 - 00:00",
+                    "wednesday": "00:00 - 00:00",
+                    "thursday": "00:00 - 00:00",
+                    "friday": "00:00 - 00:00",
+                    "saturday": "00:00 - 00:00",
+                    "sunday": "00:00 - 00:00"
+                }))
+            } else {
+                businessData.value.openingHours = parseOpeningHours(rawToNormalized(props.business.openingHours))
+            }
         }
 
         badge.value = getBadge(props.status);
@@ -584,16 +728,6 @@ const saveSocial = (name: string, url: string) => {
     addSocial.value = false;
 }
 
-const weekdays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-]
-const weekends = [
-    'saturday', 'sunday'
-]
 const allDays = [
     'monday',
     'tuesday',
@@ -603,6 +737,10 @@ const allDays = [
     'saturday',
     'sunday'
 ]
+
+const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+const weekends = ['saturday', 'sunday']
+
 
 const updateProfile = async () => {
     try {
@@ -624,16 +762,18 @@ const updateProfile = async () => {
             });
         }
 
-        const newCategory = { ...business_category.value };
-        businessData.value.categories = [];
-        businessData.value.categories.push(newCategory)
         businessData.value.tags = selected_tags.value;
 
         if (businessData.value.logo === null) businessData.value.logo = "/images/store.jpeg"
 
         isLoading.value = true;
+        const category = [];
+        category.push(business_category.value.id)
+        const businessDataToSubmit = { ...businessData.value, categoryIds: category };
+        businessDataToSubmit.openingHours = normalizedToRaw(businessData.value.openingHours)
+
         // @ts-ignore
-        const res = await saveBusinessProfile(businessData.value.id, businessData.value);
+        const res = await saveBusinessProfile(businessData.value.id, businessDataToSubmit);
         if (res) {
             emit('edit', res);
             return toast.add({

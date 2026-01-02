@@ -11,16 +11,17 @@
         </template>
     </Galleria>
 
-    <div class="flex gap-[20px]">
+    <div class="flex sm:flex-row flex-col gap-[20px]">
         <div class="sm:flex-row flex-col flex-1" v-if="businessData">
 
             <Card>
                 <template #content>
                     <div>
                         <div class="header">About the business</div>
-                        <div>
+                        <div v-if="businessData?.businessDescription">
                             {{ businessData?.businessDescription }}
                         </div>
+                        <div v-else>No business description added yet.</div>
                     </div>
                 </template>
             </Card>
@@ -32,13 +33,16 @@
                     <div>
                         <div class="header">Amenities</div>
                         <!-- <div class="mb-[20px] mt-[-20px]">Text here</div> -->
-                        <div class="flex gap-[20px]">
+                        <div class="flex flex-wrap sm:gap-[20px] gap-[10px]" v-if="businessData?.highlights">
                             <NuxtLink v-for="(i, idx) in businessData?.highlights" :key="idx">
                                 <div class="flex gap-[5px] items-center">
                                     <i class="pi pi-verified text-[green]"></i>
                                     <span class="">{{ i }}</span>
                                 </div>
                             </NuxtLink>
+                        </div>
+                        <div v-else>
+                            No business highlights added yet.
                         </div>
                     </div>
                 </template>
@@ -55,7 +59,7 @@
                             class="grid grid-cols-2 sm:grid-cols-4 gap-[20px]">
                             <div v-for="(img, index) in displayedImages" :key="index" class="relative cursor-pointer"
                                 @click="onImageClick(index)">
-                                <img :src="img" class="w-full h-[220px] object-cover rounded-md" />
+                                <img :src="img" class="w-full sm:h-[220px] h-[100px] object-cover rounded-md" />
 
                                 <div v-if="showOverlay && index === 3" class="absolute inset-0 bg-black/60 flex items-center justify-center
                    text-white text-lg font-semibold rounded-md">
@@ -73,16 +77,19 @@
 
             <Card>
                 <template #content>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-[40px]">
-                        <div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 sm:gap-[40px] gap-[60px]">
+                        <div class="sm:col-span-1 col-span-2">
                             <div class="header">Opening Hours</div>
-                            <div>
+                            <div v-if="businessData?.openingHours">
                                 <BusinessOpeningHours :business="business" :to-edit="toEdit" />
+                            </div>
+                            <div v-else>
+                                Business opening hours not set yet.
                             </div>
                         </div>
                         <div class="col-span-2">
                             <div class="header">Questions you might have:</div>
-                            <Accordion :value="[0]" multiple class="border rounded-[10px]">
+                            <Accordion v-if="businessData?.faqs" :value="[0]" multiple class="border rounded-[10px]">
                                 <AccordionPanel v-for="(i, idx) in businessData?.faqs" :key="idx" :value="idx">
                                     <AccordionHeader>{{ i.question }}</AccordionHeader>
                                     <AccordionContent>
@@ -92,6 +99,9 @@
                                     </AccordionContent>
                                 </AccordionPanel>
                             </Accordion>
+                            <div v-else>
+                                No FAQs added yet.
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -106,7 +116,7 @@
                         <div class="text-center header">Quick Actions</div>
                         <div class="flex flex-col gap-[10px] mt-[20px]">
                             <!-- <ButtonCustom label="Call Business" icon="phone" :primary="true" size="lg" /> -->
-                            <ButtonCustom label="Write a review" icon="pencil" size="lg" :primary="true" />
+                            <ButtonCustom label="Write a Review" icon="pencil" size="lg" :primary="true" />
                             <!-- <ButtonCustom label="Get Directions" icon="map-marker" inputClass="!bg-[#f3f0ec]" size="lg" /> -->
                             <ButtonCustom v-if="!isBusiness" label="Save Business" icon="clipboard"
                                 inputClass="!bg-[#f3f0ec]" size="lg" />
@@ -152,7 +162,7 @@ const images = ref();
 onBeforeMount(() => {
     if (props.business) {
         businessData.value = props.business;
-        if (businessData.value?.media.length > 0) {
+        if (businessData.value?.media && businessData.value?.media.length > 0) {
             // const { outside, inside } = splitBusinessImages(businessData.value?.media);
             // outsideImages.value = outside;
             // insideImages.value = inside;
