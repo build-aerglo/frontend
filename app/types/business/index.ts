@@ -105,3 +105,13 @@ export interface BusinessPreference {
   dndModeEnabled: boolean;
   dndModeDurationHours: number;
 }
+
+
+export interface Branch {
+  id: string;
+  businessId: string;
+  name: string;
+  branchStreet: string | null;
+  branchCityTown: string | null;
+  branchState: string | null;
+}

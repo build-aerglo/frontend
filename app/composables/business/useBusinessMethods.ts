@@ -78,6 +78,16 @@ export default function () {
     }
   };
 
+  const getBusinessBranches = async (businessId: string) => {
+    try {
+      const res = await businessApi.get(`api/business-branch/${businessId}`);
+      return res.data;
+    } catch (error: any) {
+      console.error("Error fetching branches:", error);
+      throw error;
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -85,5 +95,6 @@ export default function () {
     getBusinessProfile,
     getBusinessUser,
     getCategoryTags,
+    getBusinessBranches,
   };
 }

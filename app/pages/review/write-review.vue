@@ -35,22 +35,34 @@
               </ul>
             </div>
 
-            <div ref="locationDropdownRef" class="relative">
-              <label class="block text-sm font-medium text-gray-900 mb-1">Business Location</label>
+            <div ref="branchDropdownRef" class="relative">
+              <label class="block text-sm font-medium text-gray-900 mb-1">Business Branch</label>
               <div class="relative">
-                <input type="text" v-model="businessLocation" @input="handleLocationInput"
-                  @focus="showLocationDropdown = true" placeholder="Town/City. e.g, Yaba, Anthony..."
-                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
-                <i v-if="businessLocation && isLocationInList"
+                <input type="text" v-model="branchSearch" @input="handleBranchInput" @focus="showBranchDropdown = true"
+                  :disabled="!selectedBusinessId || isLoadingBranches"
+                  :placeholder="!selectedBusinessId ? 'Select a business first' : isLoadingBranches ? 'Loading branches...' : 'Select a branch...'"
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed" />
+                <i v-if="isLoadingBranches"
+                  class="pi pi-spin pi-spinner absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <i v-else-if="selectedBranchId"
                   class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"></i>
               </div>
-              <ul v-if="showLocationDropdown && filteredLocations.length"
+              <ul v-if="showBranchDropdown && filteredBranches.length"
                 class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full">
-                <li v-for="(l, i) in filteredLocations" :key="i" @click="selectLocation(l)"
+                <li v-for="branch in filteredBranches" :key="branch.id" @click="selectBranch(branch)"
                   class="px-3 py-2 cursor-pointer hover:bg-gray-100">
-                  {{ l }}
+                  <div class="font-medium">{{ branch.name }}</div>
+                  <div class="text-xs text-gray-500">
+                    {{ [branch.branchStreet, branch.branchCityTown, branch.branchState].filter(Boolean).join(', ') }}
+                  </div>
                 </li>
               </ul>
+              <p v-if="!selectedBusinessId" class="text-xs text-gray-500 mt-1">
+                Select a business to see available branches
+              </p>
+              <p v-else-if="branches.length === 0 && !isLoadingBranches" class="text-xs text-gray-500 mt-1">
+                No branches found for this business
+              </p>
             </div>
 
             <div>
@@ -143,15 +155,18 @@ import Star from '~/components/Stars.vue'
 import useUser from '~/composables/useUser'
 import useReviewMethods from '~/composables/review/useReviewMethods'
 import useSearch from '~/composables/search/useSearch'
+import useBusinessMethods from '~/composables/business/useBusinessMethods'
 import ImageUploader from '~/components/Input/ImageUploader.vue'
+import type { Branch } from '~/types/business'
 
 const { submitUserReview } = useReviewMethods();
 const { search } = useSearch();
+const { getBusinessBranches } = useBusinessMethods();
 const store = useUser()
 
 // Form state
 const businessName = ref("");
-const businessLocation = ref("");
+const branchSearch = ref("");
 const reviewBody = ref("");
 const rating = ref(0);
 const hoverRating = ref(0);
@@ -159,26 +174,27 @@ const anonymous = ref(false);
 const email = ref("");
 const images = ref<string[]>([]);
 const showBusinessDropdown = ref(false);
-const showLocationDropdown = ref(false);
+const showBranchDropdown = ref(false);
 const isSearching = ref(false);
+const isLoadingBranches = ref(false);
 const selectedBusinessLogo = ref<string>("");
 const selectedBusinessId = ref<string>("");
+const selectedBranchId = ref<string>("");
 let debounceTimer: any = null;
 
 // Search Results
 const filteredBusinesses = ref<any[]>([]);
-const filteredLocations = ref<string[]>([]);
+const branches = ref<Branch[]>([]);
+const filteredBranches = ref<Branch[]>([]);
 
 const businessDropdownRef = ref<HTMLElement | null>(null);
-const locationDropdownRef = ref<HTMLElement | null>(null);
+const branchDropdownRef = ref<HTMLElement | null>(null);
 
 const featuredBusinesses = ref([
   { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/logos/kfc.png" },
   { name: "Domino's Pizza", location: "Ikeja", rating: 0, hoverRating: 0, logo: "/images/logos/pizza.png" },
   { name: "Chicken Republic", location: "Victoria Island", rating: 0, hoverRating: 0, logo: "/images/logos/republic.png" },
 ]);
-
-const locationList = ["Yaba", "Anthony", "Port Harcourt", "Benin City", "Ikeja", "Victoria Island"];
 
 // Check if user is authenticated
 const isAuthenticated = computed(() => store.isAuthenticated);
@@ -220,29 +236,54 @@ const handleBusinessInput = () => {
   }, 400);
 };
 
-const selectBusiness = (b: any) => {
+// Fetch branches when business is selected
+const fetchBranches = async (businessId: string) => {
+  isLoadingBranches.value = true;
+  try {
+    const result = await getBusinessBranches(businessId);
+    branches.value = result;
+    filteredBranches.value = result;
+  } catch (error) {
+    console.error("Failed to fetch branches:", error);
+    branches.value = [];
+    filteredBranches.value = [];
+  } finally {
+    isLoadingBranches.value = false;
+  }
+};
+
+const selectBusiness = async (b: any) => {
   businessName.value = b.name;
   selectedBusinessId.value = b.id || b.businessId || "";
   selectedBusinessLogo.value = b.logo || "";
   showBusinessDropdown.value = false;
   filteredBusinesses.value = [];
+
+  // Reset branch selection and fetch new branches
+  branchSearch.value = "";
+  selectedBranchId.value = "";
+  branches.value = [];
+  filteredBranches.value = [];
+
+  if (selectedBusinessId.value) {
+    await fetchBranches(selectedBusinessId.value);
+  }
 };
 
-const handleLocationInput = () => {
-  showLocationDropdown.value = true;
-  filteredLocations.value = locationList.filter(l =>
-    l.toLowerCase().includes(businessLocation.value.toLowerCase())
+const handleBranchInput = () => {
+  showBranchDropdown.value = true;
+  filteredBranches.value = branches.value.filter(branch =>
+    branch.name.toLowerCase().includes(branchSearch.value.toLowerCase()) ||
+    branch.branchCityTown?.toLowerCase().includes(branchSearch.value.toLowerCase()) ||
+    branch.branchState?.toLowerCase().includes(branchSearch.value.toLowerCase())
   );
 };
 
-const selectLocation = (l: string) => {
-  businessLocation.value = l;
-  showLocationDropdown.value = false;
+const selectBranch = (branch: Branch) => {
+  branchSearch.value = branch.name;
+  selectedBranchId.value = branch.id;
+  showBranchDropdown.value = false;
 };
-
-const isLocationInList = computed(() => {
-  return locationList.some(l => l.toLowerCase() === businessLocation.value.toLowerCase());
-});
 
 const ratingLabels: Record<number, string> = {
   1: "Not Great.", 2: "Needs Improvement.", 3: "Just Okay.", 4: "Really Good!", 5: "Fantastic!"
@@ -277,7 +318,7 @@ const submitReview = async () => {
 
   const data = {
     businessId: selectedBusinessId.value,
-    locationId: businessLocation.value || null,
+    locationId: selectedBranchId.value || null,
     reviewerId: isAuthenticated.value ? store.userId : null,
     email: isGuest.value ? email.value : null,
     starRating: rating.value,
@@ -292,10 +333,13 @@ const submitReview = async () => {
     // Reset form
     businessName.value = "";
     selectedBusinessId.value = "";
-    businessLocation.value = "";
+    selectedBranchId.value = "";
+    branchSearch.value = "";
     rating.value = 0;
     reviewBody.value = "";
     images.value = [];
+    branches.value = [];
+    filteredBranches.value = [];
     if (isGuest.value) email.value = "";
     else anonymous.value = false;
   } catch (error) {
@@ -311,7 +355,7 @@ const getFraction = (event: MouseEvent) => {
 
 const handleClickOutside = (event: MouseEvent) => {
   if (businessDropdownRef.value && !businessDropdownRef.value.contains(event.target as Node)) showBusinessDropdown.value = false;
-  if (locationDropdownRef.value && !locationDropdownRef.value.contains(event.target as Node)) showLocationDropdown.value = false;
+  if (branchDropdownRef.value && !branchDropdownRef.value.contains(event.target as Node)) showBranchDropdown.value = false;
 };
 
 onMounted(() => document.addEventListener('click', handleClickOutside));
@@ -327,6 +371,10 @@ watch(businessName, (val) => {
   if (!val) {
     selectedBusinessLogo.value = "";
     selectedBusinessId.value = "";
+    selectedBranchId.value = "";
+    branchSearch.value = "";
+    branches.value = [];
+    filteredBranches.value = [];
   }
 });
 </script>
