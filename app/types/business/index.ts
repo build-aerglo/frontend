@@ -99,6 +99,10 @@ export interface BusinessProfileResponse {
   faqs: any;
   qrCodeBase64: string;
   businessStatus?: string;
+  businessState?: string;
+  businessCityTown?: string;
+  businessStreet?: string;
+  ReviewSummary?: string;
 }
 
 export interface BusinessPreference {

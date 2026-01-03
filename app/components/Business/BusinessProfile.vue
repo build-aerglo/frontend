@@ -107,7 +107,7 @@
                 </template>
             </Card>
 
-            <Divider class="my-[20px]" />
+            <!-- <Divider class="my-[20px]" /> -->
         </div>
         <div class="sm:w-[30%] w-full border rounded-md flex flex-col gap-[20px]">
             <Card>
@@ -127,7 +127,7 @@
                 </template>
             </Card>
 
-            <Card>
+            <!-- <Card>
                 <template #content>
                     <div>
                         <div class="text-center header">Business Review Summary</div>
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                 </template>
-            </Card>
+            </Card> -->
         </div>
     </div>
 </template>

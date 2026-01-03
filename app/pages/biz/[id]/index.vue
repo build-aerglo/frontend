@@ -36,7 +36,8 @@ const loadBusinessData = async () => {
     if (!id) {
         throw createError({
             statusCode: 404,
-            statusMessage: "Business Not Found"
+            statusMessage: "Business Not Found",
+            fatal: true
         })
     }
 
@@ -63,21 +64,24 @@ const loadBusinessData = async () => {
                 isBusiness.value = true;
                 toEdit.value = true;
                 page.value = 'profile'
+                pageData.value.isBusiness = true;
             }
 
-            pageData.value = res.data;
+            pageData.value.data = res.data;
             business.value = res.data;
             return;
         }
 
         throw createError({
             statusCode: 404,
-            statusMessage: "Business Not Found"
+            statusMessage: "Business Not Found",
+            fatal: true
         })
     } catch (error) {
         throw createError({
             statusCode: 404,
-            statusMessage: "Business Not Found"
+            statusMessage: "Business Not Found",
+            fatal: true
         })
     } finally {
         isLoading.value = false;

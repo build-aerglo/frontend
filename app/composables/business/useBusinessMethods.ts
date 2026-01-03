@@ -90,6 +90,53 @@ export default function () {
     }
   };
 
+  const getBusinessBranches = async (id: string) => {
+    try {
+      const res = await businessApi.get(`api/business-branch/${id}`);
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      throw error;
+    }
+  };
+
+  const createBranch = async (data: any) => {
+    if (!data.businessId) return null;
+    try {
+      const res = await businessApi.post(
+        `api/business-branch`,
+        JSON.stringify(data)
+      );
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      console.error("Error creating branch:", error);
+    }
+  };
+
+  const updateBranch = async (data: any) => {
+    if (data.businessId) return null;
+    try {
+      const res = await businessApi.patch(
+        `api/business-branch`,
+        JSON.stringify(data)
+      );
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      console.error("Error updating branch:", error);
+    }
+  };
+
+  const deleteBranch = async (id: string) => {
+    try {
+      const res = await businessApi.delete(`api/business-branch/${id}`);
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      console.error("Error deleting branch:", error);
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -98,5 +145,9 @@ export default function () {
     getBusinessUser,
     getCategoryTags,
     claimBusinessAsync,
+    getBusinessBranches,
+    createBranch,
+    updateBranch,
+    deleteBranch,
   };
 }

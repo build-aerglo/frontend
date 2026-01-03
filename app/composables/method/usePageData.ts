@@ -1,3 +1,12 @@
 import type { BusinessProfileResponse } from "~/types/business";
 
-export const usePageData = () => useState<BusinessProfileResponse>("pageData");
+type PageDataState = {
+  data: BusinessProfileResponse | null;
+  isBusiness: boolean;
+};
+
+export const usePageData = () =>
+  useState<PageDataState>("pageData", () => ({
+    data: null,
+    isBusiness: false,
+  }));
