@@ -130,7 +130,7 @@
               @click="navigateToBiz(business)"
               class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
             >
-              <div class="grid grid-cols-[auto_1fr] gap-4">
+              <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
                 <div class="flex flex-col gap-1">
                   <div class="relative w-24 h-24"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
@@ -154,12 +154,12 @@
                   </div>
                 </div>
 
-                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h3 class="text-xl font-bold text-slate-900 mb-3">{{ business.name }}</h3>
+                <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
+                  <div class="flex justify-between items-start gap-2">
+                    <div class="min-w-0 flex-1">
+                      <h3 class="text-xl font-bold text-slate-900 mb-3 break-words">{{ business.name }}</h3>
                     </div>
-                    <div class="relative group" @mouseenter="showContact = business.id" @mouseleave="hideContact()">
+                    <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
                       <div v-if="showContact === business.id" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
                         <p><strong>Tel:</strong> {{ ('businessPhoneNumber' in business ? business.businessPhoneNumber : 'N/A') ?? 'N/A' }}</p>   
