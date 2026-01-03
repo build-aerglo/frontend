@@ -1,12 +1,13 @@
 <template>
-    <div class="relative min-h-screen bg-green-100 flex items-center justify-center">
+ <div class="relative min-h-screen bg-green-100 flex items-center justify-center">
   
       <!-- Form Section -->
       <div class="relative w-full max-w-md px-6 py-8">
         <div class="bg-white rounded-2xl shadow-lg p-8">
-        <div class="flex justify-center mb-6">
+        <div class="flex justify-center mb-2">
           <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
         </div>
+        <div class="text-[#008253] text-center font-semibold text-[100%] mb-3">Clear reviews, Confident decisions.</div>
         
         <!-- Loading State -->
         <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
@@ -14,7 +15,15 @@
           <p class="text-sm mt-2">Signing up...</p>
         </div>
 
-        <form @submit.prevent="handleEndUserRegistration" class="space-y-5">
+        <form @submit.prevent="handleEndUserRegistration" class="space-y-3">
+          <!-- Username -->
+          <div>
+            <input id="username" v-model="form.username" type="username"
+              class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary"
+              placeholder="Username"
+              required />
+
+          </div>
           <!-- Email -->
           <div>
             <input id="email" v-model="form.email" type="email"
@@ -66,7 +75,7 @@
               type="submit"
               :disabled="isLoading"
             >
-              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+              {{ isLoading ? 'Signing Up...' : 'Sign Up' }}
             </button>
           </div>
         </form>
@@ -80,7 +89,6 @@
             Sign in
           </NuxtLink>
         </p>
-
       </div>
     </div>
   </div>
@@ -95,6 +103,7 @@ import spinner from '~/assets/svg/spinner.svg'
 const { registerEndUser } = useMethods();
 const confirmPassword = ref('')
 const form = ref<EndUser>({ 
+  username: "",
   email: "",
   phone: "",
   password: "",

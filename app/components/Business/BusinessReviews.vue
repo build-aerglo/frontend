@@ -16,7 +16,11 @@
             </div>
         </template>
 </VirtualScroller> -->
-    <div v-if="reviews.length <= 0">No reviews uploaded for this business yet!</div>
+    <div v-if="reviews.length <= 0" class="flex flex-col items-center gap-2.5 py-[50px]">
+        No reviews uploaded for this business yet!
+        <ButtonCustom label="Be the first to review this business" icon="pencil" input-class="w-max" size="lg"
+            primary="true" />
+    </div>
     <div v-else class="flex flex-col gap-[20px]">
         <!-- <div class="h-[200px] border rounded-[10px]">
             Summary

@@ -37,6 +37,11 @@ export default defineNuxtConfig({
       QR_SIZE: "400x400", 
     },
   },
+  routeRules: {
+    "/business/**": {
+      appMiddleware: ["businessauth"],
+    },
+  },
   // nitro: {
   //   devProxy : {
   //     '/api/' : {
