@@ -173,7 +173,7 @@
                       <button
                         v-for="cat in business.categories"
                         :key="cat.id"
-                        class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-white transition-all"
+                        class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-primary transition-all"
                       >
                         {{ cat.name }}
                       </button>
@@ -343,7 +343,7 @@ const filteredBusinesses = computed(() => {
     const searchName = (filters.value.name || '').toLowerCase();
     const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
     
-    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && b.isVerified);
+    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && ('isVerified' in b && b.isVerified));
     const rating = typeof b.avgRating === 'string' ? parseFloat(b.avgRating) : (b.avgRating ?? 0);
     const matchesStars = !filters.value.stars || rating >= parseFloat(filters.value.stars);
     
