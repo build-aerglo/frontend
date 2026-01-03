@@ -254,9 +254,12 @@
                                 </div>
                             </div>
                             <div>
-                                <NuxtLink :to="`/category/${i.id}`" v-for="(i, idx) in business?.categories" :key="idx">
-                                    {{
-                                        i.name }}
+                                <NuxtLink 
+                                    v-for="(i, idx) in business?.categories" 
+                                    :key="idx"
+                                    :to="{ path: '/end-user/landing/explore', query: { category: i.name } }"
+                                >
+                                    {{ i.name }}{{ idx < business.categories.length - 1 ? ', ' : '' }}
                                 </NuxtLink>
                             </div>
                         </div>
@@ -264,10 +267,15 @@
                         <div class="w-full sm:w-[20px] border my-[10px]"></div>
 
                         <div class="flex gap-2.5">
-                            <NuxtLink v-for="(i, idx) in business?.tags" :to="`/tags/${i}`" :key="idx">
+                            <NuxtLink 
+                                v-for="(tagName, idx) in business?.tags" 
+                                :key="idx"
+                                :to="{ path: '/end-user/landing/explore', query: { tagName: tagName, tagId: tagName } }"
+                            >
                                 <Chip
-                                    class="hover:bg-primary hover:text-white !border !border-primary !py-[5px] !px-[10px]">
-                                    <span class="text-[80%]">{{ i }}</span>
+                                class="hover:bg-primary hover:text-white !border !border-primary !py-[5px] !px-[10px]"
+                                >
+                                <span class="text-[80%]">{{ tagName }}</span>
                                 </Chip>
                             </NuxtLink>
                         </div>

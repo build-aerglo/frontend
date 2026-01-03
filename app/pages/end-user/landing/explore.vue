@@ -18,7 +18,7 @@
           <div class="col-span-2 md:flex-1 md:min-w-[70px]">
             <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
             <Dropdown 
-              v-model="filters.category" 
+              v-model="filters.categoryId" 
               :options="categoryOptions" 
               optionLabel="label" 
               optionValue="value"
@@ -84,7 +84,7 @@
           <span class="text-sm text-slate-600">Active filters:</span>
           <template v-for="(value, key) in filters" :key="key">
             <button
-              v-if="value && String(key) !== 'tagName' && String(key) !== 'tag'"
+              v-if="value && !['tagName', 'tag', 'tagId'].includes(String(key))"
               @click="clearFilter(String(key))"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
@@ -137,9 +137,7 @@
                       <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
                     </div>
                     <div class="absolute -top-2 -right-2">
-                      <Badge 
-                        :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" 
-                      />
+                      <Badge :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" />
                     </div>
                   </div>
 
@@ -175,7 +173,6 @@
                       <button
                         v-for="cat in business.categories"
                         :key="cat.id"
-                        @click.stop="filterByTag(cat.name)"
                         class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-white transition-all"
                       >
                         {{ cat.name }}
@@ -187,7 +184,7 @@
             </div>
           </template>
 
-          <div v-if="filteredBusinesses.length === 0 && !isSearchingName && !isLoading" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
+          <div v-if="!isLoading && !isSearchingName && filteredBusinesses.length === 0" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
             <i class="pi pi-search text-5xl text-slate-300 mb-4"></i>
             <h3 class="text-xl font-bold text-slate-900 mb-2">No results found</h3>
             <p class="text-slate-600 mb-4">Try adjusting your filters</p>
@@ -210,7 +207,7 @@
                   <p class="text-xs text-slate-700">{{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No description provided.' }}</p>
                 </div>
                 <button 
-                  @click="navigateToBiz(focusedBusiness.id)"
+                  @click="navigateToBiz(focusedBusiness)"
                   class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
                 >
                   View Full Profile
@@ -238,7 +235,6 @@ const route = useRoute()
 const { search } = useSearch()
 const { getCategories, getBusinessByCategory, getBusinessByTag } = useBusinessMethods(); 
 
-// State
 const businesses = ref<Business[]>([])
 const categories = ref<any[]>([]) 
 const isLoading = ref(true) 
@@ -249,41 +245,51 @@ let debounceTimer: any = null
 
 const filters = ref<any>({
   name: route.query.q || '',
-  category: '', 
+  categoryId: '', 
   badges: '',
   location: '',
   stars: '',
-  tag: '',
   tagId: route.query.tagId || '',
   tagName: route.query.tagName || ''
 })
 
+// --- NAVIGATION FIX ---
+const navigateToBiz = (input: any) => {
+  // If input is an object, find the id. If it's a string, use it directly.
+  const id = (typeof input === 'object' && input !== null) 
+    ? (input.id || input.businessId) 
+    : input;
+
+  if (!id) {
+    console.error("Navigation failed: No valid ID found", input);
+    return;
+  }
+  return navigateTo(`/biz/${id}`);
+};
+
 // --- API ACTIONS ---
 const performMainFetch = async () => {
   isLoading.value = true;
-  if (filters.value.category) {
-    const targetCategory = categories.value.find(
-      c => (c.name || '').toLowerCase() === filters.value.category.toLowerCase()
-    );
-    const categoryId = targetCategory?.categoryId || targetCategory?.id;
+  businesses.value = []; 
 
-    if (categoryId) {
-      try {
-        const res = await getBusinessByCategory(categoryId);
-        businesses.value = res?.data || [];
-      } catch (e) { 
-        businesses.value = []; 
-      } finally { 
-        isLoading.value = false; 
-      }
-      return;
+  try {
+    if (filters.value.categoryId) {
+      const res = await getBusinessByCategory(filters.value.categoryId);
+      businesses.value = res?.data || [];
+    } else {
+      const res = await search(filters.value.name || 'a');
+      businesses.value = Array.isArray(res) ? res : (res.companies || []);
     }
+  } catch (e) { 
+    businesses.value = []; 
+  } finally { 
+    isLoading.value = false; 
   }
-  await fetchResults(filters.value.name || 'a');
 }
 
 const fetchByTag = async (tagId: string) => {
   isLoading.value = true;
+  businesses.value = [];
   try {
     const res = await getBusinessByTag(tagId);
     businesses.value = res?.data || [];
@@ -295,7 +301,6 @@ const fetchByTag = async (tagId: string) => {
 }
 
 const fetchResults = async (q: string) => {
-  isLoading.value = true
   try {
     const res = await search(q)
     businesses.value = Array.isArray(res) ? res : (res.companies || [])
@@ -306,15 +311,13 @@ const fetchResults = async (q: string) => {
   }
 }
 
-watch(() => filters.value.category, async (newVal) => {
-  if (newVal === undefined) return;
+watch(() => filters.value.categoryId, async () => {
   filters.value.tagId = '';
   await performMainFetch();
 })
 
 watch(() => filters.value.name, (newVal) => {
-  if (filters.value.category || filters.value.tagId) return; 
-
+  if (filters.value.categoryId || filters.value.tagId) return; 
   isSearchingName.value = true
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(async () => {
@@ -323,88 +326,53 @@ watch(() => filters.value.name, (newVal) => {
   }, 400)
 })
 
-watch(categories, (newVal) => {
-  if (newVal.length > 0 && route.query.category) {
-    const matchingCat = newVal.find(c => c.name.toLowerCase() === (route.query.category as string).toLowerCase());
-    if (matchingCat) {
-      filters.value.category = matchingCat.name;
-    }
-  }
-}, { immediate: true })
-
 // --- COMPUTED ---
 const categoryOptions = computed(() => {
   const baseOptions = [{ label: 'All', value: '' }]
   const dynamicOptions = categories.value.map(cat => ({
     label: cat.name,
-    value: cat.name 
+    value: cat.categoryId || cat.id 
   }))
   return [...baseOptions, ...dynamicOptions]
 })
 
 const filteredBusinesses = computed(() => {
+  if (isLoading.value || isSearchingName.value) return [];
+  
   return businesses.value.filter(b => {
     const searchName = (filters.value.name || '').toLowerCase();
     const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
-
-    const matchesCategory = !filters.value.category || 
-      ('categories' in b && b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.category.toLowerCase()));
-
-    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && 'isVerified' in b && b.isVerified);
     
+    const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && b.isVerified);
     const rating = typeof b.avgRating === 'string' ? parseFloat(b.avgRating) : (b.avgRating ?? 0);
     const matchesStars = !filters.value.stars || rating >= parseFloat(filters.value.stars);
     
-    const matchesTag = !filters.value.tag || ('categories' in b && b.categories?.some((c: any) => c.name.toLowerCase() === filters.value.tag.toLowerCase()));
-
-    return matchesName && matchesCategory && matchesBadge && matchesStars && matchesTag;
+    return matchesName && matchesBadge && matchesStars;
   });
 })
 
 const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v));
 const focusedBusiness = computed(() => businesses.value.find(b => b.id === focusedBusinessId.value));
 
-// --- UTILS ---
 const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', value: 'verified' }])
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
-const navigateToBiz = (business: any) => {
-  // Check for all possible ID variations
-  const id = business.id || business.businessId;
-  
-  if (!id) {
-    console.warn("Navigation attempted but no ID found in:", business);
-    return;
-  }
-  
-  return navigateTo(`/biz/${id}`);
+const clearAllFilters = () => {
+  filters.value = { name: '', categoryId: '', badges: '', location: '', stars: '', tagId: '', tagName: '' };
 };
-const clearAllFilters = () => filters.value = { name: '', category: '', badges: '', location: '', stars: '', tag: '', tagId: '', tagName: '' };
-const filterByTag = (tag: string) => { filters.value.tag = tag; window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
 function getFilterLabel(key: any, value: any): string {
   const k = String(key);
-  const v = String(value);
-  
-  if (k === 'name') return v; 
-
-  // If the key is tagId, return the tagName from our filters if we have it
-  if (k === 'tagId') {
-    return filters.value.tagName || 'Selected Tag';
-  }
-
-  // We don't want to show a separate chip for 'tagName' itself
-  if (k === 'tagName') return '';
+  if (k === 'name') return String(value); 
+  if (k === 'categoryId') return categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
   const optionsMap: Record<string, any> = { 
-    category: categoryOptions.value, 
     badges: badgeOptions.value, 
     location: locationOptions.value, 
     stars: ratingOptions.value 
   };
-  
-  return optionsMap[k]?.find((opt: any) => opt.value === v)?.label || v;
+  return optionsMap[k]?.find((opt: any) => opt.value === value)?.label || value;
 }
 
 function hideContact() { setTimeout(() => { showContact.value = null; }, 2000); }
@@ -414,25 +382,25 @@ onMounted(async () => {
   try {
     const res = await getCategories();
     categories.value = Array.isArray(res) ? res : (res.data || []);
-    const tagId = route.query.tagId as string;
     
+    if (route.query.category) {
+        const cat = categories.value.find(c => c.name.toLowerCase() === (route.query.category as string).toLowerCase());
+        if (cat) filters.value.categoryId = cat.categoryId || cat.id;
+    }
+    
+    const tagId = route.query.tagId as string;
     if (tagId) {
       filters.value.tagId = tagId;
       await fetchByTag(tagId);
     } else {
       await performMainFetch();
     }
-    
   } catch (error) {
     isLoading.value = false;
   }
 })
-const clearFilter = (key: string) => {
-  filters.value[key] = '';
-  if (key === 'tagId') {
-    filters.value.tagName = '';
-  }
-};
+
+const clearFilter = (key: string) => filters.value[key] = '';
 </script>
 
 <style scoped>
