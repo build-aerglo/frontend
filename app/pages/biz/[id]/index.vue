@@ -6,10 +6,16 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    layout: "biz"
+})
 import { onBeforeMount } from "vue"
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import { usePageData } from "~/composables/method/usePageData";
 import useReviewMethods from "~/composables/method/useReviewMethods";
 import type { BusinessProfileResponse } from '~/types/business';
+
+const pageData = usePageData()
 
 const route = useRoute()
 const { getBusinessProfile, getBusinessUser, saveBusinessProfile, getCategories } = useBusinessMethods()
@@ -24,12 +30,14 @@ const categories = ref([])
 const reviews = ref<any[]>([])
 
 const business = ref<BusinessProfileResponse>()
+
 const loadBusinessData = async () => {
     const id = route.params.id;
     if (!id) {
         throw createError({
             statusCode: 404,
-            statusMessage: "Business Not Found"
+            statusMessage: "Business Not Found",
+            fatal: true
         })
     }
 
@@ -56,17 +64,25 @@ const loadBusinessData = async () => {
                 isBusiness.value = true;
                 toEdit.value = true;
                 page.value = 'profile'
+                pageData.value.isBusiness = true;
             }
 
+            pageData.value.data = res.data;
             business.value = res.data;
             return;
         }
 
         throw createError({
             statusCode: 404,
-            statusMessage: "Business Not Found"
+            statusMessage: "Business Not Found",
+            fatal: true
         })
     } catch (error) {
+        throw createError({
+            statusCode: 404,
+            statusMessage: "Business Not Found",
+            fatal: true
+        })
     } finally {
         isLoading.value = false;
     }
@@ -83,5 +99,14 @@ onBeforeMount(async () => {
     await loadBusinessData();
 })
 
+// // #push data
+// provide('businessData', business.value)
+// const count = ref(0)
+// provide('key', count)
 
+// // #push data
+// definePageMeta({
+//     businessId: computed(() => business.value?.id),
+//     isBusiness: computed(() => isBusiness.value)
+// })
 </script>

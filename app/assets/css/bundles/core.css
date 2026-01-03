@@ -42,7 +42,7 @@
   --bs-light: #dfdfe3;
   --bs-dark: #2f3349;
   --bs-gray: #97959e;
-  --bs-primary-rgb: 115, 103, 240;
+  --bs-primary-rgb: theme("colors.primary");
   --bs-secondary-rgb: 128, 131, 144;
   --bs-success-rgb: 40, 199, 111;
   --bs-info-rgb: 0, 186, 209;
