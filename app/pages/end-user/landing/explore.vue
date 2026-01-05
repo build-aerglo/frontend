@@ -128,13 +128,13 @@
               v-for="business in filteredBusinesses" 
               :key="business.id"
               @click="navigateToBiz(business)"
-              class="bg-white rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
+              class="bg-white space-y-4 rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
             >
               <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
                 <div class="flex flex-col gap-1">
-                  <div class="relative w-24 h-24"> 
+                  <div class="relative w-24 h-24 max-[400px]:w-16 max-[400px]:h-16"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
-                      <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
+                      <img @click.stop="focusedBusinessId = business.id" :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
                     </div>
                     <div class="absolute -top-2 -right-2">
                       <Badge :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" />
@@ -144,8 +144,12 @@
                   <div class="text-center">
                     <div class="flex items-center gap-1 justify-center">
                       <span class="text-lg font-bold text-slate-900">{{ business.avgRating ?? 0 }}</span>
-                      <div class="flex">
+                      <div class="hidden min-[401px]:flex">
                         <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
+                      </div>
+                      <!-- Mobile (≤400px): Show 1 star -->
+                      <div class="flex min-[401px]:hidden">
+                        <Star :value="1" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
                       </div>
                     </div>
                     <button @click.stop="focusedBusinessId = business.id" class="text-xs text-[#008253] font-semibold hover:underline">
@@ -157,10 +161,10 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 class="text-xl font-bold text-slate-900 mb-3 break-words">{{ business.name }}</h3>
+                      <h3 @click.stop="focusedBusinessId = business.id" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-base">{{ business.name }}</h3>
                     </div>
                     <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id" @mouseleave="hideContact()">
-                      <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
+                      <i @click.stop class="pi pi-phone text-gray-500 text-md cursor-pointer hover:text-slate-800"></i>
                       <div v-if="showContact === business.id" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
                         <p><strong>Tel:</strong> {{ ('businessPhoneNumber' in business ? business.businessPhoneNumber : 'N/A') ?? 'N/A' }}</p>   
                         <p><strong>Address:</strong> {{ ('businessAddress' in business ? business.businessAddress : 'N/A') ?? 'N/A' }}</p>
@@ -181,6 +185,27 @@
                   </div>
                 </div>
               </div>
+              <div 
+          v-if="focusedBusinessId === business.id" 
+          class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+        >
+          <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
+            <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
+            <div>
+              <h3 class="text-sm font-bold">{{ business.name }}</h3>
+              <p class="text-xs text-slate-500">Review Summary</p>
+            </div>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-4">
+            <p class="text-xs text-slate-700">{{ ('businessDescription' in business ? business.businessDescription : null) ?? 'No description provided.' }}</p>
+          </div>
+          <button 
+            @click="navigateToBiz(business)"
+            class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
+          >
+            View Full Profile
+          </button>
+        </div>
             </div>
           </template>
 
