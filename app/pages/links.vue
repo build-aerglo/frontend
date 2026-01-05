@@ -11,7 +11,7 @@
                 <NuxtLink to="./support/user/dashboard" class="text-blue-500">Support User Dashboard</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="./end-user/profile/end-user" class="text-blue-500">End-User Profile</NuxtLink>
+                <NuxtLink to="./user/id/5d180e47-d405-4cc2-a251-ca5900de997c" class="text-blue-500">End-User Profile</NuxtLink>
             </li>
             <li>
                 <NuxtLink to="./end-user/profile/business" class="text-blue-500">Business Profile (End-User POV)

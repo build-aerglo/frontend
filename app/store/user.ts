@@ -7,6 +7,7 @@ export interface EndUserState {
   role: string | null;
   expires_in: Date;
   userData: EndUser | null;
+  id: string | null;
 }
 
 export const useUserStore = defineStore("EndUser", {
@@ -17,6 +18,7 @@ export const useUserStore = defineStore("EndUser", {
     expires_in: new Date(),
     userData: null,
     theme: "light",
+    id: null,
   }),
   getters: {
     // userId: (state): string | null => {
@@ -34,12 +36,19 @@ export const useUserStore = defineStore("EndUser", {
   },
 
   actions: {
+    setId(id: string) {
+      this.$patch((state) => {
+        state["id"] = id;
+      });
+    },
+
     getUser() {
       return {
         user: this.userData,
         access_token: this.accessToken,
         role: this.role,
         expires: this.expires_in,
+        id: this.id,
       };
     },
 

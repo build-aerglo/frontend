@@ -73,6 +73,7 @@ export default function () {
         } else if (role === "end_user") {
           store.clearUser();
           userStore.setLoginData(loginPayload);
+          store.setId(id);
         }
         return res.data;
       } else {
