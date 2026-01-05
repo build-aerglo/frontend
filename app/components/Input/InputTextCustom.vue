@@ -32,6 +32,7 @@
         :required="required"
         :disabled="disabled"
         class="flex-1 px-3 py-2 outline-none text-contrast bg-transparent"
+        :inputClass="inputClass"
       />
 
       <!-- Password toggle -->
