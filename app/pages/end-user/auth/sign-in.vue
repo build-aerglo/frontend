@@ -164,7 +164,7 @@ const HandleLogin = async () => {
     console.log(res);
     if (store.accessToken && store.role === 'end_user') {
           toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
-          navigateTo('../../business-dashboard');
+          return navigateTo(`/user/${store.id}`);
     } else {
         loginError.value = 'Login succeeded, but no token was stored.';
     }

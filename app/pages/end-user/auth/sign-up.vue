@@ -64,6 +64,20 @@
                    </button>
                  </div>
                </div>
+               <div v-if="!allValid" class="flex flex-col mt-[10px] mb-[10px]">
+                  <div class="flex items-center gap-2">
+                    <i class="text-[10px]" :class="validLength ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                    Password must be greater than 8 characters
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="text-[10px]" :class="validNumeric ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                    Password must contain a number
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="text-[10px]" :class="validComplexity ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
+                    Password must contain a special character (@#&_$?)
+                  </div>
+                </div>
              </div>
             <!-- Confirm Password -->
             <div>
@@ -125,6 +139,7 @@ import type { EndUser } from "~/types";
 import spinner from '~/assets/svg/spinner.svg'
 
 const { registerEndUser } = useMethods();
+const password = ref('');
 const confirmPassword = ref('')
 const form = ref<EndUser>({ 
   username: "",
