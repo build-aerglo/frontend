@@ -126,7 +126,7 @@
           <template v-else-if="filteredBusinesses.length > 0">
             <div
               v-for="business in filteredBusinesses" 
-              :key="business.id"
+              :key="business.id || (business as any).businessId"
               @click="navigateToBiz(business)"
               class="bg-white space-y-4 rounded-xl shadow-sm border-2 p-4 transition-all duration-300 border-slate-200 hover:shadow-lg hover:border-slate-300 cursor-pointer"
             >
@@ -152,7 +152,7 @@
                         <Star :value="1" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
                       </div>
                     </div>
-                    <button @click.stop="focusedBusinessId = business.id" class="text-xs text-[#008253] font-semibold hover:underline">
+                    <button @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xs text-[#008253] font-semibold hover:underline">
                       {{ business.reviewCount ?? 0 }} reviews
                     </button>
                   </div>
@@ -163,9 +163,9 @@
                     <div class="min-w-0 flex-1">
                       <h3 @click.stop="focusedBusinessId = business.id" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-base">{{ business.name }}</h3>
                     </div>
-                    <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id" @mouseleave="hideContact()">
-                      <i @click.stop class="pi pi-phone text-gray-500 text-md cursor-pointer hover:text-slate-800"></i>
-                      <div v-if="showContact === business.id" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
+                    <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
+                      <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
+                      <div v-if="showContact === (business.id || (business as any).businessId)" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
                         <p><strong>Tel:</strong> {{ ('businessPhoneNumber' in business ? business.businessPhoneNumber : 'N/A') ?? 'N/A' }}</p>   
                         <p><strong>Address:</strong> {{ ('businessAddress' in business ? business.businessAddress : 'N/A') ?? 'N/A' }}</p>
                       </div>
@@ -223,14 +223,27 @@
         <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-                  <img :src="('logo' in focusedBusiness ? focusedBusiness.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
-                  <div>
-                    <h3 class="text-sm font-bold">{{ focusedBusiness.name }}</h3>
-                    <p class="text-xs text-slate-500">Review Summary</p>
+                  <img :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
+                  <div class="min-w-0 flex-1">
+                    <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      <template v-if="'categories' in focusedBusiness && Array.isArray(focusedBusiness.categories)">
+                        <span 
+                          v-for="cat in focusedBusiness.categories.slice(0, 2)" 
+                          :key="cat.id" 
+                          class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded"
+                        >
+                          {{ cat.name }}
+                        </span>
+                      </template>
+                    </div>
                   </div>
                 </div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Review Summary</p>
                 <div class="bg-slate-50 rounded-lg p-4">
-                  <p class="text-xs text-slate-700">{{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No description provided.' }}</p>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    {{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No summary available for this business.' }}
+                  </p>
                 </div>
                 <button 
                   @click="navigateToBiz(focusedBusiness)"
@@ -245,7 +258,7 @@
                 <p class="text-sm text-slate-600">Click on a business to view details</p>
             </div>
         </div>
-      </div>
+        </div>
     </div>
   </div>
 </template>
@@ -279,7 +292,6 @@ const filters = ref<any>({
   tagName: route.query.tagName || ''
 })
 
-// --- NAVIGATION & PILL LOGIC ---
 const filterByCategoryName = (name: string) => {
   const match = categories.value.find(
     c => (c.name || '').toLowerCase() === name.toLowerCase()
@@ -287,7 +299,7 @@ const filterByCategoryName = (name: string) => {
 
   if (match) {
     filters.value.categoryId = match.categoryId || match.id;
-    filters.value.tagId = ''; // Clear tags when picking a specific category
+    filters.value.tagId = ''; 
     filters.value.tagName = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -301,7 +313,6 @@ const navigateToBiz = (input: any) => {
   return navigateTo(`/biz/${id}`);
 };
 
-// --- API ACTIONS ---
 const performMainFetch = async () => {
   isLoading.value = true;
   businesses.value = []; 
@@ -345,7 +356,6 @@ const fetchResults = async (q: string) => {
   }
 }
 
-// Watchers
 watch(() => filters.value.categoryId, async () => {
   filters.value.tagId = '';
   filters.value.tagName = '';
@@ -362,7 +372,6 @@ watch(() => filters.value.name, (newVal) => {
   }, 400)
 })
 
-// --- COMPUTED ---
 const categoryOptions = computed(() => {
   const baseOptions = [{ label: 'All', value: '' }]
   const dynamicOptions = categories.value.map(cat => ({
@@ -387,17 +396,21 @@ const filteredBusinesses = computed(() => {
 })
 
 const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v));
-const focusedBusiness = computed(() => businesses.value.find(b => b.id === focusedBusinessId.value));
 
-// Dropdown Options
+const focusedBusiness = computed(() => {
+  if (!focusedBusinessId.value) return null;
+  return businesses.value.find(b => {
+    const currentId = b.id || (b as any).businessId;
+    return currentId === focusedBusinessId.value;
+  });
+});
+
 const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', value: 'verified' }])
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
-// --- UTILS ---
 const clearFilter = (key: string) => {
   filters.value[key] = '';
-  // SPECIAL CASE: If tag name is cleared, also clear the tag ID and refetch
   if (key === 'tagName') {
     filters.value.tagId = '';
     performMainFetch();
@@ -412,7 +425,7 @@ const clearAllFilters = () => {
 function getFilterLabel(key: any, value: any): string {
   const k = String(key);
   if (k === 'name') return String(value); 
-  if (k === 'tagName') return `${value}`; // ADDED: Display tag name
+  if (k === 'tagName') return `${value}`;
   if (k === 'categoryId') return categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
   const optionsMap: Record<string, any> = { 
@@ -453,7 +466,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* styles unchanged */
 .text-gold { color: #deae29; }
 @keyframes fadeInOut {
   0%   { opacity: 0; transform: translateY(4px); }
