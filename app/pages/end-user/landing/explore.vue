@@ -161,7 +161,7 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 @click.stop="focusedBusinessId = business.id" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-base">{{ business.name }}</h3>
+                      <h3 @click.stop="focusedBusinessId = business.id" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-sm">{{ business.name }}</h3>
                     </div>
                     <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
@@ -191,9 +191,9 @@
           class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
         >
           <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-            <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
+            <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-12 h-12 rounded-full object-cover border border-slate-200" />
             <div>
-              <h3 class="text-sm font-bold">{{ business.name }}</h3>
+              <h3 class="text-sm font-demibold mb-0">{{ business.name }}</h3>
               <p class="text-xs text-slate-500">Review Summary</p>
             </div>
           </div>
