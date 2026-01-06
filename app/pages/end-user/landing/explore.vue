@@ -84,7 +84,7 @@
           <span class="text-sm text-slate-600">Active filters:</span>
           <template v-for="(value, key) in filters" :key="key">
             <button
-              v-if="value && !['tagName', 'tag', 'tagId'].includes(String(key))"
+              v-if="value && !['tag', 'tagId'].includes(String(key))"
               @click="clearFilter(String(key))"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
@@ -173,6 +173,7 @@
                       <button
                         v-for="cat in business.categories"
                         :key="cat.id"
+                        @click.stop="filterByCategoryName(cat.name)"
                         class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-primary transition-all"
                       >
                         {{ cat.name }}
@@ -253,17 +254,25 @@ const filters = ref<any>({
   tagName: route.query.tagName || ''
 })
 
-// --- NAVIGATION FIX ---
+// --- NAVIGATION & PILL LOGIC ---
+const filterByCategoryName = (name: string) => {
+  const match = categories.value.find(
+    c => (c.name || '').toLowerCase() === name.toLowerCase()
+  );
+
+  if (match) {
+    filters.value.categoryId = match.categoryId || match.id;
+    filters.value.tagId = ''; // Clear tags when picking a specific category
+    filters.value.tagName = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
 const navigateToBiz = (input: any) => {
-  // If input is an object, find the id. If it's a string, use it directly.
   const id = (typeof input === 'object' && input !== null) 
     ? (input.id || input.businessId) 
     : input;
-
-  if (!id) {
-    console.error("Navigation failed: No valid ID found", input);
-    return;
-  }
+  if (!id) return;
   return navigateTo(`/biz/${id}`);
 };
 
@@ -311,8 +320,10 @@ const fetchResults = async (q: string) => {
   }
 }
 
+// Watchers
 watch(() => filters.value.categoryId, async () => {
   filters.value.tagId = '';
+  filters.value.tagName = '';
   await performMainFetch();
 })
 
@@ -342,7 +353,6 @@ const filteredBusinesses = computed(() => {
   return businesses.value.filter(b => {
     const searchName = (filters.value.name || '').toLowerCase();
     const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
-    
     const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && ('isVerified' in b && b.isVerified));
     const rating = typeof b.avgRating === 'string' ? parseFloat(b.avgRating) : (b.avgRating ?? 0);
     const matchesStars = !filters.value.stars || rating >= parseFloat(filters.value.stars);
@@ -354,17 +364,30 @@ const filteredBusinesses = computed(() => {
 const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v));
 const focusedBusiness = computed(() => businesses.value.find(b => b.id === focusedBusinessId.value));
 
+// Dropdown Options
 const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', value: 'verified' }])
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
+// --- UTILS ---
+const clearFilter = (key: string) => {
+  filters.value[key] = '';
+  // SPECIAL CASE: If tag name is cleared, also clear the tag ID and refetch
+  if (key === 'tagName') {
+    filters.value.tagId = '';
+    performMainFetch();
+  }
+};
+
 const clearAllFilters = () => {
   filters.value = { name: '', categoryId: '', badges: '', location: '', stars: '', tagId: '', tagName: '' };
+  performMainFetch();
 };
 
 function getFilterLabel(key: any, value: any): string {
   const k = String(key);
   if (k === 'name') return String(value); 
+  if (k === 'tagName') return `${value}`; // ADDED: Display tag name
   if (k === 'categoryId') return categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
   const optionsMap: Record<string, any> = { 
@@ -389,8 +412,11 @@ onMounted(async () => {
     }
     
     const tagId = route.query.tagId as string;
+    const tagName = route.query.tagName as string;
+    
     if (tagId) {
       filters.value.tagId = tagId;
+      filters.value.tagName = tagName || 'Tag';
       await fetchByTag(tagId);
     } else {
       await performMainFetch();
@@ -399,11 +425,10 @@ onMounted(async () => {
     isLoading.value = false;
   }
 })
-
-const clearFilter = (key: string) => filters.value[key] = '';
 </script>
 
 <style scoped>
+/* styles unchanged */
 .text-gold { color: #deae29; }
 @keyframes fadeInOut {
   0%   { opacity: 0; transform: translateY(4px); }
