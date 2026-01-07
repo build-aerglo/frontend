@@ -168,14 +168,14 @@
               <button
                 v-if="isUser"
                 @click="startEdit"
-                class="mt-2 text-blue-500 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
+                class="mt-2 text-blue-500 hover:text-[#008253] flex items-center gap-2 mx-auto"
               >
                 <i class="pi pi-pencil text-xs"></i>
                 <span class="text-sm">Edit Profile</span>
               </button>
               
-              <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
-              <div class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden">
+              <!-- Mobile Badges (400px and up) - Horizontal beside user info -->
+              <div class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[400px]:hidden">
                 <div 
                   v-for="(badge, idx) in badges" 
                   :key="`mobile-${idx}`" 
@@ -185,8 +185,8 @@
                   <span class="font-medium text-gray-700 text-xs">{{ badge.name }}</span>
                 </div>
               </div>
-              <!-- Small Mobile Badges (under 360px) - Stacked under user info -->
-              <div class="mt-4 hidden max-[359px]:flex max-[359px]:flex-col gap-2">
+              <!-- Small Mobile Badges (under 400px) - Stacked under user info -->
+              <div class="mt-4 hidden max-[400px]:flex max-[400px]:flex-col gap-2">
                 <div 
                   v-for="(badge, idx) in badges" 
                   :key="`small-mobile-${idx}`" 
@@ -270,7 +270,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <!-- Left Column -->
-          <div class="md:col-span-3 space-y-6">
+          <div class="md:col-span-3 space-y-2 md:space-y-6">
             <!-- Badges -->
             <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
               <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
