@@ -122,11 +122,9 @@
     <!-- Main Profile View -->
     <div v-else-if="profileData">
       <!-- User Profile Section -->
-      <div class="bg-gradient-to-b from-blue-50 to-white py-8">
+      <div class="bg-gradient-to-b from-blue-50 to-white py-8 mb-2"> 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            class="flex flex-col md:flex-row items-center md:items-start gap-6"
-          >
+          <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
             <!-- Profile Image -->
             <UserAvatar
               :firstName="firstName"
@@ -175,6 +173,29 @@
                 <i class="pi pi-pencil text-xs"></i>
                 <span class="text-sm">Edit Profile</span>
               </button>
+              
+              <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
+              <div class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden">
+                <div 
+                  v-for="(badge, idx) in badges" 
+                  :key="`mobile-${idx}`" 
+                  :class="[badge.color, 'rounded-lg p-2 flex items-center gap-2 whitespace-nowrap flex-shrink-0']"
+                >
+                  <i :class="[badge.icon, 'text-lg']"></i>
+                  <span class="font-medium text-gray-700 text-xs">{{ badge.name }}</span>
+                </div>
+              </div>
+              <!-- Small Mobile Badges (under 360px) - Stacked under user info -->
+              <div class="mt-4 hidden max-[359px]:flex max-[359px]:flex-col gap-2">
+                <div 
+                  v-for="(badge, idx) in badges" 
+                  :key="`small-mobile-${idx}`" 
+                  :class="[badge.color, 'rounded-lg p-2 flex items-center gap-2']"
+                >
+                  <i :class="[badge.icon, 'text-base']"></i>
+                  <span class="font-medium text-gray-700 text-xs">{{ badge.name }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -247,11 +268,11 @@
 
       <!-- Main Content Grid -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
             <!-- Badges -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
               <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="pi pi-trophy text-gold"></i>
                 Your Badges
