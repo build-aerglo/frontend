@@ -11,6 +11,7 @@
     :categories="categories"
     :reviews="reviews"
     status="verified"
+    :canEdit="true"
   />
 </template>
 
