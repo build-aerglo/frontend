@@ -618,16 +618,16 @@
               <img
                 v-if="badge"
                 :src="`/svg/badges/${badge.badge}.svg`"
-                v-tooltip="badge.status"
+                v-tooltip.top="badge.status"
                 class="w-[40px] h-[40px]"
               />
             </div>
             <img
               :src="business?.logo ?? '/images/default-business-logo.png'"
-              class="object-cover object-center h-full w-full"
+              class="object-cover object-center w-full h-[100px] lg:h-full"
               :alt="business?.name"
             />
-            <div class="flex flex-col gap-2.5 justify-center w-[150px]">
+            <div class="flex flex-col gap-2.5 justify-center w-[100px]">
               <Star :count="business?.avgRating ?? 0" />
               <div class="text-center mt-[-10px]">
                 {{ business?.reviewCount ?? 0 }}
@@ -637,33 +637,38 @@
           </div>
           <div class="flex-1">
             <div class="flex flex-col gap-[10px]">
-              <div
-                class="text-[200%] font-bold flex items-center justify-between"
-              >
-                <div class="flex flex-col sm:text-[100%] text-[90%]">
-                  <div class="flex gap-2.5 items-center">
-                    <div
-                      class="border rounded-sm !font-thin !text-[50%] p-1 !w-max"
+              <div class="flex items-center justify-between">
+                <div class="flex flex-col gap-2">
+                  <div class="flex gap-2 items-center flex-wrap">
+                    <span class="text-xl sm:text-3xl font-bold">
+                      {{ business?.name }}
+                    </span>
+                    <span
+                      class="px-2 py-1 text-[10px] sm:text-xs font-medium rounded border whitespace-nowrap"
+                      :class="{
+                        'bg-green-50 border-green-500 text-green-700': business?.businessStatus === 'approved',
+                        'bg-gray-50 border-gray-400 text-gray-600': business?.businessStatus !== 'approved'
+                      }"
                     >
                       {{ businessClaim(business?.businessStatus) }}
-                    </div>
-                    <div class="sm:hidden block">
-                      <a
-                        class="bb !text-[60%] cursor-pointer"
-                        v-if="isBusiness && canEdit"
-                        @click="editBusiness = true"
-                        >Edit Business Profile</a
-                      >
-                      <NuxtLink
-                        class="bb !text-[60%] cursor-pointer"
-                        to="claim-business"
-                        v-if="business?.businessStatus === 'unclaimed'"
-                      >
-                        Claim Business
-                      </NuxtLink>
-                    </div>
+                    </span>
                   </div>
-                  {{ business?.name }}
+                  <div class="sm:hidden block">
+                    <a
+                      class="text-sm cursor-pointer text-primary underline"
+                      v-if="isBusiness && canEdit"
+                      @click="editBusiness = true"
+                    >
+                      Edit Business Profile
+                    </a>
+                    <NuxtLink
+                      class="text-sm cursor-pointer text-primary underline"
+                      to="claim-business"
+                      v-if="business?.businessStatus === 'unclaimed'"
+                    >
+                      Claim Business
+                    </NuxtLink>
+                  </div>
                 </div>
                 <div class="flex gap-2.5">
                   <NuxtLink

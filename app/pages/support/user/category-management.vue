@@ -65,15 +65,15 @@
             class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow border border-gray-200"
           >
             <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center gap-2 ">
-                <div :style="{ backgroundColor: category.color }" class="w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg">
-                  <component :is="category.icon" :size="20" />
+              <div class="flex items-center gap-1">
+                <div :style="{ backgroundColor: category.color }" class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-lg">
+                  <component :is="category.icon" :size="16" />
                 </div>
                 <div>
-                  <h5 class="font-semibold text-slate-900">{{ category.name }}</h5>
+                  <h6 class="font-demibold text-black">{{ category.name }}</h6>
                 </div>
               </div>
-              <div class="flex gap-1">
+              <div class="flex">
                 <button @click="openCategoryModal(category)" class="p-1 text-emerald-600 hover:bg-blue-50 rounded transition-colors">
                   <i class="pi pi-pencil"></i>
                 </button>
@@ -82,7 +82,7 @@
                 </button>
               </div>
             </div>
-            <p class="text-sm text-gray-600 mb-4">{{ category.description }}</p>
+            <p class="text-sm text-gray-400 mb-4">{{ category.description }}</p>
             <div class="flex items-center justify-between text-sm">
               <span class="text-gray-500">{{ category.businessCount }} businesses</span>
               <span class="text-gray-500">{{ category.tagCount }} tags</span>

@@ -180,7 +180,11 @@ const handleSearchButton = () => {
   if (exactMatch) {
     navigateTo(`/biz/${exactMatch.id}`)
   } else {
-    navigateTo(`/business/${encodeURIComponent(q)}`)
+    // Redirect to explore page instead of a potentially protected /business route
+    navigateTo({ 
+      path: '/end-user/landing/explore', 
+      query: { q: q } 
+    })
   }
 }
 
