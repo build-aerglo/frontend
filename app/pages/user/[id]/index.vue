@@ -140,20 +140,23 @@
                 <span>{{ profileData.username }}</span>
               </div>
 
-              <div
-                v-if="profileData.phoneNumber"
+              <!-- <div
+                v-if="isUser && profileData.phoneNumber"
                 class="flex items-center justify-center md:justify-start gap-2 text-gray-600"
               >
                 <i class="pi pi-phone text-gray-400"></i>
                 <span>{{ profileData.phoneNumber }}</span>
-              </div>
+              </div> -->
 
-              <div
+              <div v-if="isUser"
                 class="flex items-center justify-center md:justify-start gap-2 text-gray-600"
               >
                 <i class="pi pi-envelope text-gray-400"></i>
                 <span class="text-sm sm:text-base">{{
                   profileData.email
+                }}</span> 
+                <span v-if="profileData.phoneNumber" class="text-sm sm:text-base"> | {{
+                  profileData.phoneNumber
                 }}</span>
               </div>
 
@@ -175,7 +178,7 @@
               </button>
               
               <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
-              <div class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden">
+              <div v-if="isUser" class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden">
                 <div 
                   v-for="(badge, idx) in badges" 
                   :key="`mobile-${idx}`" 
@@ -203,6 +206,7 @@
 
       <!-- Menu Bar (Desktop/Tablet) -->
       <div
+        v-if="isUser"
         class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block"
       >
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -218,10 +222,11 @@
                 ]"
               >
                 <i class="pi pi-star mr-2"></i>
-                Your Reviews
+                <span v-if="isUser" class="inherit">Your</span> Reviews
               </button>
 
               <button
+                v-if="isUser"
                 @click="activeTab = 'rewards'"
                 :class="[
                   'px-4 py-2 rounded-lg font-medium transition',
@@ -275,7 +280,7 @@
             <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
               <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="pi pi-trophy text-gold"></i>
-                Your Badges
+                <span v-if="isUser" class="font-bold text-gray-800 text-lg mr--1">Your</span> Badges
               </h5>
               <div class="space-y-3">
                 <div
@@ -301,14 +306,15 @@
                 Top Reviewed Categories
               </h5>
               <ul class="space-y-2">
-                <li
-                  v-for="(cat, idx) in topCategories"
+                <NuxtLink
+                  to="/"
+                  v-for="(cat, idx) in topCategories.slice(0, 3)"
                   :key="idx"
                   class="flex items-start gap-2 text-sm text-gray-600"
                 >
                   <span class="text-gold">●</span>
                   <span>{{ cat }}</span>
-                </li>
+                </NuxtLink>
               </ul>
             </div>
 
@@ -319,15 +325,25 @@
                 Top Reviewed Locations
               </h5>
               <ul class="space-y-2">
-                <li
-                  v-for="(loc, idx) in topLocations"
+                <NuxtLink
+                  to="/"
+                  v-for="(loc, idx) in topLocations.slice(0, 3)"
                   :key="idx"
                   class="flex items-start gap-2 text-sm text-gray-600"
                 >
                   <span class="text-gold">●</span>
                   <span>{{ loc }}</span>
-                </li>
+                </NuxtLink>
               </ul>
+            </div>
+
+            <!-- Favourite Business -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="pi pi-shop text-gold"></i>
+                Favourite Businesses
+              </h5>
+              <span class="text-center flex justify-center h-20 items-center text-gray-500">Coming Soon...</span>
             </div>
           </div>
 
@@ -348,7 +364,7 @@
                   ]"
                 >
                   <i class="pi pi-star mr-2"></i>
-                  Your Reviews
+                  <span v-if="isUser">Your</span> Reviews
                 </button>
 
                 <button
@@ -396,15 +412,16 @@
             <div class="bg-white rounded-xl shadow-sm p-6">
               <!-- Your Reviews Tab -->
               <div v-if="activeTab === 'your-reviews'" class="space-y-6">
-                <h2 class="text-2xl font-bold text-[#008253]">Your Reviews</h2>
+                <h2 class="text-2xl font-bold text-[#008253]"><span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span> Reviews</h2>
 
                 <!-- ✅ Loading State -->
                 <div v-if="reviewsLoading" class="text-center py-12">
                   <GeneralLoader/>
                 </div>
 
+                
                 <!-- ✅ Error State -->
-                <div
+                <!-- <div
                   v-else-if="reviewsError"
                   class="bg-red-50 border border-red-200 rounded-lg p-6 text-center"
                 >
@@ -421,20 +438,34 @@
                   >
                     Try Again
                   </button>
-                </div>
+                </div> -->
 
-                <!-- ✅ Empty State -->
+                <!-- ✅ Empty State - User viewing their own profile -->
                 <div
-                  v-else-if="userReviews.length === 0"
+                  v-else-if="isUser && (reviewsError || userReviews.length === 0)"
                   class="text-center py-12"
                 >
                   <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
-                  <h3 class="text-xl font-semibold text-gray-700 mb-2">
-                    No Reviews Yet
+                  <h3 class="text-lg font-medium text-gray-700 mb-2">
+                    Ready to write your first review?
                   </h3>
-                  <p class="text-gray-500">
-                    You haven't written any reviews yet
-                  </p>
+                  <NuxtLink
+                    to="/review/write-review"
+                    class="inline-block mt-4 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium"
+                  >
+                    Click here to get started
+                  </NuxtLink>
+                </div>
+
+                <!-- ✅ Empty State - User viewing someone else's profile -->
+                <div
+                  v-else-if="!isUser && ( reviewsError || userReviews.length === 0) "
+                  class="text-center py-12"
+                >
+                  <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+                  <h3 class="text-base font-normal text-gray-700 mb-2">
+                    This member hasn't written any reviews on CleReview yet
+                  </h3>
                 </div>
 
                 <!-- ✅ Reviews List (your existing code) -->
@@ -485,42 +516,153 @@
               </div>
 
               <!-- Rewards Tab -->
-              <div
-                v-if="activeTab === 'rewards'"
-                class="bg-white rounded-xl p-3 max-w-md mx-auto space-y-5"
-              >
-                <div class="flex items-center gap-3 text-gray-700">
-                  <i class="pi pi-trophy text-gold text-xl"></i>
-                  <span class="font-medium"
-                    >Badges Earned: <strong>3</strong></span
-                  >
-                </div>
+<div
+  v-if="activeTab === 'rewards'"
+  class="bg-white rounded-xl p-4 max-w-2xl mx-auto space-y-6"
+>
+  <!-- Refer a Friend Section -->
+  <div class="border border-gray-200 rounded-lg p-4">
+    <div class="flex items-center gap-2 mb-3">
+      <i class="pi pi-users text-five_star text-xl"></i>
+      <h3 class="font-semibold text-lg text-gray-800">Refer a Friend</h3>
+    </div>
+    <p class="text-gray-600 text-sm mb-3">
+      Invite friends and earn 50 points for each successful referral!
+    </p>
+    <div class="flex items-center gap-3">
+      <input
+        type="text"
+        value="https://clereview.com/ref/user123"
+        readonly
+        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50"
+      />
+      <button
+        class="px-4 py-2  bg-green-700 text-white rounded-lg text-sm font-medium hover:bg-[#008253] transition-colors"
+      >
+        <i class="pi pi-copy mr-1"></i> Copy
+      </button>
+    </div>
+    <div class="mt-3 text-sm text-gray-600">
+      <span class="font-medium">Successful Referrals:</span> 5 (250 points earned)
+    </div>
+  </div>
 
-                <div class="flex items-center gap-3 text-gray-700">
-                  <i class="pi pi-star-fill text-gold text-xl"></i>
-                  <span class="font-medium"
-                    >Points Earned: <strong>149</strong></span
-                  >
-                </div>
+  <!-- Earned Points Section -->
+  <div class="border border-gray-200 rounded-lg p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <i class="pi pi-star-fill text-gold text-xl"></i>
+      <h3 class="font-semibold text-lg text-gray-800">Earned Points</h3>
+    </div>
 
-                <div class="flex items-center gap-3 text-gray-700">
-                  <i class="pi pi-thumbs-up text-gold text-xl"></i>
-                  <span class="font-medium"
-                    >Helpful Votes: <strong>67</strong></span
-                  >
-                </div>
+    <!-- Referral Points -->
+    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-users text-blue-500"></i>
+        <span class="text-gray-700">Referral Points</span>
+      </div>
+      <span class="font-semibold text-gray-800">250</span>
+    </div>
 
-                <div class="flex items-center gap-3 text-gray-700">
-                  <i class="pi pi-comment text-gold text-xl"></i>
-                  <span class="font-medium"
-                    >Number of Reviews: <strong>3</strong></span
-                  >
-                </div>
-              </div>
+    <!-- Review Points -->
+    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-comment text-green-500"></i>
+        <span class="text-gray-700">Review Points</span>
+      </div>
+      <span class="font-semibold text-gray-800">450</span>
+    </div>
 
+    <!-- Achievements -->
+    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-trophy text-purple-500"></i>
+        <span class="text-gray-700">Achievements</span>
+      </div>
+      <span class="font-semibold text-gray-800">300</span>
+    </div>
+
+    <!-- Total Points -->
+    <div class="flex justify-between items-center py-3 mt-2 bg-gold/10 rounded-lg px-3">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-star-fill text-gold"></i>
+        <span class="font-bold text-gray-800">Total Points</span>
+      </div>
+      <span class="font-bold text-xl text-gold">1,000</span>
+    </div>
+  </div>
+
+  <!-- Redeem Points Section -->
+  <div class="border border-gray-200 rounded-lg p-4">
+    <div class="flex items-center gap-2 mb-4">
+      <i class="pi pi-gift text-red-600 text-xl"></i>
+      <h3 class="font-semibold text-lg text-gray-800">Redeem Points</h3>
+    </div>
+
+    <div class="space-y-3">
+      <!-- Reward Option 1 -->
+      <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-gold hover:bg-gold/5 transition-all cursor-pointer">
+        <div class="flex-1">
+          <h4 class="font-medium text-gray-800">$5 Gift Card</h4>
+          <p class="text-sm text-gray-600">500 points</p>
+        </div>
+        <button
+          class="px-4 py-2 bg-gold text-white rounded-lg text-sm font-medium hover:bg-gold/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          disabled
+        >
+          Redeem
+        </button>
+      </div>
+
+      <!-- Reward Option 2 -->
+      <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-gold hover:bg-gold/5 transition-all cursor-pointer">
+        <div class="flex-1">
+          <h4 class="font-medium text-gray-800">$10 Gift Card</h4>
+          <p class="text-sm text-gray-600">900 points</p>
+        </div>
+        <button
+          class="px-4 py-2 bg-gold text-white rounded-lg text-sm font-medium hover:bg-gold/90 transition-colors"
+        >
+          Redeem
+        </button>
+      </div>
+
+      <!-- Reward Option 3 -->
+      <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-gold hover:bg-gold/5 transition-all cursor-pointer">
+        <div class="flex-1">
+          <h4 class="font-medium text-gray-800">$20 Gift Card</h4>
+          <p class="text-sm text-gray-600">1,700 points</p>
+        </div>
+        <button
+          class="px-4 py-2 bg-gold text-white rounded-lg text-sm font-medium hover:bg-gold/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          disabled
+        >
+          Redeem
+        </button>
+      </div>
+
+      <!-- Reward Option 4 -->
+      <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-gold hover:bg-gold/5 transition-all cursor-pointer">
+        <div class="flex-1">
+          <h4 class="font-medium text-gray-800">Premium Badge</h4>
+          <p class="text-sm text-gray-600">1,200 points</p>
+        </div>
+        <button
+          class="px-4 py-2 bg-gold text-white rounded-lg text-sm font-medium hover:bg-gold/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          disabled
+        >
+          Redeem
+        </button>
+      </div>
+    </div>
+
+    <p class="text-xs text-gray-500 mt-4 text-center">
+      <span v-if="isUser" class="text-xs text-gray-500">Your</span> current balance: <strong class="text-gold">1,000 points</strong>
+    </p>
+  </div>
+</div>
               <!-- Notifications Tab -->
               <div
-                v-if="activeTab === 'notifications'"
+                v-if="isUser && activeTab === 'notifications'"
                 class="text-center py-12"
               >
                 <i class="pi pi-bell text-6xl text-gray-300 mb-4"></i>
@@ -1223,19 +1365,7 @@ const route = useRoute();
 // Get user ID - try route parameter first, then fall back to idToken
 const currentUserId = computed(() => {
   const routeId = route.params.id as string;
-
-  if (routeId) {
-    console.log("🔍 Using user ID from route:", routeId);
-    return routeId;
-  }
-
-  if (userId) {
-    console.log("🔍 Using user ID from idToken:", userId);
-  } else {
-    console.error("❌ Could not extract user ID from route or token");
-  }
-
-  return userId || "";
+  return routeId;
 });
 
 // Refs
@@ -1284,16 +1414,12 @@ const topCategories = ref<string[]>([
   "Restaurants",
   "Coffee & Cafes",
   "Shopping",
-  "Hotels & Travel",
-  "Beauty & Spas",
 ]);
 
 const topLocations = ref<string[]>([
   "Ewekoro",
   "Oju-ore",
-  "Ikeja",
-  "Yaba",
-  "Abeokuta",
+  "Ikeja"
 ]);
 
 const ads = ref<Ad[]>([
@@ -1327,6 +1453,7 @@ const loadProfile = async () => {
   try {
     console.log("📡 Fetching profile for user:", currentUserId.value);
     const result = await getUserProfile(currentUserId.value);
+    console.log(userId, "This users id")
 
     if (result?.statusCode === 200 && result.data) {
       if (userId === currentUserId.value) {
