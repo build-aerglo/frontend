@@ -1,7 +1,12 @@
 import useBusinessApi from "~/composables/business/useBusinessApi";
 import useBusinessUser from "./useBusinessUser";
 import { useBusinessProfileStore } from "~/store/business/businessProfile";
-import type { BusinessPreference, BusinessProfile } from "~/types/business";
+import type {
+  BusinessPreference,
+  BusinessProfile,
+  ClaimData,
+} from "~/types/business";
+import type { AxiosError } from "axios";
 
 export default function () {
   const store = useBusinessUser();
@@ -161,6 +166,22 @@ export default function () {
     }
   };
 
+  const claimBusinessAsync = async (data: ClaimData) => {
+    try {
+      const res = await businessApi.post("api/BusinessClaim", data);
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      const err = error as AxiosError<any>;
+
+      return {
+        statusCode: err.response?.status ?? 500,
+        data: err.response?.data ?? {
+          message: "An error occurred",
+        },
+      };
+    }
+  };
+
   return {
     getBusinessUser,
     getCategories,
@@ -175,5 +196,6 @@ export default function () {
     createBranch,
     updateBranch,
     deleteBranch,
+    claimBusinessAsync,
   };
 }
