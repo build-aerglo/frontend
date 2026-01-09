@@ -67,12 +67,13 @@ export default function () {
           expires: new Date(Date.now() + 23 * 60 * 60 * 1000), // 23hrs
         };
         if (role === "business_user") {
-          userStore.clearUser();
+          store.clearUser();
           store.setLoginData(loginPayload);
           store.setId(id);
         } else if (role === "end_user") {
-          store.clearUser();
+          userStore.clearUser();
           userStore.setLoginData(loginPayload);
+          userStore.setId(id);
         }
         return res.data;
       } else {

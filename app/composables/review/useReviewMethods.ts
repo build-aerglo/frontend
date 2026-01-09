@@ -1,5 +1,4 @@
 import type { UserReview } from "~/types";
-import { useReviewStore } from "~/store/review/review";
 import useReviewApi from "./useReviewApi";
 import useGeolocation from "~/composables/device/useGeolocation";
 
@@ -29,7 +28,23 @@ export default function () {
     }
   };
 
+  // ✅ NEW: Get user reviews
+  const getUserReviews = async (reviewerId?: string, email?: string) => {
+    try {
+      const params = new URLSearchParams();
+      if (reviewerId) params.append('reviewerId', reviewerId);
+      if (email) params.append('email', email);
+      
+      const res = await reviewApi.get(`api/Review/user?${params.toString()}`);
+      return res.data;
+    } catch (error: any) {
+      console.error("Error fetching user reviews:", error);
+      throw error;
+    }
+  }
+
   return {
-    submitUserReview
+    submitUserReview,
+    getUserReviews  // ✅ Export the new method
   };
 }

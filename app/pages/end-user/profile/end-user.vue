@@ -2,11 +2,34 @@
   <div class="min-h-screen bg-green-50">
     <NavBarProfile/>
 
+    <!-- Loading State -->
+    <div v-if="loading && !profileData" class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <i class="pi pi-spin pi-spinner text-4xl text-[#008253] mb-4"></i>
+        <p class="text-gray-600">Loading profile...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error && !profileData" class="max-w-2xl mx-auto px-4 py-8">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <i class="pi pi-exclamation-triangle text-4xl text-red-600 mb-4"></i>
+        <h3 class="text-lg font-semibold text-red-800 mb-2">Failed to Load Profile</h3>
+        <p class="text-red-600 mb-4">{{ error }}</p>
+        <button
+          @click="loadProfile"
+          class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+
     <!-- Edit Profile View -->
-    <div v-if="isEditingProfile" class="max-w-2xl mx-auto px-4 py-8">
+    <div v-else-if="isEditingProfile && profileData" class="max-w-2xl mx-auto px-4 py-8">
       <div class="mb-6">
         <button 
-          @click="isEditingProfile = false"
+          @click="cancelEdit"
           class="text-gray-700 font-medium flex items-center gap-2 hover:text-gray-900"
         >
           <i class="pi pi-arrow-left"></i>
@@ -25,7 +48,7 @@
           />
           <div class="mt-2 flex flex-col items-center">
             <img
-              :src="editForm.image"
+              :src="editForm.profileImageUrl || defaultProfileImage"
               alt="Profile Preview"
               class="w-24 h-24 rounded-full object-cover cursor-pointer border-2 border-gray-200 hover:opacity-80"
               @click="selectImage"
@@ -53,34 +76,66 @@
             Phone Number
           </label>
           <input
-            v-model="editForm.phone"
+            v-model="editForm.phoneNumber"
             type="tel"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
           />
         </div>
 
-        <div class="pt-2 justify-center text-center items-center">
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-home mr-2"></i>
+            Address
+          </label>
+          <input
+            v-model="editForm.address"
+            type="text"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent"
+          />
+        </div>
+
+        <div class="pt-2 flex gap-3 justify-center items-center">
           <button
             @click="handleSaveProfile"
-            class="flex-1 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#008253] transition font-medium"
+            :disabled="saving"
+            class="flex-1 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Changes
+            <i v-if="saving" class="pi pi-spin pi-spinner mr-2"></i>
+            {{ saving ? 'Saving...' : 'Save Changes' }}
           </button>
+          <button
+            @click="cancelEdit"
+            :disabled="saving"
+            class="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-medium disabled:opacity-50"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <!-- Save Success Message -->
+        <div v-if="saveSuccess" class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+          <i class="pi pi-check-circle text-green-600 mr-2"></i>
+          <span class="text-green-700">Profile updated successfully!</span>
+        </div>
+
+        <!-- Save Error Message -->
+        <div v-if="saveError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+          <i class="pi pi-exclamation-triangle text-red-600 mr-2"></i>
+          <span class="text-red-700">{{ saveError }}</span>
         </div>
       </div>
     </div>
 
     <!-- Main Profile View -->
-    <div v-else>
+    <div v-else-if="profileData">
       <!-- User Profile Section -->
       <div class="bg-gradient-to-b from-blue-50 to-white py-8"> 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <!-- Use flex-row instead of flex-col -->
           <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
             
             <!-- Profile Image -->
             <img 
-              :src="profileData.image"
+              :src="profileData.profileImageUrl || defaultProfileImage"
               alt="Profile"
               class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white"
               @error="handleImageError"
@@ -92,9 +147,9 @@
                 <span>{{ profileData.username }}</span>
               </div>
               
-              <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
+              <div v-if="profileData.phoneNumber" class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-phone text-gray-400"></i>
-                <span>{{ profileData.phone }}</span>
+                <span>{{ profileData.phoneNumber }}</span>
               </div>
 
               <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
@@ -102,23 +157,44 @@
                 <span class="text-sm sm:text-base">{{ profileData.email }}</span>
               </div>
 
-              <div class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
+              <div v-if="profileData.address" class="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                 <i class="pi pi-home text-gray-400"></i>
                 <span class="text-sm">{{ profileData.address }}</span>
               </div>
 
               <button
-                @click="isEditingProfile = true"
+                @click="startEdit"
                 class="mt-2 text-blue-500 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
               >
                 <i class="pi pi-pencil text-xs"></i>
                 <span class="text-sm">Edit Profile</span>
               </button>
+              <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
+<div class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden">
+  <div 
+    v-for="(badge, idx) in badges" 
+    :key="`mobile-${idx}`" 
+    :class="[badge.color, 'rounded-lg p-2 flex items-center gap-2 whitespace-nowrap flex-shrink-0']"
+  >
+    <i :class="[badge.icon, 'text-lg']"></i>
+    <span class="font-medium text-gray-700 text-xs">{{ badge.name }}</span>
+  </div>
+</div>
+              <!-- Small Mobile Badges (under 360px) - Stacked under user info -->
+              <div class="mt-4 hidden max-[359px]:flex max-[359px]:flex-col gap-2">
+                <div 
+                  v-for="(badge, idx) in badges" 
+                  :key="`small-mobile-${idx}`" 
+                  :class="[badge.color, 'rounded-lg p-2 flex items-center gap-2']"
+                >
+                  <i :class="[badge.icon, 'text-base']"></i>
+                  <span class="font-medium text-gray-700 text-xs">{{ badge.name }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
 
       <!-- Menu Bar (Desktop/Tablet) -->
       <div class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block">
@@ -174,13 +250,9 @@
                 Notifications
               </button>
             </div>
-            
           </div>
         </div>
       </div>
-
-      <!-- Review Business Button (Mobile) -->
-      
 
       <!-- Main Content Grid -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -188,7 +260,7 @@
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
             <!-- Badges -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
               <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="pi pi-trophy text-gold"></i>
                 Your Badges
@@ -443,21 +515,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-interface ProfileData {
-  username: string
-  phone: string
-  email: string
-  address: string
-  image: string
-}
-
-interface EditForm {
-  username: string
-  phone: string
-  image: string
-}
+import { ref, computed, onMounted } from 'vue'
+import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
+import useUser from "~/composables/useUser";
 
 interface Badge {
   name: string
@@ -483,42 +543,55 @@ interface Ad {
   tagline: string
 }
 
+interface EditFormData {
+  username: string
+  phoneNumber: string
+  address: string
+  profileImageUrl: string
+}
+
+interface ProfileData {
+  userId: string
+  username: string
+  email: string
+  phoneNumber: string | null
+  address: string | null
+  profileImageUrl: string | null
+  userSettings: any | null
+}
+
+// Composables and Stores
+const { getUserProfile, updateUserProfile } = useUserProfileMethods();
+const userStore = useUser();
+const route = useRoute();
+
+// Get user ID from route parameter
+const currentUserId = computed(() => route.params.id as string || '');
+
+// Refs
 const fileInput = ref<HTMLInputElement | null>(null)
-
-const selectImage = () => {
-  fileInput.value?.click()
-}
-
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      editForm.value.image = e.target?.result as string
-    }
-    reader.readAsDataURL(file)
-  }
-}
-
-
 const activeTab = ref<string>('your-reviews')
 const isEditingProfile = ref<boolean>(false)
+const saving = ref<boolean>(false)
+const saveSuccess = ref<boolean>(false)
+const saveError = ref<string | null>(null)
+const loading = ref<boolean>(false)
+const error = ref<string | null>(null)
 
-const profileData = ref<ProfileData>({
-  username: 'Sarah Betsy',
-  phone: '+234 810-1230-567',
-  email: 'sarahbetsy111@gmail.com',
-  address: '160 Main Street, Yaba, Lagos State.',
-  image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop'
+// Profile data from API
+const profileData = ref<ProfileData | null>(null)
+
+const editForm = ref<EditFormData>({
+  username: '',
+  phoneNumber: '',
+  address: '',
+  profileImageUrl: ''
 })
 
-const editForm = ref<EditForm>({
-  username: profileData.value.username,
-  phone: profileData.value.phone,
-  image: profileData.value.image
-})
+// Constants
+const defaultProfileImage = 'https://via.placeholder.com/200'
 
+// Static data (keep these as they were - these would eventually come from other API endpoints)
 const badges = ref<Badge[]>([
   { name: 'Top Reviewer', icon: 'pi pi-trophy', color: 'bg-yellow-100' },
   { name: 'Helpful Member', icon: 'pi pi-star-fill', color: 'bg-blue-100' },
@@ -607,27 +680,133 @@ const ads = ref<Ad[]>([
   }
 ])
 
-const handleSaveProfile = () => {
-  profileData.value.username = editForm.value.username
-  profileData.value.phone = editForm.value.phone
-  profileData.value.image = editForm.value.image
+// Methods
+const loadProfile = async () => {
+  if (!currentUserId.value) {
+    error.value = "User not logged in"
+    return
+  }
+
+  loading.value = true
+  error.value = null
+
+  try {
+    const result = await getUserProfile(currentUserId.value)
+    
+    if (result?.statusCode === 200 && result.data) {
+      profileData.value = result.data
+    } else {
+      error.value = "Failed to load profile"
+    }
+  } catch (err: any) {
+    console.error("Error loading profile:", err)
+    error.value = err?.response?.data?.message || err.message || "Failed to load profile"
+  } finally {
+    loading.value = false
+  }
+}
+
+const selectImage = () => {
+  fileInput.value?.click()
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      editForm.value.profileImageUrl = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const startEdit = () => {
+  if (profileData.value) {
+    editForm.value = {
+      username: profileData.value.username,
+      phoneNumber: profileData.value.phoneNumber || '',
+      address: profileData.value.address || '',
+      profileImageUrl: profileData.value.profileImageUrl || ''
+    }
+  }
+  isEditingProfile.value = true
+  saveSuccess.value = false
+  saveError.value = null
+}
+
+const cancelEdit = () => {
   isEditingProfile.value = false
+  saveSuccess.value = false
+  saveError.value = null
 }
 
-const handleSignOut = () => {
-  console.log('Sign out clicked')
-}
+const handleSaveProfile = async () => {
+  if (!currentUserId.value) {
+    saveError.value = "User not logged in"
+    return
+  }
 
-const handleReviewBusiness = () => {
-  console.log('Review business clicked')
+  saving.value = true
+  saveSuccess.value = false
+  saveError.value = null
+
+  try {
+    // Prepare update payload (only send fields that are filled)
+    const updates: any = {}
+    
+    if (editForm.value.username) {
+      updates.username = editForm.value.username
+    }
+    if (editForm.value.phoneNumber) {
+      updates.phoneNumber = editForm.value.phoneNumber
+    }
+    if (editForm.value.address) {
+      updates.address = editForm.value.address
+    }
+    if (editForm.value.profileImageUrl) {
+      updates.profileImageUrl = editForm.value.profileImageUrl
+    }
+
+    const result = await updateUserProfile(currentUserId.value, updates)
+    
+    if (result?.statusCode === 200) {
+      // Refresh profile data
+      const refreshed = await getUserProfile(currentUserId.value)
+      if (refreshed?.data) {
+        profileData.value = refreshed.data
+      }
+      
+      saveSuccess.value = true
+      
+      // Close edit mode after 2 seconds
+      setTimeout(() => {
+        isEditingProfile.value = false
+        saveSuccess.value = false
+      }, 2000)
+    } else {
+      saveError.value = "Failed to update profile"
+    }
+  } catch (err: any) {
+    console.error("Error saving profile:", err)
+    saveError.value = err?.response?.data?.message || err.message || "Failed to save profile"
+  } finally {
+    saving.value = false
+  }
 }
 
 const handleImageError = (e: Event) => {
   const target = e.target as HTMLImageElement
-  target.src = 'https://via.placeholder.com/200'
+  target.src = defaultProfileImage
 }
+
+// Lifecycle
+onMounted(() => {
+  loadProfile()
+})
 </script>
 
 <style scoped>
-
+/* Your existing styles */
 </style>

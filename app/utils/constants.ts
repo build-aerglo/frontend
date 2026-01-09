@@ -1,3 +1,9 @@
+export const highlights = [
+  { id: "test-id", title: "Free Parking" },
+  { id: "test-id-1", title: "Free Food" },
+  { id: "test-id-2", title: "Affordable Accomodation" },
+  { id: "test-id-3", title: "Wi-Fi" },
+];
 export const reviewConstants = [
   {
     id: 1,
