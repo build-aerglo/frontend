@@ -200,10 +200,12 @@
         <div class="m-0 flex flex-col gap-[20px]">
           <div>
             <label>Business Location:</label>
-            <!-- <InputText readonly class="flex-auto" fluid autocomplete="off" v-model="businessData.businessAddress" /> -->
-            {{ businessData.businessStreet }}
-            {{ businessData.businessCityTown }},
-            {{ businessData.businessState }}
+            <div>
+              {{ businessData.businessStreet }}
+              {{ businessData.businessCityTown }}
+              <span v-if="businessData.businessState">, </span>
+              {{ businessData.businessState }}
+            </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
             <div>
@@ -550,7 +552,7 @@
             <div class="flex justify-end mb-[10px]">
               <i
                 class="pi pi-trash text-[red] cursor-pointer"
-                @click="removeFaqs(index)"
+                @click="removeFaqs(Number(index))"
               ></i>
             </div>
             <InputText
@@ -592,7 +594,13 @@
       <NuxtLink to="/">Home</NuxtLink>
       <a>|</a>
       <NuxtLink
-        :to="`/category/${i.id}`"
+        :to="{
+          path: '/explore',
+          query: {
+            categoryId: i.id,
+            categoryName: i.name,
+          },
+        }"
         v-for="(i, idx) in business?.categories"
         :key="idx"
       >
@@ -615,8 +623,9 @@
               />
             </div>
             <img
-              :src="business?.logo ?? '/images/store.jpeg'"
+              :src="business?.logo ?? '/images/default-business-logo.png'"
               class="object-cover object-center w-full h-[100px] lg:h-full"
+              :alt="business?.name"
             />
             <div class="flex flex-col gap-2.5 justify-center w-[100px]">
               <Star :count="business?.avgRating ?? 0" />
@@ -637,8 +646,8 @@
                     <span
                       class="px-2 py-1 text-[10px] sm:text-xs font-medium rounded border whitespace-nowrap"
                       :class="{
-                        'bg-green-50 border-green-500 text-green-700': business?.businessStatus === 'claimed',
-                        'bg-gray-50 border-gray-400 text-gray-600': business?.businessStatus === 'unclaimed'
+                        'bg-green-50 border-green-500 text-green-700': business?.businessStatus === 'approved',
+                        'bg-gray-50 border-gray-400 text-gray-600': business?.businessStatus !== 'approved'
                       }"
                     >
                       {{ businessClaim(business?.businessStatus) }}
@@ -647,7 +656,7 @@
                   <div class="sm:hidden block">
                     <a
                       class="text-sm cursor-pointer text-primary underline"
-                      v-if="isBusiness"
+                      v-if="isBusiness && canEdit"
                       @click="editBusiness = true"
                     >
                       Edit Business Profile
@@ -673,7 +682,7 @@
                       input-class="!w-max"
                     />
                   </NuxtLink>
-                  <div class="sm:block hidden">
+                  <div class="sm:block hidden" v-if="canEdit">
                     <ButtonCustom
                       v-if="isBusiness"
                       @click="editBusiness = true"
@@ -687,7 +696,13 @@
               </div>
               <div>
                 <NuxtLink
-                  :to="`/category/${i.id}`"
+                  :to="{
+                    path: '/explore',
+                    query: {
+                      categoryId: i.id,
+                      categoryName: i.name,
+                    },
+                  }"
                   v-for="(i, idx) in business?.categories"
                   :key="idx"
                 >
@@ -696,51 +711,51 @@
               </div>
             </div>
 
-            <div class="w-[20px] border my-[10px]" v-if="business?.tags"></div>
+            <div class="w-[20px] border my-[10px]"></div>
 
             <div class="flex gap-2.5" v-if="business?.tags">
               <NuxtLink
                 v-for="(i, idx) in business?.tags"
-                :to="`/tags/${i}`"
+                :to="{
+                  path: '/explore',
+                  query: {
+                    tagId: i.id || i,
+                    tagName: i.name || i,
+                  },
+                }"
                 :key="idx"
               >
                 <Chip
                   class="hover:bg-primary hover:text-white !border !border-primary sm:!py-[5px] sm:!px-[10px] !py-[3px] !px-[5px]"
                 >
-                  <span class="sm:text-[80%] text-[70%]">{{ i }}</span>
+                  <span class="sm:text-[80%] text-[70%]">{{ i.name }}</span>
                 </Chip>
               </NuxtLink>
             </div>
+            <div v-else>No business tags added yet.</div>
 
-            <div class="w-[20px] border my-[10px]" v-if="business?.tags"></div>
+            <div class="w-[20px] border my-[10px]"></div>
 
             <div class="flex flex-col gap-[5px]">
               <!-- <div class="font-bold text-[110%] mb-[10px] underline">Contact Information:</div> -->
-              <div class="flex sm:flex-row flex-col sm:gap-2.5 gap-[5px] sm:items-center items-start">
-                <div
-                  v-if="business.businessPhoneNumber"
-                  class="flex items-center gap-[5px]"
-                >
+              <div class="flex gap-2.5 items-center">
+                <div class="flex items-center gap-[5px] mb-[5px]">
                   <i class="pi pi-phone"></i>
-                  {{ business.businessPhoneNumber }}
+                  {{ business.businessPhoneNumber ?? "-" }}
                 </div>
-                <div v-if="business.businessPhoneNumber && business.website" class="sm:block hidden">•</div>
+                <div>•</div>
                 <a
                   :href="business.website"
                   target="_blank"
-                  v-if="business.website"
-                  class="flex items-center gap-[5px]"
+                  class="flex items-center gap-[5px] mb-[5px]"
                 >
                   <i class="pi pi-globe"></i>
-                  {{ business.website }}
+                  {{ business.website ?? "-" }}
                 </a>
               </div>
-              <div
-                v-if="business.businessAddress"
-                class="flex items-center gap-[5px] mb-[5px]"
-              >
+              <div class="flex items-center gap-[5px] mb-[5px]">
                 <i class="pi pi-map-marker"></i>
-                {{ business.businessAddress }}
+                {{ business.businessAddress ?? "-" }}
               </div>
               <div
                 class="flex gap-2.5 socials"
@@ -778,7 +793,7 @@
         @clicked="setSection('review')"
       />
       <ButtonCustom
-        v-if="isBusiness"
+        v-if="isBusiness && canEdit"
         label="Get Reviews"
         inputClass="w-max"
         :primary="currentPage === 'qr' ? true : false"
@@ -821,6 +836,7 @@ const props = defineProps([
   "categories",
   "reviews",
   "status",
+  "canEdit",
 ]);
 const emit = defineEmits(["edit"]);
 const currentPage = ref();
@@ -897,11 +913,6 @@ const setSection = (s: string) => {
   currentPage.value = s;
 };
 
-const address = ref({
-  street: "",
-  country: { name: "Nigeria", code: "ngn" },
-  city_town: "",
-});
 const availableSocials = ref();
 
 const social = ref({
@@ -1123,13 +1134,13 @@ const updateProfile = async () => {
     category.push(business_category.value.id);
     const businessDataToSubmit = {
       ...businessData.value,
+      logo: businessData.value.logo ?? null,
       categoryIds: category,
     };
     businessDataToSubmit.openingHours = normalizedToRaw(
       businessData.value.openingHours
     );
 
-    // @ts-ignore
     const res = await saveBusinessProfile(
       businessData.value.id,
       businessDataToSubmit

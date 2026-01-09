@@ -33,7 +33,7 @@
   </section>
   <!--First Section Ends-->
 
-  <!--Fifth Section begins-->
+  <!--Second Section begins-->
   <section class="bg-white pb-10 pt-5">
     <div class="container mx-auto px-4">
       <!-- Header -->
@@ -49,14 +49,14 @@
       <LandingCategories />
     </div>
   </section>
-  <!--Fifth Section ends-->
+  <!--Second Section ends-->
 
 
-  <!--Second Section Starts-->
+  <!--Third Section Starts-->
   <section >
     <TopReviewed />
   </section>
-  <!--Second Section Ends-->
+  <!--Third Section Ends-->
 
   <!--Call to Action Section-->
   <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8">
@@ -82,13 +82,13 @@
 
 
 
-  <!--Third Section Begins-->
+  <!--Fourth Section Begins-->
   <section class="my-0">
     <ReviewSlider />
   </section>
-  <!--Third Section Ends-->
+  <!--Fourth Section Ends-->
 
-  <!--Fourth Section begins-->
+  <!--Fifth Section begins-->
   <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
     <div class="container mx-auto px-6 text-center">
       <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
@@ -107,13 +107,7 @@
       </div>
     </div>
   </section>
-  <!--Fourth Section Ends-->
-
-  <!--sixth Section begins-->
-  <section>
-    
-  </section>
-
+  <!--Fifth Section Ends-->
 
   <!--Footer-->
   <NavFooter />
