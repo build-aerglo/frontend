@@ -411,8 +411,11 @@ const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: 
 
 const clearFilter = (key: string) => {
   filters.value[key] = '';
-  if (key === 'tagName') {
+  if (key === 'categoryId' || key === 'tagName') {
+    // If we clear category or tag, we need to reset the whole list
+    filters.value.categoryId = '';
     filters.value.tagId = '';
+    filters.value.tagName = '';
     performMainFetch();
   }
 };
@@ -444,11 +447,21 @@ onMounted(async () => {
     const res = await getCategories();
     categories.value = Array.isArray(res) ? res : (res.data || []);
     
-    if (route.query.category) {
-        const cat = categories.value.find(c => c.name.toLowerCase() === (route.query.category as string).toLowerCase());
-        if (cat) filters.value.categoryId = cat.categoryId || cat.id;
+    // 1. Check for Category ID in query (from your new NuxtLink)
+    if (route.query.categoryId) {
+      filters.value.categoryId = route.query.categoryId as string;
+      // Note: we don't need to manually call performMainFetch here 
+      // because the 'watch' on filters.categoryId will trigger it.
+    } 
+    // 2. Fallback for your old "name-based" query (?category=Pharmacy)
+    else if (route.query.category) {
+      const cat = categories.value.find(
+        c => (c.name || '').toLowerCase() === (route.query.category as string).toLowerCase()
+      );
+      if (cat) filters.value.categoryId = cat.categoryId || cat.id;
     }
     
+    // 3. Handle Tags
     const tagId = route.query.tagId as string;
     const tagName = route.query.tagName as string;
     
@@ -456,10 +469,13 @@ onMounted(async () => {
       filters.value.tagId = tagId;
       filters.value.tagName = tagName || 'Tag';
       await fetchByTag(tagId);
-    } else {
+    } else if (!filters.value.categoryId) {
+      // Only call default fetch if no Category or Tag was found in URL
       await performMainFetch();
     }
   } catch (error) {
+    console.error("Initialization error:", error);
+  } finally {
     isLoading.value = false;
   }
 })
