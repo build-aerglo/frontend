@@ -1,26 +1,17 @@
-import { ref } from 'vue';
 import type { BadgeResponse, DisplayBadge } from '~/types/badge';
 
 export const useBadgeApi = () => {
-  const config = useRuntimeConfig();
-  const loading = ref(false);
-  const error = ref<string | null>(null);
-
   /**
    * Fetch user badges by userId
+   * Returns the response directly - component handles loading states
    */
   const getUserBadges = async (userId: string): Promise<BadgeResponse | null> => {
-    loading.value = true;
-    error.value = null;
-
     try {
+      // Use relative path - interceptors will add base URL
       const response = await $fetch<BadgeResponse>(
-        `${config.public.apiBaseUrl}/api/Badge/user/${userId}`,
+        `/api/Badge/user/${userId}`,
         {
-          method: 'GET',
-          headers: {
-            'accept': '*/*'
-          }
+          method: 'GET'
         }
       );
 
@@ -28,15 +19,13 @@ export const useBadgeApi = () => {
       return response;
     } catch (err: any) {
       console.error('Error fetching user badges:', err);
-      error.value = err.message || 'Failed to fetch badges';
-      return null;
-    } finally {
-      loading.value = false;
+      throw err; // Let component handle the error
     }
   };
 
   /**
    * Map API badges to display format with colors and styling
+   * Pure function - no state management
    */
   const mapBadgesToDisplay = (badges: BadgeResponse['badges']): DisplayBadge[] => {
     const tierColors: Record<string, string> = {
@@ -56,8 +45,6 @@ export const useBadgeApi = () => {
   };
 
   return {
-    loading,
-    error,
     getUserBadges,
     mapBadgesToDisplay
   };

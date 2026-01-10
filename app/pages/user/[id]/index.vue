@@ -483,7 +483,7 @@
                 </div>
 
                 <!-- ✅ Error State -->
-                <!-- <div
+                <div
                   v-else-if="reviewsError"
                   class="bg-red-50 border border-red-200 rounded-lg p-6 text-center"
                 >
@@ -500,7 +500,7 @@
                   >
                     Try Again
                   </button>
-                </div> -->
+                </div>
 
                 <!-- ✅ Empty State - User viewing their own profile -->
                 <div
@@ -1447,7 +1447,7 @@ import type {
   EditFormData,
   ProfileData,
 } from "~/types/user";
-import type { DisplayBadge, BadgeResponse } from "~/types/badge";
+import type { DisplayBadge, BadgeResponse } from '~/types/badge';
 import useReviewMethods from "~/composables/review/useReviewMethods";
 
 // Composables and Stores
@@ -2019,11 +2019,11 @@ const saveSocialMedia = async () => {
       socialMedia: socialMediaString,
     };
 
-    console.log("📤 Saving social media accounts:", updates);
+    console.log("Saving social media accounts:", updates);
     const result = await updateUserProfile(currentUserId.value, updates);
 
     if (result?.statusCode === 200) {
-      console.log("✅ Social media accounts saved");
+      console.log("Social media accounts saved");
 
       // Update profile data
       if (profileData.value) {
@@ -2041,7 +2041,7 @@ const saveSocialMedia = async () => {
       socialMediaSaveError.value = "Failed to save social media accounts";
     }
   } catch (err: any) {
-    console.error("❌ Error saving social media:", err);
+    console.error("Error saving social media:", err);
     socialMediaSaveError.value =
       err?.response?.data?.message || "Failed to save";
   } finally {
@@ -2051,7 +2051,7 @@ const saveSocialMedia = async () => {
 
 const loadUserReviews = async () => {
   if (!currentUserId.value) {
-    console.error("❌ No user ID available for loading reviews");
+    console.error("No user ID available for loading reviews");
     return;
   }
 
@@ -2059,14 +2059,14 @@ const loadUserReviews = async () => {
   reviewsError.value = null;
 
   try {
-    console.log("📡 Fetching reviews for user:", currentUserId.value);
+    console.log("Fetching reviews for user:", currentUserId.value);
 
     const reviews = await getUserReviews(
       currentUserId.value,
       profileData.value?.email
     );
 
-    console.log("✅ Reviews loaded:", reviews);
+    console.log("Reviews loaded:", reviews);
 
     // Transform API response to match your template format
     userReviews.value = reviews.map((review: any) => ({
@@ -2081,9 +2081,9 @@ const loadUserReviews = async () => {
       rating: review.rating || 0,
     }));
 
-    console.log("✅ Transformed reviews:", userReviews.value);
+    console.log("Transformed reviews:", userReviews.value);
   } catch (err: any) {
-    console.error("❌ Error loading reviews:", err);
+    console.error("Error loading reviews:", err);
     reviewsError.value =
       err?.response?.data?.message || err.message || "Failed to load reviews";
   } finally {
@@ -2102,35 +2102,39 @@ watch(activeTab, (newTab) => {
   }
 });
 
-const {
-  getUserBadges,
-  mapBadgesToDisplay,
-  loading: badgesLoading,
-} = useBadgeApi();
+const { getUserBadges, mapBadgesToDisplay } = useBadgeApi();
 
-// State
+// Component manages its own state
 const badgeData = ref<BadgeResponse | null>(null);
+
+// Computed properties
 const badge = computed<DisplayBadge[]>(() => {
-  if (
-    !badgeData.value ||
-    !badgeData.value.badges ||
-    !badgeData.value.badges.length
-  ) {
+  if (!badgeData.value || !badgeData.value.badges.length) {
     return [];
   }
   return mapBadgesToDisplay(badgeData.value.badges);
 });
 
-const currentTier = computed(() => badgeData.value?.currentTier || "newbie");
+const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
 const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
 
 // Methods
 const fetchBadges = async () => {
   if (!userId) return;
+  
+  loading.value = true;
+  error.value = null;
 
-  const response = await getUserBadges(userId);
-  if (response) {
-    badgeData.value = response;
+  try {
+    const response = await getUserBadges(userId);
+    if (response) {
+      badgeData.value = response;
+    }
+  } catch (err: any) {
+    console.error('Failed to fetch badges:', err);
+    error.value = err.message || 'Failed to load badges';
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -2140,12 +2144,9 @@ onMounted(() => {
 });
 
 // Watch for userId changes (if viewing different profiles)
-watch(
-  () => userId,
-  () => {
-    fetchBadges();
-  }
-);
+watch(() => userId, () => {
+  fetchBadges();
+});
 
 // ✅ UPDATE onBeforeMount to load reviews on initial page load
 onBeforeMount(async () => {
