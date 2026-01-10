@@ -32,7 +32,7 @@ export interface ProfileData {
   userId: string
   username: string
   email: string
-  phoneNumber: string | null
+  phone: string | null
   address: string | null
   socialMedia: string | null
   notificationPreferences: any | null
