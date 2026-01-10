@@ -131,6 +131,7 @@
 </template>
 
 <script setup lang="ts">
+import useSocialAuth from '~/composables/useSocialAuth';
 import useUser  from '~/composables/useUser' 
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
@@ -152,6 +153,13 @@ const errorMessage = ref<string>("");
 const loginError = ref<string | null>(null);
 function togglePassword() {
   showPassword.value = !showPassword.value;
+}
+const { initiateSocialLogin } = useSocialAuth()
+
+const handleSocialLogin = async (provider: string) => {
+  // Store the provider so the callback page knows who we logged in with
+  localStorage.setItem('social_provider', provider)
+  await initiateSocialLogin(provider)
 }
 
 const HandleLogin = async () => {
@@ -176,14 +184,6 @@ const HandleLogin = async () => {
   isLoading.value = false;
 }
 
-function handleSocialLogin(provider: string) {
-  // Placeholder for social login implementation
-  console.log(`Social login with ${provider} not yet implemented`);
-  errorMessage.value = `${provider.charAt(0).toUpperCase() + provider.slice(1)} login coming soon!`;
-  
-  // Clear error after 3 seconds
-  setTimeout(() => {
-    errorMessage.value = "";
-  }, 3000);
-}
+// Inside sign-in.vue
+
 </script>

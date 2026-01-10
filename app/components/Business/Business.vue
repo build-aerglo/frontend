@@ -697,7 +697,7 @@
               <div>
                 <NuxtLink
                   :to="{
-                    path: '/explore',
+                    path: '../../end-user/landing/explore',
                     query: {
                       categoryId: i.id,
                       categoryName: i.name,
@@ -717,7 +717,7 @@
               <NuxtLink
                 v-for="(i, idx) in business?.tags"
                 :to="{
-                  path: '/explore',
+                  path: '../../end-user/landing/explore',
                   query: {
                     tagId: i.id || i,
                     tagName: i.name || i,

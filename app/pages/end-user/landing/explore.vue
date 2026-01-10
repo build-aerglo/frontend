@@ -187,26 +187,52 @@
                 </div>
               </div>
               <div 
-          v-if="focusedBusinessId === business.id" 
-          class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
-        >
-          <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-            <img :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-12 h-12 rounded-full object-cover border border-slate-200" />
-            <div>
-              <h3 class="text-sm font-demibold mb-0">{{ business.name }}</h3>
-              <p class="text-xs text-slate-500">Review Summary</p>
-            </div>
-          </div>
-          <div class="bg-slate-50 rounded-lg p-4">
-            <p class="text-xs text-slate-700">{{ ('businessDescription' in business ? business.businessDescription : null) ?? 'No description provided.' }}</p>
-          </div>
-          <button 
-            @click="navigateToBiz(business)"
-            class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
-          >
-            View Full Profile
-          </button>
-        </div>
+                v-if="focusedBusinessId === (business.id || (business as any).businessId)"
+                class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+              >
+                <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
+                  <img 
+                    :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" 
+                    class="w-12 h-12 rounded-full object-cover border border-slate-200" 
+                  />
+                  <div>
+                    <h3 class="text-sm font-demibold mb-1">{{ business.name }}</h3>
+                    
+                    <div class="flex flex-wrap gap-1">
+                      <template v-if="'tags' in business && business.tags && (business.tags as string[]).length > 0">
+                        <span 
+                          v-for="tag in (business.tags as string[])" 
+                          :key="tag"
+                          class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-medium rounded-md uppercase tracking-wider"
+                        >
+                          {{ tag }}
+                        </span>
+                      </template>
+                      
+                      <span v-else class="text-[100%] text-slate-400 italic font-medium">
+                        No tags
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-lg p-4">
+                  <div class="flex items-center gap-1 mb-1">
+                    <i class="pi pi-sparkles text-[#008253] text-[10px]"></i>
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">Review Summary</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-relaxed">
+                    No review summary available yet.
+                  </p>
+                </div>
+
+                <button 
+                  @click="navigateToBiz(business)"
+                  class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
+                >
+                  View Full Profile
+                </button>
+              </div>
             </div>
           </template>
 
@@ -227,15 +253,16 @@
                   <div class="min-w-0 flex-1">
                     <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
                     <div class="flex flex-wrap gap-1 mt-1">
-                      <template v-if="'categories' in focusedBusiness && Array.isArray(focusedBusiness.categories)">
+                      <template v-if="'tags' in focusedBusiness && focusedBusiness.tags && (focusedBusiness.tags as string[]).length > 0">
                         <span 
-                          v-for="cat in focusedBusiness.categories.slice(0, 2)" 
-                          :key="cat.id" 
-                          class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded"
+                          v-for="tag in (focusedBusiness.tags as string[])" 
+                          :key="tag"
+                          class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded uppercase font-medium"
                         >
-                          {{ cat.name }}
+                          {{ tag }}
                         </span>
                       </template>
+                      <span v-else class="text-[100%] text-slate-400 italic">No tags</span>
                     </div>
                   </div>
                 </div>
@@ -411,8 +438,11 @@ const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: 
 
 const clearFilter = (key: string) => {
   filters.value[key] = '';
-  if (key === 'tagName') {
+  if (key === 'categoryId' || key === 'tagName') {
+    // If we clear category or tag, we need to reset the whole list
+    filters.value.categoryId = '';
     filters.value.tagId = '';
+    filters.value.tagName = '';
     performMainFetch();
   }
 };
@@ -444,11 +474,21 @@ onMounted(async () => {
     const res = await getCategories();
     categories.value = Array.isArray(res) ? res : (res.data || []);
     
-    if (route.query.category) {
-        const cat = categories.value.find(c => c.name.toLowerCase() === (route.query.category as string).toLowerCase());
-        if (cat) filters.value.categoryId = cat.categoryId || cat.id;
+    // 1. Check for Category ID in query (from your new NuxtLink)
+    if (route.query.categoryId) {
+      filters.value.categoryId = route.query.categoryId as string;
+      // Note: we don't need to manually call performMainFetch here 
+      // because the 'watch' on filters.categoryId will trigger it.
+    } 
+    // 2. Fallback for your old "name-based" query (?category=Pharmacy)
+    else if (route.query.category) {
+      const cat = categories.value.find(
+        c => (c.name || '').toLowerCase() === (route.query.category as string).toLowerCase()
+      );
+      if (cat) filters.value.categoryId = cat.categoryId || cat.id;
     }
     
+    // 3. Handle Tags
     const tagId = route.query.tagId as string;
     const tagName = route.query.tagName as string;
     
@@ -456,10 +496,13 @@ onMounted(async () => {
       filters.value.tagId = tagId;
       filters.value.tagName = tagName || 'Tag';
       await fetchByTag(tagId);
-    } else {
+    } else if (!filters.value.categoryId) {
+      // Only call default fetch if no Category or Tag was found in URL
       await performMainFetch();
     }
   } catch (error) {
+    console.error("Initialization error:", error);
+  } finally {
     isLoading.value = false;
   }
 })
