@@ -622,9 +622,10 @@
                 class="w-[40px] h-[40px]"
               />
             </div>
+            
             <img
               :src="business?.logo ?? '/images/default-business-logo.png'"
-              class="object-cover object-center w-full h-[100px] lg:h-full"
+              class="object-contain object-center w-full h-[150px] lg:h-[200px]"
               :alt="business?.name"
             />
             <div class="flex flex-col gap-2.5 justify-center w-[100px]">
@@ -639,19 +640,17 @@
             <div class="flex flex-col gap-[10px]">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-2">
-                  <div class="flex gap-2 items-center flex-wrap">
-                    <span class="text-xl sm:text-3xl font-bold">
+                  <div class="flex gap-1 items-center flex-wrap">
+                    <span class="text-xl sm:text-2xl font-bold">
                       {{ business?.name }}
                     </span>
-                    <span
-                      class="px-2 py-1 text-[10px] sm:text-xs font-medium rounded border whitespace-nowrap"
-                      :class="{
-                        'bg-green-50 border-green-500 text-green-700': business?.businessStatus === 'approved',
-                        'bg-gray-50 border-gray-400 text-gray-600': business?.businessStatus !== 'approved'
-                      }"
-                    >
-                      {{ businessClaim(business?.businessStatus) }}
-                    </span>
+                    <img
+                      v-if="business?.businessStatus"
+                      :src="getStatusIcon(business?.businessStatus)"
+                      :alt="businessClaim(business?.businessStatus)"
+                      v-tooltip.top="businessClaim(business?.businessStatus)"
+                      class="w-[60px] h-[30px] sm:w-[80px] sm:h-[44px]"
+                    />
                   </div>
                   <div class="sm:hidden block">
                     <a
@@ -1159,6 +1158,15 @@ const updateProfile = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+const getStatusIcon = (status: string) => {
+  const iconMap: Record<string, string> = {
+    'claimed': '/svg/pills/b-user-claim2.svg',
+    'unclaimed': '/svg/pills/b-user-unclaimed.svg',
+    'in-progress': '/svg/pills/b-user-claimInPrgress.svg'
+  };
+  
+  return iconMap[status] || '/svg/pills/b-user-unclaimed.svg';
 };
 </script>
 

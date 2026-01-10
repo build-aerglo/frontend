@@ -107,7 +107,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="md:col-span-2 space-y-4">
           
-          <template v-if="isLoading || isSearchingName">
+          <template v-if="isLoading">
             <div v-for="i in 3" :key="i" class="bg-white rounded-xl shadow-sm border-2 p-4 border-slate-100 animate-pulse">
               <div class="grid grid-cols-[auto_1fr] gap-4">
                 <div class="w-24 h-24 bg-slate-200 rounded-full"></div>
@@ -134,7 +134,7 @@
                 <div class="flex flex-col gap-1">
                   <div class="relative w-24 h-24 max-[400px]:w-16 max-[400px]:h-16"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
-                      <img @click.stop="focusedBusinessId = business.id" :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-full h-full object-cover" />
+                      <img @click.stop="focusedBusinessId = business.id || (business as any).businessId" :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" class="w-full h-full object-cover" />
                     </div>
                     <div class="absolute -top-2 -right-2">
                       <Badge :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" />
@@ -161,7 +161,7 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 @click.stop="focusedBusinessId = business.id" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-sm">{{ business.name }}</h3>
+                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-sm">{{ business.name }}</h3>
                     </div>
                     <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
@@ -307,7 +307,7 @@ const isLoading = ref(true)
 const isSearchingName = ref(false)
 const showContact = ref<string | null>(null)
 const focusedBusinessId = ref<string | null>(null)
-let debounceTimer: any = null
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 const filters = ref<any>({
   name: route.query.q || '',
@@ -389,12 +389,19 @@ watch(() => filters.value.categoryId, async () => {
   await performMainFetch();
 })
 
-watch(() => filters.value.name, (newVal) => {
+watch(() => filters.value.name, (newVal :string) => {
   if (filters.value.categoryId || filters.value.tagId) return; 
+  // Don't set isSearchingName if the field is empty
+  if (newVal) {
   isSearchingName.value = true
+  }
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(async () => {
-    await fetchResults(newVal || 'a')
+    if (newVal) {
+    await fetchResults(newVal)
+    } else {
+      await performMainFetch() // Fetch default results when search is cleared
+    }
     isSearchingName.value = false
   }, 400)
 })
@@ -409,9 +416,9 @@ const categoryOptions = computed(() => {
 })
 
 const filteredBusinesses = computed(() => {
-  if (isLoading.value || isSearchingName.value) return [];
+  if (isLoading.value) return [];
   
-  return businesses.value.filter(b => {
+  return businesses.value.filter ((b: Business) => {
     const searchName = (filters.value.name || '').toLowerCase();
     const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
     const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && ('isVerified' in b && b.isVerified));

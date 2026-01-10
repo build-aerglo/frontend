@@ -1,4 +1,5 @@
 <template>
+   <NavBar />
   <div class="container-xxl relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
     <div class="absolute inset-0 bg-black/50"></div>
     <div class="authentication-wrapper authentication-basic container-py">
