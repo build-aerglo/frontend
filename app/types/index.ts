@@ -11,12 +11,17 @@ export interface LoginData {
 }
 
 export interface UserReview {
-  businessId: string;
-  locationId: string | null;
-  reviewerId: string | null;
-  email: string | null;
+  businessId?: string | null;
+  businessName?: string | null;
+  isNewBusiness: boolean;
+  locationId?: string | null;
+  branchStreet?: string | null;
+  branchCityTown?: string | null;
+  branchState?: string | null;
+  reviewerId?: string | null;
+  email?: string | null;
   starRating: number;
   reviewBody: string;
-  photoUrls: string[] | null;
+  photoUrls?: string[] | null;
   reviewAsAnon: boolean;
 }
