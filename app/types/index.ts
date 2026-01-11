@@ -15,6 +15,7 @@ export interface UserReview {
   businessName?: string | null;
   isNewBusiness: boolean;
   locationId?: string | null;
+  isNewBranch: boolean;
   branchStreet?: string | null;
   branchCityTown?: string | null;
   branchState?: string | null;
