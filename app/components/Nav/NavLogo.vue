@@ -1,9 +1,11 @@
 <template>
+  <NuxtLink to="/">
   <img
     src="/images/logo/b-user-logo.png"
     :class="heightClass"
     alt="Logo"
   />
+  </NuxtLink>
 </template>
 
 <script setup>
