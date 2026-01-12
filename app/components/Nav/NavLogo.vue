@@ -1,7 +1,7 @@
 <template>
   <NuxtLink to="/">
   <img
-    src="/images/logo/b-user-logo.png"
+    src="~/assets/images/e-user-logo.png"
     :class="heightClass"
     alt="Logo"
   />

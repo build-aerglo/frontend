@@ -4,7 +4,7 @@
     <div class="mx-auto px-8 flex items-center justify-between h-16">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center space-x-2">
-        <img src="/images/logo/b-user-logo.png" alt="Welcome" class="h-10 w-auto object-contain" />
+        <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-10 w-auto object-contain" />
       </NuxtLink>
 
       <!-- Desktop Nav Links -->
