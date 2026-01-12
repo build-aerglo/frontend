@@ -299,7 +299,7 @@
 
               <!-- Loading State -->
               <div
-                v-if="badgesLoading"
+                v-if="loading"
                 class="flex items-center justify-center py-8"
               >
                 <GeneralLoader />
@@ -483,7 +483,7 @@
                 </div>
 
                 <!-- ✅ Error State -->
-                <div
+                <!-- <div
                   v-else-if="reviewsError"
                   class="bg-red-50 border border-red-200 rounded-lg p-6 text-center"
                 >
@@ -500,7 +500,7 @@
                   >
                     Try Again
                   </button>
-                </div>
+                </div> -->
 
                 <!-- ✅ Empty State - User viewing their own profile -->
                 <div
