@@ -306,14 +306,20 @@
                 Top Reviewed Categories
               </h5>
               <ul class="space-y-2">
-                <NuxtLink
-                  to="/"
+               <NuxtLink
                   v-for="(cat, idx) in topCategories.slice(0, 3)"
-                  :key="idx"
-                  class="flex items-start gap-2 text-sm text-gray-600"
+                  :key="cat.id || cat.categoryId || idx"
+                  :to="{ 
+                    path: '../end-user/landing/explore', 
+                    query: { 
+                      categoryId: cat.id || cat.categoryId, 
+                      category: cat.name 
+                    } 
+                  }"
+                  class="flex items-start gap-2 text-sm text-gray-600 hover:text-[#008253] transition-colors group"
                 >
-                  <span class="text-gold">●</span>
-                  <span>{{ cat }}</span>
+                  <span class="text-gold group-hover:scale-110 transition-transform">●</span>
+                  <span class="group-hover:underline">{{ cat.name }}</span>
                 </NuxtLink>
               </ul>
             </div>
@@ -1346,6 +1352,9 @@
 import { ref, computed, onMounted } from "vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
+import useBusinessMethods from '~/composables/business/useBusinessMethods';
+const { getCategories } = useBusinessMethods();
+const topCategories = ref<any[]>([]);
 import type {
   Ad,
   Badge,
@@ -1410,11 +1419,18 @@ const badges = ref<Badge[]>([
   { name: "100 Reviews", icon: "pi pi-check-circle", color: "bg-purple-100" },
 ]);
 
-const topCategories = ref<string[]>([
-  "Restaurants",
-  "Coffee & Cafes",
-  "Shopping",
-]);
+onMounted(async () => {
+  try {
+    const res = await getCategories();
+    // Assuming res.data contains the list or res itself is the list
+    const allCategories = Array.isArray(res) ? res : (res.data || []);
+    
+    // Sort or pick the ones you want, here we just take the first few
+    topCategories.value = allCategories;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
+});
 
 const topLocations = ref<string[]>([
   "Ewekoro",

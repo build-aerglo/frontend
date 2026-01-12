@@ -3,7 +3,7 @@ import useReviewApi from "./useReviewApi";
 import useGeolocation from "~/composables/device/useGeolocation";
 
 export default function () {
-  const reviewStore = useReviewStore();
+  // const reviewStore = useReviewStore();
   const reviewApi = useReviewApi();
   const { getGeolocation } = useGeolocation();
 
@@ -20,7 +20,7 @@ export default function () {
       } : {};
 
       const res = await reviewApi.post("api/Review", data, config);
-      reviewStore.setReviewData(res.data);
+      // reviewStore.setReviewData(res.data);
       return res.data;
     } catch (error: any) {
       console.error("Error submitting review:", error.response?.data || error);

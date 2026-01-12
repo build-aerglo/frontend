@@ -199,17 +199,17 @@
                     <h3 class="text-sm font-demibold mb-1">{{ business.name }}</h3>
                     
                     <div class="flex flex-wrap gap-1">
-                      <template v-if="'tags' in business && business.tags && (business.tags as string[]).length > 0">
+                      <template v-if="business.tags && business.tags.length > 0">
                         <span 
-                          v-for="tag in (business.tags as string[])" 
-                          :key="tag"
+                          v-for="tag in business.tags" 
+                          :key="typeof tag === 'object' ? tag.id : tag"
                           class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-medium rounded-md uppercase tracking-wider"
                         >
-                          {{ tag }}
+                          {{ typeof tag === 'object' ? tag.name : tag }}
                         </span>
                       </template>
                       
-                      <span v-else class="text-[100%] text-slate-400 italic font-medium">
+                      <span v-else class="text-[10px] text-slate-400 italic font-medium">
                         No tags
                       </span>
                     </div>
@@ -252,17 +252,17 @@
                   <img :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
                   <div class="min-w-0 flex-1">
                     <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
-                    <div class="flex flex-wrap gap-1 mt-1">
-                      <template v-if="'tags' in focusedBusiness && focusedBusiness.tags && (focusedBusiness.tags as string[]).length > 0">
+                  <div class="flex flex-wrap gap-1 mt-1">
+                      <template v-if="focusedBusiness.tags && focusedBusiness.tags.length > 0">
                         <span 
-                          v-for="tag in (focusedBusiness.tags as string[])" 
-                          :key="tag"
+                          v-for="tag in focusedBusiness.tags" 
+                          :key="typeof tag === 'object' ? tag.id : tag"
                           class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded uppercase font-medium"
                         >
-                          {{ tag }}
+                          {{ typeof tag === 'object' ? tag.name : tag }}
                         </span>
                       </template>
-                      <span v-else class="text-[100%] text-slate-400 italic">No tags</span>
+                      <span v-else class="text-[10px] text-slate-400 italic">No tags</span>
                     </div>
                   </div>
                 </div>
