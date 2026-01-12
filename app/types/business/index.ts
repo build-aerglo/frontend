@@ -139,7 +139,7 @@ export interface TagBusiness {
   reviewLink: string | null;
   preferredContactMethod: string | null;
   highlights: any | null;
-  tags: any | null;
+  tags: Array<string | { id: string; name: string }> | null;
   averageResponseTime: string | null;
   profileClicks: number;
   faqs: any | null;
@@ -151,6 +151,8 @@ export interface CategoryBusiness {
   name: string;
   avgRating: number;
   reviewCount: number;
+  tags?: Array<string | { id: string; name: string }> | null;
+  reviewSummary?: string | null;
   isBranch: boolean;
   parentBusinessId: string | null;
 }

@@ -3,8 +3,8 @@
     class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
     <div class="mx-auto px-8 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/links" class="flex items-center space-x-2">
-        <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-10 w-auto object-contain" />
+      <NuxtLink to="/" class="flex items-center space-x-2">
+        <img src="/images/logo/b-user-logo.png" alt="Welcome" class="h-10 w-auto object-contain" />
       </NuxtLink>
 
       <!-- Desktop Nav Links -->
