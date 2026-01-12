@@ -285,7 +285,7 @@
             >
               <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
                 <div class="flex flex-col gap-1">
-                  <div class="relative w-24 h-24 max-[400px]:w-16 max-[400px]:h-16"> 
+                  <div class="relative w-24 h-24 max-[430px]:w-16 max-[430px]:h-16"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
                       <img @click.stop="focusedBusinessId = business.id || (business as any).businessId" :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" class="w-full h-full object-cover" />
                     </div>
@@ -314,7 +314,7 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-sm">{{ business.name }}</h3>
+                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[430px]:text-sm">{{ business.name }}</h3>
                     </div>
                     <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
