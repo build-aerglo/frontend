@@ -80,11 +80,9 @@ const HandleLogin = async () => {
   if (res) {
     if (store.accessToken && store.role === 'business_user') {
         toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
-        if (store.id) {
-            navigateTo(`/biz/${store.id}`);
-        } else {
-            navigateTo('sign-up');
-        }
+        
+        // Redirecting to the business profile management area
+        navigateTo('/business/profile'); 
         
     } else {
         loginError.value = 'Login succeeded, but no token was stored.';

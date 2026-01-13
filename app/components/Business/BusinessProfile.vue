@@ -150,6 +150,14 @@
             icon="pencil"
             size="lg"
             :primary="true"
+            @click="navigateTo({
+              path: '/review/write-review',
+              query: { 
+                bizId: business.id, 
+                bizName: business.name,
+                bizLogo: business.logo 
+              }
+            })"
           />
           <ButtonCustom
             label="Save Business"

@@ -25,7 +25,7 @@ onMounted(async () => {
 
   if (!code || !provider) {
     console.error("Missing code or provider");
-    router.push('end-user/auth/sign-in?error=missing_data');
+    router.push('../end-user/auth/sign-in?error=missing_data');
     return;
   }
 
@@ -37,7 +37,7 @@ onMounted(async () => {
     localStorage.removeItem('social_provider');
     router.push('/profile'); // or your dashboard
   } else {
-    router.push('end-user/auth/sign-in?error=auth_failed');
+    router.push('../end-user/auth/sign-in?error=auth_failed');
   }
 });
 </script>
