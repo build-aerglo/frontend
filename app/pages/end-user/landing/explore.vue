@@ -2,7 +2,7 @@
   <NavBar />
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 p-6 mb-8 sticky top-[60px] z-30">
+      <div class="bg-white rounded-2xl mt-0 shadow-sm border border-slate-200 hidden md:block p-6 mb-8 sticky top-[60px] z-30">
         <div class="grid grid-cols-6 md:flex md:flex-wrap gap-4">
           
           <div class="col-span-4 md:flex-1 md:min-w-[200px]">
@@ -98,6 +98,159 @@
         </div>
       </div>
 
+      <!-- MOBILE FILTER BAR (< md) -->
+<div class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 sticky top-[60px] z-30">
+  <div class="flex gap-3">
+    <!-- Search Input -->
+    <div class="flex-1">
+      <input 
+        v-model="filters.name"
+        type="text"
+        placeholder="Search businesses..."
+        class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all text-sm"
+      />
+    </div>
+
+    <!-- Filters Button -->
+    <button
+      @click="showFilterDrawer = true"
+      class="flex items-center gap-2 px-4 py-2.5 bg-[#008253] text-white rounded-xl hover:bg-[#006f45] transition-colors font-medium text-sm relative"
+    >
+      <i class="pi pi-filter"></i>
+      <span>Filters</span>
+      <span v-if="activeFilterCount > 0" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+        {{ activeFilterCount }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Active Filters Pills (Mobile) -->
+  <div v-if="hasActiveFilters" class="mt-3 flex items-center gap-2 flex-wrap">
+    <span class="text-xs text-slate-600">Active:</span>
+    <template v-for="(value, key) in filters" :key="String(key)">
+      <button
+        v-if="value && !['tag', 'tagId', 'name'].includes(key as string)"
+        @click="clearFilter(key as string)"
+        class="text-xs bg-slate-100 text-[#008253] px-2 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
+      >
+        {{ getFilterLabel(key, value) }}
+        <i class="pi pi-times text-[10px]"></i>
+      </button>
+    </template>
+  </div>
+</div>
+
+<!-- MOBILE FILTER DRAWER (Custom) -->
+<Teleport to="body">
+  <Transition name="drawer">
+    <div v-if="showFilterDrawer" class="fixed inset-0 z-50">
+      <!-- Backdrop -->
+      <div 
+        @click="showFilterDrawer = false" 
+        class="absolute inset-0 bg-black bg-opacity-50"
+      ></div>
+      
+      <!-- Drawer Panel -->
+      <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <h3 class="text-lg font-bold text-slate-900">Filter Results</h3>
+          <button @click="showFilterDrawer = false" class="text-slate-500 hover:text-slate-700">
+            <i class="pi pi-times text-lg"></i>
+          </button>
+        </div>
+        
+        <!-- Content (Scrollable) -->
+        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
+          <!-- Category Filter -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+            <Dropdown 
+              v-model="tempFilters.categoryId" 
+              :options="categoryOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All Categories"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+
+          <!-- Badges Filter -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+            <Dropdown 
+              v-model="tempFilters.badges" 
+              :options="badgeOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All Badges"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+
+          <!-- Location Filter -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
+            <Dropdown 
+              v-model="tempFilters.location" 
+              :options="locationOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="All Locations"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+
+          <!-- Ratings Filter -->
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Minimum Rating</label>
+            <Dropdown 
+              v-model="tempFilters.stars" 
+              :options="ratingOptions" 
+              optionLabel="label" 
+              optionValue="value"
+              placeholder="Any Rating"
+              class="w-full"
+              :pt="{
+                root: { class: 'border-slate-300 rounded-xl' },
+                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+              }"
+            />
+          </div>
+        </div>
+
+        <!-- Fixed Bottom Actions -->
+        <div class="border-t border-slate-200 p-4 flex gap-3 bg-white">
+          <button 
+            @click="clearTempFilters" 
+            class="flex-1 px-4 py-3 border-2 border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+          >
+            Clear All
+          </button>
+          <button 
+            @click="applyFilters" 
+            class="flex-1 px-4 py-3 bg-[#008253] text-white rounded-xl font-medium hover:bg-[#006f45] transition-colors"
+          >
+            Apply Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </Transition>
+</Teleport>
+
       <div class="mb-4">
         <p class="text-sm text-slate-600">
           Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> result(s)
@@ -132,7 +285,7 @@
             >
               <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-4">
                 <div class="flex flex-col gap-1">
-                  <div class="relative w-24 h-24 max-[400px]:w-16 max-[400px]:h-16"> 
+                  <div class="relative w-24 h-24 max-[430px]:w-16 max-[430px]:h-16"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
                       <img @click.stop="focusedBusinessId = business.id || (business as any).businessId" :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" class="w-full h-full object-cover" />
                     </div>
@@ -161,7 +314,7 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[400px]:text-sm">{{ business.name }}</h3>
+                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[430px]:text-sm">{{ business.name }}</h3>
                     </div>
                     <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
@@ -192,7 +345,7 @@
               >
                 <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
                   <img 
-                    :src="('logo' in business ? business.logo : null) || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" 
+                    :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" 
                     class="w-12 h-12 rounded-full object-cover border border-slate-200" 
                   />
                   <div>
@@ -249,7 +402,7 @@
         <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
             <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-                  <img :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=200&h=200&auto=format&fit=crop'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
+                  <img :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : '/images/default-business-logo.png'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
                   <div class="min-w-0 flex-1">
                     <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
                   <div class="flex flex-wrap gap-1 mt-1">
@@ -309,6 +462,20 @@ const showContact = ref<string | null>(null)
 const focusedBusinessId = ref<string | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+// Mobile filter drawer state
+const showFilterDrawer = ref<boolean>(false)
+const tempFilters = ref<{
+  categoryId: string
+  badges: string
+  location: string
+  stars: string
+}>({
+  categoryId: '',
+  badges: '',
+  location: '',
+  stars: ''
+})
+
 const filters = ref<any>({
   name: route.query.q || '',
   categoryId: '', 
@@ -317,6 +484,15 @@ const filters = ref<any>({
   stars: '',
   tagId: route.query.tagId || '',
   tagName: route.query.tagName || ''
+})
+
+const activeFilterCount = computed<number>(() => {
+  let count = 0
+  if (filters.value.categoryId) count++
+  if (filters.value.badges) count++
+  if (filters.value.location) count++
+  if (filters.value.stars) count++
+  return count
 })
 
 const filterByCategoryName = (name: string) => {
@@ -331,6 +507,23 @@ const filterByCategoryName = (name: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 };
+
+const applyFilters = (): void => {
+  filters.value.categoryId = tempFilters.value.categoryId
+  filters.value.badges = tempFilters.value.badges
+  filters.value.location = tempFilters.value.location
+  filters.value.stars = tempFilters.value.stars
+  showFilterDrawer.value = false
+}
+
+const clearTempFilters = (): void => {
+  tempFilters.value = {
+    categoryId: '',
+    badges: '',
+    location: '',
+    stars: ''
+  }
+}
 
 const navigateToBiz = (input: any) => {
   const id = (typeof input === 'object' && input !== null) 
@@ -406,6 +599,18 @@ watch(() => filters.value.name, (newVal :string) => {
   }, 400)
 })
 
+// Sync temp filters when drawer opens
+watch(showFilterDrawer, (isOpen: boolean) => {
+  if (isOpen) {
+    tempFilters.value = {
+      categoryId: filters.value.categoryId,
+      badges: filters.value.badges,
+      location: filters.value.location,
+      stars: filters.value.stars
+    }
+  }
+})
+
 const categoryOptions = computed(() => {
   const baseOptions = [{ label: 'All', value: '' }]
   const dynamicOptions = categories.value.map(cat => ({
@@ -443,7 +648,7 @@ const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', valu
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
-const clearFilter = (key: string) => {
+const clearFilter = (key: string) : void => {
   filters.value[key] = '';
   if (key === 'categoryId' || key === 'tagName') {
     // If we clear category or tag, we need to reset the whole list
@@ -465,7 +670,7 @@ function getFilterLabel(key: any, value: any): string {
   if (k === 'tagName') return `${value}`;
   if (k === 'categoryId') return categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
-  const optionsMap: Record<string, any> = { 
+  const optionsMap: Record<string, any[]> = { 
     badges: badgeOptions.value, 
     location: locationOptions.value, 
     stars: ratingOptions.value 
@@ -516,6 +721,32 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Drawer transition */
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: all 0.3s ease;
+}
+
+.drawer-enter-from,
+.drawer-leave-to {
+  opacity: 0;
+}
+
+.drawer-enter-from .absolute.bottom-0,
+.drawer-leave-to .absolute.bottom-0 {
+  transform: translateY(100%);
+}
+
+:deep(.mobile-filter-drawer .p-sidebar) {
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+}
+
+:deep(.mobile-filter-drawer .p-sidebar-content) {
+  overflow-y: auto;
+  max-height: calc(85vh - 140px);
+}
+
 .text-gold { color: #deae29; }
 @keyframes fadeInOut {
   0%   { opacity: 0; transform: translateY(4px); }
