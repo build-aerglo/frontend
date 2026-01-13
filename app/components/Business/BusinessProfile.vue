@@ -139,37 +139,60 @@
       <!-- <Divider class="my-[20px]" /> -->
     </div>
     <div class="sm:w-[30%] w-full border rounded-md flex flex-col gap-[20px]">
-      <Card>
-        <template #content>
-          <div>
-            <div class="text-center header">Quick Actions</div>
-            <div class="flex flex-col gap-[10px] mt-[20px]">
-              <!-- <ButtonCustom label="Call Business" icon="phone" :primary="true" size="lg" /> -->
-              <ButtonCustom
-                label="Write a Review"
-                icon="pencil"
-                size="lg"
-                :primary="true"
-              />
-              <!-- <ButtonCustom label="Get Directions" icon="map-marker" inputClass="!bg-[#f3f0ec]" size="lg" /> -->
-              <ButtonCustom
-                v-if="!isBusiness"
-                label="Save Business"
-                icon="clipboard"
-                inputClass="!bg-[#f3f0ec]"
-                size="lg"
-              />
-              <ButtonCustom
-                label="Share Business Profile"
-                icon="share-alt"
-                inputClass="!bg-[#f3f0ec]"
-                size="lg"
-              />
+  <!-- Show Quick Actions for customers only -->
+  <Card v-if="!isBusiness">
+    <template #content>
+      <div>
+        <div class="text-center header">Quick Actions</div>
+        <div class="flex flex-col gap-[10px] mt-[20px]">
+          <ButtonCustom
+            label="Write a Review"
+            icon="pencil"
+            size="lg"
+            :primary="true"
+          />
+          <ButtonCustom
+            label="Save Business"
+            icon="clipboard"
+            inputClass="!bg-[#f3f0ec]"
+            size="lg"
+          />
+          <ButtonCustom
+            label="Share Business Profile"
+            icon="share-alt"
+            inputClass="!bg-[#f3f0ec]"
+            size="lg"
+          />
+        </div>
+      </div>
+    </template>
+  </Card>
+
+  <!-- Show Ads for business owners -->
+  <Card v-else>
+    <template #content>
+      <div>
+        <div class="text-center header">Advertisements</div>
+        <div class="flex flex-col gap-[20px] mt-[20px]">
+          <!-- Ad Placeholder 1 -->
+          <div class="ad-space border rounded-md p-4 bg-gray-50 text-center">
+            <p class="text-sm text-gray-500">Ad Space</p>
+            <div class="mt-2 h-[200px] flex items-center justify-center bg-gray-100 rounded">
+              <span class="text-gray-400">Ad Here</span>
             </div>
           </div>
-        </template>
-      </Card>
-
+          
+          <!-- Ad Placeholder 2 -->
+          <div class="ad-space border rounded-md p-4 bg-gray-50 text-center">
+            <p class="text-sm text-gray-500">Sponsored Content</p>
+            <div class="mt-2 h-[150px] flex items-center justify-center bg-gray-100 rounded">
+              <span class="text-gray-400">Promotion Space</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </Card>
       <!-- <Card>
                 <template #content>
                     <div>
