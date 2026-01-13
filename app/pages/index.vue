@@ -6,28 +6,38 @@
   <!--First Section Start-->
   <section id="hero"
     class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6">
-    <!-- Background image div -->
-    <div class="absolute inset-0 bg-cover bg-top brightness-75 md:bg-fixed"
-      style="background-image: url('/images/background/e-user-ldg.png');">
-    </div>
+    <!-- Background image div with loading state -->
+    <div 
+      class="absolute inset-0 bg-cover bg-top brightness-75 md:bg-fixed transition-opacity duration-500"
+      :class="imageLoaded ? 'opacity-100' : 'opacity-0'"
+      :style="imageLoaded ? `background-image: url('/images/background/e-user-ldg.png');` : ''"
+    ></div>
+    
+    <!-- Fallback background color while image loads -->
+    <div 
+      class="absolute inset-0 bg-gradient-to-br from-slate-500 via-slate-400 to-slate-600 transition-opacity duration-500"
+      :class="imageLoaded ? 'opacity-0' : 'opacity-100'"
+    ></div>
+    
     <div class="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
+    
     <!-- Beginning content -->
-      <div class="relative z-10 max-w-3xl font-sans">
-        <h1 class="font-bold text-white drop-shadow-lg mb-0
-                  text-2xl
-                  sm:text-2xl
-                  md:text-3xl
-                  lg:text-4xl">
-          Let real experiences guide you
-        </h1>
+    <div class="relative z-10 max-w-3xl font-sans">
+      <h1 class="font-bold text-white drop-shadow-lg mb-0
+                text-2xl
+                sm:text-2xl
+                md:text-3xl
+                lg:text-4xl">
+        Let real experiences guide you
+      </h1>
 
-        <p class="mt-1 text-[#008253]
-                  text-base
-                  sm:text-lg
-                  md:text-xl">
-          Clear reviews. Confident decisions.
-        </p>
-      </div>
+      <p class="mt-1 text-[#008253]
+                text-base
+                sm:text-lg
+                md:text-xl">
+        Clear reviews. Confident decisions.
+      </p>
+    </div>
 
     <SearchBarHome />
   </section>
@@ -50,7 +60,6 @@
     </div>
   </section>
   <!--Second Section ends-->
-
 
   <!--Third Section Starts-->
   <section >
@@ -79,8 +88,6 @@
         </div>
       </div>
   </section>
-
-
 
   <!--Fourth Section Begins-->
   <section class="my-0">
@@ -114,5 +121,24 @@
   <!--Footer-->
 
 </template>
-<script setup>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const imageLoaded = ref<boolean>(false);
+
+onMounted((): void => {
+  // Preload the background image
+  const img: HTMLImageElement = new Image();
+  img.src = '/images/background/e-user-ldg.png';
+  
+  img.onload = (): void => {
+    imageLoaded.value = true;
+  };
+  
+  // If image is already cached, it loads instantly
+  if (img.complete) {
+    imageLoaded.value = true;
+  }
+});
 </script>
