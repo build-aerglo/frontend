@@ -135,6 +135,13 @@ const HandleLogin = async () => {
       } else {
         navigateTo('sign-up');
       }
+  if (res) {
+    if (store.accessToken && store.role === 'business_user') {
+        toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
+        
+        // Redirecting to the business profile management area
+        navigateTo('/business/profile'); 
+        
     } else {
       // Login returned false - generic failure
       loginError.value = 'Invalid email or password. Please try again.';

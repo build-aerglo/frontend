@@ -25,6 +25,14 @@
         input-class="w-max" 
         size="lg"
         primary="true" 
+        @click="navigateTo({
+            path: '/review/write-review',
+            query: { 
+                bizId: business.id, 
+                bizName: business.name,
+                bizLogo: business.logo 
+            }
+        })"
     />
 </div>
     <div v-else class="flex flex-col gap-[20px]">

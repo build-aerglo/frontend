@@ -117,7 +117,7 @@
           <button @click="handleSocialLogin('github')" aria-label="Login with GitHub" :disabled="isLoading">
             <i class="pi pi-github text-slate-600 text-2xl hover:text-gray-600 transition"></i>
           </button>
-          <button @click="handleSocialLogin('google')" aria-label="Login with Google" :disabled="isLoading">
+          <button @click="handleSocialLogin('google-oauth2')" aria-label="Login with Google" :disabled="isLoading">
             <i class="pi pi-google text-amber-600 text-2xl hover:text-amber-800 transition"></i>
           </button>
         </div>
