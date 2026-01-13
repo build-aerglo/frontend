@@ -72,28 +72,129 @@ const isLoading = ref(false);
 const loginError = ref<string | null>(null);
 
 const HandleLogin = async () => {
-  isLoading.value = true;
-  loginError.value = null; 
+  // Clear previous errors
+  loginError.value = null;
 
-  const res = await loginUser(loginData.value);
-
-  if (res) {
-    if (store.accessToken && store.role === 'business_user') {
-        toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
-        if (store.id) {
-            navigateTo(`/biz/${store.id}`);
-        } else {
-            navigateTo('sign-up');
-        }
-        
-    } else {
-        loginError.value = 'Login succeeded, but no token was stored.';
-    }
-  } else {
-    loginError.value = 'Login failed. Please check your credentials and network connection.';
+  // Client-side validation
+  if (!loginData.value.email || !loginData.value.password) {
+    loginError.value = 'Please enter both email and password.';
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Validation Error', 
+      detail: loginError.value, 
+      life: 3000 
+    });
+    return;
   }
 
-  isLoading.value = false;
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(loginData.value.email)) {
+    loginError.value = 'Please enter a valid email address.';
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Validation Error', 
+      detail: loginError.value, 
+      life: 3000 
+    });
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    const res = await loginUser(loginData.value);
+
+    if (res) {
+      // Check if we have the required authentication data
+      if (!store.accessToken) {
+        throw new Error('Authentication failed - no access token received');
+      }
+
+      if (store.role !== 'business_user') {
+        loginError.value = 'This account is not authorized for business access.';
+        toast.add({ 
+          severity: 'error', 
+          summary: 'Access Denied', 
+          detail: loginError.value, 
+          life: 4000 
+        });
+        return;
+      }
+
+      // Successful login
+      toast.add({ 
+        severity: 'success', 
+        summary: 'Success', 
+        detail: 'Logged in successfully', 
+        life: 3000 
+      });
+
+      if (store.id) {
+        navigateTo(`/biz/${store.id}`);
+      } else {
+        navigateTo('sign-up');
+      }
+    } else {
+      // Login returned false - generic failure
+      loginError.value = 'Invalid email or password. Please try again.';
+      toast.add({ 
+        severity: 'error', 
+        summary: 'Login Failed', 
+        detail: loginError.value, 
+        life: 3000 
+      });
+    }
+  } catch (error: any) {
+    // Handle specific error responses from the API
+    if (error.response) {
+      const status = error.response.status;
+      const errorMessage = error.response.data?.message || error.response.data?.error;
+
+      switch (status) {
+        case 400:
+          loginError.value = errorMessage || 'Invalid request. Please check your credentials.';
+          break;
+        case 401:
+          loginError.value = 'Invalid email or password.';
+          break;
+        case 403:
+          loginError.value = 'Your account has been suspended. Please contact support.';
+          break;
+        case 404:
+          loginError.value = 'Account not found. Please check your email address.';
+          break;
+        case 422:
+          loginError.value = errorMessage || 'Invalid credentials format.';
+          break;
+        case 429:
+          loginError.value = 'Too many login attempts. Please try again later.';
+          break;
+        case 500:
+        case 502:
+        case 503:
+          loginError.value = 'Server error. Please try again in a few moments.';
+          break;
+        default:
+          loginError.value = errorMessage || 'An unexpected error occurred. Please try again.';
+      }
+    } else if (error.request) {
+      // Network error - request was made but no response received
+      loginError.value = 'Network error. Please check your internet connection.';
+    } else {
+      // Other errors (e.g., thrown errors)
+      loginError.value = error.message || 'An unexpected error occurred. Please try again.';
+    }
+
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Login Error', 
+      detail: loginError.value, 
+      life: 4000 
+    });
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
