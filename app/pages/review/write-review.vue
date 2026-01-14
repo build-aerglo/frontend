@@ -631,7 +631,32 @@ const handleClickOutside = (event: MouseEvent) => {
     showBranchDropdown.value = false;
 };
 
-onMounted(() => document.addEventListener('click', handleClickOutside));
+// Inside <script setup> in your write-review page
+const route = useRoute();
+
+onMounted(async () => {
+  // 1. Existing click listener logic
+  document.addEventListener('click', handleClickOutside);
+
+  // 2. Handle pre-population from query params
+  const { bizId, bizName, bizLogo } = route.query;
+
+  if (bizName) {
+    businessName.value = bizName as string;
+  }
+
+  if (bizId) {
+    selectedBusinessId.value = bizId as string;
+    selectedBusinessLogo.value = (bizLogo as string) || "";
+    
+    // Automatically fetch branches for this business
+    await fetchBranches(selectedBusinessId.value);
+    
+    // UI state adjustments
+    showBusinessDropdown.value = false;
+    isAddingNewBusiness.value = false;
+  }
+});
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
 const rateBusiness = (index: number, value: number) => {
