@@ -53,6 +53,7 @@
 </template>
 
 <script setup>
+import useUser from '~/composables/useUser';
 const props = defineProps({
   isLayoutCollapsed: {
     type: Boolean,
@@ -65,9 +66,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['toggle']);
-
+const store = useUser();
 const handleLogout = () => {
-    console.log("Logging out...");
+  // 1. Clear the Pinia state
+  // Because 'persist: true' is active, this will also clear the storage
+  store.clearUser();
+
+  // 2. Redirect to the login page
+  // We use the absolute path to ensure it works from any nested route
+  navigateTo('/business/auth/sign-in');
 };
 </script>
 
