@@ -109,43 +109,198 @@ const userData = ref<LoginData>({
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
-const errorMessage = ref<string>("");
-
+const errorMessage = ref<string | null>(null);
 const loginError = ref<string | null>(null);
+
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
 
 const HandleLogin = async () => {
-  isLoading.value = true;
-  loginError.value = null; 
+  // Clear previous errors
+  loginError.value = null;
+  errorMessage.value = "";
 
-  const res = await loginUser(userData.value);
-
-  if (res) {
-    console.log(res);
-    if (store.accessToken && store.role === 'end_user') {
-          toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
-          navigateTo('../../business-dashboard');
-    } else {
-        loginError.value = 'Login succeeded, but no token was stored.';
-    }
-  } else {
-    loginError.value = 'Login failed. Please check your credentials and network connection.';
-    toast.add({ severity: 'error', summary: 'ERROR', detail: 'sign in Failed', life: 3000});
+  // Client-side validation
+  if (!userData.value.email || !userData.value.password) {
+    loginError.value = 'Please enter both email and password.';
+    errorMessage.value = loginError.value;
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Validation Error', 
+      detail: loginError.value, 
+      life: 3000 
+    });
+    return;
   }
 
-  isLoading.value = false;
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(userData.value.email)) {
+    loginError.value = 'Please enter a valid email address.';
+    errorMessage.value = loginError.value;
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Validation Error', 
+      detail: loginError.value, 
+      life: 3000 
+    });
+    return;
+  }
+
+  // Password minimum length check
+  if (userData.value.password.length < 6) {
+    loginError.value = 'Password is too short.';
+    errorMessage.value = loginError.value;
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Validation Error', 
+      detail: loginError.value, 
+      life: 3000 
+    });
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    const res = await loginUser(userData.value);
+
+    if (res) {
+      console.log(res);
+      
+      // Check if we have the required authentication data
+      if (!store.accessToken) {
+        throw new Error('Authentication failed - no access token received');
+      }
+
+      if (store.role !== 'end_user') {
+        loginError.value = 'This account is not authorized for user access.';
+        errorMessage.value = loginError.value;
+        toast.add({ 
+          severity: 'error', 
+          summary: 'Access Denied', 
+          detail: loginError.value, 
+          life: 4000 
+        });
+        return;
+      }
+
+      // Successful login
+      toast.add({ 
+        severity: 'success', 
+        summary: 'Success', 
+        detail: 'Logged in successfully', 
+        life: 3000 
+      });
+
+      // Handle remember me functionality if needed
+      if (rememberMe.value) {
+        // Store user preference (you might want to implement this)
+        localStorage.setItem('rememberMe', 'true');
+      }
+
+      navigateTo('../../business-dashboard');
+    } else {
+      // Login returned false - generic failure
+      loginError.value = 'Invalid email or password. Please try again.';
+      errorMessage.value = loginError.value;
+      toast.add({ 
+        severity: 'error', 
+        summary: 'Login Failed', 
+        detail: loginError.value, 
+        life: 3000 
+      });
+    }
+  } catch (error: any) {
+    console.error('Login error:', error);
+
+    // Handle specific error responses from the API
+    if (error.response) {
+      const status = error.response.status;
+      const errorMsg = error.response.data?.message || error.response.data?.error;
+
+      switch (status) {
+        case 400:
+          loginError.value = errorMsg || 'Invalid request. Please check your credentials.';
+          break;
+        case 401:
+          loginError.value = 'Invalid email or password.';
+          break;
+        case 403:
+          loginError.value = 'Your account has been suspended. Please contact support.';
+          break;
+        case 404:
+          loginError.value = 'Account not found. Please check your email address.';
+          break;
+        case 422:
+          loginError.value = errorMsg || 'Invalid credentials format.';
+          break;
+        case 429:
+          loginError.value = 'Too many login attempts. Please try again in a few minutes.';
+          break;
+        case 500:
+        case 502:
+        case 503:
+          loginError.value = 'Server error. Please try again in a few moments.';
+          break;
+        default:
+          loginError.value = errorMsg || 'An unexpected error occurred. Please try again.';
+      }
+    } else if (error.request) {
+      // Network error - request was made but no response received
+      loginError.value = 'Network error. Please check your internet connection.';
+    } else {
+      // Other errors (e.g., thrown errors)
+      loginError.value = error.message || 'An unexpected error occurred. Please try again.';
+    }
+
+    errorMessage.value = loginError.value || 'An unexpected error occurred. Please try again.';
+    
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Login Error', 
+      detail: loginError.value || 'An unexpected error occurred. Please try again.', 
+      life: 4000 
+    });
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 function handleSocialLogin(provider: string) {
-  // Placeholder for social login implementation
-  console.log(`Social login with ${provider} not yet implemented`);
-  errorMessage.value = `${provider.charAt(0).toUpperCase() + provider.slice(1)} login coming soon!`;
-  
-  // Clear error after 3 seconds
-  setTimeout(() => {
-    errorMessage.value = "";
-  }, 3000);
+  // Clear any previous errors
+  errorMessage.value = "";
+  loginError.value = null;
+
+  try {
+    // Placeholder for social login implementation
+    console.log(`Social login with ${provider} not yet implemented`);
+    
+    const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
+    errorMessage.value = `${providerName} login coming soon!`;
+    
+    toast.add({
+      severity: 'info',
+      summary: 'Coming Soon',
+      detail: `${providerName} login will be available soon.`,
+      life: 3000
+    });
+    
+    // Clear error after 3 seconds
+    setTimeout(() => {
+      errorMessage.value = "";
+    }, 3000);
+  } catch (error: any) {
+    console.error(`Social login error for ${provider}:`, error);
+    errorMessage.value = `Unable to connect with ${provider}. Please try again.`;
+    
+    toast.add({
+      severity: 'error',
+      summary: 'Social Login Error',
+      detail: errorMessage.value,
+      life: 3000
+    });
+  }
 }
 </script>
