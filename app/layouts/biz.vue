@@ -10,15 +10,14 @@
         class="w-[96px] h-[40px] object-contain object-center"
       />
       </NuxtLink> 
-      <div class="flex gap-2.5 items-center" v-if="data?.data">
-        <NuxtLink :to="`/review/write-review?biz=${data?.data?.id}`">
-          <ButtonCustom
-            size="lg"
-            label="Review Business"
-            inputClass="w-max"
-            :primary="true"
-          />
-        </NuxtLink>
+      <div class="flex gap-2.5 items-center" v-if="data">
+        <ButtonCustom
+          size="lg"
+          label="Review Business"
+          inputClass="w-max"
+          :primary="true"
+          @click="handleReviewNavigation"
+        />
       </div>
     </div>
     <div class="flex-1 border mt-[80px] sm:px-[50px] px-[10px] py-[20px]">
@@ -30,5 +29,21 @@
 <script setup lang="ts">
 import { usePageData } from "~/composables/method/usePageData";
 
-const data = usePageData();
+const pageData = usePageData();
+const data = computed(() => pageData.value?.data);
+
+const handleReviewNavigation = () => {
+  const business = data.value;
+  
+  if (!business) return;
+
+  navigateTo({
+    path: '/review/write-review',
+    query: { 
+      bizId: business.id, 
+      bizName: business.name,
+      bizLogo: business.logo // Make sure this property name matches your API response
+    }
+  });
+};
 </script>
