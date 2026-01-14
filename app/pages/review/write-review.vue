@@ -15,14 +15,9 @@
             <div ref="businessDropdownRef" class="relative">
               <label class="block text-sm font-medium text-gray-900 mb-1">Business Name *</label>
               <div class="relative">
-                <input 
-                  type="text" 
-                  v-model="businessName" 
-                  @input="handleBusinessInput"
-                  @focus="showBusinessDropdown = true" 
-                  placeholder="Search for a business..."
-                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                />
+                <input type="text" v-model="businessName" @input="handleBusinessInput"
+                  @focus="showBusinessDropdown = true" placeholder="Search for a business..."
+                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
 
                 <i v-if="isSearching"
                   class="pi pi-spin pi-spinner absolute right-10 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -42,11 +37,11 @@
               </ul>
 
               <!-- "Can't find business" message -->
-              <div v-if="businessName.trim() && !isSearching && filteredBusinesses.length === 0 && !selectedBusinessId && !isAddingNewBusiness" 
+              <div
+                v-if="businessName.trim() && !isSearching && filteredBusinesses.length === 0 && !selectedBusinessId && !isAddingNewBusiness"
                 class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p class="text-sm text-amber-800 mb-2">Can't find "{{ businessName }}"?</p>
-                <button 
-                  @click="confirmAddNewBusiness" 
+                <button @click="confirmAddNewBusiness"
                   class="text-sm bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-[#006d47] transition">
                   + Add as New Business
                 </button>
@@ -61,148 +56,91 @@
               </p>
             </div>
 
-            <!-- Address Fields (Only visible when adding new business) -->
+            <!-- Location fields for new business -->
             <div v-if="isAddingNewBusiness" class="space-y-3 p-4 bg-green-50 rounded-lg border border-green-200">
               <div class="flex items-center justify-between mb-2">
-                <p class="text-sm font-medium text-green-800">New Business Address</p>
-                <button 
-                  @click="cancelAddNewBusiness" 
-                  class="text-xs text-red-600 hover:text-red-800 underline">
+                <p class="text-sm font-medium text-green-800">New Business Location</p>
+                <button @click="cancelAddNewBusiness" class="text-xs text-red-600 hover:text-red-800 underline">
                   Cancel
                 </button>
               </div>
-              
+
               <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">Street Address</label>
-                <input 
-                  type="text" 
-                  v-model="branchStreet" 
-                  placeholder="e.g., 123 Main Street (optional)"
-                  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                />
+                <label class="block text-xs font-medium text-gray-700 mb-1">State *</label>
+                <select v-model="newBusinessState"
+                  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none">
+                  <option value="">Select state...</option>
+                  <option v-for="state in states" :key="state" :value="state">{{ state }}</option>
+                </select>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1">City/Town</label>
-                  <input 
-                    type="text" 
-                    v-model="branchCityTown" 
-                    placeholder="e.g., Lagos"
-                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1">State</label>
-                  <input 
-                    type="text" 
-                    v-model="branchState" 
-                    placeholder="e.g., Lagos State"
-                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                  />
-                </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">City/Town *</label>
+                <select v-model="newBusinessCity" :disabled="!newBusinessState"
+                  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100">
+                  <option value="">Select city...</option>
+                  <option v-for="city in newBusinessCities" :key="city" :value="city">{{ city }}</option>
+                </select>
               </div>
             </div>
 
             <!-- Branch Selection (Only shown for existing business) -->
-            <div v-if="selectedBusinessId && !isAddingNewBusiness" ref="branchDropdownRef" class="relative">
-              <label class="block text-sm font-medium text-gray-900 mb-1">Select Branch</label>
-              <div class="relative">
-                <input 
-                  type="text" 
-                  v-model="branchSearch" 
-                  @input="handleBranchInput" 
-                  @focus="showBranchDropdown = true"
-                  :disabled="isLoadingBranches || isAddingNewBranch"
-                  :placeholder="isLoadingBranches ? 'Loading branches...' : 'Select a branch...'"
-                  class="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed" 
-                />
-                <i v-if="isLoadingBranches"
-                  class="pi pi-spin pi-spinner absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <i v-else-if="selectedBranchId"
-                  class="pi pi-check absolute right-3 top-1/2 -translate-y-1/2 text-[#008253]"></i>
+            <div v-if="selectedBusinessId && !isAddingNewBusiness">
+              <label class="block text-sm font-medium text-gray-900 mb-1">Select Branch/Location *</label>
+
+              <select v-model="selectedBranchOption" :disabled="manualEntryEnabled || isLoadingBranches"
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed">
+                <option value="">{{ isLoadingBranches ? 'Loading branches...' : 'Select a branch...' }}</option>
+                <option value="online">Online</option>
+                <option v-for="option in branchOptions" :key="option.id" :value="option.id">
+                  {{ option.display }}
+                </option>
+              </select>
+
+              <!-- Manual Entry Checkbox -->
+              <div class="mt-3 flex items-center space-x-2">
+                <input type="checkbox" id="manualEntry" v-model="manualEntryEnabled" :disabled="isLoadingBranches"
+                  class="w-4 h-4 rounded border-gray-300 accent-[#008253] disabled:opacity-50" />
+                <label for="manualEntry" class="text-sm text-gray-700 cursor-pointer">
+                  Branch not found? Manually enter branch
+                </label>
               </div>
 
-              <!-- Branch Dropdown -->
-              <ul v-if="showBranchDropdown && filteredBranches.length && !isAddingNewBranch"
-                class="bg-white shadow mt-1 rounded-lg border max-h-48 overflow-y-auto absolute z-10 w-full">
-                <li v-for="branch in filteredBranches" :key="branch.id" @click="selectBranch(branch)"
-                  class="px-3 py-2 cursor-pointer hover:bg-gray-100">
-                  <div class="font-medium">{{ branch.name }}</div>
-                  <div class="text-xs text-gray-500">
-                    {{ [branch.branchStreet, branch.branchCityTown, branch.branchState].filter(Boolean).join(', ') }}
-                  </div>
-                </li>
-              </ul>
+              <!-- Manual Entry Form -->
+              <div v-if="manualEntryEnabled" class="mt-4 space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p class="text-sm font-medium text-blue-800 mb-2">Enter Branch Location</p>
 
-              <!-- "Can't find location?" button when branches exist -->
-              <div v-if="branches.length > 0 && !isAddingNewBranch && !selectedBranchId" class="mt-2">
-                <button 
-                  @click="confirmAddNewBranch" 
-                  class="text-sm text-[#008253] hover:underline font-medium">
-                  Can't find the location? Add it
-                </button>
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 mb-1">State *</label>
+                  <select v-model="manualState"
+                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none">
+                    <option value="">Select state...</option>
+                    <option v-for="state in states" :key="state" :value="state">{{ state }}</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 mb-1">City/Town *</label>
+                  <select v-model="manualCity" :disabled="!manualState"
+                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100">
+                    <option value="">Select city...</option>
+                    <option v-for="city in manualCities" :key="city" :value="city">{{ city }}</option>
+                  </select>
+                </div>
               </div>
 
-              <!-- Auto-show message when no branches exist -->
-              <div v-if="branches.length === 0 && !isLoadingBranches && !isAddingNewBranch" class="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p class="text-sm text-amber-800 mb-2">No branches found for this business.</p>
-                <button 
-                  @click="confirmAddNewBranch" 
-                  class="text-sm bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-[#006d47] transition">
-                  + Add the location you visited
-                </button>
-              </div>
-
-              <!-- Confirmation that new branch will be created -->
-              <p v-if="isAddingNewBranch" class="text-xs text-green-600 mt-1 font-medium">
-                ✓ New branch will be added to {{ businessName }}
+              <!-- Confirmation messages -->
+              <p v-if="selectedBranchOption === 'online'" class="text-xs text-green-600 mt-2 font-medium">
+                ✓ Online business selected
               </p>
-            </div>
-
-            <!-- Address fields for new branch (existing business) -->
-            <div v-if="isAddingNewBranch && selectedBusinessId" class="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <div class="flex items-center justify-between mb-2">
-                <p class="text-sm font-medium text-blue-800">New Branch Address</p>
-                <button 
-                  @click="cancelAddNewBranch" 
-                  class="text-xs text-red-600 hover:text-red-800 underline">
-                  Cancel
-                </button>
-              </div>
-              
-              <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">Street Address</label>
-                <input 
-                  type="text" 
-                  v-model="newBranchStreet" 
-                  placeholder="e.g., 123 Main Street (optional)"
-                  class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                />
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1">City/Town</label>
-                  <input 
-                    type="text" 
-                    v-model="newBranchCityTown" 
-                    placeholder="e.g., Lagos"
-                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs font-medium text-gray-700 mb-1">State</label>
-                  <input 
-                    type="text" 
-                    v-model="newBranchState" 
-                    placeholder="e.g., Lagos State"
-                    class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-                  />
-                </div>
-              </div>
+              <p v-else-if="selectedBranchOption && !manualEntryEnabled"
+                class="text-xs text-green-600 mt-2 font-medium">
+                ✓ Branch selected
+              </p>
+              <p v-else-if="manualEntryEnabled && manualState && manualCity"
+                class="text-xs text-green-600 mt-2 font-medium">
+                ✓ New branch will be added: {{ manualCity }}, {{ manualState }}
+              </p>
             </div>
 
             <!-- Rating -->
@@ -223,14 +161,9 @@
             <!-- Review Body -->
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-900 mb-1">Your Review *</label>
-              <textarea 
-                v-model="reviewBody" 
-                maxlength="500" 
-                minlength="20" 
-                rows="4"
+              <textarea v-model="reviewBody" maxlength="500" minlength="20" rows="4"
                 placeholder="Tell us what you loved (or didn't)."
-                class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"
-              ></textarea>
+                class="w-full border rounded-lg px-3 py-2 resize-none focus:ring-2 focus:ring-[#008253] focus:outline-none"></textarea>
               <p class="text-xs text-gray-400 text-right">
                 {{ reviewBody.length }}/500
               </p>
@@ -241,13 +174,8 @@
 
             <!-- Anonymous Checkbox -->
             <div class="flex items-center space-x-2">
-              <input 
-                type="checkbox" 
-                id="anonymous" 
-                v-model="anonymous" 
-                :disabled="isGuest"
-                class="w-4 h-4 rounded border-gray-300 accent-[#008253] disabled:opacity-50 disabled:cursor-not-allowed" 
-              />
+              <input type="checkbox" id="anonymous" v-model="anonymous" :disabled="isGuest"
+                class="w-4 h-4 rounded border-gray-300 accent-[#008253] disabled:opacity-50 disabled:cursor-not-allowed" />
               <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">
                 Review as anonymous
                 <span v-if="isGuest" class="text-xs text-gray-500">(Required for guest users)</span>
@@ -256,20 +184,13 @@
 
             <!-- Email for Guest/Anonymous -->
             <div v-if="isGuest || anonymous">
-              <input 
-                type="email" 
-                v-model="email" 
-                placeholder="Email *" 
-                required
-                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" 
-              />
+              <input type="email" v-model="email" placeholder="Email *" required
+                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
             </div>
 
             <!-- Submit Button -->
-            <button 
-              @click="submitReview"
-              class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition"
-            >
+            <button @click="submitReview"
+              class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition">
               Submit Review
             </button>
           </div>
@@ -321,17 +242,18 @@ import useUser from '~/composables/useUser'
 import useReviewMethods from '~/composables/review/useReviewMethods'
 import useSearch from '~/composables/search/useSearch'
 import useBusinessMethods from '~/composables/business/useBusinessMethods'
+import useNigerianLocations from '~/composables/useNigerianLocations'
 import ImageUploader from '~/components/Input/ImageUploader.vue'
 import type { Branch } from '~/types/business'
 
 const { submitUserReview } = useReviewMethods();
 const { search } = useSearch();
-const { getBusinessBranches } = useBusinessMethods();
-const store = useUser()
+const { getBusinessBranches, getBusinessProfile } = useBusinessMethods();
+const { getStates, getCitiesByState } = useNigerianLocations();
+const store = useUser();
 
 // Form state
 const businessName = ref("");
-const branchSearch = ref("");
 const reviewBody = ref("");
 const rating = ref(0);
 const hoverRating = ref(0);
@@ -339,40 +261,66 @@ const anonymous = ref(false);
 const email = ref("");
 const images = ref<string[]>([]);
 
-// Address fields (for new business OR new branch)
-const branchStreet = ref("");
-const branchCityTown = ref("");
-const branchState = ref("");
+// New business location (state/city selects)
+const newBusinessState = ref("");
+const newBusinessCity = ref("");
 
-// Separate fields for new branch on existing business
-const newBranchStreet = ref("");
-const newBranchCityTown = ref("");
-const newBranchState = ref("");
+// Branch selection
+const selectedBranchOption = ref("");
+const manualEntryEnabled = ref(false);
+const manualState = ref("");
+const manualCity = ref("");
 
 // UI state
 const showBusinessDropdown = ref(false);
-const showBranchDropdown = ref(false);
 const isSearching = ref(false);
 const isLoadingBranches = ref(false);
 
-// Selected business/branch
+// Selected business
 const selectedBusinessLogo = ref<string>("");
 const selectedBusinessId = ref<string>("");
-const selectedBranchId = ref<string>("");
 
-//  Flags for new business/branch
+// Flag for new business
 const isAddingNewBusiness = ref(false);
-const isAddingNewBranch = ref(false);
 
 let debounceTimer: any = null;
 
 // Search Results
 const filteredBusinesses = ref<any[]>([]);
 const branches = ref<Branch[]>([]);
-const filteredBranches = ref<Branch[]>([]);
+
+// Nigerian states and cities
+const states = getStates();
+
+// Computed cities based on selected state
+const newBusinessCities = computed(() => {
+  return newBusinessState.value ? getCitiesByState(newBusinessState.value) : [];
+});
+
+const manualCities = computed(() => {
+  return manualState.value ? getCitiesByState(manualState.value) : [];
+});
+
+// Branch options for dropdown
+const branchOptions = computed(() => {
+  const options: { id: string; display: string }[] = [];
+
+  // Add existing branches
+  branches.value.forEach(branch => {
+    const cityState = [branch.branchCityTown, branch.branchState]
+      .filter(Boolean)
+      .join(', ');
+
+    options.push({
+      id: branch.id,
+      display: cityState || branch.name
+    });
+  });
+
+  return options;
+});
 
 const businessDropdownRef = ref<HTMLElement | null>(null);
-const branchDropdownRef = ref<HTMLElement | null>(null);
 
 const featuredBusinesses = ref([
   { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/logos/kfc.png" },
@@ -389,41 +337,43 @@ watch(isGuest, (guest) => {
   }
 }, { immediate: true });
 
-//  User confirms they want to add a new business
+// Reset manual entry when checkbox is unchecked
+watch(manualEntryEnabled, (enabled) => {
+  if (!enabled) {
+    manualState.value = "";
+    manualCity.value = "";
+  } else {
+    // Clear branch selection when manual entry is enabled
+    selectedBranchOption.value = "";
+  }
+});
+
+// Reset cities when state changes
+watch(newBusinessState, () => {
+  newBusinessCity.value = "";
+});
+
+watch(manualState, () => {
+  manualCity.value = "";
+});
+
+// User confirms they want to add a new business
 const confirmAddNewBusiness = () => {
   isAddingNewBusiness.value = true;
   showBusinessDropdown.value = false;
 };
 
-//  User cancels adding new business
+// User cancels adding new business
 const cancelAddNewBusiness = () => {
   isAddingNewBusiness.value = false;
-  branchStreet.value = "";
-  branchCityTown.value = "";
-  branchState.value = "";
-};
-
-// User confirms they want to add a new branch to existing business
-const confirmAddNewBranch = () => {
-  isAddingNewBranch.value = true;
-  selectedBranchId.value = "";
-  branchSearch.value = "";
-  showBranchDropdown.value = false;
-};
-
-// User cancels adding new branch
-const cancelAddNewBranch = () => {
-  isAddingNewBranch.value = false;
-  newBranchStreet.value = "";
-  newBranchCityTown.value = "";
-  newBranchState.value = "";
-  branchSearch.value = "";
+  newBusinessState.value = "";
+  newBusinessCity.value = "";
 };
 
 // Handle business input with Elasticsearch search
 const handleBusinessInput = () => {
   showBusinessDropdown.value = true;
-  
+
   // Reset states when user types
   selectedBusinessId.value = "";
   selectedBusinessLogo.value = "";
@@ -435,7 +385,7 @@ const handleBusinessInput = () => {
     filteredBusinesses.value = [];
     return;
   }
-  
+
   isSearching.value = true;
   debounceTimer = setTimeout(async () => {
     try {
@@ -458,14 +408,44 @@ const handleBusinessInput = () => {
 // Fetch branches for selected business
 const fetchBranches = async (businessId: string) => {
   isLoadingBranches.value = true;
+  branches.value = [];
+
   try {
     const result = await getBusinessBranches(businessId);
-    branches.value = result;
-    filteredBranches.value = result;
+
+    if (result && result.length > 0) {
+      branches.value = result;
+    } else {
+      // No branches found - try to get business address
+      const businessProfile = await getBusinessProfile(businessId);
+
+      if (businessProfile?.data?.businessAddress) {
+        // Parse business address and create a pseudo-branch option
+        const address = businessProfile.data.businessAddress;
+        const addressParts = address.split(',').map((s: string) => s.trim());
+
+        // Try to extract city and state from address
+        let city = "";
+        let state = "";
+
+        if (addressParts.length >= 2) {
+          state = addressParts[addressParts.length - 1];
+          city = addressParts[addressParts.length - 2];
+        }
+
+        // Add business address as a branch option
+        branches.value = [{
+          id: 'business-address',
+          name: 'Main Location',
+          branchCityTown: city,
+          branchState: state,
+          branchStreet: ''
+        } as Branch];
+      }
+    }
   } catch (error) {
     console.error("Failed to fetch branches:", error);
     branches.value = [];
-    filteredBranches.value = [];
   } finally {
     isLoadingBranches.value = false;
   }
@@ -481,36 +461,16 @@ const selectBusiness = async (b: any) => {
   filteredBusinesses.value = [];
 
   // Reset branch selection
-  branchSearch.value = "";
-  selectedBranchId.value = "";
-  isAddingNewBranch.value = false;
+  selectedBranchOption.value = "";
+  manualEntryEnabled.value = false;
+  manualState.value = "";
+  manualCity.value = "";
   branches.value = [];
-  filteredBranches.value = [];
 
   // Fetch branches for existing business
   if (selectedBusinessId.value) {
     await fetchBranches(selectedBusinessId.value);
   }
-};
-
-// Handle branch input filtering
-const handleBranchInput = () => {
-  showBranchDropdown.value = true;
-  isAddingNewBranch.value = false; // Reset when user starts typing
-  
-  filteredBranches.value = branches.value.filter(branch =>
-    branch.name.toLowerCase().includes(branchSearch.value.toLowerCase()) ||
-    branch.branchCityTown?.toLowerCase().includes(branchSearch.value.toLowerCase()) ||
-    branch.branchState?.toLowerCase().includes(branchSearch.value.toLowerCase())
-  );
-};
-
-// Select branch from dropdown
-const selectBranch = (branch: Branch) => {
-  branchSearch.value = branch.name;
-  selectedBranchId.value = branch.id;
-  isAddingNewBranch.value = false;
-  showBranchDropdown.value = false;
 };
 
 const ratingLabels: Record<number, string> = {
@@ -533,9 +493,22 @@ const submitReview = async () => {
     return;
   }
 
-  // If existing business and not adding new branch, branch must be selected
-  if (selectedBusinessId.value && !isAddingNewBranch.value && !selectedBranchId.value) {
-    alert("Please select a branch or add a new one");
+  // Branch/Location validation
+  if (selectedBusinessId.value && !isAddingNewBusiness.value) {
+    if (!manualEntryEnabled.value && !selectedBranchOption.value) {
+      alert("Please select a branch/location or enable manual entry");
+      return;
+    }
+
+    if (manualEntryEnabled.value && (!manualState.value || !manualCity.value)) {
+      alert("Please select both state and city for manual branch entry");
+      return;
+    }
+  }
+
+  // New business validation
+  if (isAddingNewBusiness.value && (!newBusinessState.value || !newBusinessCity.value)) {
+    alert("Please select both state and city for the new business");
     return;
   }
 
@@ -554,22 +527,62 @@ const submitReview = async () => {
     return;
   }
 
+  // Build submission data
+  let locationData: any = {};
+
+  if (isAddingNewBusiness.value) {
+    // New business with location
+    locationData = {
+      businessId: null,
+      businessName: businessName.value,
+      isNewBusiness: true,
+      locationId: null,
+      isNewBranch: false,
+      branchCityTown: newBusinessCity.value,
+      branchState: newBusinessState.value,
+      branchStreet: null
+    };
+  } else if (selectedBranchOption.value === 'online') {
+    // Online business
+    locationData = {
+      businessId: selectedBusinessId.value,
+      businessName: null,
+      isNewBusiness: false,
+      locationId: null,
+      isNewBranch: false,
+      branchCityTown: null,
+      branchState: null,
+      branchStreet: null
+    };
+  } else if (manualEntryEnabled.value) {
+    // Manual branch entry
+    locationData = {
+      businessId: selectedBusinessId.value,
+      businessName: null,
+      isNewBusiness: false,
+      locationId: null,
+      isNewBranch: true,
+      branchCityTown: manualCity.value,
+      branchState: manualState.value,
+      branchStreet: null
+    };
+  } else if (selectedBranchOption.value) {
+    // Existing branch selected
+    const selectedBranch = branches.value.find(b => b.id === selectedBranchOption.value);
+    locationData = {
+      businessId: selectedBusinessId.value,
+      businessName: null,
+      isNewBusiness: false,
+      locationId: selectedBranchOption.value === 'business-address' ? null : selectedBranchOption.value,
+      isNewBranch: selectedBranchOption.value === 'business-address',
+      branchCityTown: selectedBranch?.branchCityTown || null,
+      branchState: selectedBranch?.branchState || null,
+      branchStreet: null
+    };
+  }
+
   const data = {
-    // Business info
-    businessId: selectedBusinessId.value || null,
-    businessName: isAddingNewBusiness.value ? businessName.value : null,
-    isNewBusiness: isAddingNewBusiness.value,
-    
-    // Branch/Location info
-    locationId: selectedBranchId.value || null,
-    isNewBranch: isAddingNewBranch.value,
-    
-    // Address fields - use different refs based on context
-    branchStreet: isAddingNewBusiness.value ? branchStreet.value : (isAddingNewBranch.value ? newBranchStreet.value : null),
-    branchCityTown: isAddingNewBusiness.value ? branchCityTown.value : (isAddingNewBranch.value ? newBranchCityTown.value : null),
-    branchState: isAddingNewBusiness.value ? branchState.value : (isAddingNewBranch.value ? newBranchState.value : null),
-    
-    // Review details
+    ...locationData,
     reviewerId: isAuthenticated.value ? store.userId : null,
     email: (isGuest.value || anonymous.value) ? email.value : null,
     starRating: rating.value,
@@ -580,35 +593,31 @@ const submitReview = async () => {
 
   try {
     const response = await submitUserReview(data);
-    
+
     let message = "Review submitted successfully! It will be published after validation.";
     if (isAddingNewBusiness.value) {
       message = "Business created and review submitted successfully! It will be published after validation.";
-    } else if (isAddingNewBranch.value) {
+    } else if (manualEntryEnabled.value) {
       message = "New branch added and review submitted successfully! It will be published after validation.";
     }
-    
+
     alert(message);
-    
+
     // Reset form
     businessName.value = "";
     selectedBusinessId.value = "";
-    selectedBranchId.value = "";
-    branchSearch.value = "";
-    branchStreet.value = "";
-    branchCityTown.value = "";
-    branchState.value = "";
-    newBranchStreet.value = "";
-    newBranchCityTown.value = "";
-    newBranchState.value = "";
+    selectedBranchOption.value = "";
+    newBusinessState.value = "";
+    newBusinessCity.value = "";
+    manualState.value = "";
+    manualCity.value = "";
     rating.value = 0;
     reviewBody.value = "";
     images.value = [];
     branches.value = [];
-    filteredBranches.value = [];
     isAddingNewBusiness.value = false;
-    isAddingNewBranch.value = false;
-    
+    manualEntryEnabled.value = false;
+
     if (isGuest.value) email.value = "";
     else anonymous.value = false;
   } catch (error: any) {
@@ -625,20 +634,16 @@ const getFraction = (event: MouseEvent) => {
 };
 
 const handleClickOutside = (event: MouseEvent) => {
-  if (businessDropdownRef.value && !businessDropdownRef.value.contains(event.target as Node)) 
+  if (businessDropdownRef.value && !businessDropdownRef.value.contains(event.target as Node))
     showBusinessDropdown.value = false;
-  if (branchDropdownRef.value && !branchDropdownRef.value.contains(event.target as Node)) 
-    showBranchDropdown.value = false;
 };
 
-// Inside <script setup> in your write-review page
 const route = useRoute();
 
 onMounted(async () => {
-  // 1. Existing click listener logic
   document.addEventListener('click', handleClickOutside);
 
-  // 2. Handle pre-population from query params
+  // Handle pre-population from query params
   const { bizId, bizName, bizLogo } = route.query;
 
   if (bizName) {
@@ -648,15 +653,14 @@ onMounted(async () => {
   if (bizId) {
     selectedBusinessId.value = bizId as string;
     selectedBusinessLogo.value = (bizLogo as string) || "";
-    
-    // Automatically fetch branches for this business
+
     await fetchBranches(selectedBusinessId.value);
-    
-    // UI state adjustments
+
     showBusinessDropdown.value = false;
     isAddingNewBusiness.value = false;
   }
 });
+
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
 const rateBusiness = (index: number, value: number) => {
@@ -670,12 +674,12 @@ watch(businessName, (val) => {
   if (!val) {
     selectedBusinessLogo.value = "";
     selectedBusinessId.value = "";
-    selectedBranchId.value = "";
-    branchSearch.value = "";
+    selectedBranchOption.value = "";
     branches.value = [];
-    filteredBranches.value = [];
     isAddingNewBusiness.value = false;
-    isAddingNewBranch.value = false;
+    manualEntryEnabled.value = false;
+    manualState.value = "";
+    manualCity.value = "";
   }
 });
 </script>
