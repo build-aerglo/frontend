@@ -8,13 +8,13 @@
         <div class="card">
           <div class="card-body">
 
-            <div class="app-brand justify-content-center mb-9">
+            <div class="app-brand justify-content-center mb-2">
               <NuxtLink to="/">
                 <NavLogo />
               </NuxtLink>
             </div>
 
-            <p class="mb-6 text-[105%] sm:text-[110%] text-contrast text-center">
+            <p class="mb-6 text-[95%] sm:text-[100%] text-contrast text-center">
               Build customer trust through real feedback!
             </p>
 
@@ -35,7 +35,7 @@
               <!-- FIXED: MULTIPLE SELECT -->
               <div class="form-control-validation">
                 <span class="text-contrast text-[95%] mb-1">Business Sector</span>
-                <MultiSelect v-model="businessData.categoryIds" :options="categories" optionLabel="name" optionValue="id" filter required
+                <Select v-model="businessData.categoryIds" :options="categories"  :selectionLimit="1" optionLabel="name" optionValue="id" filter required
                 :maxSelectedLabels="3" class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] 
                 focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
                 bg-secondaryLinen" />               

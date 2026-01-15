@@ -486,7 +486,7 @@ const getRatingLabel = (rating: number) => {
 };
 
 const setRating = (value: number) => {
-  rating.value = value > 4.5 ? 5 : Math.round(value * 10) / 10;
+  rating.value = Math.round(value * 2) / 2; // Rounds to nearest 0.5
 };
 
 // Submit review
@@ -631,10 +631,12 @@ const submitReview = async () => {
   }
 };
 
-const getFraction = (event: MouseEvent) => {
+const getFraction = (event: MouseEvent): number => {
   const rect = (event.target as HTMLElement).getBoundingClientRect();
   const x = event.clientX - rect.left;
-  return Math.round((x / rect.width) / 0.1) * 0.1;
+  const fraction = x / rect.width;
+  // Snap to 0, 0.5, or 1 based on position
+  return fraction < 0.25 ? 0 : (fraction < 0.75 ? 0.5 : 1);
 };
 
 const handleClickOutside = (event: MouseEvent) => {
@@ -668,7 +670,7 @@ onMounted(async () => {
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
 const rateBusiness = (index: number, value: number) => {
-  featuredBusinesses.value[index]!.rating = value > 4.5 ? 5 : Math.round(value * 10) / 10;
+  featuredBusinesses.value[index]!.rating = Math.round(value * 2) / 2;
 };
 
 const removeBusiness = (index: number) => featuredBusinesses.value.splice(index, 1);

@@ -1,6 +1,6 @@
 <template>
    <NavBar />
-  <div class="flex h-screen overflow-hidden">
+  <div class="flex h-[calc(100vh-4rem)] overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img src="~/assets/images/e-user-bg.png" alt="Join the community" class="object-cover w-full h-full" />
@@ -15,7 +15,9 @@
     <div class="flex flex-col justify-center items-center px-8 w-full bg-gray-50 md:w-1/3">
       <div class="w-full max-w-md">
         <div class="flex justify-center mb-1 mt-2">
-          <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
+          <NuxtLink to="/">
+            <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
+          </NuxtLink>
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] my-3">Clear reviews, Confident decisions.</div>
         

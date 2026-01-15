@@ -1,19 +1,18 @@
 <template>
    <NavBar />
-  <div class="container-xxl relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
+  <div class="h-[calc(100vh-4rem)] overflow-hidden relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
     <div class="absolute inset-0 bg-black/50"></div>
-    <div class="authentication-wrapper authentication-basic container-p-y">
-      <div class="authentication-inner py-6">
-        <div class="card">
+      <div class="h-full flex items-center justify-center relative z-10">
+        <div class="card w-full max-w-md -translate-y-6">
           <div class="card-body">
-            <div class="app-brand justify-content-center mb-9">
+            <div class="app-brand justify-content-center mb-3">
               <NuxtLink to="/" class="md:text-center">
                   <NavLogo />
               </NuxtLink>
             </div>
-            <p class="mb-6 text-[105%] sm:text-[110%] text-center text-contrast">Sign in to manage reviews and track your business growth.</p>
+            <p class="mb-6 text-[95%] sm:text-[100%] text-center text-contrast">Sign in to manage reviews and track your business growth.</p>
 
-            <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-4">
+            <form @submit.prevent="HandleLogin" id="formAuthentication" class="mb-2">
               
               <div class="form-control-validation">
                 <InputTextCustom v-model="loginData.email" label="Email" type="email" required />
@@ -52,7 +51,6 @@
 
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -131,7 +129,7 @@ const HandleLogin = async () => {
       });
 
       if (store.id) {
-        navigateTo('/business/profile');
+        navigateTo('/business/dashboard');
       } else {
         navigateTo('sign-up');
       }
