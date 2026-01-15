@@ -35,7 +35,7 @@
               <!-- FIXED: MULTIPLE SELECT -->
               <div class="form-control-validation">
                 <span class="text-contrast text-[95%] mb-1">Business Sector</span>
-                <MultiSelect v-model="businessData.categoryIds" :options="categories"  :selectionLimit="1" optionLabel="name" optionValue="id" filter required
+                <Select v-model="businessData.categoryIds" :options="categories"  :selectionLimit="1" optionLabel="name" optionValue="id" filter required
                 :maxSelectedLabels="3" class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] 
                 focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
                 bg-secondaryLinen" />               
