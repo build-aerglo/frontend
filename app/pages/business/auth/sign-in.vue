@@ -131,7 +131,7 @@ const HandleLogin = async () => {
       });
 
       if (store.id) {
-        navigateTo(`/biz/${store.id}`);
+        navigateTo('/business/profile');
       } else {
         navigateTo('sign-up');
       }
