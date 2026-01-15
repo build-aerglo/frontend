@@ -165,7 +165,7 @@ const handleSocialLogin = async (provider: string) => {
 
   try {
     // Validate provider
-    const validProviders = ['google', 'facebook', 'twitter', 'apple'];
+    const validProviders = ['google-oauth2', 'facebook', 'twitter', 'github'];
     if (!validProviders.includes(provider.toLowerCase())) {
       throw new Error(`Invalid social login provider: ${provider}`);
     }

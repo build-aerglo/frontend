@@ -27,8 +27,12 @@
                 <i v-if="isSearching"
                   class="pi pi-spin pi-spinner absolute right-10 top-1/2 -translate-y-1/2 text-gray-400"></i>
 
-                <img v-if="selectedBusinessLogo" :src="selectedBusinessLogo" alt="Business Logo"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 object-contain" />
+                <img 
+                  v-if="selectedBusinessId || isAddingNewBusiness" 
+                  :src="selectedBusinessLogo || '/images/default-business-logo.png'" 
+                  alt="Business Logo"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 object-contain rounded" 
+                />
               </div>
 
               <!-- Search Results Dropdown -->
@@ -36,7 +40,7 @@
                 class="bg-white shadow-xl mt-1 rounded-lg border max-h-60 overflow-y-auto absolute z-50 w-full">
                 <li v-for="(b, i) in filteredBusinesses" :key="i" @click="selectBusiness(b)"
                   class="px-4 py-3 cursor-pointer hover:bg-green-50 border-b last:border-none flex items-center gap-3">
-                  <img v-if="b.logo" :src="b.logo" class="w-6 h-6 rounded-full object-cover" />
+                  <img v-if="b.logo" :src="b.logo || '/images/default-business-logo.png'" class="w-6 h-6 rounded-full object-cover" />
                   <span class="font-medium text-gray-800">{{ b.name }}</span>
                 </li>
               </ul>
