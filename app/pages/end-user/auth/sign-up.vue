@@ -171,191 +171,39 @@ watch([() => form.value.password, confirmPassword], () => {
   if (isValid.value) isValid.value = false;
 });
 
-const validateForm = (): { isValid: boolean; errorMessage?: string } => {
-  // Validate username
-  if (!form.value.username || form.value.username.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Username is required.' };
-  }
-
-  if (form.value.username.trim().length < 3) {
-    return { isValid: false, errorMessage: 'Username must be at least 3 characters long.' };
-  }
-
-  if (form.value.username.trim().length > 30) {
-    return { isValid: false, errorMessage: 'Username must not exceed 30 characters.' };
-  }
-
-  // Username should only contain alphanumeric characters, underscores, and hyphens
-  const usernameRegex = /^[a-zA-Z0-9_-]+$/;
-  if (!usernameRegex.test(form.value.username.trim())) {
-    return { isValid: false, errorMessage: 'Username can only contain letters, numbers, underscores, and hyphens.' };
-  }
-
-  // Validate email
-  if (!form.value.email || form.value.email.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Email address is required.' };
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(form.value.email)) {
-    return { isValid: false, errorMessage: 'Please enter a valid email address.' };
-  }
-
-  // Validate phone
-  if (!form.value.phone || form.value.phone.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Phone number is required.' };
-  }
-
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  if (!phoneRegex.test(form.value.phone)) {
-    return { isValid: false, errorMessage: 'Please enter a valid phone number.' };
-  }
-
-  if (form.value.phone.replace(/\D/g, '').length < 10) {
-    return { isValid: false, errorMessage: 'Phone number must be at least 10 digits.' };
-  }
-
-  // Validate social media if provided
-  if (form.value.socialMedia && form.value.socialMedia.trim().length > 0) {
-    // Basic URL validation for social media
-    const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    const handleRegex = /^@?[\w\.]+$/; // For handles like @username or username
-    
-    if (!urlRegex.test(form.value.socialMedia) && !handleRegex.test(form.value.socialMedia)) {
-      return { isValid: false, errorMessage: 'Please enter a valid social media URL or handle.' };
-    }
-  }
-
-  // Validate password
-  if (!form.value.password || form.value.password.length === 0) {
-    return { isValid: false, errorMessage: 'Password is required.' };
-  }
-
-  if (!allValid.value) {
-    if (!validLength.value) {
-      return { isValid: false, errorMessage: 'Password must be at least 8 characters long.' };
-    }
-    if (!validNumeric.value) {
-      return { isValid: false, errorMessage: 'Password must contain at least one number.' };
-    }
-    if (!validComplexity.value) {
-      return { isValid: false, errorMessage: 'Password must contain at least one special character (@, #, &, $, _, ?).' };
-    }
-  }
-
-  // Validate password confirmation
-  if (!confirmPassword.value || confirmPassword.value.length === 0) {
-    return { isValid: false, errorMessage: 'Please confirm your password.' };
-  }
-
-  if (confirmPassword.value !== form.value.password) {
-    return { isValid: false, errorMessage: 'Passwords do not match.' };
-  }
-
-  return { isValid: true };
-};
 
 const handleEndUserRegistration = async () => {
-  // Clear previous errors
-  registrationError.value = null;
-
-  // Validate form
-  const validation = validateForm();
-  if (!validation.isValid) {
-    registrationError.value = validation.errorMessage || 'Please check your input.';
-    toast.add({
+  if (!allValid.value) return;
+  if (confirmPassword.value !== form.value.password) {
+    return toast.add({
       severity: 'error',
-      summary: 'Validation Error',
-      detail: registrationError.value,
-      life: 4000
+      summary: 'ERROR', detail: 'Password do not match', life: 3000
     });
-    return;
   }
+
 
   try {
     isLoading.value = true;
+    registrationError.value = null;
 
     const res = await registerEndUser(form.value);
-    
     if (res) {
-      toast.add({ 
-        severity: 'success', 
-        summary: 'Success', 
-        detail: 'Account created successfully! Redirecting to login...', 
-        life: 3000 
-      });
-      
-      // Clear sensitive data
-      form.value.password = '';
-      password.value = '';
-      confirmPassword.value = '';
-      
-      setTimeout(() => {
-        navigateTo('sign-in');
-      }, 1000);
+      toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Registered successfully!', life: 3000 });
+      navigateTo('sign-in');
     } else {
-      registrationError.value = 'Registration failed. Please try again.';
       toast.add({
         severity: 'error',
-        summary: 'Registration Failed',
-        detail: registrationError.value,
-        life: 3000
+        summary: 'ERROR', detail: 'Registration failed. Check the form data and try again.', life: 3000
       });
     }
-  } catch (error: any) {
-    console.error('Registration error:', error);
 
-    // Handle specific error responses from the API
-    if (error.response) {
-      const status = error.response.status;
-      const errorMessage = error.response.data?.message || error.response.data?.error;
-
-      switch (status) {
-        case 400:
-          registrationError.value = errorMessage || 'Invalid registration data. Please check your input.';
-          break;
-        case 409:
-          // Conflict - email or username already exists
-          if (errorMessage?.toLowerCase().includes('email')) {
-            registrationError.value = 'An account with this email already exists.';
-          } else if (errorMessage?.toLowerCase().includes('username')) {
-            registrationError.value = 'This username is already taken. Please choose another.';
-          } else if (errorMessage?.toLowerCase().includes('phone')) {
-            registrationError.value = 'An account with this phone number already exists.';
-          } else {
-            registrationError.value = errorMessage || 'An account with these details already exists.';
-          }
-          break;
-        case 422:
-          registrationError.value = errorMessage || 'Please check that all required fields are filled correctly.';
-          break;
-        case 429:
-          registrationError.value = 'Too many registration attempts. Please try again in a few minutes.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          registrationError.value = 'Server error. Please try again in a few moments.';
-          break;
-        default:
-          registrationError.value = errorMessage || 'Registration failed. Please try again.';
-      }
-    } else if (error.request) {
-      // Network error - request was made but no response received
-      registrationError.value = 'Network error. Please check your internet connection and try again.';
-    } else {
-      // Other errors
-      registrationError.value = error.message || 'An unexpected error occurred. Please try again.';
-    }
-
+    isLoading.value = false;
+  } catch (error) {
+    console.log(error)
     toast.add({
       severity: 'error',
-      summary: 'Registration Error',
-      detail: registrationError.value,
-      life: 4000
+      summary: 'ERROR', detail: 'Registration failed. Check the form data and try again.', life: 3000
     });
-  } finally {
-    isLoading.value = false;
   }
 }
 </script>

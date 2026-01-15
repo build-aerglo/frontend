@@ -149,233 +149,42 @@ const userData = ref<LoginData>({
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
-const errorMessage = ref<string | null>(null);
-const loginError = ref<string | null>(null);
+const errorMessage = ref<string>("");
 
+const loginError = ref<string | null>(null);
 function togglePassword() {
   showPassword.value = !showPassword.value;
 }
-
 const { initiateSocialLogin } = useSocialAuth()
 
 const handleSocialLogin = async (provider: string) => {
-  // Clear any previous errors
-  errorMessage.value = "";
-  loginError.value = null;
-
-  try {
-    // Validate provider
-    const validProviders = ['google', 'facebook', 'twitter', 'apple'];
-    if (!validProviders.includes(provider.toLowerCase())) {
-      throw new Error(`Invalid social login provider: ${provider}`);
-    }
-
-    // Store the provider so the callback page knows who we logged in with
-    localStorage.setItem('social_provider', provider);
-    
-    // Initiate social login
-    await initiateSocialLogin(provider);
-  } catch (error: any) {
-    console.error(`Social login error for ${provider}:`, error);
-    
-    const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
-    
-    // Handle specific errors
-    if (error.message?.includes('popup') || error.message?.includes('blocked')) {
-      errorMessage.value = `Pop-up blocked. Please allow pop-ups for ${providerName} login.`;
-    } else if (error.message?.includes('cancelled') || error.message?.includes('closed')) {
-      errorMessage.value = `${providerName} login was cancelled.`;
-      // Don't show toast for user-cancelled actions
-      return;
-    } else if (error.message?.includes('network')) {
-      errorMessage.value = 'Network error. Please check your internet connection.';
-    } else {
-      errorMessage.value = error.message || `Unable to connect with ${providerName}. Please try again.`;
-    }
-    
-    toast.add({
-      severity: 'error',
-      summary: 'Social Login Error',
-      detail: errorMessage.value,
-      life: 4000
-    });
-  }
+  // Store the provider so the callback page knows who we logged in with
+  localStorage.setItem('social_provider', provider)
+  await initiateSocialLogin(provider)
 }
 
 const HandleLogin = async () => {
-  // Clear previous errors
-  loginError.value = null;
-  errorMessage.value = "";
-
-  // Client-side validation
-  if (!userData.value.email || !userData.value.password) {
-    loginError.value = 'Please enter both email and password.';
-    errorMessage.value = loginError.value;
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Validation Error', 
-      detail: loginError.value, 
-      life: 3000 
-    });
-    return;
-  }
-
-  // Basic email format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(userData.value.email)) {
-    loginError.value = 'Please enter a valid email address.';
-    errorMessage.value = loginError.value;
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Validation Error', 
-      detail: loginError.value, 
-      life: 3000 
-    });
-    return;
-  }
-
-  // Password minimum length check
-  if (userData.value.password.length < 6) {
-    loginError.value = 'Password is too short.';
-    errorMessage.value = loginError.value;
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Validation Error', 
-      detail: loginError.value, 
-      life: 3000 
-    });
-    return;
-  }
-
   isLoading.value = true;
+  loginError.value = null; 
 
-  try {
-    const res = await loginUser(userData.value);
+  const res = await loginUser(userData.value);
 
-    if (res) {
-      console.log(res);
-      
-      // Check if we have the required authentication data
-      if (!store.accessToken) {
-        throw new Error('Authentication failed - no access token received');
-      }
-
-      if (store.role !== 'end_user') {
-        loginError.value = 'This account is not authorized for user access.';
-        errorMessage.value = loginError.value;
-        toast.add({ 
-          severity: 'error', 
-          summary: 'Access Denied', 
-          detail: loginError.value, 
-          life: 4000 
-        });
-        return;
-      }
-
-      // Check if user ID exists
-      if (!store.id) {
-        throw new Error('User ID not found in authentication response');
-      }
-
-      // Successful login
-      toast.add({ 
-        severity: 'success', 
-        summary: 'Success', 
-        detail: 'Logged in successfully', 
-        life: 3000 
-      });
-
-      // Handle remember me functionality if needed
-      if (rememberMe.value) {
-        localStorage.setItem('rememberMe', 'true');
-        localStorage.setItem('userEmail', userData.value.email);
-      } else {
-        localStorage.removeItem('rememberMe');
-        localStorage.removeItem('userEmail');
-      }
-
-      return navigateTo(`/user/${store.id}`);
+  if (res) {
+    console.log(res);
+    if (store.accessToken && store.role === 'end_user') {
+          toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Logged in successfully', life: 3000 });
+          return navigateTo(`/user/${store.id}`);
     } else {
-      // Login returned false - generic failure
-      loginError.value = 'Invalid email or password. Please try again.';
-      errorMessage.value = loginError.value;
-      toast.add({ 
-        severity: 'error', 
-        summary: 'Login Failed', 
-        detail: loginError.value, 
-        life: 3000 
-      });
+        loginError.value = 'Login succeeded, but no token was stored.';
     }
-  } catch (error: any) {
-    console.error('Login error:', error);
-
-    // Handle specific error responses from the API
-    if (error.response) {
-      const status = error.response.status;
-      const errorMsg = error.response.data?.message || error.response.data?.error;
-
-      switch (status) {
-        case 400:
-          loginError.value = errorMsg || 'Invalid request. Please check your credentials.';
-          break;
-        case 401:
-          loginError.value = 'Invalid email or password.';
-          break;
-        case 403:
-          if (errorMsg?.toLowerCase().includes('suspended')) {
-            loginError.value = 'Your account has been suspended. Please contact support.';
-          } else if (errorMsg?.toLowerCase().includes('verified')) {
-            loginError.value = 'Please verify your email address before logging in.';
-          } else {
-            loginError.value = errorMsg || 'Access denied. Please contact support.';
-          }
-          break;
-        case 404:
-          loginError.value = 'Account not found. Please check your email address.';
-          break;
-        case 422:
-          loginError.value = errorMsg || 'Invalid credentials format.';
-          break;
-        case 429:
-          loginError.value = 'Too many login attempts. Please try again in a few minutes.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          loginError.value = 'Server error. Please try again in a few moments.';
-          break;
-        default:
-          loginError.value = errorMsg || 'An unexpected error occurred. Please try again.';
-      }
-    } else if (error.request) {
-      // Network error - request was made but no response received
-      loginError.value = 'Network error. Please check your internet connection.';
-    } else {
-      // Other errors (e.g., thrown errors)
-      loginError.value = error.message || 'An unexpected error occurred. Please try again.';
-    }
-
-    errorMessage.value = loginError.value;
-    
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Login Error', 
-      detail: loginError.value, 
-      life: 4000 
-    });
-  } finally {
-    isLoading.value = false;
+  } else {
+    loginError.value = 'Login failed. Please check your credentials and network connection.';
+    toast.add({ severity: 'error', summary: 'ERROR', detail: 'sign in Failed', life: 3000});
   }
+
+  isLoading.value = false;
 }
 
-// Load remembered email on mount if remember me was checked
-onMounted(() => {
-  const remembered = localStorage.getItem('rememberMe');
-  const savedEmail = localStorage.getItem('userEmail');
-  
-  if (remembered === 'true' && savedEmail) {
-    rememberMe.value = true;
-    userData.value.email = savedEmail;
-  }
-});
+// Inside sign-in.vue
+
 </script>
