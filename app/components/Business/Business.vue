@@ -147,7 +147,11 @@
               <span>Business Tags</span>
               <span> {{ selected_tags.length }} / {{ MAX_TAGS }} </span>
             </label>
-            <div class="flex flex-wrap gap-2 mt-[10px]">
+
+            <div
+              v-if="business_tags && business_tags.length > 0"
+              class="flex flex-wrap gap-2 mt-[10px]"
+            >
               <Chip
                 v-for="tag in business_tags"
                 :key="tag"
@@ -168,6 +172,9 @@
                 />
               </Chip>
             </div>
+            <small class="mt-2.5" v-else
+              >No tags added for this category yet.</small
+            >
           </div>
           <div>
             <label>Business Highlights</label>
@@ -176,7 +183,9 @@
                 v-for="(i, idx) in highlights"
                 :key="idx"
                 :class="{
-                  'border-primary': businessData.highlights.includes(i.title),
+                  'border-primary':
+                    businessData.highlights &&
+                    businessData.highlights.includes(i.title),
                 }"
                 class="flex gap-2.5 p-2.5 border rounded-md"
               >
@@ -278,7 +287,8 @@
             />
           </div>
           <div class="mt-[10px]">
-            <div class="flex justify-end">
+            <div class="flex justify-between gap-2.5 items-center">
+              <div>Manage Social Handles:</div>
               <ButtonCustom
                 icon="plus"
                 input-class="w-max"
@@ -622,7 +632,7 @@
                 class="w-[40px] h-[40px]"
               />
             </div>
-            
+
             <img
               :src="business?.logo ?? '/images/default-business-logo.png'"
               class="object-contain object-center w-full h-[150px] lg:h-[200px]"
@@ -851,7 +861,7 @@ const { saveBusinessProfile, getCategoryTags } = useBusinessMethods();
 const toast = useToast();
 
 function isChecked(title: string): boolean {
-  if (!businessData.value) return false;
+  if (!businessData.value || !businessData.value.highlights) return false;
   return businessData.value.highlights.includes(title);
 }
 
@@ -995,17 +1005,27 @@ onBeforeMount(async () => {
   currentPage.value = props.page ?? "review";
   if (props.business) {
     businessData.value = props.business;
-    availableSocials.value = SOCIAL_HANDLES.filter(
-      (social) => !(social in businessData.value?.socialMediaLinks)
-    );
+    if (businessData.value?.socialMediaLinks) {
+      availableSocials.value = SOCIAL_HANDLES.filter(
+        (social) => !(social in businessData.value?.socialMediaLinks)
+      );
+    } else {
+      availableSocials.value = SOCIAL_HANDLES;
+    }
     social.value.name = availableSocials.value[0] ?? "";
     business_category.value = businessData.value?.categories[0];
-    selected_tags.value = businessData.value?.tags;
+    selected_tags.value = businessData.value?.tags ?? [];
 
     await fetchTags(businessData.value?.categories[0]?.id!);
-
     if (businessData.value) {
-      if (!props.business.openingHours) {
+      if (props.business.highlights === null) {
+        businessData.value.highlights = [];
+      }
+
+      if (
+        !props.business.openingHours ||
+        props.business.openingHours === null
+      ) {
         businessData.value.openingHours = parseOpeningHours(
           rawToNormalized({
             monday: "00:00 - 00:00",
@@ -1161,12 +1181,12 @@ const updateProfile = async () => {
 };
 const getStatusIcon = (status: string) => {
   const iconMap: Record<string, string> = {
-    'claimed': '/svg/pills/b-user-claim2.svg',
-    'unclaimed': '/svg/pills/b-user-unclaimed.svg',
-    'in-progress': '/svg/pills/b-user-claimInPrgress.svg'
+    claimed: "/svg/pills/b-user-claim2.svg",
+    unclaimed: "/svg/pills/b-user-unclaimed.svg",
+    "in-progress": "/svg/pills/b-user-claimInPrgress.svg",
   };
-  
-  return iconMap[status] || '/svg/pills/b-user-unclaimed.svg';
+
+  return iconMap[status] || "/svg/pills/b-user-unclaimed.svg";
 };
 </script>
 
