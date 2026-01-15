@@ -624,34 +624,38 @@
           <div
   class="relative p-[5px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[10px] items-center"
 >
-  <!-- Logo with conditional SVG background -->
-  <div class="relative w-full">
-    <!-- SVG Background for trusted/verified -->
-    <img
-      v-if="badge && (badge.badge === 'b-user-trusted' || badge.badge === 'b-user-verified')"
-      :src="`/svg/badges/${badge.badge}.svg`"
-      class="absolute inset-0 w-full h-full lg:h-[200px] object-contain"
-      :alt="'/svg/badges/b-user-verified.svg'"
-    />
-    
-    <!-- Business Logo -->
+  <!-- BADGE / LOGO WRAPPER -->
+<div class="relative w-full h-[180px] flex items-center justify-center">
+
+  <!-- SVG BADGE (outer rectangle) -->
+  <img
+    v-if="badge && (badge.badge === 'b-user-trusted' || badge.badge === 'b-user-verified')"
+    :src="`/svg/badges/${badge.badge}.svg`"
+    class="absolute inset-0 w-full h-full object-contain z-0"
+    alt="badge"
+  />
+
+  <!-- LOGO sits INSIDE the badge -->
+  <div class="relative z-10 w-[70%] h-[70%] flex items-center justify-center">
     <img
       :src="business?.logo ?? '/images/default-business-logo.png'"
-      class="relative object-contain object-center w-full h-[150px] lg:h-[200px]"
+      class="w-full h-full object-contain"
       :alt="business?.name"
     />
   </div>
 
+</div>
+
+
   <!-- Claimed/Unclaimed Pill -->
   <div 
-    v-if="business?.businessStatus === 'claimed' || business?.businessStatus === 'unclaimed' || business?.businessStatus === 'in-progress'"
-    class="w-full px-2"
+    class="w-full px-1"
   >
     <div
       :class="{
         'bg-green-100 text-green-700 border-green-300': business?.businessStatus === 'claimed',
         'bg-gray-100 text-gray-700 border-gray-300': business?.businessStatus === 'unclaimed',
-        'bg-yellow-100 text-yellow-700 border-yellow-300': business?.businessStatus === 'in-progress'
+        'bg-yellow-100 text-yellow-700 border-yellow-300': business?.businessStatus === 'in_progress'
       }"
       class="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full border text-xs sm:text-sm font-medium"
     >
@@ -659,7 +663,7 @@
         :class="{
           'bg-green-500': business?.businessStatus === 'claimed',
           'bg-gray-400': business?.businessStatus === 'unclaimed',
-          'bg-yellow-500': business?.businessStatus === 'in-progress'
+          'bg-yellow-500': business?.businessStatus === 'in_progress'
         }"
       ></span>
       <span class="capitalize">{{ businessClaim(business?.businessStatus) }}</span>
