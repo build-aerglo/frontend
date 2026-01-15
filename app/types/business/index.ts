@@ -98,6 +98,9 @@ export interface BusinessProfileResponse {
   profileClicks: number;
   faqs: any;
   qrCodeBase64: string;
+  businessState?: string;
+  businessStreet?: string;
+  businessCityTown?: string;
 }
 
 export interface BusinessPreference {
@@ -105,7 +108,6 @@ export interface BusinessPreference {
   dndModeEnabled: boolean;
   dndModeDurationHours: number;
 }
-
 
 export interface Branch {
   id: string;
@@ -132,7 +134,7 @@ export interface TagBusiness {
   cacNumber: string | null;
   accessUsername: string | null;
   accessNumber: string | null;
-  socialMediaLinks: any | null; 
+  socialMediaLinks: any | null;
   businessDescription: string | null;
   media: any | null;
   isVerified: boolean;
@@ -158,3 +160,15 @@ export interface CategoryBusiness {
 }
 
 export type Business = TagBusiness | CategoryBusiness;
+
+export interface ClaimData {
+  businessId: string;
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  role: string;
+  idDocumentUrl: string | null;
+  cacDocumentUrl: string | null;
+  proofOfOwnerShipUrl: string | null;
+  cacNumber: string;
+}
