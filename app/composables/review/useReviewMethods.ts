@@ -32,6 +32,6 @@ export default function () {
 
   return {
     submitUserReview,
-    getUserReviews
+    getUserReviews,
   };
 }
