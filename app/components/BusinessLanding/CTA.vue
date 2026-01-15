@@ -7,7 +7,7 @@
       </h2>
       <div class="mt-8 flex justify-center lg:mt-0 lg:flex-shrink-0">
         <div class="inline-flex rounded-md shadow">
-          <NuxtLink to="/business/[id]" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-emerald-600 bg-white hover:bg-emerald-50">
+          <NuxtLink to="/biz/[id]/claim-business" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-emerald-600 bg-white hover:bg-emerald-50">
             Claim Your Business
           </NuxtLink>
         </div>

@@ -4,7 +4,7 @@ export interface BusinessUser {
   phone: string;
   password: string;
   userType: string;
-  categoryIds: string[];
+  categoryId: string | null;
   address: string | null;
   branchName: string | null;
   branchAddress: string | null;

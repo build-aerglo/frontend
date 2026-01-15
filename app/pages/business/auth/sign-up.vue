@@ -8,17 +8,17 @@
         <div class="card">
           <div class="card-body">
 
-            <div class="app-brand justify-content-center mb-9">
+            <div class="app-brand justify-content-center mb-2">
               <NuxtLink to="/">
                 <NavLogo />
               </NuxtLink>
             </div>
 
-            <p class="mb-6 text-[105%] sm:text-[110%] text-contrast text-center">
+            <p class="mb-6 text-[95%] sm:text-[100%] text-contrast text-center">
               Build customer trust through real feedback!
             </p>
 
-            <form @submit.prevent="handleRegistration" class="mb-6">
+            <form @submit.prevent="handleRegistration" class="mb-3">
 
               <div class="form-control-validation">
                 <InputTextCustom v-model="businessData.name" label="Business Name" type="text" required />
@@ -32,13 +32,21 @@
                 <InputTextCustom v-model="businessData.phone" label="Phone Number" type="tel" required />
               </div>
 
-              <!-- FIXED: MULTIPLE SELECT -->
-              <div class="form-control-validation">
-                <span class="text-contrast text-[95%] mb-1">Business Sector</span>
-                <MultiSelect v-model="businessData.categoryIds" :options="categories" optionLabel="name" optionValue="id" filter required
-                :maxSelectedLabels="3" class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] 
-                focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
-                bg-secondaryLinen" />               
+              <div>
+                <label class="block text-sm font-medium text-slate-900 mb-1">Business Sector</label>
+                <Dropdown
+  v-model="businessData.categoryId"
+  :options="categories"
+  optionLabel="name"
+  optionValue="id"
+  placeholder="Select"
+  filter
+  required
+  class="w-full mt-1 mb-3 border border-gray-300 rounded-[5px]
+         focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300
+         bg-secondaryLinen"
+/>
+
               </div>
 
               <div class="form-password-toggle form-control-validation">
@@ -141,7 +149,7 @@ const businessData = ref<BusinessUser>({
   phone: '',
   userType: 'business_user',
   password: '',
-  categoryIds: [],
+  categoryId: null,
   address: null,
   branchName: null,
   branchAddress: null,
@@ -239,9 +247,9 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
   }
 
   // Validate categories
-  if (!businessData.value.categoryIds || businessData.value.categoryIds.length === 0) {
-    return { isValid: false, errorMessage: 'Please select at least one business category.' };
-  }
+  if (!businessData.value.categoryId) {
+  return { isValid: false, errorMessage: 'Please select a business category.' };
+}
 
   return { isValid: true };
 };

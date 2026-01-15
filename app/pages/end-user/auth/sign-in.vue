@@ -1,6 +1,6 @@
 <template>
    <NavBar />
-  <div class="flex h-screen overflow-hidden">
+  <div class="flex h-[calc(100vh-4rem)] overflow-hidden">
     <!-- Left Image Section -->
     <div class="hidden md:flex w-2/3 relative">
       <img
@@ -18,10 +18,12 @@
     <div class="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 px-4">
       <div class="w-full max-w-sm space-y-5">
         <div class="flex justify-center mb-4">
-          <img
-            src="~/assets/images/e-user-logo.png"
-            class="h-12 w-auto object-contain"
-          />
+          <NuxtLink to="/">
+            <img
+              src="~/assets/images/e-user-logo.png"
+              class="h-12 w-auto object-contain"
+            />
+          </NuxtLink>
         </div>
         <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">
           Clear reviews, Confident decisions.

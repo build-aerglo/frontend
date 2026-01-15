@@ -622,45 +622,69 @@
       <template #content>
         <div class="flex sm:flex-row flex-col gap-[20px]">
           <div
-            class="relative p-[5px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[10px] items-center"
-          >
-            <div class="absolute top-[-10px] right-0">
-              <img
-                v-if="badge"
-                :src="`/svg/badges/${badge.badge}.svg`"
-                v-tooltip.top="badge.status"
-                class="w-[40px] h-[40px]"
-              />
-            </div>
+  class="relative p-[5px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[10px] items-center"
+>
+  <!-- Logo with conditional SVG background -->
+  <div class="relative w-full">
+    <!-- SVG Background for trusted/verified -->
+    <img
+      v-if="badge && (badge.badge === 'b-user-trusted' || badge.badge === 'b-user-verified')"
+      :src="`/svg/badges/${badge.badge}.svg`"
+      class="absolute inset-0 w-full h-full lg:h-[200px] object-contain"
+      :alt="'/svg/badges/b-user-verified.svg'"
+    />
+    
+    <!-- Business Logo -->
+    <img
+      :src="business?.logo ?? '/images/default-business-logo.png'"
+      class="relative object-contain object-center w-full h-[150px] lg:h-[200px]"
+      :alt="business?.name"
+    />
+  </div>
 
-            <img
-              :src="business?.logo ?? '/images/default-business-logo.png'"
-              class="object-contain object-center w-full h-[150px] lg:h-[200px]"
-              :alt="business?.name"
-            />
-            <div class="flex flex-col gap-2.5 justify-center w-[100px]">
-              <Star :count="business?.avgRating ?? 0" />
-              <div class="text-center mt-[-10px]">
-                {{ business?.reviewCount ?? 0 }}
-                Review(s)
-              </div>
-            </div>
-          </div>
+  <!-- Claimed/Unclaimed Pill -->
+  <div 
+    v-if="business?.businessStatus === 'claimed' || business?.businessStatus === 'unclaimed' || business?.businessStatus === 'in-progress'"
+    class="w-full px-2"
+  >
+    <div
+      :class="{
+        'bg-green-100 text-green-700 border-green-300': business?.businessStatus === 'claimed',
+        'bg-gray-100 text-gray-700 border-gray-300': business?.businessStatus === 'unclaimed',
+        'bg-yellow-100 text-yellow-700 border-yellow-300': business?.businessStatus === 'in-progress'
+      }"
+      class="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full border text-xs sm:text-sm font-medium"
+    >
+      <span class="w-2 h-2 rounded-full"
+        :class="{
+          'bg-green-500': business?.businessStatus === 'claimed',
+          'bg-gray-400': business?.businessStatus === 'unclaimed',
+          'bg-yellow-500': business?.businessStatus === 'in-progress'
+        }"
+      ></span>
+      <span class="capitalize">{{ businessClaim(business?.businessStatus) }}</span>
+    </div>
+  </div>
+
+  <!-- Star ratings and reviews -->
+  <div class="flex flex-col gap-2.5 justify-center w-[100px]">
+    <Star :count="business?.avgRating ?? 0" />
+    <div class="text-center mt-[-10px]">
+      {{ business?.reviewCount ?? 0 }}
+      Review(s)
+    </div>
+  </div>
+</div>
+            
           <div class="flex-1">
             <div class="flex flex-col gap-[10px]">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-2">
+
                   <div class="flex gap-1 items-center flex-wrap">
                     <span class="text-xl sm:text-2xl font-bold">
                       {{ business?.name }}
                     </span>
-                    <img
-                      v-if="business?.businessStatus"
-                      :src="getStatusIcon(business?.businessStatus)"
-                      :alt="businessClaim(business?.businessStatus)"
-                      v-tooltip.top="businessClaim(business?.businessStatus)"
-                      class="w-[60px] h-[30px] sm:w-[80px] sm:h-[44px]"
-                    />
                   </div>
                   <div class="sm:hidden block">
                     <a
