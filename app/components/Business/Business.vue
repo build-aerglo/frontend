@@ -1207,15 +1207,7 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
-const getStatusIcon = (status: string) => {
-  const iconMap: Record<string, string> = {
-    claimed: "/svg/pills/b-user-claim2.svg",
-    unclaimed: "/svg/pills/b-user-unclaimed.svg",
-    "in-progress": "/svg/pills/b-user-claimInPrgress.svg",
-  };
 
-  return iconMap[status] || "/svg/pills/b-user-unclaimed.svg";
-};
 </script>
 
 <style scoped>
