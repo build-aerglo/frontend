@@ -247,6 +247,7 @@ const HandleLogin = async () => {
         default:
           loginError.value = errorMsg || 'An unexpected error occurred. Please try again.';
       }
+      
     } else if (error.request) {
       // Network error - request was made but no response received
       loginError.value = 'Network error. Please check your internet connection.';
