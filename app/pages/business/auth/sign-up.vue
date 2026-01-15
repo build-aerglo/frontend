@@ -105,32 +105,14 @@ const categories = ref<{ id: string; name: string }[]>([]);
 onMounted(async () => {
   try {
     const res = await getCategories();
-    if (res && res.length > 0) {
-      categories.value = res;
-    } else {
-      toast.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'No categories available at the moment',
-        life: 3000
-      });
-    }
-  } catch (error: any) {
+    categories.value = res;
+  } catch (error) {
     console.error("Failed to load categories:", error);
-    
-    let errorMessage = 'Unable to fetch categories. Please refresh the page.';
-    
-    if (error.response?.status === 503 || error.response?.status === 500) {
-      errorMessage = 'Server is temporarily unavailable. Please try again later.';
-    } else if (error.request && !error.response) {
-      errorMessage = 'Network error. Please check your internet connection.';
-    }
-    
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: errorMessage,
-      life: 4000
+      detail: 'Unable to fetch categories',
+      life: 3000
     });
   }
 });
@@ -170,174 +152,52 @@ watch([password, confirmPassword], () => {
   if (isValid.value) isValid.value = false;
 });
 
-const validateForm = (): { isValid: boolean; errorMessage?: string } => {
-  // Validate business name
-  if (!businessData.value.name || businessData.value.name.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Business name is required.' };
-  }
-
-  if (businessData.value.name.trim().length < 2) {
-    return { isValid: false, errorMessage: 'Business name must be at least 2 characters long.' };
-  }
-
-  // Validate email
-  if (!businessData.value.email || businessData.value.email.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Email address is required.' };
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(businessData.value.email)) {
-    return { isValid: false, errorMessage: 'Please enter a valid email address.' };
-  }
-
-  // Validate phone
-  if (!businessData.value.phone || businessData.value.phone.trim().length === 0) {
-    return { isValid: false, errorMessage: 'Phone number is required.' };
-  }
-
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  if (!phoneRegex.test(businessData.value.phone)) {
-    return { isValid: false, errorMessage: 'Please enter a valid phone number.' };
-  }
-
-  if (businessData.value.phone.replace(/\D/g, '').length < 10) {
-    return { isValid: false, errorMessage: 'Phone number must be at least 10 digits.' };
-  }
-
-  // Validate website if provided
-  if (businessData.value.website) {
-    const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    if (!urlRegex.test(businessData.value.website)) {
-      return { isValid: false, errorMessage: 'Please enter a valid website URL.' };
-    }
-  }
-
-  // Validate password
-  if (!password.value || password.value.length === 0) {
-    return { isValid: false, errorMessage: 'Password is required.' };
-  }
-
-  if (!allValid.value) {
-    if (!validLength.value) {
-      return { isValid: false, errorMessage: 'Password must be at least 8 characters long.' };
-    }
-    if (!validNumeric.value) {
-      return { isValid: false, errorMessage: 'Password must contain at least one number.' };
-    }
-    if (!validComplexity.value) {
-      return { isValid: false, errorMessage: 'Password must contain at least one special character (@, #, &, $, _, ?).' };
-    }
-  }
-
-  // Validate password confirmation
-  if (!confirmPassword.value || confirmPassword.value.length === 0) {
-    return { isValid: false, errorMessage: 'Please confirm your password.' };
-  }
+const handleRegistration = async () => {
+  if (!allValid.value) return;
 
   if (confirmPassword.value !== password.value) {
-    return { isValid: false, errorMessage: 'Passwords do not match.' };
-  }
-
-  // Validate categories
-  if (!businessData.value.categoryIds || businessData.value.categoryIds.length === 0) {
-    return { isValid: false, errorMessage: 'Please select at least one business category.' };
-  }
-
-  return { isValid: true };
-};
-
-const handleRegistration = async () => {
-  // Clear previous errors
-  registrationError.value = null;
-
-  // Validate form
-  const validation = validateForm();
-  if (!validation.isValid) {
-    registrationError.value = validation.errorMessage || 'Please check your input.';
-    toast.add({
+    return toast.add({
       severity: 'error',
-      summary: 'Validation Error',
-      detail: registrationError.value,
-      life: 4000
+      summary: 'ERROR',
+      detail: 'Passwords do not match',
+      life: 3000
     });
-    return;
+  }
+
+  if (businessData.value.categoryIds.length === 0) {
+    return toast.add({
+      severity: 'error',
+      summary: 'ERROR',
+      detail: 'Please select at least one category.',
+      life: 3000
+    });
   }
 
   businessData.value.password = password.value;
 
   try {
     isLoading.value = true;
+    registrationError.value = null;
 
     const res = await registerBusiness(businessData.value);
-    
     if (res) {
-      toast.add({ 
-        severity: 'success', 
-        summary: 'Success', 
-        detail: 'Business registered successfully! Redirecting to login...', 
-        life: 3000 
-      });
-      
-      // Clear sensitive data
-      password.value = '';
-      confirmPassword.value = '';
-      businessData.value.password = '';
-      
-      setTimeout(() => {
-        navigateTo('./sign-in');
-      }, 1000);
+      toast.add({ severity: 'success', summary: 'SUCCESS', detail: 'Registered successfully!', life: 3000 });
+      navigateTo('./sign-in');
     } else {
-      registrationError.value = 'Registration failed. Please try again.';
       toast.add({
         severity: 'error',
-        summary: 'Registration Failed',
-        detail: registrationError.value,
+        summary: 'ERROR',
+        detail: 'Registration failed. Please try again.',
         life: 3000
       });
     }
-  } catch (error: any) {
-    console.error('Registration error:', error);
-
-    // Handle specific error responses from the API
-    if (error.response) {
-      const status = error.response.status;
-      const errorMessage = error.response.data?.message || error.response.data?.error;
-
-      switch (status) {
-        case 400:
-          registrationError.value = errorMessage || 'Invalid registration data. Please check your input.';
-          break;
-        case 409:
-          // Conflict - usually means email or business already exists
-          registrationError.value = errorMessage || 'An account with this email already exists.';
-          break;
-        case 422:
-          registrationError.value = errorMessage || 'Please check that all required fields are filled correctly.';
-          break;
-        case 429:
-          registrationError.value = 'Too many registration attempts. Please try again later.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          registrationError.value = 'Server error. Please try again in a few moments.';
-          break;
-        default:
-          registrationError.value = errorMessage || 'Registration failed. Please try again.';
-      }
-    } else if (error.request) {
-      // Network error - request was made but no response received
-      registrationError.value = 'Network error. Please check your internet connection and try again.';
-    } else {
-      // Other errors
-      registrationError.value = error.message || 'An unexpected error occurred. Please try again.';
-    }
-
+  } catch (error) {
+    console.log(error);
     toast.add({
       severity: 'error',
-      summary: 'Registration Error',
-      detail: registrationError.value,
-      life: 4000
+      summary: 'ERROR',
+      detail: 'Registration failed.',
+      life: 3000
     });
   } finally {
     isLoading.value = false;
