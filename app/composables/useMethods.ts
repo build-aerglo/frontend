@@ -86,6 +86,35 @@ export default function () {
       return null;
     }
   };
+  const logoutUser = async () => {
+    try {
+      // 1. Identify current role before clearing state
+      // Check both stores or pass as an argument if preferred
+      const role = store.role || userStore.role;
+
+      // 2. Call the backend to invalidate the session
+      await api.post("api/auth/logout");
+
+      // 3. Wipe all local data
+      store.clearUser();
+      userStore.clearUser();
+
+      // 4. Determine redirect path
+      const redirectPath = role === 'business_user' 
+        ? '/business/auth/sign-in' 
+        : '/end-user/auth/sign-in';
+
+      // 5. Finalize logout
+      await navigateTo(redirectPath, { replace: true });
+      
+    } catch (err: any) {
+      console.error("Logout failed:", err?.message);
+      // Even if the API call fails, we usually want to clear local state
+      store.clearUser();
+      userStore.clearUser();
+      navigateTo('/end-user/auth/sign-in'); 
+    }
+  };
 
   const registerEndUser = async (data: EndUser) => {
     try {
@@ -112,5 +141,6 @@ export default function () {
     registerBusiness,
     registerEndUser,
     registerSupportUser,
+    logoutUser
   };
 }

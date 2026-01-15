@@ -24,6 +24,7 @@ const initiateSocialLogin = async (provider: string) => {
         redirectUri,
         state
       });
+      console.log(response)
 
       if (response.data?.authorizationUrl) {
         window.location.href = response.data.authorizationUrl;

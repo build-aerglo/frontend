@@ -54,27 +54,22 @@
 
 <script setup>
 import useUser from '~/composables/useUser';
+import useMethods from '~/composables/useMethods';
+
+const { logoutUser } = useMethods();
+const showLogoutModal = ref(false); // Modal state
+
 const props = defineProps({
-  isLayoutCollapsed: {
-    type: Boolean,
-    required: true,
-  },
-  menuItems: {
-    type: Array,
-    default: () => [],
-  },
+  isLayoutCollapsed: { type: Boolean, required: true },
+  menuItems: { type: Array, default: () => [] },
 });
 
 const emit = defineEmits(['toggle']);
-const store = useUser();
-const handleLogout = () => {
-  // 1. Clear the Pinia state
-  // Because 'persist: true' is active, this will also clear the storage
-  store.clearUser();
 
-  // 2. Redirect to the login page
-  // We use the absolute path to ensure it works from any nested route
-  navigateTo('/business/auth/sign-in');
+const handleLogout = async () => {
+  showLogoutModal.value = false; // Close modal
+  console.log("Initiating server-side logout...");
+  await logoutUser();
 };
 </script>
 
