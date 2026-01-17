@@ -620,68 +620,54 @@
 
     <Card class="w-full">
       <template #content>
-        <div class="flex sm:flex-row flex-col gap-[20px]">
-          <div
-  class="relative p-[5px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[10px] items-center"
->
-  <!-- BADGE / LOGO WRAPPER -->
-<div class="relative w-full h-[180px] flex items-center justify-center">
+        <div class="flex sm:flex-row flex-col gap-[5px]">
+            <div class="relative p-[2px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[2px] items-center">
+              <!-- BADGE / LOGO WRAPPER -->
+              <div class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]">
+                
+                <!-- Badge Container - fixed max width on mobile -->
+                <div class="relative w-full h-full max-w-[180px] sm:max-w-[160px] aspect-square">
+                  
+                  <!-- LOGO - sits behind badge, centered -->
+                  <div class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0">
+                    <img
+                      :src="business?.logo ?? '/images/default-business-logo.png'"
+                      class="w-full h-full object-contain"
+                      :alt="business?.name"
+                    />
+                  </div>
+                  
+                  <!-- STATUS BADGE/FRAME - positioned absolutely on top -->
+                  <BusinessStatusFrame
+                    v-if="businessBadgeStatus"
+                    :status="businessBadgeStatus"
+                    class="absolute inset-2 z-20"
+                  />
+                  
+                </div>
+              </div>
 
-  <!-- SVG BADGE (outer rectangle) -->
-  <img
-    v-if="badge && (badge.badge === 'b-user-trusted' || badge.badge === 'b-user-verified')"
-    :src="`/svg/badges/${badge.badge}.svg`"
-    class="absolute inset-0 w-full h-full object-contain z-0"
-    alt="badge"
-  />
+                <!-- Claim Status Pill -->
+              <div class="flex justify-center w-full">
+                <ClaimStatusPill 
+                  v-if="business?.businessStatus"
+                  :status="business.businessStatus"
+                />
+              </div>
 
-  <!-- LOGO sits INSIDE the badge -->
-  <div class="relative z-10 w-[70%] h-[70%] flex items-center justify-center">
-    <img
-      :src="business?.logo ?? '/images/default-business-logo.png'"
-      class="w-full h-full object-contain"
-      :alt="business?.name"
-    />
-  </div>
-
-</div>
-
-
-  <!-- Claimed/Unclaimed Pill -->
-  <div 
-    class="w-full px-1"
-  >
-    <div
-      :class="{
-        'bg-green-100 text-green-700 border-green-300': business?.businessStatus === 'claimed',
-        'bg-gray-100 text-gray-700 border-gray-300': business?.businessStatus === 'unclaimed',
-        'bg-yellow-100 text-yellow-700 border-yellow-300': business?.businessStatus === 'in_progress'
-      }"
-      class="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full border text-xs sm:text-sm font-medium"
-    >
-      <span class="w-2 h-2 rounded-full"
-        :class="{
-          'bg-green-500': business?.businessStatus === 'claimed',
-          'bg-gray-400': business?.businessStatus === 'unclaimed',
-          'bg-yellow-500': business?.businessStatus === 'in_progress'
-        }"
-      ></span>
-      <span class="capitalize">{{ businessClaim(business?.businessStatus) }}</span>
-    </div>
-  </div>
-
-  <!-- Star ratings and reviews -->
-  <div class="flex flex-col gap-2.5 justify-center w-[100px]">
-    <Star :count="business?.avgRating ?? 0" />
-    <div class="text-center mt-[-10px]">
-      {{ business?.reviewCount ?? 0 }}
-      Review(s)
-    </div>
-  </div>
-</div>
-            
+                    <!-- Star ratings and reviews -->
+            <div class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0">
+              <div class="flex justify-center scale-75 sm:scale-90">
+                <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-8 h-8" :color-level="Math.floor(business.avgRating ?? 0)" />
+              </div>
+              <div class="text-center text-xs sm:text-sm">
+                {{ business?.reviewCount ?? 0 }}
+                Review{{ business?.reviewCount !== 1 ? 's' : '' }}
+              </div>
+            </div>
+            </div>
           <div class="flex-1">
-            <div class="flex flex-col gap-[10px]">
+            <div class="flex flex-col ml-2 gap-[10px]">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-2">
 
@@ -862,8 +848,17 @@
 </template>
 
 <script setup lang="ts">
+import Star from '~/components/Stars.vue'
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
+import BusinessStatusFrame from '~/components/Business/BusinessStatusFrame.vue';
+import ClaimStatusPill from '~/components/Business/ClaimStatusPill.vue';
+
+const businessBadgeStatus = computed(() => {
+  if (props.status === 'trusted') return 'trusted'
+  if (props.status === 'verified') return 'verified'
+  return null
+})
 
 const props = defineProps([
   "business",
