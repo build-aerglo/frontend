@@ -110,13 +110,13 @@
         </div>
 
         <div class="flex justify-center space-x-4">
-          <button @click="handleSocialLogin('facebook')" aria-label="Login with Facebook" :disabled="isLoading">
+          <button @click="handleSocialLogin('Facebook')" aria-label="Login with Facebook" :disabled="isLoading">
             <i class="pi pi-facebook text-blue-800 text-2xl hover:text-blue-600 transition"></i>
           </button>
-          <button @click="handleSocialLogin('twitter')" aria-label="Login with Twitter" :disabled="isLoading">
+          <button @click="handleSocialLogin('Twitter')" aria-label="Login with Twitter" :disabled="isLoading">
             <i class="pi pi-twitter text-gray-800 text-2xl hover:text-blue-400 transition"></i>
           </button>
-          <button @click="handleSocialLogin('github')" aria-label="Login with GitHub" :disabled="isLoading">
+          <button @click="handleSocialLogin('GitHub')" aria-label="Login with GitHub" :disabled="isLoading">
             <i class="pi pi-github text-slate-600 text-2xl hover:text-gray-600 transition"></i>
           </button>
           <button @click="handleSocialLogin('google-oauth2')" aria-label="Login with Google" :disabled="isLoading">
@@ -166,33 +166,36 @@ const handleSocialLogin = async (provider: string) => {
   loginError.value = null;
 
   try {
-    // Validate provider
-    const validProviders = ['google-oauth2', 'facebook', 'twitter', 'github'];
-    if (!validProviders.includes(provider.toLowerCase())) {
+    // Updated to match backend case-sensitivity:
+    // Google starts lowercase, others start with Capital letters
+    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub'];
+    
+    // Check if the provider exists in our valid list (case-sensitive check)
+    if (!validProviders.includes(provider)) {
       throw new Error(`Invalid social login provider: ${provider}`);
     }
 
-    // Store the provider so the callback page knows who we logged in with
+    // Store the provider exactly as it is for the callback page
     localStorage.setItem('social_provider', provider);
     
-    // Initiate social login
+    // Initiate social login with the correctly cased provider string
     await initiateSocialLogin(provider);
+    
   } catch (error: any) {
     console.error(`Social login error for ${provider}:`, error);
     
-    const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
+    // Fallback for the UI name
+    const displayProviderName = provider.charAt(0).toUpperCase() + provider.slice(1);
     
-    // Handle specific errors
     if (error.message?.includes('popup') || error.message?.includes('blocked')) {
-      errorMessage.value = `Pop-up blocked. Please allow pop-ups for ${providerName} login.`;
+      errorMessage.value = `Pop-up blocked. Please allow pop-ups for ${displayProviderName} login.`;
     } else if (error.message?.includes('cancelled') || error.message?.includes('closed')) {
-      errorMessage.value = `${providerName} login was cancelled.`;
-      // Don't show toast for user-cancelled actions
+      errorMessage.value = `${displayProviderName} login was cancelled.`;
       return;
     } else if (error.message?.includes('network')) {
       errorMessage.value = 'Network error. Please check your internet connection.';
     } else {
-      errorMessage.value = error.message || `Unable to connect with ${providerName}. Please try again.`;
+      errorMessage.value = error.message || `Unable to connect with ${displayProviderName}. Please try again.`;
     }
     
     toast.add({
@@ -205,6 +208,7 @@ const handleSocialLogin = async (provider: string) => {
 }
 
 const HandleLogin = async () => {
+  const route = useRoute();
   // Clear previous errors
   loginError.value = null;
   errorMessage.value = "";
@@ -296,7 +300,8 @@ const HandleLogin = async () => {
         localStorage.removeItem('userEmail');
       }
 
-      return navigateTo(`/user/${store.id}`);
+      const redirectPath = route.query.redirect ? String(route.query.redirect) : `/user/${store.id}`;
+      return navigateTo(redirectPath);
     } else {
       // Login returned false - generic failure
       loginError.value = 'Invalid email or password. Please try again.';

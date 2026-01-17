@@ -35,7 +35,7 @@ onMounted(async () => {
   if (success) {
     // 3. Cleanup and Redirect
     localStorage.removeItem('social_provider');
-    router.push('/profile'); // or your dashboard
+    router.push('/end-user/profile/'); // or your dashboard
   } else {
     router.push('../end-user/auth/sign-in?error=auth_failed');
   }
