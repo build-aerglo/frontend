@@ -17,7 +17,7 @@
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
           <!-- For Business Dropdown -->
-        <NuxtLink to="/end-user/auth/sign-in">
+        <NuxtLink to="/review/write-review">
               <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition">
                 Write a review
               </button>

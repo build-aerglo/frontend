@@ -649,19 +649,46 @@ const route = useRoute();
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
 
-  // Handle pre-population from query params
+  // 1. FIRST: Check for saved drafts from the Navbar modal
+  const savedDraft = localStorage.getItem('review_draft');
+  if (savedDraft) {
+    try {
+      const draft = JSON.parse(savedDraft);
+      
+      // Populate basic fields
+      businessName.value = draft.businessName || "";
+      reviewBody.value = draft.reviewBody || "";
+      rating.value = draft.rating || 0;
+      images.value = draft.images || [];
+      
+      // Handle business selection and fetch branches automatically
+      if (draft.selectedBusinessId) {
+        selectedBusinessId.value = draft.selectedBusinessId;
+        selectedBusinessLogo.value = draft.selectedBusinessLogo || "";
+        isAddingNewBusiness.value = false;
+        
+        // This triggers the branch loading logic you already have
+        await fetchBranches(draft.selectedBusinessId);
+      }
+
+      // 2. CLEANUP: Remove the draft so it doesn't persist on next refresh
+      localStorage.removeItem('review_draft');
+    } catch (e) {
+      console.error("Failed to parse review draft", e);
+    }
+  }
+
+  // 3. EXISTING LOGIC: Handle pre-population from query params (don't remove this)
   const { bizId, bizName, bizLogo } = route.query;
 
-  if (bizName) {
+  if (bizName && !businessName.value) { // Added check to prioritize draft over query
     businessName.value = bizName as string;
   }
 
-  if (bizId) {
+  if (bizId && !selectedBusinessId.value) { // Added check to prioritize draft over query
     selectedBusinessId.value = bizId as string;
     selectedBusinessLogo.value = (bizLogo as string) || "";
-
     await fetchBranches(selectedBusinessId.value);
-
     showBusinessDropdown.value = false;
     isAddingNewBusiness.value = false;
   }
