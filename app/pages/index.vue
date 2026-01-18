@@ -15,7 +15,7 @@
     
     <!-- Fallback background color while image loads -->
     <div 
-      class="absolute inset-0 bg-gradient-to-br from-slate-500 via-slate-400 to-slate-600 transition-opacity duration-500"
+      class="absolute inset-0 bg-gradient-to-br from-slate-600 via-slate-500 to-slate-700 transition-opacity duration-500"
       :class="imageLoaded ? 'opacity-0' : 'opacity-100'"
     ></div>
     
