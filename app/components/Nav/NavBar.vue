@@ -205,11 +205,11 @@
             <div v-if="!showEmailInput" class="grid grid-cols-2 gap-4 mt-6">
               <div class="flex flex-col gap-1">
                 <button @click="showEmailInput = true" class="py-3 bg-[#008253] text-white  rounded-xl">Review as guest</button>
-                <span class="text-center text-[10px] sm:text-xs md:text-sm">No account needed</span>
+                <span class="text-center text-[12px] sm:text-xs md:text-sm">No account needed</span>
               </div>
               <div class="flex flex-col gap-1">
                 <button @click="handleUserReviewRedirect" class="py-3 border-1 border-[#008253] text-[#008253]  rounded-xl hover:bg-green-50">Review as user</button>
-                <span class="text-center text-[10px] sm:text-xs md:text-sm">Earn points and track your reviews</span>
+                <span class="text-center text-[12px] sm:text-xs md:text-sm">Earn points and track your reviews</span>
               </div>
             </div>
             <div v-else class="pt-4 space-y-3 border-t">
