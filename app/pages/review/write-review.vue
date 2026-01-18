@@ -176,22 +176,6 @@
             <!-- Image Uploader -->
             <ImageUploader v-model="images" path="reviews" label="Add Images" :max="3" />
 
-            <!-- Anonymous Checkbox -->
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" id="anonymous" v-model="anonymous" :disabled="isGuest"
-                class="w-4 h-4 rounded border-gray-300 accent-[#008253] disabled:opacity-50 disabled:cursor-not-allowed" />
-              <label for="anonymous" class="text-sm text-gray-700 cursor-pointer">
-                Review as anonymous
-                <span v-if="isGuest" class="text-xs text-gray-500">(Required for guest users)</span>
-              </label>
-            </div>
-
-            <!-- Email for Guest/Anonymous -->
-            <div v-if="isGuest || anonymous">
-              <input type="email" v-model="email" placeholder="Email *" required
-                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none" />
-            </div>
-
             <!-- Submit Button -->
             <button @click="submitReview"
               class="w-full py-2 bg-[#008253] text-white rounded-lg hover:bg-[#006d47] transition">
