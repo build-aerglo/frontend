@@ -637,22 +637,15 @@
                     />
                   </div>
                   
-                  <!-- STATUS BADGE/FRAME - positioned absolutely on top -->
+                  <!-- STATUS BADGE/FRAME with Claim Status - positioned absolutely on top -->
                   <BusinessStatusFrame
                     v-if="businessBadgeStatus"
                     :status="businessBadgeStatus"
+                    :claimStatus="business?.businessStatus"
                     class="absolute inset-2 z-20"
                   />
-                  
+                                    
                 </div>
-              </div>
-
-                <!-- Claim Status Pill -->
-              <div class="flex justify-center w-full">
-                <ClaimStatusPill 
-                  v-if="business?.businessStatus"
-                  :status="business.businessStatus"
-                />
               </div>
 
                     <!-- Star ratings and reviews -->
@@ -852,7 +845,6 @@ import Star from '~/components/Stars.vue'
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from '~/components/Business/BusinessStatusFrame.vue';
-import ClaimStatusPill from '~/components/Business/ClaimStatusPill.vue';
 
 const businessBadgeStatus = computed(() => {
   if (props.status === 'trusted') return 'trusted'
