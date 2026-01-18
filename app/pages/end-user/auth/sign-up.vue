@@ -12,20 +12,30 @@
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center px-8 w-full bg-gray-50 md:w-1/3">
+    <div class="flex flex-col justify-start items-center w-full bg-gray-50 md:w-1/3 px-4 pt-10">
       <div class="w-full max-w-md">
-        <div class="flex justify-center mb-1 mt-2">
-          <NuxtLink to="/">
-            <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-12 w-auto object-contain" />
-          </NuxtLink>
-        </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] my-3">Clear reviews, Confident decisions.</div>
-        
-        <!-- Loading State -->
+
+         <!-- Loading State -->
         <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
           <img :src="spinner" class="h-10 w-10 object-center" />
           <p class="text-sm mt-2">Signing up...</p>
         </div>
+
+        <div class="flex justify-center mb-8">
+          <div class="flex justify-center space-x-4">
+
+            <button class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs transition">
+              <i class="pi pi-facebook text-blue-500 hover:text-blue-800 text-3xl"></i>
+            </button>
+            <button class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs hover:bg-gray-800 transition">
+              <i class="pi pi-twitter text-gray-800 hover:text-white text-2xl"></i>
+            </button>
+            <button class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs hover:bg-amber-600 transition">
+              <i class="pi pi-google text-amber-600 hover:text-white text-2xl"></i>
+            </button>
+          </div>
+        </div>
+        
 
         <form @submit.prevent="handleEndUserRegistration" class="space-y-3">
           <!-- Username -->
@@ -101,7 +111,7 @@
               type="submit"
               :disabled="isLoading"
             >
-              {{ isLoading ? 'Signing In...' : 'Sign In' }}
+              {{ isLoading ? 'Signing Up...' : 'Sign Up' }}
             </button>
           </div>
         </form>
@@ -115,21 +125,6 @@
             Sign in
           </NuxtLink>
         </p>
-
-        <!-- Divider -->
-        <div class="flex items-center mt-0">
-          <hr class="flex-grow border-gray-300" />
-          <span class="px-3 text-gray-400 text-sm">or</span>
-          <hr class="flex-grow border-gray-300" />
-        </div>
-
-        <!-- Socials -->
-        <div class="flex justify-center space-x-4 text-2xl">
-          <NuxtLink to="/"><i class="pi pi-facebook text-blue-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-twitter text-gray-800 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-github text-slate-600 cursor-pointer"></i></NuxtLink>
-          <NuxtLink to="/"><i class="pi pi-google text-amber-600 cursor-pointer"></i></NuxtLink>
-        </div>
       </div>
     </div>
   </div>
