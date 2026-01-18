@@ -117,7 +117,7 @@
         <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px] animate-in fade-in zoom-in duration-200">
           <button @click="closeModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600"><i class="pi pi-times text-xl"></i></button>
           
-          <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
+          <h2 class="text-2xl md:text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
           
           <div class="space-y-4">
              <div class="relative">
@@ -133,6 +133,57 @@
                   <span class="font-medium text-gray-800">{{ b.name }}</span>
                 </li>
               </ul>
+            </div>
+            <p v-if="selectedBusinessId && !isAddingNewBusiness" class="text-xs text-green-600 mt-1 font-medium">
+              ✓ Existing business selected
+            </p>
+
+            <div v-if="businessName.trim() && !isSearching && filteredBusinesses.length === 0 &&      !selectedBusinessId && !isAddingNewBusiness" 
+                class="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p class="text-xs text-amber-800 mb-2">Can't find "{{ businessName }}"?</p>
+              <button @click="isAddingNewBusiness = true" class="text-xs bg-[#008253] text-white px-3 py-1.5 rounded-lg hover:bg-[#006d47]">
+                + Add as New Business
+              </button>
+            </div>
+
+            <div v-if="isAddingNewBusiness" class="space-y-3 p-4 bg-green-50 rounded-lg border border-green-200 mt-2">
+              <div class="flex justify-between items-center"><p class="text-xs font-semibold text-green-800">New Business Location</p>
+              <button @click="isAddingNewBusiness = false" class="text-[10px] text-red-500 underline">Cancel</button></div>
+              <select v-model="newBusinessState" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#008253] outline-none">
+                <option value="">Select State *</option>
+                <option v-for="s in states" :key="s" :value="s">{{ s }}</option>
+              </select>
+              <select v-model="newBusinessCity" :disabled="!newBusinessState" class="w-full border rounded-lg px-3 py-2 text-sm disabled:bg-gray-100 outline-none">
+                <option value="">Select City *</option>
+                <option v-for="c in newBusinessCities" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+
+            <div v-if="selectedBusinessId && !isAddingNewBusiness" class="space-y-3 mt-2">
+              <label class="block text-sm font-medium text-gray-900">Branch/Location *</label>
+              <select v-model="selectedBranchOption" :disabled="manualEntryEnabled || isLoadingBranches" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] outline-none disabled:bg-gray-50">
+                <option value="">{{ isLoadingBranches ? 'Loading branches...' : 'Select a branch...' }}</option>
+                <option value="online">Online</option>
+                <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+                  {{ branch.branchCityTown }}, {{ branch.branchState }}
+                </option>
+              </select>
+
+              <div class="flex items-center space-x-2">
+                <input type="checkbox" id="navManual" v-model="manualEntryEnabled" class="w-3 h-3 accent-[#008253]" />
+                <label for="navManual" class="text-xs text-gray-600 cursor-pointer">Branch not found? Enter manually</label>
+              </div>
+
+              <div v-if="manualEntryEnabled" class="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-200 transition-all">
+                <select v-model="manualState" class="w-full border rounded-lg px-3 py-2 text-sm outline-none">
+                  <option value="">Select State *</option>
+                  <option v-for="s in states" :key="s" :value="s">{{ s }}</option>
+                </select>
+                <select v-model="manualCity" :disabled="!manualState" class="w-full border rounded-lg px-3 py-2 text-sm outline-none disabled:bg-gray-100">
+                  <option value="">Select City *</option>
+                  <option v-for="c in manualCities" :key="c" :value="c">{{ c }}</option>
+                </select>
+              </div>
             </div>
 
             <div>
@@ -154,11 +205,11 @@
             <div v-if="!showEmailInput" class="grid grid-cols-2 gap-4 mt-6">
               <div class="flex flex-col gap-1">
                 <button @click="showEmailInput = true" class="py-3 bg-[#008253] text-white  rounded-xl">Review as guest</button>
-                <span class="text-center text-sm">No account needed</span>
+                <span class="text-center text-[10px] sm:text-xs md:text-sm">No account needed</span>
               </div>
               <div class="flex flex-col gap-1">
                 <button @click="handleUserReviewRedirect" class="py-3 border-1 border-[#008253] text-[#008253]  rounded-xl hover:bg-green-50">Review as user</button>
-                <span class="text-center text-sm">Earn points and track your reviews</span>
+                <span class="text-center text-[10px] sm:text-xs md:text-sm">Earn points and track your reviews</span>
               </div>
             </div>
             <div v-else class="pt-4 space-y-3 border-t">
@@ -179,11 +230,14 @@
 <script setup lang="ts">
 
 import { useUserStore } from '~/store/user'
-
+import useBusinessMethods from '~/composables/business/useBusinessMethods'
+import useNigerianLocations from '~/composables/useNigerianLocations'
 import useSearch from '~/composables/search/useSearch'
 import Stars from '~/components/Stars.vue'
 import ImageUploader from '~/components/Input/ImageUploader.vue'
+import useReviewMethods from '~/composables/review/useReviewMethods'
 
+const { submitUserReview } = useReviewMethods();
 // Sidebar/Nav Toggle States
 const isOpen = ref(false)
 const showBusinessDropdown = ref(false)
@@ -207,7 +261,25 @@ const email = ref("")
 const filteredBusinesses = ref<any[]>([])
 
 let debounceTimer: any = null
+const { getBusinessBranches } = useBusinessMethods()
+const { getStates, getCitiesByState } = useNigerianLocations()
 
+// --- NEW STATE FOR BRANCHES & LOCATIONS ---
+const isAddingNewBusiness = ref(false)
+const isLoadingBranches = ref(false)
+const branches = ref<any[]>([])
+const selectedBranchOption = ref("")
+const manualEntryEnabled = ref(false)
+
+// Location Fields
+const newBusinessState = ref("")
+const newBusinessCity = ref("")
+const manualState = ref("")
+const manualCity = ref("")
+
+const states = getStates()
+const newBusinessCities = computed(() => newBusinessState.value ? getCitiesByState(newBusinessState.value) : [])
+const manualCities = computed(() => manualState.value ? getCitiesByState(manualState.value) : [])
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
@@ -234,10 +306,43 @@ const handleWriteReviewClick = () => {
     showReviewModal.value = true
   }
 }
+// --- UPDATED METHODS ---
 
-// Logic helpers
+const fetchBranches = async (businessId: string) => {
+  isLoadingBranches.value = true
+  branches.value = []
+  try {
+    const result = await getBusinessBranches(businessId)
+    branches.value = Array.isArray(result) ? result : (result?.data || [])
+  } catch (error) {
+    console.error("Failed to fetch branches:", error)
+  } finally {
+    isLoadingBranches.value = false
+  }
+}
+const selectBusiness = async (b: any) => {
+  businessName.value = b.name;
+  
+  // Try all common ID fields returned by the search API
+  selectedBusinessId.value = b.businessId || b.id || b._id || "";
+  
+  selectedBusinessLogo.value = b.logo || "";
+  isAddingNewBusiness.value = false;
+  showSearchDropdown.value = false;
+  
+  if (selectedBusinessId.value) {
+    await fetchBranches(selectedBusinessId.value);
+  } else {
+    console.error("No ID found for selected business:", b);
+  }
+};
+
 const handleBusinessInput = () => {
   showSearchDropdown.value = true
+  // Reset location states when typing
+  selectedBusinessId.value = ""
+  isAddingNewBusiness.value = false 
+  
   if (debounceTimer) clearTimeout(debounceTimer)
   if (!businessName.value.trim()) return
   isSearching.value = true
@@ -248,13 +353,6 @@ const handleBusinessInput = () => {
   }, 400)
 }
 
-const selectBusiness = (b: any) => {
-  businessName.value = b.name
-  selectedBusinessId.value = b.id || b.businessId
-  selectedBusinessLogo.value = b.logo || ""
-  showSearchDropdown.value = false
-}
-
 const getRatingLabel = (r: number) => {
   const labels: any = { 1: "Not Great.", 2: "Needs Improvement.", 3: "Just Okay.", 4: "Really Good!", 5: "Fantastic!" }
   return labels[Math.floor(r)] || ""
@@ -263,27 +361,109 @@ const getRatingLabel = (r: number) => {
 const setRating = (val: number) => { rating.value = val }
 const getFraction = (event: MouseEvent) => (event.clientX - (event.target as HTMLElement).getBoundingClientRect().left) / (event.target as HTMLElement).getBoundingClientRect().width < 0.5 ? 0.5 : 1
 const closeModal = () => { showReviewModal.value = false; showEmailInput.value = false }
+// Update the redirect to include the new location data
 const handleUserReviewRedirect = () => {
-  // 1. Save the current draft to localStorage
   const draft = {
     businessName: businessName.value,
     selectedBusinessId: selectedBusinessId.value,
     selectedBusinessLogo: selectedBusinessLogo.value,
+    isAddingNewBusiness: isAddingNewBusiness.value,
+    selectedBranchOption: selectedBranchOption.value,
+    manualEntryEnabled: manualEntryEnabled.value,
+    newBusinessState: newBusinessState.value,
+    newBusinessCity: newBusinessCity.value,
+    manualState: manualState.value,
+    manualCity: manualCity.value,
     rating: rating.value,
     reviewBody: reviewBody.value,
-    images: images.value // Note: These are usually URLs or Base64 strings
+    images: images.value
   }
   
   localStorage.setItem('review_draft', JSON.stringify(draft))
-
-  // 2. Redirect to sign-in with a callback path
-  // This tells your login page where to send the user after success
   router.push({
     path: '/end-user/auth/sign-in',
     query: { redirect: '/review/write-review' }
   })
-  
   closeModal()
 }
-const submitReview = () => { alert("Success!"); closeModal() }
+const submitReview = async () => {
+  // 1. Basic Validation
+  if (!businessName.value.trim()) {
+    alert("Please enter a business name");
+    return;
+  }
+  if (rating.value === 0) {
+    alert("Please provide a rating");
+    return;
+  }
+  if (reviewBody.value.length < 20) {
+    alert("Review must be at least 20 characters");
+    return;
+  }
+  if (!email.value) {
+    alert("Email is required for guest reviews");
+    return;
+  }
+
+  // 2. Map local state to the UserReview Interface
+  const reviewData: any = {
+    // Rating & Content
+    starRating: rating.value,
+    reviewBody: reviewBody.value,
+    photoUrls: images.value.length > 0 ? images.value : null,
+    
+    // User / Guest Info
+    reviewerId: userStore.isAuthenticated ? userStore.userId : null,
+    email: email.value,
+    reviewAsAnon: true, // Always true for guest reviews in this modal
+
+    // Business Logic
+    businessId: selectedBusinessId.value || null,
+    businessName: isAddingNewBusiness.value ? businessName.value : null,
+    isNewBusiness: isAddingNewBusiness.value,
+
+    // Branch Logic
+    locationId: (selectedBranchOption.value && selectedBranchOption.value !== 'online') 
+                ? selectedBranchOption.value 
+                : null,
+    isNewBranch: manualEntryEnabled.value,
+    branchStreet: null, // Optional
+    branchCityTown: isAddingNewBusiness.value 
+                    ? newBusinessCity.value 
+                    : (manualEntryEnabled.value ? manualCity.value : null),
+    branchState: isAddingNewBusiness.value 
+                 ? newBusinessState.value 
+                 : (manualEntryEnabled.value ? manualState.value : null),
+  };
+
+  try {
+    // 3. Call API
+    const response = await submitUserReview(reviewData);
+    console.log(response)
+    alert("Review submitted successfully! It will be published after validation.");
+    
+    // 4. Reset Form & Close Modal
+    resetForm();
+    closeModal();
+  } catch (error: any) {
+    const msg = error.response?.data?.error || "Failed to submit review. Please try again.";
+    alert(msg);
+  }
+};
+
+const resetForm = () => {
+  businessName.value = "";
+  selectedBusinessId.value = "";
+  rating.value = 0;
+  reviewBody.value = "";
+  images.value = [];
+  email.value = "";
+  isAddingNewBusiness.value = false;
+  manualEntryEnabled.value = false;
+  selectedBranchOption.value = "";
+  newBusinessState.value = "";
+  newBusinessCity.value = "";
+  manualState.value = "";
+  manualCity.value = "";
+};
 </script>
