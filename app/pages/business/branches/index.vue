@@ -6,6 +6,7 @@
     modal
     :header="`${openType === 'new' ? 'Register' : 'Update'} Business Branch`"
     :style="{ width: '45rem' }"
+    position="top"
   >
     <form @submit.prevent="saveBranch(openType)" class="flex flex-col gap-2.5">
       <div>
@@ -51,18 +52,58 @@
         </div>
       </div>
       <div class="flex justify-end gap-2 mt-[20px]">
-        <Button
-          type="button"
+        <ButtonCustom
           label="Cancel"
-          severity="secondary"
-          @click="resetAddBranch"
-        ></Button>
-        <Button type="submit" label="Save Branch"></Button>
+          size="lg"
+          @clicked="resetAddBranch"
+          input-class="w-max"
+          type="button"
+        />
+        <ButtonCustom
+          primary="true"
+          size="lg"
+          :label="isSubmitting ? 'Saving...' : 'Saving Branch'"
+          :icon="isSubmitting ? 'spinner pi-spin' : null"
+          input-class="w-max"
+          type="submit"
+          @clicked="deleteBranchAsync(deleteBranchId)"
+        />
       </div>
     </form>
   </Dialog>
 
-  <Card class="w-full">
+  <Dialog
+    v-model:visible="openDeleteBranch"
+    :draggable="false"
+    modal
+    header="Confirm Delete"
+    :style="{ width: '45rem' }"
+    position="top"
+  >
+    <div v-if="deleteBranchId">
+      Are you sure you want to delete this branch?
+    </div>
+    <template #footer>
+      <div class="flex items-center justify-end gap-2.5">
+        <ButtonCustom
+          label="Cancel"
+          size="lg"
+          @clicked="openDeleteBranch = false"
+          input-class="w-max"
+        />
+        <ButtonCustom
+          primary="true"
+          size="lg"
+          :label="isDeleting ? 'Deleting' : 'Delete Branch'"
+          :icon="isDeleting ? 'spinner pi-spin' : 'trash'"
+          input-class="w-max"
+          @clicked="deleteBranchAsync(deleteBranchId)"
+        />
+      </div>
+    </template>
+  </Dialog>
+
+  <Card class="w-full min-h-[500px]">
     <template #content>
       <div class="flex justify-between items-center gap-2.5">
         <div class="text-[120%]">
@@ -77,7 +118,7 @@
           @clicked="showEditor('new', null)"
         />
       </div>
-      <div class="flex justify-end" v-if="filteredBranches.length">
+      <div class="flex justify-end">
         <div class="w-full sm:w-[40%] mt-2.5">
           <InputGroup>
             <InputGroupAddon>
@@ -107,7 +148,7 @@
                   ></i>
                   <i
                     class="pi pi-trash text-[red] cursor-pointer"
-                    @click="deleteBranchAsync(branch.id!)"
+                    @click="setDeleteBranch(branch.id!)"
                   ></i>
                 </div>
               </div>
@@ -118,6 +159,8 @@
                   {{ branch.branchState }}
                 </div>
               </div>
+
+              <Divider />
             </div>
 
             <Paginator
@@ -152,6 +195,8 @@ const {
 const isLoading = ref(true);
 const businessId = getBusinessUser();
 const toast = useToast();
+const openDeleteBranch = ref(false);
+const deleteBranchId = ref();
 
 interface BusinessBranch {
   businessId: string;
@@ -160,10 +205,10 @@ interface BusinessBranch {
   branchStreet?: string;
   branchCityTown?: string;
   branchState?: string;
-  name?: string;
 }
 const businessBranches = ref<BusinessBranch[]>([]);
 const search = ref("");
+const isDeleting = ref(false);
 
 const rows = ref(5); // items per page
 const first = ref(0); // index of first item
@@ -172,96 +217,11 @@ const openBranchEditor = ref(false);
 const openType = ref("new");
 const isSubmitting = ref(false);
 
-// const businessBranches: BusinessBranch[] = [
-//   {
-//     businessId: "B001",
-//     id: "test",
-//     name: "Central Market",
-//     branchStreet: "123 Main St",
-//     branchCityTown: "Springfield",
-//     branchState: "CA",
-//   },
-//   {
-//     businessId: "B002",
-//     id: "test-1",
-//     name: "Northside Grocery",
-//     branchStreet: "45 North Ave",
-//     branchCityTown: "Springfield",
-//     branchState: "CA",
-//   },
-//   {
-//     businessId: "B003",
-//     id: "test-2",
-//     name: "Downtown Cafe",
-//     branchStreet: "78 Elm St",
-//     branchCityTown: "Riverside",
-//     branchState: "NV",
-//   },
-//   {
-//     businessId: "B004",
-//     id: "test-3",
-//     name: "Lakeside Bistro",
-//     branchStreet: "9 Lake Rd",
-//     branchCityTown: "Madison",
-//     branchState: "WI",
-//   },
-//   {
-//     businessId: "B005",
-//     id: "test-4",
-//     name: "Sunrise Bakery",
-//     branchStreet: "56 Sunrise Blvd",
-//     branchCityTown: "Orlando",
-//     branchState: "FL",
-//   },
-//   {
-//     businessId: "B006",
-//     id: "test-5",
-//     name: "Green Valley Produce",
-//     branchStreet: "102 Farm Way",
-//     branchCityTown: "Fresno",
-//     branchState: "CA",
-//   },
-//   {
-//     businessId: "B007",
-//     id: "test-6",
-//     name: "City Tech Hub",
-//     branchStreet: "300 Innovation Dr",
-//     branchCityTown: "Austin",
-//     branchState: "TX",
-//   },
-//   {
-//     businessId: "B008",
-//     id: "test-7",
-//     name: "Harbor Seafood",
-//     branchStreet: "88 Dock St",
-//     branchCityTown: "Portland",
-//     branchState: "ME",
-//   },
-//   {
-//     businessId: "B009",
-//     id: "test-8",
-//     name: "Mountain Outfitters",
-//     branchStreet: "12 Summit Rd",
-//     branchCityTown: "Boulder",
-//     branchState: "CO",
-//   },
-//   {
-//     businessId: "B010",
-//     id: "test-9",
-//     name: "Urban Fitness",
-//     branchStreet: "410 Pulse Ave",
-//     branchCityTown: "Seattle",
-//     branchState: "WA",
-//   },
-// ];
-
 const filteredBranches = computed(() => {
-  //   return businessBranches.value.filter((branch: BusinessBranch) =>
-  //     // @ts-ignore
-  //     branch.branchName.toLowerCase().includes(search.value.toLowerCase())
-  //   );
-
-  return businessBranches.value;
+  return businessBranches.value.filter((branch: BusinessBranch) =>
+    // @ts-ignore
+    branch.branchName.toLowerCase().includes(search.value.toLowerCase()),
+  );
 });
 
 const paginatedBranches = computed(() => {
@@ -345,8 +305,8 @@ const saveBranch = async (type: string) => {
       openBranchEditor.value = false;
       await loadBranches();
       return toast.add({
-        severity: "info",
-        summary: "INFO",
+        severity: "success",
+        summary: "SUCCESS",
         detail: `Business branch ${
           type === "new" ? "registered" : "updated"
         } successfully.`,
@@ -362,16 +322,32 @@ const saveBranch = async (type: string) => {
   }
 };
 
+const setDeleteBranch = (id: string) => {
+  if (!id) return;
+  deleteBranchId.value = id;
+  openDeleteBranch.value = true;
+};
+
 const deleteBranchAsync = async (id: string) => {
   if (!id) return;
 
   try {
+    isDeleting.value = true;
     const res = await deleteBranch(id);
     if (res?.statusCode === 200) {
       await loadBranches();
+      openDeleteBranch.value = false;
+      return toast.add({
+        severity: "success",
+        summary: "SUCCESS",
+        detail: "Branch Deleted Successfully.",
+        life: 3000,
+      });
     }
   } catch (error) {
     console.log(error);
+  } finally {
+    isDeleting.value = false;
   }
 };
 
@@ -381,7 +357,7 @@ const showEditor = (type: string, data: BusinessBranch | null) => {
     openType.value = "new";
   } else {
     openType.value = "edit";
-    branch.value.branchName = data?.name!;
+    branch.value.branchName = data?.branchName!;
     branch.value.branchStreet = data?.branchStreet!;
     branch.value.branchCityTown = data?.branchCityTown!;
     branch.value.branchState = data?.branchState!;
