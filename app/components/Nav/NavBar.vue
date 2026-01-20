@@ -159,11 +159,17 @@
               </select>
             </div>
 
-            <div v-if="selectedBusinessId && !isAddingNewBusiness" class="space-y-3 mt-2">
+           <div v-if="selectedBusinessId && !isAddingNewBusiness" class="space-y-3 mt-2">
               <label class="block text-sm font-medium text-gray-900">Branch/Location *</label>
-              <select v-model="selectedBranchOption" :disabled="manualEntryEnabled || isLoadingBranches" class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] outline-none disabled:bg-gray-50">
+
+              <select v-model="selectedBranchOption" :disabled="manualEntryEnabled || isLoadingBranches"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#008253] outline-none disabled:bg-gray-50">
                 <option value="">{{ isLoadingBranches ? 'Loading branches...' : 'Select a branch...' }}</option>
-                <option value="online">Online</option>
+
+                <!-- ✅ Only show "Online" if it doesn't already exist -->
+                <option v-if="!hasOnlineBranch" value="online">Online</option>
+
+                <!-- ✅ Show all fetched branches -->
                 <option v-for="branch in branches" :key="branch.id" :value="branch.id">
                   {{ branch.branchCityTown }}, {{ branch.branchState }}
                 </option>
@@ -171,15 +177,18 @@
 
               <div class="flex items-center space-x-2">
                 <input type="checkbox" id="navManual" v-model="manualEntryEnabled" class="w-3 h-3 accent-[#008253]" />
-                <label for="navManual" class="text-xs text-gray-600 cursor-pointer">Branch not found? Enter manually</label>
+                <label for="navManual" class="text-xs text-gray-600 cursor-pointer">Branch not found? Enter
+                  manually</label>
               </div>
 
-              <div v-if="manualEntryEnabled" class="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-200 transition-all">
+              <div v-if="manualEntryEnabled"
+                class="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-200 transition-all">
                 <select v-model="manualState" class="w-full border rounded-lg px-3 py-2 text-sm outline-none">
                   <option value="">Select State *</option>
                   <option v-for="s in states" :key="s" :value="s">{{ s }}</option>
                 </select>
-                <select v-model="manualCity" :disabled="!manualState" class="w-full border rounded-lg px-3 py-2 text-sm outline-none disabled:bg-gray-100">
+                <select v-model="manualCity" :disabled="!manualState"
+                  class="w-full border rounded-lg px-3 py-2 text-sm outline-none disabled:bg-gray-100">
                   <option value="">Select City *</option>
                   <option v-for="c in manualCities" :key="c" :value="c">{{ c }}</option>
                 </select>
@@ -306,20 +315,72 @@ const handleWriteReviewClick = () => {
     showReviewModal.value = true
   }
 }
+
+
+const hasOnlineBranch = computed(() => {
+  return branches.value.some(b =>
+    b.name?.toLowerCase() === 'online' ||
+    b.branchName?.toLowerCase() === 'online' ||
+    (b.branchCityTown?.toLowerCase() === 'online' && b.branchState?.toLowerCase() === 'online')
+  );
+});
+
 // --- UPDATED METHODS ---
 
 const fetchBranches = async (businessId: string) => {
   isLoadingBranches.value = true
   branches.value = []
+
   try {
+    // 1. Fetch existing branches
     const result = await getBusinessBranches(businessId)
-    branches.value = Array.isArray(result) ? result : (result?.data || [])
+    const branchData = Array.isArray(result) ? result : (result?.data || [])
+
+    // 2. ALWAYS fetch business profile for main address
+    const { getBusinessProfile } = useBusinessMethods()
+    const businessProfile = await getBusinessProfile(businessId)
+
+    // 3. Start with empty array
+    const allBranches: any[] = []
+
+    // 4. Add main business address as pseudo-branch (if exists)
+    if (businessProfile?.data?.businessAddress) {
+      const address = businessProfile.data.businessAddress
+      const addressParts = address.split(',').map((s: string) => s.trim())
+
+      let city = ""
+      let state = ""
+      if (addressParts.length >= 2) {
+        state = addressParts[addressParts.length - 1]
+        city = addressParts[addressParts.length - 2]
+      }
+
+      allBranches.push({
+        id: 'business-address',
+        branchName: 'Main Location',
+        branchCityTown: city,
+        branchState: state,
+        branchStreet: ''
+      })
+    }
+
+    // 5. Add real branches
+    if (branchData && branchData.length > 0) {
+      allBranches.push(...branchData)
+    }
+
+    // 6. Set final branches
+    branches.value = allBranches
+
+    console.log(`NavBar: Loaded ${allBranches.length} branch options`, allBranches)
   } catch (error) {
     console.error("Failed to fetch branches:", error)
   } finally {
     isLoadingBranches.value = false
   }
 }
+
+
 const selectBusiness = async (b: any) => {
   businessName.value = b.name;
   
@@ -405,49 +466,147 @@ const submitReview = async () => {
     return;
   }
 
-  // 2. Map local state to the UserReview Interface
-  const reviewData: any = {
+  // 2. Build review data based on scenario
+  let reviewData: any = {
     // Rating & Content
     starRating: rating.value,
     reviewBody: reviewBody.value,
     photoUrls: images.value.length > 0 ? images.value : null,
-    
+
     // User / Guest Info
     reviewerId: userStore.isAuthenticated ? userStore.userId : null,
     email: email.value,
     reviewAsAnon: true, // Always true for guest reviews in this modal
-
-    // Business Logic
-    businessId: selectedBusinessId.value || null,
-    businessName: isAddingNewBusiness.value ? businessName.value : null,
-    isNewBusiness: isAddingNewBusiness.value,
-
-    // Branch Logic
-    locationId: (selectedBranchOption.value && selectedBranchOption.value !== 'online') 
-                ? selectedBranchOption.value 
-                : null,
-    isNewBranch: manualEntryEnabled.value,
-    branchStreet: null, // Optional
-    branchCityTown: isAddingNewBusiness.value 
-                    ? newBusinessCity.value 
-                    : (manualEntryEnabled.value ? manualCity.value : null),
-    branchState: isAddingNewBusiness.value 
-                 ? newBusinessState.value 
-                 : (manualEntryEnabled.value ? manualState.value : null),
   };
+
+  // ✅ SCENARIO 1: NEW BUSINESS
+  if (isAddingNewBusiness.value) {
+    if (!newBusinessState.value || !newBusinessCity.value) {
+      alert("Please select both state and city for the new business");
+      return;
+    }
+
+    reviewData = {
+      ...reviewData,
+      businessId: null,
+      businessName: businessName.value,
+      isNewBusiness: true,
+      locationId: null,
+      isNewBranch: false,
+      branchStreet: null,
+      branchCityTown: newBusinessCity.value,
+      branchState: newBusinessState.value,
+    };
+  }
+  // ✅ SCENARIO 2: EXISTING BUSINESS
+  else {
+    if (!selectedBusinessId.value) {
+      alert("Please select a business");
+      return;
+    }
+
+    // ✅ SCENARIO 2A: ONLINE - Check if Online branch exists
+    if (selectedBranchOption.value === 'online') {
+      const existingOnlineBranch = branches.value.find(b =>
+        b.name?.toLowerCase() === 'online' ||
+        (b.branchCityTown?.toLowerCase() === 'online' && b.branchState?.toLowerCase() === 'online')
+      );
+
+      if (existingOnlineBranch) {
+        // REUSE existing Online branch
+        reviewData = {
+          ...reviewData,
+          businessId: selectedBusinessId.value,
+          businessName: null,
+          isNewBusiness: false,
+          locationId: existingOnlineBranch.id,
+          isNewBranch: false,
+          branchStreet: null,
+          branchCityTown: null,
+          branchState: null,
+        };
+      } else {
+        // CREATE new Online branch
+        reviewData = {
+          ...reviewData,
+          businessId: selectedBusinessId.value,
+          businessName: null,
+          isNewBusiness: false,
+          locationId: null,
+          isNewBranch: true,
+          branchStreet: null,
+          branchCityTown: 'Online',
+          branchState: 'Online',
+        };
+      }
+    }
+    // ✅ SCENARIO 2B: PSEUDO-BRANCH (business-address)
+    else if (selectedBranchOption.value === 'business-address') {
+      reviewData = {
+        ...reviewData,
+        businessId: selectedBusinessId.value,
+        businessName: null,
+        isNewBusiness: false,
+        locationId: selectedBusinessId.value, // Use businessId as locationId
+        isNewBranch: false,
+        branchStreet: null,
+        branchCityTown: null,
+        branchState: null,
+      };
+    }
+    // ✅ SCENARIO 2C: MANUAL BRANCH ENTRY
+    else if (manualEntryEnabled.value) {
+      if (!manualState.value || !manualCity.value) {
+        alert("Please select both state and city for the new branch");
+        return;
+      }
+
+      reviewData = {
+        ...reviewData,
+        businessId: selectedBusinessId.value,
+        businessName: null,
+        isNewBusiness: false,
+        locationId: null,
+        isNewBranch: true,
+        branchStreet: null,
+        branchCityTown: manualCity.value,
+        branchState: manualState.value,
+      };
+    }
+    // ✅ SCENARIO 2D: EXISTING BRANCH
+    else if (selectedBranchOption.value) {
+      reviewData = {
+        ...reviewData,
+        businessId: selectedBusinessId.value,
+        businessName: null,
+        isNewBusiness: false,
+        locationId: selectedBranchOption.value,
+        isNewBranch: false,
+        branchStreet: null,
+        branchCityTown: null,
+        branchState: null,
+      };
+    }
+    // ✅ VALIDATION: Must select something
+    else {
+      alert("Please select a branch/location or enable manual entry");
+      return;
+    }
+  }
 
   try {
     // 3. Call API
     const response = await submitUserReview(reviewData);
-    console.log(response)
+    console.log(response);
     alert("Review submitted successfully! It will be published after validation.");
-    
+
     // 4. Reset Form & Close Modal
     resetForm();
     closeModal();
   } catch (error: any) {
     const msg = error.response?.data?.error || "Failed to submit review. Please try again.";
     alert(msg);
+    console.error("Review submission error:", error);
   }
 };
 
