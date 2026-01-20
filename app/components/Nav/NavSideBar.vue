@@ -42,7 +42,7 @@
     
     <div class="p-4">
       <button
-        @click="handleLogout"
+        @click="triggerLogout"
         class="w-full flex items-center gap-2 text-red-600 font-medium hover:text-red-700 transition-all duration-200 px-3 py-2"
       >
         <i class="pi pi-sign-out text-lg"></i>
@@ -56,7 +56,7 @@
 import useUser from '~/composables/useUser';
 import useMethods from '~/composables/useMethods';
 
-const { logoutUser } = useMethods();
+const { logoutUser, triggerLogout } = useMethods();
 const showLogoutModal = ref(false); // Modal state
 
 const props = defineProps({

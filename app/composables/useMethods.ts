@@ -5,7 +5,9 @@ import type { SupportUser } from "~/types/support";
 import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
-
+const showLogoutModal = ref(false);
+const isLoggingOut = ref(false);
+const logoutError = ref("");
 export default function () {
   const store = useBusinessUser();
   const supportStore = useSupportUser();
@@ -86,33 +88,45 @@ export default function () {
       return null;
     }
   };
-  const logoutUser = async () => {
-    try {
-      // 1. Identify current role before clearing state
-      // Check both stores or pass as an argument if preferred
-      const role = store.role || userStore.role;
+  const triggerLogout = () => {
+    showLogoutModal.value = true;
+  };
 
-      // 2. Call the backend to invalidate the session
+  const logoutUser = async () => {
+    if (isLoggingOut.value) return;
+    
+    isLoggingOut.value = true;
+    logoutError.value = ""; 
+
+    try {
+      // 1. Attempt the API call
       await api.post("api/auth/logout");
 
-      // 3. Wipe all local data
+      // 2. Identify role before clearing state
+      const role = store.role || userStore.role;
+
+      // 3. Clear local state ONLY after successful API response
       store.clearUser();
       userStore.clearUser();
+      
+      showLogoutModal.value = false;
 
-      // 4. Determine redirect path
+      // 4. Redirect based on the captured role
       const redirectPath = role === 'business_user' 
         ? '/business/auth/sign-in' 
         : '/end-user/auth/sign-in';
 
-      // 5. Finalize logout
       await navigateTo(redirectPath, { replace: true });
       
     } catch (err: any) {
-      console.error("Logout failed:", err?.message);
-      // Even if the API call fails, we usually want to clear local state
-      store.clearUser();
-      userStore.clearUser();
-      navigateTo('/end-user/auth/sign-in'); 
+      // 5. ON FAILURE: No redirect, no local data wipe
+      console.error("Logout failed:", err);
+      
+      // Capture the specific error message from the backend
+      logoutError.value = err?.response?.data?.message || "Server error: Could not invalidate session. Please try again.";
+      
+    } finally {
+      isLoggingOut.value = false;
     }
   };
 
@@ -141,6 +155,10 @@ export default function () {
     registerBusiness,
     registerEndUser,
     registerSupportUser,
-    logoutUser
+    logoutUser,
+    triggerLogout,
+    showLogoutModal,
+    isLoggingOut,
+    logoutError
   };
 }
