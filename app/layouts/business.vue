@@ -10,6 +10,7 @@
         :isLayoutCollapsed="isLayoutCollapsed"
         :menuItems="menuItems"
       />
+      
 
       <div class="layout-page">
         <nav
@@ -121,10 +122,12 @@
       }"
       @click="toggleLayout"
     ></div>
+    <LogoutConfirm />
   </div>
 </template>
 
 <script setup>
+import LogoutConfirm from '~/components/LogoutConfirm.vue'
 const route = useRoute();
 const menuItems = [
   { name: "Dashboard", to: "/business/dashboard", icon: "pi pi-home" },

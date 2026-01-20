@@ -1135,14 +1135,14 @@ const updateProfile = async () => {
       });
     }
 
-    if (selected_tags.value.length <= 0) {
-      return toast.add({
-        severity: "info",
-        summary: "INFO",
-        detail: "Business must select at least one tag!",
-        life: 3000,
-      });
-    }
+    // if (selected_tags.value.length <= 0) {
+    //   return toast.add({
+    //     severity: "info",
+    //     summary: "INFO",
+    //     detail: "Business must select at least one tag!",
+    //     life: 3000,
+    //   });
+    // }
 
     businessData.value.tags = selected_tags.value;
 
