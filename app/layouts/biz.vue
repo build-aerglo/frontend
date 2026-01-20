@@ -6,7 +6,7 @@
     >
       <NuxtLink to="/">
       <img
-        src="/images/logo/b-user-logo.png"
+        src="~/assets/images/e-user-logo.png"
         class="w-[96px] h-[40px] object-contain object-center"
       />
       </NuxtLink> 

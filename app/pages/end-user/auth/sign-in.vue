@@ -15,19 +15,9 @@
     </div>
 
     <!-- Right Form Section -->
-    <div class="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 px-4">
+    <div class="flex flex-col justify-start items-center bg-gray-50 w-full md:w-1/3 px-4 pt-20">
       <div class="w-full max-w-sm space-y-5">
-        <div class="flex justify-center mb-4">
-          <NuxtLink to="/">
-            <img
-              src="~/assets/images/e-user-logo.png"
-              class="h-12 w-auto object-contain"
-            />
-          </NuxtLink>
-        </div>
-        <div class="text-[#008253] text-center font-bold text-[100%] mt-2 mb-5">
-          Clear reviews, Confident decisions.
-        </div>
+
         <!-- Loading State -->
         <div v-if="isLoading" class="flex flex-col justify-center items-center text-gray-600">
           <img :src="spinner" class="h-10 w-10 object-center" />
@@ -37,6 +27,21 @@
         <!-- Error Message -->
         <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
           {{ errorMessage }}
+        </div>
+
+        <div class="flex justify-center mb-10">
+          <div class="flex justify-center space-x-4">
+
+          <button @click="handleSocialLogin('Facebook')" aria-label="Login with Facebook" :disabled="isLoading" class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs transition">
+            <i class="pi pi-facebook text-blue-500 hover:text-blue-800 text-3xl"></i>
+          </button>
+          <button @click="handleSocialLogin('Twitter')" aria-label="Login with Twitter" :disabled="isLoading" class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs hover:bg-gray-800 transition">
+            <i class="pi pi-twitter text-gray-800 hover:text-white text-2xl"></i>
+          </button>
+          <button @click="handleSocialLogin('google-oauth2')" aria-label="Login with Google" :disabled="isLoading" class="w-10 h-10 flex items-center justify-center border rounded-lg shadow-xs hover:bg-amber-600 transition">
+            <i class="pi pi-google text-amber-600 hover:text-white text-2xl"></i>
+          </button>
+        </div>
         </div>
 
         <form id="formAuthentication" @submit.prevent="HandleLogin" class="space-y-5">
@@ -85,7 +90,7 @@
               Forgot Password?
             </NuxtLink>
           </div>
-          <div class="mb-6">
+          <div class="mb-2">
             <button 
               class="btn btn-primary d-grid w-100" 
               type="submit"
@@ -103,31 +108,6 @@
           </NuxtLink>
         </p>
 
-        <div class="flex items-center">
-          <div class="flex-grow border-t border-gray-300"></div>
-          <span class="px-2 text-gray-400 text-xs">or sign in with</span>
-          <div class="flex-grow border-t border-gray-300"></div>
-        </div>
-
-        <div class="flex justify-center space-x-4">
-          <button @click="handleSocialLogin('Facebook')" aria-label="Login with Facebook" :disabled="isLoading">
-            <i class="pi pi-facebook text-blue-800 text-2xl hover:text-blue-600 transition"></i>
-          </button>
-          <button @click="handleSocialLogin('Twitter')" aria-label="Login with Twitter" :disabled="isLoading">
-            <i class="pi pi-twitter text-gray-800 text-2xl hover:text-blue-400 transition"></i>
-          </button>
-          <button @click="handleSocialLogin('GitHub')" aria-label="Login with GitHub" :disabled="isLoading">
-            <i class="pi pi-github text-slate-600 text-2xl hover:text-gray-600 transition"></i>
-          </button>
-          <button @click="handleSocialLogin('google-oauth2')" aria-label="Login with Google" :disabled="isLoading">
-            <i class="pi pi-google text-amber-600 text-2xl hover:text-amber-800 transition"></i>
-          </button>
-        </div>
-        <p class="text-center mt-4 text-sm text-gray-800">
-          <NuxtLink to="/review/write-review" class="text-blue-500 font-medium hover:underline">
-            Review as a Guest
-          </NuxtLink>
-        </p>
       </div>
     </div>
   </div>

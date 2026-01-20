@@ -600,23 +600,6 @@
   </Dialog>
 
   <section class="..mg ..py-[50px]" v-if="business">
-    <div class="breadcrumb flex gap-2.5 flex-wrap pb-[20px]">
-      <NuxtLink to="/">Home</NuxtLink>
-      <a>|</a>
-      <NuxtLink
-        :to="{
-          path: '/explore',
-          query: {
-            categoryId: i.id,
-            categoryName: i.name,
-          },
-        }"
-        v-for="(i, idx) in business?.categories"
-        :key="idx"
-      >
-        {{ i.name }}
-      </NuxtLink>
-    </div>
 
     <Card class="w-full">
       <template #content>
@@ -637,7 +620,7 @@
                     />
                   </div>
                   
-                  <!-- STATUS BADGE/FRAME with Claim Status - positioned absolutely on top -->
+                  <!-- STATUS BADGE/FRAME with Claim Status -->
                   <BusinessStatusFrame
                     v-if="businessBadgeStatus"
                     :status="businessBadgeStatus"
@@ -708,6 +691,15 @@
                       input-class="!w-max"
                     />
                   </div>
+                  <!-- Mobile: Icon button -->
+                  <button
+                    v-if="canEdit && isBusiness"
+                    @click="editBusiness = true"
+                    class="sm:hidden flex items-center justify-center w-10 h-10 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-md"
+                    aria-label="Edit Business Profile"
+                  >
+                    <i class="pi pi-pencil text-white text-sm"></i>
+                  </button>
                 </div>
               </div>
               <div>
