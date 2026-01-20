@@ -95,7 +95,11 @@
               <select v-model="selectedBranchOption" :disabled="manualEntryEnabled || isLoadingBranches"
                 class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed">
                 <option value="">{{ isLoadingBranches ? 'Loading branches...' : 'Select a branch...' }}</option>
-                <option value="online">Online</option>
+
+                <!-- ✅ Only show "Online" option if it doesn't already exist in branches -->
+                <option v-if="!hasOnlineBranch" value="online">Online</option>
+
+                <!-- ✅ Show all fetched branches (including pseudo-branch and real branches) -->
                 <option v-for="option in branchOptions" :key="option.id" :value="option.id">
                   {{ option.display }}
                 </option>
@@ -136,6 +140,10 @@
               <!-- Confirmation messages -->
               <p v-if="selectedBranchOption === 'online'" class="text-xs text-green-600 mt-2 font-medium">
                 ✓ Online business selected
+              </p>
+              <p v-else-if="selectedBranchOption === 'business-address'"
+                class="text-xs text-green-600 mt-2 font-medium">
+                ✓ Main business location selected
               </p>
               <p v-else-if="selectedBranchOption && !manualEntryEnabled"
                 class="text-xs text-green-600 mt-2 font-medium">
@@ -293,15 +301,15 @@ const manualCities = computed(() => {
 const branchOptions = computed(() => {
   const options: { id: string; display: string }[] = [];
 
-  // Add existing branches
   branches.value.forEach(branch => {
+    // Build display text
     const cityState = [branch.branchCityTown, branch.branchState]
       .filter(Boolean)
       .join(', ');
 
     options.push({
       id: branch.id,
-      display: cityState || branch.name
+      display: cityState || branch.name || 'Unknown Location'
     });
   });
 
@@ -399,38 +407,46 @@ const fetchBranches = async (businessId: string) => {
   branches.value = [];
 
   try {
+    // 1. Fetch existing branches from API
     const result = await getBusinessBranches(businessId);
+    const branchData = Array.isArray(result) ? result : (result?.data || []);
 
-    if (result && result.length > 0) {
-      branches.value = result;
-    } else {
-      // No branches found - try to get business address
-      const businessProfile = await getBusinessProfile(businessId);
+    // 2. ALWAYS fetch business profile for main address
+    const businessProfile = await getBusinessProfile(businessId);
 
-      if (businessProfile?.data?.businessAddress) {
-        // Parse business address and create a pseudo-branch option
-        const address = businessProfile.data.businessAddress;
-        const addressParts = address.split(',').map((s: string) => s.trim());
+    // 3. Start with empty branches array
+    const allBranches: Branch[] = [];
 
-        // Try to extract city and state from address
-        let city = "";
-        let state = "";
+    // 4. Add main business address as pseudo-branch (if it exists)
+    if (businessProfile?.data?.businessAddress) {
+      const address = businessProfile.data.businessAddress;
+      const addressParts = address.split(',').map((s: string) => s.trim());
 
-        if (addressParts.length >= 2) {
-          state = addressParts[addressParts.length - 1];
-          city = addressParts[addressParts.length - 2];
-        }
-
-        // Add business address as a branch option
-        branches.value = [{
-          id: 'business-address',
-          name: 'Main Location',
-          branchCityTown: city,
-          branchState: state,
-          branchStreet: ''
-        } as Branch];
+      let city = "";
+      let state = "";
+      if (addressParts.length >= 2) {
+        state = addressParts[addressParts.length - 1];
+        city = addressParts[addressParts.length - 2];
       }
+
+      allBranches.push({
+        id: 'business-address',
+        name: 'Main Location',
+        branchCityTown: city,
+        branchState: state,
+        branchStreet: ''
+      } as Branch);
     }
+
+    // 5. Add real branches (if any exist)
+    if (branchData && branchData.length > 0) {
+      allBranches.push(...branchData);
+    }
+
+    // 6. Set the final branches array
+    branches.value = allBranches;
+
+    console.log(`Loaded ${allBranches.length} branch options for business ${businessId}:`, allBranches);
   } catch (error) {
     console.error("Failed to fetch branches:", error);
     branches.value = [];
@@ -438,6 +454,17 @@ const fetchBranches = async (businessId: string) => {
     isLoadingBranches.value = false;
   }
 };
+
+// ========================================
+// UPDATED: Computed property to check if "Online" already exists
+// ========================================
+
+const hasOnlineBranch = computed(() => {
+  return branches.value.some(b =>
+    b.name?.toLowerCase() === 'online' ||
+    (b.branchCityTown?.toLowerCase() === 'online' && b.branchState?.toLowerCase() === 'online')
+  );
+});
 
 // Select business from search results
 const selectBusiness = async (b: any) => {
@@ -519,7 +546,7 @@ const submitReview = async () => {
   let locationData: any = {};
 
   if (isAddingNewBusiness.value) {
-    // New business with location
+    // ✅ SCENARIO 1: NEW BUSINESS + NEW BRANCH
     locationData = {
       businessId: null,
       businessName: businessName.value,
@@ -531,19 +558,51 @@ const submitReview = async () => {
       branchStreet: null
     };
   } else if (selectedBranchOption.value === 'online') {
-    // Online business
+    // ✅ SCENARIO 2: ONLINE - Check if Online branch exists in fetched branches
+    const existingOnlineBranch = branches.value.find(b =>
+      b.name?.toLowerCase() === 'online' ||
+      (b.branchCityTown?.toLowerCase() === 'online' && b.branchState?.toLowerCase() === 'online')
+    );
+
+    if (existingOnlineBranch) {
+      // ✅ REUSE existing Online branch
+      locationData = {
+        businessId: selectedBusinessId.value,
+        businessName: null,
+        isNewBusiness: false,
+        locationId: existingOnlineBranch.id,
+        isNewBranch: false,
+        branchCityTown: null,
+        branchState: null,
+        branchStreet: null
+      };
+    } else {
+      // ✅ CREATE new Online branch
+      locationData = {
+        businessId: selectedBusinessId.value,
+        businessName: null,
+        isNewBusiness: false,
+        locationId: null,
+        isNewBranch: true,
+        branchCityTown: 'Online',
+        branchState: 'Online',
+        branchStreet: null
+      };
+    }
+  } else if (selectedBranchOption.value === 'business-address') {
+    // ✅ SCENARIO 3: PSEUDO-BRANCH (use businessId as locationId)
     locationData = {
       businessId: selectedBusinessId.value,
       businessName: null,
       isNewBusiness: false,
-      locationId: null,
+      locationId: selectedBusinessId.value, // Use businessId as locationId
       isNewBranch: false,
       branchCityTown: null,
       branchState: null,
       branchStreet: null
     };
   } else if (manualEntryEnabled.value) {
-    // Manual branch entry
+    // ✅ SCENARIO 4: NEW BRANCH FOR EXISTING BUSINESS
     locationData = {
       businessId: selectedBusinessId.value,
       businessName: null,
@@ -555,16 +614,15 @@ const submitReview = async () => {
       branchStreet: null
     };
   } else if (selectedBranchOption.value) {
-    // Existing branch selected
-    const selectedBranch = branches.value.find(b => b.id === selectedBranchOption.value);
+    // ✅ SCENARIO 5: EXISTING BUSINESS + EXISTING BRANCH
     locationData = {
       businessId: selectedBusinessId.value,
       businessName: null,
       isNewBusiness: false,
-      locationId: selectedBranchOption.value === 'business-address' ? null : selectedBranchOption.value,
-      isNewBranch: selectedBranchOption.value === 'business-address',
-      branchCityTown: selectedBranch?.branchCityTown || null,
-      branchState: selectedBranch?.branchState || null,
+      locationId: selectedBranchOption.value,
+      isNewBranch: false,
+      branchCityTown: null,
+      branchState: null,
       branchStreet: null
     };
   }
@@ -585,7 +643,7 @@ const submitReview = async () => {
     let message = "Review submitted successfully! It will be published after validation.";
     if (isAddingNewBusiness.value) {
       message = "Business created and review submitted successfully! It will be published after validation.";
-    } else if (manualEntryEnabled.value) {
+    } else if (manualEntryEnabled.value || (selectedBranchOption.value === 'online' && !branches.value.find(b => b.name?.toLowerCase() === 'online'))) {
       message = "New branch added and review submitted successfully! It will be published after validation.";
     }
 
