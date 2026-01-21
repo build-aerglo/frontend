@@ -31,7 +31,7 @@
             class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition disabled:bg-red-400 flex items-center justify-center"
           >
             <i v-if="isLoggingOut" class="pi pi-spin pi-spinner mr-2"></i>
-            <span>{{ isLoggingOut ? 'Processing...' : 'Confirm' }}</span>
+            <span>{{ isLoggingOut ? 'logging out...' : 'Confirm' }}</span>
           </button>
         </div>
       </div>

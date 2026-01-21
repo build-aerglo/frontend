@@ -74,6 +74,7 @@
         @deleted="removeImage"
         path="media"
         :url="null"
+        :uploadMode="true"
       />
     </div>
   </Dialog>
@@ -763,7 +764,11 @@
               </div>
               <div class="flex items-center gap-[5px] mb-[5px]">
                 <i class="pi pi-map-marker"></i>
-                {{ business.businessAddress ?? "-" }}
+                {{ 
+                  [business.businessStreet, business.businessCityTown, business.businessState]
+                    .filter(Boolean)
+                    .join(', ') || '-' 
+                }}
               </div>
               <div
                 class="flex gap-2.5 socials"
@@ -1012,6 +1017,11 @@ onBeforeMount(async () => {
   currentPage.value = props.page ?? "review";
   if (props.business) {
     businessData.value = props.business;
+
+    if (businessData.value && !businessData.value.media) {
+      businessData.value.media = [];
+    }
+    
     if (businessData.value?.socialMediaLinks) {
       availableSocials.value = SOCIAL_HANDLES.filter(
         (social) => !(social in businessData.value?.socialMediaLinks)
@@ -1146,22 +1156,23 @@ const updateProfile = async () => {
 
     businessData.value.tags = selected_tags.value;
 
-    if (businessData.value.logo === null) {
-      return toast.add({
-        severity: "info",
-        summary: "INFO",
-        detail: "Business logo must be selected!",
-        life: 3000,
-      });
-    }
+    // if (businessData.value.logo === null) {
+    //   return toast.add({
+    //     severity: "info",
+    //     summary: "INFO",
+    //     detail: "Business logo must be selected!",
+    //     life: 3000,
+    //   });
+    // }
 
     isLoading.value = true;
     const category = [];
     category.push(business_category.value.id);
     const businessDataToSubmit = {
       ...businessData.value,
-      logo: businessData.value.logo ?? null,
+      logo: businessData.value.logo || "",
       categoryIds: category,
+      media: businessData.value.media || [],
     };
     businessDataToSubmit.openingHours = normalizedToRaw(
       businessData.value.openingHours

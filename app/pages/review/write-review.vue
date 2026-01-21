@@ -8,7 +8,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
 
         <div class="md:col-span-6 md:order-2 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
-          <h2 class="text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
+          <h2 class="text-2xl md:text-3xl font-bold text-center text-[#008253] mb-6">Share Your Experience</h2>
 
           <div class="space-y-4">
             <!-- Business Name Input -->

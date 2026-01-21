@@ -112,7 +112,7 @@
       @click="isOpen = false"></div>
 
     <Teleport to="body">
-      <div v-if="showReviewModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div v-if="showReviewModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeModal"></div>
         <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px] animate-in fade-in zoom-in duration-200">
           <button @click="closeModal" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600"><i class="pi pi-times text-xl"></i></button>
@@ -226,7 +226,14 @@
               <input type="email" v-model="email" placeholder="submit your email to review as a guest" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#008253] outline-none" />
               <div class="flex gap-2">
                 <button @click="showEmailInput = false" class="flex-1 text-gray-500 underline">Back</button>
-                <button @click="submitReview" class="flex-[2] py-3 bg-[#008253] text-white rounded-xl">Submit</button>
+                <button 
+                  @click="submitReview" 
+                  :disabled="isSubmittingReview"
+                  class="flex-[2] py-3 bg-[#008253] text-white rounded-xl disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                >
+                  <i v-if="isSubmittingReview" class="pi pi-spin pi-spinner mr-2"></i>
+                  <span>{{ isSubmittingReview ? 'Submitting...' : 'Submit' }}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -237,7 +244,7 @@
 </template>
 
 <script setup lang="ts">
-
+const isSubmittingReview = ref(false);
 import { useUserStore } from '~/store/user'
 import useBusinessMethods from '~/composables/business/useBusinessMethods'
 import useNigerianLocations from '~/composables/useNigerianLocations'
@@ -268,7 +275,7 @@ const reviewBody = ref("")
 const images = ref<string[]>([])
 const email = ref("")
 const filteredBusinesses = ref<any[]>([])
-
+const toast = useToast();
 let debounceTimer: any = null
 const { getBusinessBranches } = useBusinessMethods()
 const { getStates, getCitiesByState } = useNigerianLocations()
@@ -450,21 +457,41 @@ const handleUserReviewRedirect = () => {
 const submitReview = async () => {
   // 1. Basic Validation
   if (!businessName.value.trim()) {
-    alert("Please enter a business name");
-    return;
+    return toast.add({
+        severity: "info",
+        summary: "INFO",
+        detail: "Business name is required!",
+        life: 3000,
+      });
   }
   if (rating.value === 0) {
-    alert("Please provide a rating");
-    return;
+    return toast.add({
+        severity: "info",
+        summary: "INFO",
+        detail: "Please provide a rating!",
+        life: 3000,
+      });
   }
   if (reviewBody.value.length < 20) {
-    alert("Review must be at least 20 characters");
-    return;
+    return toast.add({
+        severity: "info",
+        summary: "INFO",
+        detail: "Review must be at least 20 characters!",
+        life: 3000,
+      });
   }
   if (!email.value) {
-    alert("Email is required for guest reviews");
-    return;
+    return toast.add({
+        severity: "info",
+        summary: "INFO",
+        detail: "Email is required for guest reviews",
+        life: 3000,
+      });
   }
+
+  // --- START LOADING STATE ---
+  if (isSubmittingReview.value) return;
+  isSubmittingReview.value = true;
 
   // 2. Build review data based on scenario
   let reviewData: any = {
@@ -483,6 +510,7 @@ const submitReview = async () => {
   if (isAddingNewBusiness.value) {
     if (!newBusinessState.value || !newBusinessCity.value) {
       alert("Please select both state and city for the new business");
+      isSubmittingReview.value = false; // Reset if validation fails
       return;
     }
 
@@ -502,6 +530,7 @@ const submitReview = async () => {
   else {
     if (!selectedBusinessId.value) {
       alert("Please select a business");
+      isSubmittingReview.value = false; // Reset if validation fails
       return;
     }
 
@@ -558,6 +587,7 @@ const submitReview = async () => {
     else if (manualEntryEnabled.value) {
       if (!manualState.value || !manualCity.value) {
         alert("Please select both state and city for the new branch");
+        isSubmittingReview.value = false; // Reset if validation fails
         return;
       }
 
@@ -590,6 +620,7 @@ const submitReview = async () => {
     // ✅ VALIDATION: Must select something
     else {
       alert("Please select a branch/location or enable manual entry");
+      isSubmittingReview.value = false; // Reset if validation fails
       return;
     }
   }
@@ -607,6 +638,9 @@ const submitReview = async () => {
     const msg = error.response?.data?.error || "Failed to submit review. Please try again.";
     alert(msg);
     console.error("Review submission error:", error);
+  } finally {
+    // --- END LOADING STATE ---
+    isSubmittingReview.value = false;
   }
 };
 
