@@ -1403,6 +1403,15 @@
                     </div>
                   </div>
                 </div>
+                <div 
+                  @click="triggerLogout"
+                  class="mt-4 pt-4 border-t border-gray-200 bg-gray-50/50 dark:bg-gray-800/30 dark:border-gray-700 rounded-b-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 group"
+                >
+                  <div class="flex items-center px-6 pb-4 text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400">
+                    <i class="pi pi-sign-out mr-3 text-sm"></i>
+                    <span class="font-medium text-sm">Logout</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1447,6 +1456,8 @@ import { ref, computed, onMounted } from "vue";
 import UserAvatar from "~/components/UserAvatar.vue";
 import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import useMethods from '~/composables/useMethods';
+const { triggerLogout } = useMethods();
 const { getCategories } = useBusinessMethods();
 const topCategories = ref<any[]>([]);
 import type {
