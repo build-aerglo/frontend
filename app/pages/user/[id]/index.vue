@@ -332,27 +332,8 @@
         <span class="font-medium text-gray-700 text-sm">{{ badge.name }}</span>
       </div>
 
-      <!-- Badge Summary -->
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-gray-600">Earned Badges:</span>
-          <span class="font-semibold text-gray-800">{{ totalBadges + 1 }}</span>
-        </div>
-      </div>
     </div>
-    <!-- Empty State -->
-    <!-- <div v-else class="text-center">
-    <div
-        :class="['rounded-lg p-3 flex items-center gap-3 bg-blue-100',
-        ]"
-      >
-        <i :class="[ 'pi pi-face-smile text-lg']" style="color: black"></i>
-        <span class="font-medium text-gray-700 text-sm">Newbie</span>
-      </div>
-      <p v-if="isUser" class="text-gray-400 text-xs mt-4">
-        Keep reviewing to unlock more badges!
-      </p>
-    </div> -->
+    
   </div>
 
             <!-- Top Categories -->
