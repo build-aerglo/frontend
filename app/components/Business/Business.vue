@@ -916,6 +916,7 @@ const insertImage = (url: string) => {
 const insertImageLogo = (url: string) => {
   if (!businessData.value) return;
   businessData.value.logo = url;
+
 };
 
 const removeImage = (url: string) => {
