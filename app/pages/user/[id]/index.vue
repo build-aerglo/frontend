@@ -286,7 +286,7 @@
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
             <!-- Badges -->
-  <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
+  <div class="bg-white rounded-xl shadow-sm p-6 md:block">
     <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
       <i class="pi pi-trophy text-gold"></i>
       <span
