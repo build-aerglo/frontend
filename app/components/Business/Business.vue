@@ -608,32 +608,29 @@
             <div class="relative p-[2px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[2px] items-center">
               <!-- BADGE / LOGO WRAPPER -->
               <div class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]">
-                
-                <!-- Badge Container - fixed max width on mobile -->
-                <div class="relative w-full h-full max-w-[180px] sm:max-w-[160px] aspect-square">
+  
+                <div class="relative w-full max-w-[180px] sm:max-w-[160px] aspect-square">
                   
-                  <!-- LOGO - sits behind badge, centered -->
-                  <div class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0">
+                  <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
                     <img
                       :src="business?.logo ?? '/images/default-business-logo.png'"
-                      class="w-full h-full object-contain"
+                      class="w-full h-full object-cover object-center" 
                       :alt="business?.name"
                     />
                   </div>
                   
-                  <!-- STATUS BADGE/FRAME with Claim Status -->
                   <BusinessStatusFrame
                     v-if="businessBadgeStatus"
                     :status="businessBadgeStatus"
                     :claimStatus="business?.businessStatus"
-                    class="absolute inset-2 z-20"
+                    class="absolute inset-0 z-20 pointer-events-none"
                   />
                                     
                 </div>
               </div>
 
                     <!-- Star ratings and reviews -->
-            <div class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0">
+            <div class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0 mt-2">
               <div class="flex justify-center scale-75 sm:scale-90">
                 <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-8 h-8" :color-level="Math.floor(business.avgRating ?? 0)" />
               </div>
@@ -899,6 +896,7 @@ const insertImage = (url: string) => {
 const insertImageLogo = (url: string) => {
   if (!businessData.value) return;
   businessData.value.logo = url;
+
 };
 
 const removeImage = (url: string) => {
