@@ -123,8 +123,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { useUserStore } from '~/store/user'
 
+const userStore = useUserStore()
 const imageLoaded = ref<boolean>(false);
 
 onMounted((): void => {
@@ -141,4 +142,21 @@ onMounted((): void => {
     imageLoaded.value = true;
   }
 });
+const isReviewModalOpen = ref(false)
+
+// Watch for the login event
+watch(() => userStore.isAuthenticated, (isLoggedIn) => {
+  if (isLoggedIn) {
+    // Check if there is a pending draft in localStorage or your store
+    const hasDraft = localStorage.getItem('review_draft')
+    
+    if (hasDraft) {
+      // Automatically open the modal
+      isReviewModalOpen.value = true;
+      
+      // Optional: Small toast notification
+      // toast.success("Welcome back! You can now finish your review.")
+    }
+  }
+})
 </script>
