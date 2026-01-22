@@ -193,7 +193,9 @@
                 <Checkbox
                   binary
                   :modelValue="isChecked(i.title)"
-                  @update:modelValue="(val: boolean) => toggleHighlight(val, i.title)"
+                  @update:modelValue="
+                    (val: boolean) => toggleHighlight(val, i.title)
+                  "
                 />
                 <span>{{ i.title }}</span>
               </div>
@@ -601,50 +603,64 @@
   </Dialog>
 
   <section class="..mg ..py-[50px]" v-if="business">
-
     <Card class="w-full">
       <template #content>
         <div class="flex sm:flex-row flex-col gap-[5px]">
-            <div class="relative p-[2px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[2px] items-center">
-              <!-- BADGE / LOGO WRAPPER -->
-              <div class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]">
-  
-                <div class="relative w-full max-w-[180px] sm:max-w-[160px] aspect-square">
-                  
-                  <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
-                    <img
-                      :src="business?.logo ?? '/images/default-business-logo.png'"
-                      class="w-full h-full object-cover object-center" 
-                      :alt="business?.name"
-                    />
-                  </div>
-                  
-                  <BusinessStatusFrame
-                    v-if="businessBadgeStatus"
-                    :status="businessBadgeStatus"
-                    :claimStatus="business?.businessStatus"
-                    class="absolute inset-0 z-20 pointer-events-none"
+          <div
+            class="relative p-[2px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[2px] items-center"
+          >
+            <!-- BADGE / LOGO WRAPPER -->
+            <div
+              class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]"
+            >
+              <!-- Badge Container - fixed max width on mobile -->
+              <div
+                class="relative w-full h-full max-w-[180px] sm:max-w-[160px] aspect-square"
+              >
+                <!-- LOGO - sits behind badge, centered -->
+                <div
+                  class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0"
+                >
+                  <img
+                    :src="business?.logo ?? '/images/default-business-logo.png'"
+                    class="w-full h-full object-contain"
+                    :alt="business?.name"
                   />
-                                    
                 </div>
-              </div>
 
-                    <!-- Star ratings and reviews -->
-            <div class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0 mt-2">
+                <!-- STATUS BADGE/FRAME with Claim Status -->
+                <BusinessStatusFrame
+                  v-if="businessBadgeStatus"
+                  :status="businessBadgeStatus"
+                  :claimStatus="business?.businessStatus"
+                  class="absolute inset-2 z-20"
+                />
+              </div>
+            </div>
+
+            <!-- Star ratings and reviews -->
+            <div
+              class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0"
+            >
               <div class="flex justify-center scale-75 sm:scale-90">
-                <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-8 h-8" :color-level="Math.floor(business.avgRating ?? 0)" />
+                <Star
+                  v-for="n in 5"
+                  :key="n"
+                  :value="(business.avgRating ?? 0) - (n - 1)"
+                  class="w-8 h-8"
+                  :color-level="Math.floor(business.avgRating ?? 0)"
+                />
               </div>
               <div class="text-center text-xs sm:text-sm">
                 {{ business?.reviewCount ?? 0 }}
-                Review{{ business?.reviewCount !== 1 ? 's' : '' }}
+                Review{{ business?.reviewCount !== 1 ? "s" : "" }}
               </div>
             </div>
-            </div>
+          </div>
           <div class="flex-1">
             <div class="flex flex-col ml-2 gap-[10px]">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-2">
-
                   <div class="flex gap-1 items-center flex-wrap">
                     <span class="text-xl sm:text-2xl font-bold">
                       {{ business?.name }}
@@ -761,10 +777,14 @@
               </div>
               <div class="flex items-center gap-[5px] mb-[5px]">
                 <i class="pi pi-map-marker"></i>
-                {{ 
-                  [business.businessStreet, business.businessCityTown, business.businessState]
+                {{
+                  [
+                    business.businessStreet,
+                    business.businessCityTown,
+                    business.businessState,
+                  ]
                     .filter(Boolean)
-                    .join(', ') || '-' 
+                    .join(", ") || "-"
                 }}
               </div>
               <div
@@ -835,16 +855,16 @@
 </template>
 
 <script setup lang="ts">
-import Star from '~/components/Stars.vue'
+import Star from "~/components/Stars.vue";
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
-import BusinessStatusFrame from '~/components/Business/BusinessStatusFrame.vue';
+import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
 
 const businessBadgeStatus = computed(() => {
-  if (props.status === 'trusted') return 'trusted'
-  if (props.status === 'verified') return 'verified'
-  return null
-})
+  if (props.status === "trusted") return "trusted";
+  if (props.status === "verified") return "verified";
+  return null;
+});
 
 const props = defineProps([
   "business",
@@ -882,7 +902,7 @@ function toggleHighlight(val: boolean, title: string): void {
     }
   } else {
     businessData.value.highlights = businessData.value.highlights.filter(
-      (t: string) => t !== title
+      (t: string) => t !== title,
     );
   }
 }
@@ -970,7 +990,7 @@ const removeFaqs = (index: number) => {
   businessData.value.faqs = removeByIndex(businessData.value.faqs, index);
 };
 
-const removeByIndex = <T>(arr: T[], index: number): T[] => {
+const removeByIndex = <T,>(arr: T[], index: number): T[] => {
   return arr.filter((_, i) => i !== index);
 };
 
@@ -1019,10 +1039,10 @@ onBeforeMount(async () => {
     if (businessData.value && !businessData.value.media) {
       businessData.value.media = [];
     }
-    
+
     if (businessData.value?.socialMediaLinks) {
       availableSocials.value = SOCIAL_HANDLES.filter(
-        (social) => !(social in businessData.value?.socialMediaLinks)
+        (social) => !(social in businessData.value?.socialMediaLinks),
       );
     } else {
       availableSocials.value = SOCIAL_HANDLES;
@@ -1050,11 +1070,11 @@ onBeforeMount(async () => {
             friday: "00:00 - 00:00",
             saturday: "00:00 - 00:00",
             sunday: "00:00 - 00:00",
-          })
+          }),
         );
       } else {
         businessData.value.openingHours = parseOpeningHours(
-          rawToNormalized(props.business.openingHours)
+          rawToNormalized(props.business.openingHours),
         );
       }
     }
@@ -1108,7 +1128,7 @@ const deleteSocial = (id: any) => {
   if (businessData.value === null || businessData.value === undefined) return;
   delete businessData.value.socialMediaLinks[id];
   availableSocials.value = SOCIAL_HANDLES.filter(
-    (social) => !(social in businessData.value?.socialMediaLinks)
+    (social) => !(social in businessData.value?.socialMediaLinks),
   );
   social.value.name = availableSocials.value[0] ?? "";
 };
@@ -1131,6 +1151,17 @@ const allDays = [
 
 const weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday"];
 const weekends = ["saturday", "sunday"];
+
+type Item = {
+  id: string;
+  categoryId: string;
+  name: string;
+};
+
+function getTagNames(items: Item[]): string[] {
+  if (items.length <= 0) return [];
+  return items.map((item) => item.name);
+}
 
 const updateProfile = async () => {
   try {
@@ -1173,12 +1204,14 @@ const updateProfile = async () => {
       media: businessData.value.media || [],
     };
     businessDataToSubmit.openingHours = normalizedToRaw(
-      businessData.value.openingHours
+      businessData.value.openingHours,
     );
+
+    businessDataToSubmit.tags = getTagNames(businessData.value.tags);
 
     const res = await saveBusinessProfile(
       businessData.value.id,
-      businessDataToSubmit
+      businessDataToSubmit,
     );
     if (res) {
       emit("edit", res);
@@ -1195,7 +1228,6 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
-
 </script>
 
 <style scoped>
