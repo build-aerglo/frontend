@@ -286,7 +286,7 @@
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
             <!-- Badges -->
-  <div class="bg-white rounded-xl shadow-sm p-6 hidden md:block">
+  <div class="bg-white rounded-xl shadow-sm p-6 md:block">
     <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
       <i class="pi pi-trophy text-gold"></i>
       <span
@@ -306,14 +306,20 @@
     </div>
 
     <!-- Badges List (now includes tier badge) -->
-    <div v-else-if="totalBadges > 0" class="space-y-3">
+    <div class="space-y-3">
+      <!-- Tier Badge (from API) -->
       <div
-        :class="['rounded-lg p-3 flex items-center gap-3 bg-green-100',
+        v-if="tierBadge"
+        :class="[
+          tierBadge.color,
+          'rounded-lg p-3 flex items-center gap-3',
         ]"
       >
-        <i :class="[ 'pi pi-heart-fill text-lg']" style="color: slateblue"></i>
-        <span class="font-medium text-gray-700 text-sm">{{ currentTier }}</span>
+        <span class="text-lg">{{ tierBadge.icon }}</span>
+        <span class="font-medium text-gray-700 text-sm">{{ tierBadge.name }}</span>
       </div>
+
+      <!-- Earned Badges -->
       <div
         v-for="(badge, idx) in badges"
         :key="idx"
@@ -323,35 +329,11 @@
         ]"
       >
         <i :class="[badge.icon, 'text-2xl']"></i>
-        <span class="font-medium text-gray-700 text-sm">{{
-          badge.name
-        }}</span>
+        <span class="font-medium text-gray-700 text-sm">{{ badge.name }}</span>
       </div>
 
-      <!-- Badge Summary (shows earned badges count) -->
-      <div v-if="totalBadges > 0" class="mt-4 pt-4 border-t border-gray-200">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-gray-600">Earned Badges:</span>
-          <span class="font-semibold text-gray-800">{{
-            totalBadges
-          }}</span>
-        </div>
-      </div>
     </div>
-
-    <!-- Empty State -->
-    <div v-else class="text-center">
-    <div
-        :class="['rounded-lg p-3 flex items-center gap-3 bg-blue-100',
-        ]"
-      >
-        <i :class="[ 'pi pi-face-smile text-lg']" style="color: black"></i>
-        <span class="font-medium text-gray-700 text-sm">Newbie</span>
-      </div>
-      <p v-if="isUser" class="text-gray-400 text-xs mt-4">
-        Keep reviewing to unlock more badges!
-      </p>
-    </div>
+    
   </div>
 
             <!-- Top Categories -->
@@ -2122,48 +2104,53 @@ watch(activeTab, (newTab) => {
   }
 });
 
-const { getUserBadges, mapBadgesToDisplay } = useBadgeApi();
+const { getUserBadges, getBadgeInfo, createTierBadge, mapBadgesToDisplay } = useBadgeApi();
 
-// Component manages its own state
 const badgeData = ref<BadgeResponse | null>(null);
+const tierBadgeInfo = ref<any | null>(null);
 
-// Computed properties
-const badges = computed<DisplayBadge[]>(() => {
-  if (!badgeData.value || !badgeData.value.badges.length) {
-    return [];
-  }
+const badges = computed(() => {
+  if (!badgeData.value?.badges?.length) return [];
   return mapBadgesToDisplay(badgeData.value.badges);
+});
+
+const tierBadge = computed(() => {
+  if (!badgeData.value || !tierBadgeInfo.value) return null;
+  return createTierBadge(tierBadgeInfo.value, badgeData.value.currentTier);
 });
 
 const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
 const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
 
-// Methods
+console.log(currentTier.value, tierBadge.value, 'printed thiss')
+
 const fetchBadges = async () => {
   if (!userId) return;
   
   loading.value = true;
-  error.value = null;
-
   try {
+    // Fetch user badges
     const response = await getUserBadges(userId);
     if (response) {
       badgeData.value = response;
+      
+      // Fetch tier badge info for icon and display name
+      const tierInfo = await getBadgeInfo(response.currentTier);
+      if (tierInfo) {
+        tierBadgeInfo.value = tierInfo;
+      }
     }
-  } catch (err: any) {
+  } catch (err) {
     console.error('Failed to fetch badges:', err);
-    error.value = err.message || 'Failed to load badges';
   } finally {
     loading.value = false;
   }
 };
 
-// Lifecycle
 onMounted(() => {
   fetchBadges();
 });
 
-// Watch for userId changes (if viewing different profiles)
 watch(() => userId, () => {
   fetchBadges();
 });
