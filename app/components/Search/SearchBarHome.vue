@@ -148,7 +148,7 @@ const onInput = () => {
           id: b.businessId,
           name: b.name,
           url: b.website || '',
-          logoUrl: b.logo || '/images/default-logo.png',
+          logoUrl: b.logo || '/images/default-business-logo.png',
           rating: b.avgRating || 0
         }))
       } else {

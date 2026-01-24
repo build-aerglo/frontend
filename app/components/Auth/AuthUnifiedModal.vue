@@ -6,11 +6,11 @@
       <div class="flex border-b shrink-0">
         <button 
           @click="activeTab = 'signin'" 
-          :class="['flex-1 py-4 font-seni-bold transition', activeTab === 'signin' ? 'text-[#008253] border-b-2 border-[#008253]' : 'text-gray-400']"
+          :class="['flex-1 py-4 font-semibold transition', activeTab === 'signin' ? 'text-[#008253] border-b-2 border-[#008253]' : 'text-gray-400']"
         >Sign In</button>
         <button 
           @click="activeTab = 'signup'" 
-          :class="['flex-1 py-4 font-semi-bold transition', activeTab === 'signup' ? 'text-[#008253] border-b-2 border-[#008253]' : 'text-gray-400']"
+          :class="['flex-1 py-4 font-semibold transition', activeTab === 'signup' ? 'text-[#008253] border-b-2 border-[#008253]' : 'text-gray-400']"
         >Sign Up</button>
       </div>
 
@@ -32,7 +32,8 @@
           :is-modal="true" 
         />
       </div>
-      <div class="border-t border-gray-100 p-4 bg-gray-50/50 text-center">
+
+      <div v-if="!hideBackToReview" class="border-t border-gray-100 p-4 bg-gray-50/50 text-center">
         <button 
           @click="$emit('back-to-review')" 
           class="text-sm text-gray-500 hover:text-[#008253] transition flex items-center justify-center mx-auto gap-2"
@@ -46,11 +47,19 @@
 </template>
 
 <script setup lang="ts">
+// Define the new prop
+defineProps({
+  hideBackToReview: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const activeTab = ref('signin')
 const emit = defineEmits(['close', 'authenticated','back-to-review' ])
 
 const onAuthSuccess = () => {
   emit('authenticated')
-  emit('close')
+  // We don't emit close here immediately if the parent wants to handle redirection
 }
 </script>

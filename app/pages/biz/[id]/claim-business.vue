@@ -219,37 +219,30 @@ const claimBusiness = async (data: ClaimData) => {
 
 const loadBusinessData = async () => {
   const id = route.params.id as string;
-  if (!id) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Business Not Found",
-    });
-  }
-
+  
   try {
     isLoading.value = true;
+    const res = await getBusinessProfile(id);
 
-    const [res] = await Promise.all([getBusinessProfile(id)]);
+    if (res?.statusCode === 200 && res.data) {
+      business.value = res.data;
+      
+      // Update claimData with the verified ID
+      claimData.value.businessId = res.data.id;
 
-    if (res?.statusCode === 200) {
+      // If already approved, show the "Verified" screen
       if (res.data.businessStatus === "approved") {
         isClaimed.value = true;
+      } else {
+        isClaimed.value = false;
       }
-
-      pageData.value.data = res.data;
-      business.value = res.data;
-      return;
+    } else {
+      // If the ID is invalid or doesn't exist, show 404
+      throw createError({ statusCode: 404, statusMessage: "Business not found" });
     }
-
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Business Not Found",
-    });
   } catch (error) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Business Not Found",
-    });
+    console.error("Error loading business for claim:", error);
+    throw createError({ statusCode: 404, statusMessage: "Business not found" });
   } finally {
     isLoading.value = false;
   }

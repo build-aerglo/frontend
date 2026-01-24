@@ -1,64 +1,20 @@
 <template>
-    <!-- <div v-if="!lazyItems.length && !loading" class="text-center py-6">
-        No reviews yet
-    </div>
-    <VirtualScroller v-else :items="lazyItems" :itemSize="lazyItems.length" lazy :loading="loading" showLoader
-        @lazy-load="onLazyLoad" style="height: 500px">
-        <template #item="{ item }">
-            <div class="mb-[20px]">
-                <Review :data="item" />
-            </div>
-        </template>
-
-<template #loader>
-            <div class="flex justify-center items-center p-4">
-                <img src="/svg/spinner.svg" alt="Loading..." class="w-8 h-8" />
-            </div>
-        </template>
-</VirtualScroller> -->
     <div v-if="reviews.length <= 0" class="flex flex-col items-center gap-2.5 py-[50px]">
-    No reviews yet
-    <ButtonCustom 
-        v-if="!isBusiness"
-        label="Be the first to review this business" 
-        icon="pencil" 
-        input-class="w-max" 
-        size="lg"
-        primary="true" 
-        @click="navigateTo({
-            path: '/review/write-review',
-            query: { 
-                bizId: business.id, 
-                bizName: business.name,
-                bizLogo: business.logo 
-            }
-        })"
-    />
-</div>
+        No reviews yet
+        <ButtonCustom 
+            v-if="!isBusiness"
+            label="Be the first to review this business" 
+            icon="pencil" 
+            input-class="w-max" 
+            size="lg"
+            primary="true" 
+            @click="handleWriteReviewClick" 
+        />
+    </div>
     <div v-else class="flex flex-col gap-[20px]">
-        <!-- <div class="h-[200px] border rounded-[10px]">
-            Summary
-        </div> -->
-        <Card class="sticky top-0 shadow-lg z-[10000]">
+        <Card class="sticky top-0 shadow-lg z-[10]">
             <template #content>
                 <div class="w-full">
-                    <!-- <div class="flex gap-2.5 justify-end">
-                        <NuxtLink v-if="isBusiness" to="/business/reviews-management">
-                            <ButtonCustom input-class="w-max" label="Manage Reviews" primary="true" size="lg" />
-                        </NuxtLink>
-                        <ButtonCustom :to="`/review/write-review?_id=${business.id}`" v-else input-class="w-max"
-                            label="Write a review" primary="true" size="lg" />
-                    </div>
-                    <div class="mt-[10px] flex gap-[20px]">
-                        <div class="flex items-center justify-center flex-col">
-                            <div class="font-extrabold text-[200%]">{{ business.avgRating }}</div>
-                            <div class="w-[90px]">
-                                <Star :count="business.avgRating" />
-                            </div>
-                            <div>{{ business.reviewCount }} Review(s)</div>
-                        </div>
-                        <div class="flex-1 border"></div>
-                    </div> -->
                     <div class="flex sm:flex-row flex-col justify-between items-center gap-[10px]">
                         <div class="flex gap-[10px] flex-1">
                             <select v-model="sortValue">
@@ -69,12 +25,7 @@
                                 <option v-for="(i, idx) in filter" :key="idx" :value="i.id">{{ i.name }}</option>
                             </select>
 
-                            <!-- <Select v-model="filterValue" :options="filter" optionLabel="name" optionValue="id"
-                                placeholder="Filter by rating" />
-
-                            <Select v-model="sortValue" :options="sort" optionLabel="name" optionValue="id"
-                                placeholder="Sort" /> -->
-                        </div>
+                            </div>
                         <div class="flex gap-[5px]">
                             <InputText placeholder="Search Reviews" class="sm:w-[300px] w-full" v-model="searchValue" />
                             <ButtonCustom icon="search" input-class="w-max" />
@@ -89,13 +40,48 @@
                 @page="onPageChange" />
         </div>
     </div>
+
+    <Teleport to="body">
+      <div v-if="showReviewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeReviewAndClearDraft"></div>
+        <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-2xl">
+          <button @click="closeReviewAndClearDraft" class="absolute top-5 right-5 text-gray-400">
+              <i class="pi pi-times text-xl"></i>
+          </button>
+          
+          <ReviewForm 
+            v-if="reviewDraft"
+            :initial-data="reviewDraft"
+            @close="closeReviewAndClearDraft" 
+            @open-auth="handleOpenAuth" 
+            @success="closeReviewAndClearDraft"
+          />
+        </div>
+      </div>
+
+      <AuthUnifiedModal 
+        v-if="showAuthModal" 
+        @close="showAuthModal = false" 
+        @authenticated="onUserAuthenticated"
+        @back-to-review="handleBackToReview"
+      />
+    </Teleport>
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '~/store/user'
+import ReviewForm from '~/components/Review/ReviewForm.vue'
 import useReviewMethods from "~/composables/method/useReviewMethods";
 const { getBusinessReviews } = useReviewMethods()
 
 const props = defineProps(['reviews', 'business', 'isBusiness'])
+const userStore = useUserStore()
+
+// --- Review Modal State ---
+const showReviewModal = ref(false)
+const showAuthModal = ref(false)
+const reviewDraft = ref<any>(null)
+
 // const ITEMS_PER_PAGE = 10;
 
 // const lazyItems = ref<any[]>([]);
@@ -143,6 +129,56 @@ const props = defineProps(['reviews', 'business', 'isBusiness'])
 onBeforeMount(() => {
 
 })
+
+// --- Review Flow Handlers ---
+const handleWriteReviewClick = () => {
+  if (userStore.isAuthenticated) {
+    // Redirect directly to the write-review page
+    navigateTo({
+      path: '/review/write-review',
+      query: { 
+        bizId: props.business.id, 
+        bizName: props.business.name,
+        bizLogo: props.business.logo 
+      }
+    });
+  } else {
+    // 2. If guest, show the modal flow
+    reviewDraft.value = {
+      businessName: props.business.name,
+      selectedBusinessId: props.business.id,
+      selectedBusinessLogo: props.business.logo,
+      rating: 0,
+      reviewBody: '',
+      images: [],
+      isAddingNewBusiness: false
+    };
+    showReviewModal.value = true;
+  }
+}
+
+const handleOpenAuth = (currentFormData: any) => {
+  reviewDraft.value = currentFormData;
+  localStorage.setItem('review_draft', JSON.stringify(currentFormData));
+  showReviewModal.value = false;
+  showAuthModal.value = true;
+};
+
+const onUserAuthenticated = () => {
+  showAuthModal.value = false;
+  showReviewModal.value = true; 
+};
+
+const handleBackToReview = () => {
+  showAuthModal.value = false;
+  showReviewModal.value = true;
+};
+
+const closeReviewAndClearDraft = () => {
+  showReviewModal.value = false;
+  reviewDraft.value = null;
+  localStorage.removeItem('review_draft');
+};
 
 const sortValue = ref<'new' | 'old'>('new')
 const filterValue = ref<number | 'all'>('all')

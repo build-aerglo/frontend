@@ -107,11 +107,22 @@
         better experiences every day.
       </p>
       <div class="flex justify-center space-x-4">
-        <NuxtLink to="/end-user/auth/sign-in"
-          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300">
+        <button 
+          @click="showGeneralAuth = true"
+          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300"
+        >
           <span>Login/Register</span>
-        </NuxtLink>
+        </button>
       </div>
+
+      <Teleport to="body">
+        <AuthUnifiedModal 
+          v-if="showGeneralAuth" 
+          :hide-back-to-review="true"
+          @close="showGeneralAuth = false" 
+          @authenticated="handleGeneralAuthSuccess"
+        />
+      </Teleport>
     </div>
   </section>
   <!--Fifth Section Ends-->
@@ -124,7 +135,7 @@
 
 <script setup lang="ts">
 import { useUserStore } from '~/store/user'
-
+const router = useRouter()
 const userStore = useUserStore()
 const imageLoaded = ref<boolean>(false);
 
@@ -159,4 +170,19 @@ watch(() => userStore.isAuthenticated, (isLoggedIn) => {
     }
   }
 })
+const showGeneralAuth = ref(false)
+
+const handleGeneralAuthSuccess = () => {
+  showGeneralAuth.value = false;
+  
+  // Get the user ID from your store after successful login
+  const userId = userStore?.id;
+  
+  if (userId) {
+    router.push(`/user/${userId}`);
+  } else {
+    // Fallback if ID isn't available for some reason
+    router.push('/end-user/profile');
+  }
+}
 </script>
