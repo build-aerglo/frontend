@@ -460,67 +460,67 @@
 
               <!-- Your Reviews Tab -->
               <div v-if="activeTab === 'your-reviews'" class="space-y-6">
-  <h2 class="text-2xl font-bold text-[#008253]">
-    <span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span>
-    Reviews
-  </h2>
+              <h2 class="text-2xl font-bold text-[#008253]">
+                <span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span>
+                Reviews
+              </h2>
 
-  <!-- ✅ Loading State -->
-  <div v-if="reviewsLoading" class="text-center py-12">
-    <GeneralLoader />
-  </div>
+              <!-- ✅ Loading State -->
+              <div v-if="reviewsLoading" class="text-center py-12">
+                <GeneralLoader />
+              </div>
 
-  <!-- ✅ Empty State - User viewing their own profile -->
-  <div
-    v-else-if="isUser && (reviewsError || userReviews.length === 0)"
-    class="text-center py-12"
-  >
-    <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
-    <h3 class="text-lg font-medium text-gray-700 mb-2">
-      Ready to write your first review?
-    </h3>
-    <NuxtLink
-      to="/review/write-review"
-      class="inline-block mt-4 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium"
-    >
-      Click here to get started
-    </NuxtLink>
-  </div>
+              <!-- ✅ Empty State - User viewing their own profile -->
+              <div
+                v-else-if="isUser && (reviewsError || userReviews.length === 0)"
+                class="text-center py-12"
+              >
+                <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-700 mb-2">
+                  Ready to write your first review?
+                </h3>
+                <NuxtLink
+                  to="/review/write-review"
+                  class="inline-block mt-4 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium"
+                >
+                  Click here to get started
+                </NuxtLink>
+              </div>
 
-  <!-- ✅ Empty State - User viewing someone else's profile -->
-  <div
-    v-else-if="!isUser && (reviewsError || userReviews.length === 0)"
-    class="text-center py-12"
-  >
-    <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
-    <h3 class="text-base font-normal text-gray-700 mb-2">
-      This member hasn't written any reviews on CleReview yet
-    </h3>
-  </div>
+              <!-- ✅ Empty State - User viewing someone else's profile -->
+              <div
+                v-else-if="!isUser && (reviewsError || userReviews.length === 0)"
+                class="text-center py-12"
+              >
+                <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-base font-normal text-gray-700 mb-2">
+                  This member hasn't written any reviews on CleReview yet
+                </h3>
+              </div>
 
-  <!-- ✅ Reviews List -->
-  <div v-else class="space-y-6">
-    <div
-      v-for="review in userReviews"
-      :key="review.id"
-      :class="[
-        'border rounded-lg p-6 transition-all',
-        review.isGrayedOut
-          ? 'border-gray-200 bg-gray-50/50 opacity-75'
-          : 'border-gray-200 bg-white'
-      ]"
-    >
-      <!-- Header with Business Name and Status -->
-      <div class="flex justify-between items-start mb-3">
-        <div class="flex-1">
-          <h3 
-            :class="[
-              'text-lg font-semibold',
-              review.isGrayedOut ? 'text-gray-500' : 'text-gray-800'
-            ]"
-          >
-            {{ review.businessName }}
-          </h3>
+              <!-- ✅ Reviews List -->
+              <div v-else class="space-y-6">
+                <div
+                  v-for="review in userReviews"
+                  :key="review.id"
+                  :class="[
+                    'border rounded-lg p-6 transition-all',
+                    review.isGrayedOut
+                      ? 'border-gray-200 bg-gray-50/50 opacity-75'
+                      : 'border-gray-200 bg-white'
+                  ]"
+                >
+                  <!-- Header with Business Name and Status -->
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="flex-1">
+                      <h3 
+                        :class="[
+                          'text-lg font-semibold',
+                          review.isGrayedOut ? 'text-gray-500' : 'text-gray-800'
+                        ]"
+                      >
+                        {{ review.businessName }}
+                      </h3>
           
           <!-- Category Tag (if available) -->
           <div v-if="review.category" class="mt-1">
@@ -574,12 +574,13 @@
       <!-- Star Rating -->
       <div class="flex items-center gap-2 mb-3">
         <div class="flex">
+            <!-- :filled="n <= Math.round(review.rating)"
+            :colorLevel="Math.round(review.rating)" -->
           <Stars
             v-for="n in 5"
             :key="n"
-            :filled="n <= Math.ceil(review.rating)"
-            :half="n > Math.floor(review.rating) && n <= Math.ceil(review.rating)"
-            :colorLevel="Math.ceil(review.rating)"
+            :filled="n <= review.rating"
+            :colorLevel="n <= review.rating ? Math.round(review.rating) : 0"
             :class="['w-6 h-6', review.isGrayedOut && 'opacity-50']"
           />
         </div>
