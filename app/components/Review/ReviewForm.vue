@@ -420,7 +420,7 @@ const handleReviewSubmit = async () => {
         ? null
         : form.selectedBranchOption === 'business-address'
           ? form.selectedBusinessId
-          : form.selectedBranchOption,
+          : (form.selectedBranchOption || null),  // ✅ Convert empty string to null
 
       branchCityTown: form.isAddingNewBusiness
         ? form.newBusinessCity

@@ -263,12 +263,19 @@ const handleRegistration = async () => {
     return;
   }
 
-  businessData.value.password = password.value;
+  // ✅ Ensure categoryIds is always an array before sending
+  const payload = {
+    ...businessData.value,
+    categoryIds: Array.isArray(businessData.value.categoryIds) 
+      ? businessData.value.categoryIds 
+      : [businessData.value.categoryIds],
+    password: password.value
+  };
 
   try {
     isLoading.value = true;
 
-    const res = await registerBusiness(businessData.value);
+    const res = await registerBusiness(payload);  // ✅ Use payload instead of businessData.value
     
     if (res) {
       toast.add({ 
@@ -343,6 +350,8 @@ const handleRegistration = async () => {
     isLoading.value = false;
   }
 };
+
+
 </script>
 
 <style scoped>
