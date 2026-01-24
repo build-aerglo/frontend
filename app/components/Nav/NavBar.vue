@@ -20,9 +20,13 @@
               <NuxtLink to="/business/auth/sign-in" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <i class="pi pi-sign-in mr-2 text-primary"></i> Log in to Your Business Account
               </NuxtLink>
-              <NuxtLink to="/biz/[id]/claim-business" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <i class="pi pi-id-card mr-2 text-primary"></i> Claim a Business
-              </NuxtLink>
+              <button 
+                @click="showClaimModal = true" 
+                class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <i class="pi pi-id-card mr-2 text-primary"></i> 
+                <span>Claim a Business</span>
+              </button>
             </div>
           </li>
           <li>
@@ -65,15 +69,22 @@
             <NuxtLink to="/business/auth/sign-in" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
               <i class="pi pi-sign-in mr-2 text-primary"></i> Log in to Business
             </NuxtLink>
-            <NuxtLink to="/biz/[id]/claim-business" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="pi pi-id-card mr-2 text-primary"></i> Claim a Business
-            </NuxtLink>
+            <button 
+              @click="showClaimModal = true; isOpen = false" 
+              class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <i class="pi pi-id-card mr-2 text-primary"></i> 
+              <span class="text-left">Claim a Business</span>
+            </button>
           </div>
         </li>
         <li>
-          <NuxtLink to="/end-user/auth/sign-in" class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center">
+          <button 
+            @click="showGeneralAuth = true; isOpen = false" 
+            class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center"
+          >
             Login/Register
-          </NuxtLink>
+          </button>
         </li>
       </ul>
     </div>
@@ -101,6 +112,18 @@
         @authenticated="onUserAuthenticated"
         @back-to-review="handleBackToReview"
       />
+
+      <SearchBusinessClaim 
+        v-if="showClaimModal" 
+        @close="showClaimModal = false" 
+        @search="navigateToClaimPage" 
+      />
+      <AuthUnifiedModal 
+        v-if="showGeneralAuth" 
+        :hide-back-to-review="true"
+        @close="showGeneralAuth = false" 
+        @authenticated="handleGeneralAuthSuccess"
+      />
     </Teleport>
   </nav>
 </template>
@@ -116,9 +139,10 @@ const router = useRouter()
 const isOpen = ref(false)               
 const showBusinessDropdown = ref(false)  
 const showReviewModal = ref(false)       
-const showAuthModal = ref(false)         
+const showAuthModal = ref(false)  
+const showGeneralAuth = ref(false)       
 const reviewDraft = ref<any>(null)       
-
+const showClaimModal = ref(false);
 // --- Logic ---
 
 const handleWriteReviewClick = () => {
@@ -186,4 +210,18 @@ onMounted(() => {
     showReviewModal.value = true
   }
 })
+const navigateToClaimPage = (businessName: string) => {
+  showClaimModal.value = false;
+  
+  // Navigate to the claim page using the search query as the ID
+  // This results in /biz/BusinessName/claim-business
+  router.push(`/biz/${encodeURIComponent(businessName)}/claim-business`);
+};
+const handleGeneralAuthSuccess = () => {
+  showGeneralAuth.value = false
+  const userId = userStore?.id
+  if (userId) {
+    router.push(`/user/${userId}`)
+  }
+}
 </script>

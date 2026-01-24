@@ -622,7 +622,7 @@
                   class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0"
                 >
                   <img
-                    :src="business?.logo ?? '/images/default-business-logo.png'"
+                    :src="business?.logo || '/images/default-business-logo.png'"
                     class="w-full h-full object-contain"
                     :alt="business?.name"
                   />
@@ -859,7 +859,8 @@ import Star from "~/components/Stars.vue";
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
-
+import useReviewMethods from "~/composables/method/useReviewMethods";
+const { getBusinessReviews } = useReviewMethods()
 const businessBadgeStatus = computed(() => {
   if (props.status === "trusted") return "trusted";
   if (props.status === "verified") return "verified";
