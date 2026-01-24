@@ -1,8 +1,8 @@
 import axios from "axios";
 export default function () {
-  //   const business_api_url = useRuntimeConfig().public.businessApiUrl;
+  const search_api_url = useRuntimeConfig().public.reviewApiUrl ?? "https://reviewservice.aerglotechnology.com/";
   const api = axios.create({
-    baseURL: "https://reviewservice.aerglotechnology.com/",
+    baseURL: search_api_url,
     headers: {
       "Content-Type": "application/json",
     },
