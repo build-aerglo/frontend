@@ -87,8 +87,9 @@ export default function useEnrichedReviews() {
       if (parts.length > 0) {
         return parts.join(', ');
       }
-      else {
-        return businessData.businessAddress
+      // Last resort: use businessAddress if available
+      if (businessData.businessAddress && businessData.businessAddress.trim()) {
+        return businessData.businessAddress.trim();
       }
     }
     
@@ -97,44 +98,47 @@ export default function useEnrichedReviews() {
   };
 
   /**
-   * Fetch location data - tries branch first, then business
+   * Fetch location data - checks branch first for location only
    */
   const getLocationData = async (locationId: string, businessId: string) => {
+    let matchingBranch = null;
+    
     try {
-      // Step 1: Try to fetch branch data using locationId
-      console.log(`🔍 Attempting to fetch branch data for locationId: ${locationId}`);
+      // Step 1: Try to fetch branch data for location
+      console.log(`🔍 Fetching branches for businessId: ${businessId}`);
       const branchResponse = await getBusinessBranches(businessId);
-      console.log(branchResponse)
       
       if (branchResponse?.statusCode === 200 && branchResponse.data) {
-       const matchingBranch = branchResponse.data.find(
-            (branch: any) => branch.id === locationId
+        // Find the branch that matches the locationId
+        matchingBranch = branchResponse.data.find(
+          (branch: any) => branch.id === locationId
         );
         
         if (matchingBranch) {
-            console.log(`✅ Found matching branch:`, matchingBranch);
-            return { branch: matchingBranch, business: null };
+          console.log(`✅ Found matching branch for location:`, matchingBranch);
+        } else {
+          console.log(`⚠️ No branch found with locationId ${locationId}`);
         }
       }
     } catch (branchError) {
-      console.log(`⚠️ No branch found for locationId ${locationId}, trying business table...`);
+      console.log(`⚠️ Error fetching branches:`, branchError);
     }
     
+    // Step 2: ALWAYS fetch business data (for name, category, etc.)
     try {
-      // Step 2: If branch not found, fetch business data
       console.log(`🔍 Fetching business data for businessId: ${businessId}`);
       const businessResponse = await getBusinessProfile(businessId);
       
       if (businessResponse?.statusCode === 200 && businessResponse.data) {
         console.log(`✅ Found business data:`, businessResponse.data);
-        return { branch: null, business: businessResponse.data };
+        return { branch: matchingBranch, business: businessResponse.data };
       }
     } catch (businessError) {
       console.error(`❌ Failed to fetch business data:`, businessError);
     }
     
-    // Both failed
-    return { branch: null, business: null };
+    // Return whatever we have
+    return { branch: matchingBranch, business: null };
   };
 
   /**
@@ -158,36 +162,31 @@ export default function useEnrichedReviews() {
       const enrichedReviews = await Promise.all(
         reviews.map(async (review: any) => {
           try {
-            // Fetch location data (branch or business)
+            // Fetch business data (always) and branch data (for location only)
             const { branch, business } = await getLocationData(
               review.locationId,
               review.businessId
             );
             
-            // Determine which data source to use
-            const locationData = branch || business;
-            const businessData = business; // Always try to get business data for category
-            
-            if (!business && !branch) {
-              throw new Error("No location data found");
+            if (!business) {
+              throw new Error("No business data found");
             }
             
             // Get status information
             const statusInfo = getStatusInfo(review.status);
             
-            // Format location (branch data takes priority)
+            // Format location (branch takes priority, falls back to business)
             const location = formatLocation(branch, business);
             
-            // Get business name (from branch or business)
-            const businessName = branch?.branchName || 
-                               business?.name || 
-                               business?.businessName || 
+            // Get business name from BUSINESS data (not branch)
+            const businessName = business.name || 
+                               business.businessName || 
                                "Unknown Business";
             
-            // Get category name from business data
-            const categoryName = business?.categories?.[0]?.name || 
-                               business?.categoryName || 
-                               business?.category?.name ||
+            // Get category name from BUSINESS data
+            const categoryName = business.categories?.[0]?.name || 
+                               business.categoryName || 
+                               business.category?.name ||
                                null;
             
             console.log(`✅ Enriched review ${review.id}:`, {
@@ -196,7 +195,7 @@ export default function useEnrichedReviews() {
               category: categoryName,
               status: statusInfo.label,
               rating: review.starRating,
-              dataSource: branch ? 'branch' : 'business'
+              locationSource: branch ? 'branch' : 'business'
             });
             
             // Combine review data with business/branch information
@@ -204,16 +203,16 @@ export default function useEnrichedReviews() {
               id: review.id,
               businessId: review.businessId,
               locationId: review.locationId,
-              businessName,
-              location,
-              category: categoryName,
+              businessName, // ✅ Always from business table
+              location, // ✅ From branch if available, else business
+              category: categoryName, // ✅ Always from business table
               // Include both branch and business location details
               branchCity: branch?.branchCityTown || "",
               branchState: branch?.branchState || "",
               branchStreet: branch?.branchStreet || "",
-              businessCity: business?.businessCityTown || "",
-              businessState: business?.businessState || "",
-              businessStreet: business?.businessStreet || "",
+              businessCity: business.businessCityTown || "",
+              businessState: business.businessState || "",
+              businessStreet: business.businessStreet || "",
               date: review.createdAt
                 ? new Date(review.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -235,7 +234,7 @@ export default function useEnrichedReviews() {
               createdAt: review.createdAt,
             };
           } catch (error) {
-            console.error(`❌ Failed to fetch location data for review ${review.id}:`, error);
+            console.error(`❌ Failed to fetch data for review ${review.id}:`, error);
             
             // Get status information even for failed fetch
             const statusInfo = getStatusInfo(review.status);
