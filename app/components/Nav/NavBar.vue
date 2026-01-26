@@ -1,10 +1,50 @@
 <template>
   <nav class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
     <div class="mx-auto px-8 flex items-center justify-between h-16">
-      <NuxtLink to="/" class="flex items-center space-x-2">
-        <img src="~/assets/images/e-user-logo.png" alt="Welcome" class="h-10 w-auto object-contain" />
-      </NuxtLink>
+      <div class="flex items-center">
+        <div v-if="userStore.isAuthenticated" class="relative group">
+          <button 
+            @click.stop="showUserDropdown = !showUserDropdown"
+            class="flex items-center focus:outline-none transition-transform hover:scale-105"
+          >
+            <UserAvatar 
+              v-if="userProfile"
+              :first-name="userProfile?.username"
+              :size="40"
+            />
+            <div v-else class="h-10 w-10 rounded-full bg-gray-200 animate-pulse border border-gray-100"></div>
+            <i class="pi pi-chevron-down ml-1 text-xs text-gray-400"></i>
+          </button>
 
+          <div 
+            v-if="showUserDropdown" 
+            class="absolute  top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 z-[100] origin-top-right"
+          >
+
+            <NuxtLink 
+              :to="`/user/${userStore.id}`" 
+              class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+              @click="showUserDropdown = false"
+            >
+              <i class="pi pi-user mr-2 text-[#008253]"></i> My Profile
+            </NuxtLink>
+
+            <button 
+              @click="triggerLogout()"
+              class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              <i class="pi pi-sign-out mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+
+        <ButtonCustom
+          v-else 
+          @click="showGeneralAuth = true" 
+          secondary="true"
+          label="login/register"
+        />
+      </div>
       <div class="flex items-right space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
           <li class="relative">
@@ -78,7 +118,7 @@
             </button>
           </div>
         </li>
-        <li>
+        <li v-if="!userStore.isAuthenticated">
           <button 
             @click="showGeneralAuth = true; isOpen = false" 
             class="inline-flex items-center justify-center bg-[#008253] text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition w-full text-center"
@@ -131,10 +171,12 @@
 <script setup lang="ts">
 import { useUserStore } from '~/store/user'
 import ReviewForm from '~/components/Review/ReviewForm.vue'
-
+import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
+import useMethods from '~/composables/useMethods';
+const { triggerLogout } = useMethods()
 const userStore = useUserStore()
 const router = useRouter()
-
+const { getUserProfile } = useUserProfileMethods();
 // --- UI State ---
 const isOpen = ref(false)               
 const showBusinessDropdown = ref(false)  
@@ -143,7 +185,27 @@ const showAuthModal = ref(false)
 const showGeneralAuth = ref(false)       
 const reviewDraft = ref<any>(null)       
 const showClaimModal = ref(false);
+const userProfile = ref<any>(null);
+const showUserDropdown = ref(false);
 // --- Logic ---
+const fetchProfileData = async () => {
+  if (!userStore.id || !userStore.isAuthenticated) return;
+  
+  try {
+    const response = await getUserProfile(userStore.id);
+    
+    // Defensive check: make sure response and response.data exist
+    if (response && response.data) {
+      userProfile.value = response.data;
+    } else {
+      console.warn("Profile data structure unexpected:", response);
+    }
+  } catch (error) {
+    console.error("NavBar Profile Fetch Error:", error);
+    userProfile.value = null; 
+  }
+};
+
 
 const handleWriteReviewClick = () => {
   isOpen.value = false
@@ -186,19 +248,25 @@ const toggleBusinessDropdown = (event: MouseEvent) => {
 // Watcher: Runs when userStore.isAuthenticated changes while the user is on the page
 watch(() => userStore.isAuthenticated, (isLoggedIn) => {
   if (isLoggedIn) {
+    fetchProfileData(); // This handles profile fetch on login
     const saved = localStorage.getItem('review_draft')
     if (saved) {
       reviewDraft.value = JSON.parse(saved)
-      // ADD THESE TWO LINES
-      showAuthModal.value = false // Ensure the login modal closes
+      showAuthModal.value = false 
       showReviewModal.value = true
     }
+  } else {
+    userProfile.value = null; // Clears profile on logout
   }
 })
 
 onMounted(() => {
+  if (userStore.isAuthenticated) {
+    fetchProfileData();
+  }
   document.addEventListener('click', () => {
     showBusinessDropdown.value = false
+    showUserDropdown.value = false;
   })
 
   // Re-populate if user returns logged in (e.g. after a page redirect login)
@@ -219,9 +287,5 @@ const navigateToClaimPage = (businessName: string) => {
 };
 const handleGeneralAuthSuccess = () => {
   showGeneralAuth.value = false
-  const userId = userStore?.id
-  if (userId) {
-    router.push(`/user/${userId}`)
-  }
 }
 </script>

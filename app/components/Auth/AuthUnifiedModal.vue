@@ -29,6 +29,7 @@
           v-if="activeTab === 'signup'" 
           @success="onAuthSuccess" 
           @switch-to-signin="activeTab = 'signin'"
+          
           :is-modal="true" 
         />
       </div>
@@ -60,6 +61,7 @@ const emit = defineEmits(['close', 'authenticated','back-to-review' ])
 
 const onAuthSuccess = () => {
   emit('authenticated')
+  emit('close');
   // We don't emit close here immediately if the parent wants to handle redirection
 }
 </script>

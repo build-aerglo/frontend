@@ -1,22 +1,42 @@
 <template>
     <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ label }} <span v-if="max">(max {{ max }})</span>
+            {{ label }} <span v-if="max" class="text-gray-400 font-normal">(max {{ max }})</span>
         </label>
 
-        <input ref="fileInput" type="file" multiple accept="image/*" @change="handleUpload"
-            class="text-sm text-gray-600" :disabled="isUploading || images.length >= max" />
+        <input 
+            ref="fileInput" 
+            type="file" 
+            multiple 
+            accept="image/*" 
+            @change="handleUpload"
+            class="hidden" 
+        />
 
-        <div class="flex mt-2 gap-2 flex-wrap">
+        <button 
+            type="button"
+            @click="triggerFileInput"
+            :disabled="isUploading || images.length >= max"
+            class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            <i class="pi pi-images text-[#008253]"></i>
+            {{ images.length >= max ? 'Limit Reached' : 'Choose Files' }}
+        </button>
+
+        <div class="flex mt-3 gap-2 flex-wrap">
             <div v-for="(img, index) in images" :key="index"
-                class="relative w-20 h-20 rounded-lg overflow-hidden border">
+                class="relative w-20 h-20 rounded-lg overflow-hidden border group">
                 <img :src="img" class="object-cover w-full h-full" />
-                <i class="pi pi-times absolute top-1 right-1 bg-white rounded-full p-1 text-xs cursor-pointer hover:bg-gray-100"
-                    @click="removeImage(index)"></i>
+                <div 
+                    @click="removeImage(index)"
+                    class="absolute top-1 right-1 bg-white/90 hover:bg-red-50 rounded-full p-1 text-xs cursor-pointer shadow-sm text-red-600 transition"
+                >
+                    <i class="pi pi-times"></i>
+                </div>
             </div>
 
             <div v-if="isUploading" class="w-20 h-20 rounded-lg border flex items-center justify-center bg-gray-50">
-                <i class="pi pi-spin pi-spinner text-gray-400"></i>
+                <i class="pi pi-spin pi-spinner text-[#008253]"></i>
             </div>
         </div>
     </div>
@@ -35,7 +55,9 @@ const emit = defineEmits(['update:modelValue'])
 const fileInput = ref<HTMLInputElement | null>(null)
 const images = ref<string[]>([...props.modelValue])
 const isUploading = ref(false)
-
+const triggerFileInput = () => {
+    fileInput.value?.click()
+}
 const handleUpload = async (e: Event) => {
     const files = (e.target as HTMLInputElement).files
     if (!files) return
