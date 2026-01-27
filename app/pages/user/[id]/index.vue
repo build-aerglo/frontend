@@ -456,119 +456,196 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm p-6">
+
+
               <!-- Your Reviews Tab -->
               <div v-if="activeTab === 'your-reviews'" class="space-y-6">
-                <h2 class="text-2xl font-bold text-[#008253]">
-                  <span v-if="isUser" class="text-2xl font-bold text-[#008253]"
-                    >Your</span
-                  >
-                  Reviews
-                </h2>
+              <h2 class="text-2xl font-bold text-[#008253]">
+                <span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span>
+                Reviews
+              </h2>
 
-                <!-- ✅ Loading State -->
-                <div v-if="reviewsLoading" class="text-center py-12">
-                  <GeneralLoader />
-                </div>
-
-                <!-- ✅ Error State -->
-                <!-- <div
-                  v-else-if="reviewsError"
-                  class="bg-red-50 border border-red-200 rounded-lg p-6 text-center"
-                >
-                  <i
-                    class="pi pi-exclamation-triangle text-4xl text-red-600 mb-4"
-                  ></i>
-                  <h3 class="text-lg font-semibold text-red-800 mb-2">
-                    Failed to Load Reviews
-                  </h3>
-                  <p class="text-red-600 mb-4">{{ reviewsError }}</p>
-                  <button
-                    @click="loadUserReviews"
-                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition"
-                  >
-                    Try Again
-                  </button>
-                </div> -->
-
-                <!-- ✅ Empty State - User viewing their own profile -->
-                <div
-                  v-else-if="
-                    isUser && (reviewsError || userReviews.length === 0)
-                  "
-                  class="text-center py-12"
-                >
-                  <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
-                  <h3 class="text-lg font-medium text-gray-700 mb-2">
-                    Ready to write your first review?
-                  </h3>
-                  <NuxtLink
-                    to="/review/write-review"
-                    class="inline-block mt-4 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium"
-                  >
-                    Click here to get started
-                  </NuxtLink>
-                </div>
-
-                <!-- ✅ Empty State - User viewing someone else's profile -->
-                <div
-                  v-else-if="
-                    !isUser && (reviewsError || userReviews.length === 0)
-                  "
-                  class="text-center py-12"
-                >
-                  <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
-                  <h3 class="text-base font-normal text-gray-700 mb-2">
-                    This member hasn't written any reviews on CleReview yet
-                  </h3>
-                </div>
-
-                <!-- ✅ Reviews List (your existing code) -->
-                <div v-else>
-                  <div
-                    v-for="review in userReviews"
-                    :key="review.id"
-                    class="border-b border-gray-200 pb-6 last:border-0"
-                  >
-                    <div class="flex justify-between items-start mb-2">
-                      <h3 class="text-lg font-semibold text-gray-800">
-                        {{ review.businessName }}
-                      </h3>
-                      <span
-                        :class="[
-                          'px-3 py-1 rounded-full text-xs font-medium',
-                          review.status === 'Posted'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700',
-                        ]"
-                      >
-                        {{ review.status }}
-                      </span>
-                    </div>
-                    <div
-                      class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3"
-                    >
-                      <span class="flex items-center gap-1">
-                        <i class="pi pi-map-marker"></i>
-                        {{ review.location }}
-                      </span>
-                      <span class="flex items-center gap-2">
-                        {{ review.date }}
-                      </span>
-                    </div>
-                    <div class="flex">
-                      <Stars
-                        v-for="n in 5"
-                        :key="n"
-                        :filled="n <= review.rating"
-                        :colorLevel="n <= review.rating ? review.rating : 0"
-                        class="w-6 h-6"
-                      />
-                    </div>
-                    <p class="text-gray-700">{{ review.body }}</p>
-                  </div>
-                </div>
+              <!-- ✅ Loading State -->
+              <div v-if="reviewsLoading" class="text-center py-12">
+                <GeneralLoader />
               </div>
 
+              <!-- ✅ Empty State - User viewing their own profile -->
+              <div
+                v-else-if="isUser && (reviewsError || userReviews.length === 0)"
+                class="text-center py-12"
+              >
+                <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-700 mb-2">
+                  Ready to write your first review?
+                </h3>
+                <NuxtLink
+                  to="/review/write-review"
+                  class="inline-block mt-4 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium"
+                >
+                  Click here to get started
+                </NuxtLink>
+              </div>
+
+              <!-- ✅ Empty State - User viewing someone else's profile -->
+              <div
+                v-else-if="!isUser && (reviewsError || userReviews.length === 0)"
+                class="text-center py-12"
+              >
+                <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-base font-normal text-gray-700 mb-2">
+                  This member hasn't written any reviews on CleReview yet
+                </h3>
+              </div>
+
+              <!-- ✅ Reviews List -->
+              <div v-else class="space-y-6">
+                <div
+                  v-for="review in userReviews"
+                  :key="review.id"
+                  :class="[
+                    'border rounded-lg p-6 transition-all',
+                    review.isGrayedOut
+                      ? 'border-gray-200 bg-gray-50/50 opacity-75'
+                      : 'border-gray-200 bg-white'
+                  ]"
+                >
+                  <!-- Header with Business Name and Status -->
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="flex-1">
+                      <h3 
+                        :class="[
+                          'text-lg font-semibold',
+                          review.isGrayedOut ? 'text-gray-500' : 'text-gray-800'
+                        ]"
+                      >
+                        {{ review.businessName }}
+                      </h3>
+          
+          <!-- Category Tag (if available) -->
+          <div v-if="review.category" class="mt-1">
+            <span 
+              :class="[
+                'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
+                review.isGrayedOut 
+                  ? 'bg-gray-100 text-gray-500' 
+                  : 'bg-blue-50 text-blue-700'
+              ]"
+            >
+              <i class="pi pi-tag text-xs"></i>
+              {{ review.category }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Status Badge -->
+        <span
+          :class="[
+            'px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-3',
+            review.statusClass
+          ]"
+        >
+          {{ review.status }}
+        </span>
+      </div>
+
+      <!-- Location and Date -->
+      <div class="flex flex-wrap gap-4 text-sm mb-3">
+        <span 
+          :class="[
+            'flex items-center gap-1',
+            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
+          ]"
+        >
+          <i class="pi pi-map-marker"></i>
+          {{ review.location }}
+        </span>
+        <span 
+          :class="[
+            'flex items-center gap-2',
+            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
+          ]"
+        >
+          <i class="pi pi-calendar"></i>
+          {{ review.date }}
+        </span>
+      </div>
+
+      <!-- Star Rating -->
+      <div class="flex items-center gap-2 mb-3">
+        <div class="flex">
+            <!-- :filled="n <= Math.round(review.rating)"
+            :colorLevel="Math.round(review.rating)" -->
+          <Stars
+            v-for="n in 5"
+            :key="n"
+            :filled="n <= review.rating"
+            :colorLevel="n <= review.rating ? Math.round(review.rating) : 0"
+            :class="['w-6 h-6', review.isGrayedOut && 'opacity-50']"
+          />
+        </div>
+        <span 
+          :class="[
+            'text-sm font-medium',
+            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
+          ]"
+        >
+          {{ review.rating.toFixed(1) }}
+        </span>
+      </div>
+
+            <!-- Review Body -->
+            <p 
+              :class="[
+                review.isGrayedOut ? 'text-gray-500' : 'text-gray-700'
+              ]"
+            >
+              {{ review.body }}
+            </p>
+
+            <!-- Photos (if available) -->
+            <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
+              <div class="flex gap-2 flex-wrap">
+                <img
+                  v-for="(photo, idx) in review.photoUrls"
+                  :key="idx"
+                  :src="photo"
+                  alt="Review photo"
+                  :class="[
+                    'w-24 h-24 object-cover rounded-lg',
+                    review.isGrayedOut && 'opacity-50'
+                  ]"
+                />
+              </div>
+            </div>
+
+            <!-- Pending/Rejected Info Messages -->
+            <div v-if="review.rawStatus === 'PENDING'" class="mt-4 p-3 bg-gray-100 border border-gray-200 rounded-lg">
+              <div class="flex items-start gap-2">
+                <i class="pi pi-clock text-gray-600 text-sm mt-0.5"></i>
+                <div class="text-sm text-gray-600">
+                  <p class="font-medium">Review Pending Approval</p>
+                  <p class="text-xs text-gray-500 mt-1">
+                    Your review is being reviewed by our team and will be published soon.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div v-else-if="review.rawStatus === 'REJECTED'" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div class="flex items-start gap-2">
+                <i class="pi pi-times-circle text-red-600 text-sm mt-0.5"></i>
+                <div class="text-sm text-red-700">
+                  <p class="font-medium">Review Not Approved</p>
+                  <p class="text-xs text-red-600 mt-1">
+                    This review did not meet our community guidelines and will not be published.
+                  </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
               <!-- Rewards Tab -->
               <div
                 v-if="activeTab === 'rewards'"
@@ -1434,18 +1511,24 @@ const { getCategories } = useBusinessMethods();
 const topCategories = ref<any[]>([]);
 import type {
   Ad,
-  Badge,
-  Review,
   EditFormData,
   ProfileData,
 } from "~/types/user";
+import type {
+  Review,
+  EnrichedReview,
+} from "~/types/review";
+
 import type { DisplayBadge, BadgeResponse } from '~/types/badge';
-import useReviewMethods from "~/composables/review/useReviewMethods";
+// import useReviewMethods from "~/composables/review/useReviewMethods";
+import useEnrichedReviews from "~/composables/review/useEnrichedReviews";
+
+const { getEnrichedUserReviews } = useEnrichedReviews();
 
 // Composables and Stores
 const { getUserProfile, updateUserProfile, getUserId } =
   useUserProfileMethods();
-const { getUserReviews } = useReviewMethods();
+// const { getUserReviews } = useReviewMethods();
 const userId = getUserId();
 const route = useRoute();
 
@@ -1456,7 +1539,7 @@ const currentUserId = computed(() => {
 });
 
 // Refs
-const userReviews = ref<Review[]>([]);
+const userReviews = ref<EnrichedReview[]>([]);
 const reviewsLoading = ref(false);
 const reviewsError = ref<string | null>(null);
 const activeTab = ref<string>("your-reviews");
@@ -1526,7 +1609,7 @@ const ads = ref<Ad[]>([
 const loadProfile = async () => {
   if (!currentUserId.value) {
     error.value = "User ID is missing";
-    console.error("❌ No user ID in route parameter");
+    console.error("No user ID in route parameter");
     return;
   }
 
@@ -2041,6 +2124,15 @@ const saveSocialMedia = async () => {
   }
 };
 
+// Updated script section for app/pages/user/[id]/index.vue
+// Replace the loadUserReviews function and related imports
+
+
+
+// ===== REPLACE loadUserReviews FUNCTION =====
+/**
+ * Load user reviews with enriched business information
+ */
 const loadUserReviews = async () => {
   if (!currentUserId.value) {
     console.error("No user ID available for loading reviews");
@@ -2051,37 +2143,87 @@ const loadUserReviews = async () => {
   reviewsError.value = null;
 
   try {
-    console.log("Fetching reviews for user:", currentUserId.value);
+    console.log("📡 Fetching enriched reviews for user:", currentUserId.value);
 
-    const reviews = await getUserReviews(
+    // Use the enriched reviews composable that fetches business data
+    const enrichedReviews = await getEnrichedUserReviews(
       currentUserId.value,
       profileData.value?.email
     );
 
-    console.log("Reviews loaded:", reviews);
+    console.log("✅ Enriched reviews loaded:", enrichedReviews);
 
-    // Transform API response to match your template format
-    userReviews.value = reviews.map((review: any) => ({
-      id: review.id,
-      businessName: review.businessName || "Unknown Business",
-      location: review.location || "Unknown Location",
-      date: review.createdAt
-        ? new Date(review.createdAt).toLocaleDateString()
-        : "N/A",
-      status: review.isApproved ? "Posted" : "Pending",
-      body: review.reviewText || review.comment || "",
-      rating: review.rating || 0,
-    }));
+    // The reviews are already in the correct format
+    userReviews.value = enrichedReviews;
 
-    console.log("Transformed reviews:", userReviews.value);
+    console.log(`📊 Total reviews loaded: ${userReviews.value.length}`);
   } catch (err: any) {
-    console.error("Error loading reviews:", err);
+    console.error("❌ Error loading reviews:", err);
     reviewsError.value =
       err?.response?.data?.message || err.message || "Failed to load reviews";
   } finally {
     reviewsLoading.value = false;
   }
 };
+
+// ===== OPTIONAL: Add caching for better performance =====
+/**
+ * Load user reviews with caching to avoid redundant API calls
+ */
+const reviewsCache = ref<Map<string, any[]>>(new Map());
+
+const loadUserReviewsWithCache = async () => {
+  if (!currentUserId.value) {
+    console.error("No user ID available for loading reviews");
+    return;
+  }
+
+  // Check cache first
+  const cacheKey = `${currentUserId.value}-${profileData.value?.email || 'no-email'}`;
+  if (reviewsCache.value.has(cacheKey)) {
+    console.log("📦 Using cached reviews");
+    userReviews.value = reviewsCache.value.get(cacheKey)!;
+    return;
+  }
+
+  reviewsLoading.value = true;
+  reviewsError.value = null;
+
+  try {
+    console.log("📡 Fetching enriched reviews for user:", currentUserId.value);
+
+    const enrichedReviews = await getEnrichedUserReviews(
+      currentUserId.value,
+      profileData.value?.email
+    );
+
+    console.log("✅ Enriched reviews loaded:", enrichedReviews);
+
+    // Store in cache
+    reviewsCache.value.set(cacheKey, enrichedReviews);
+    userReviews.value = enrichedReviews;
+
+    console.log(`📊 Total reviews loaded: ${userReviews.value.length}`);
+  } catch (err: any) {
+    console.error("❌ Error loading reviews:", err);
+    reviewsError.value =
+      err?.response?.data?.message || err.message || "Failed to load reviews";
+  } finally {
+    reviewsLoading.value = false;
+  }
+};
+
+// ===== OPTIONAL: Add method to clear cache when needed =====
+const clearReviewsCache = () => {
+  reviewsCache.value.clear();
+  console.log("🗑️ Reviews cache cleared");
+};
+
+// ===== USAGE NOTES =====
+// 1. The enriched reviews will now have proper businessName and location
+// 2. If a business fetch fails, fallback data is provided
+// 3. Consider using loadUserReviewsWithCache for better performance
+// 4. The watcher and onBeforeMount logic remain the same
 
 // ✅ ADD WATCHER for tab changes (add this after your other watchers)
 watch(activeTab, (newTab) => {

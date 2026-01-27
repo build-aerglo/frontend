@@ -296,7 +296,7 @@ const updateProfile = async () => {
         life: 3000
       });
     }
-    const res = await saveBusinessProfile(businessId, business.value);
+    const res = await saveBusinessProfile(businessId, business?.name);
     if (res) {
       return toast.add({
         severity: 'success',
