@@ -286,131 +286,6 @@ export const truncateDate = (s: string) => {
   return returnDay;
 };
 
-// type RawHours = {
-//   monday: string;
-//   tuesday: string;
-//   wednesday: string;
-//   thursday: string;
-//   friday: string;
-//   saturday: string;
-//   sunday: string;
-// };
-
-// type DayBlock = {
-//   open: string | null;
-//   close: string | null;
-//   closed: boolean;
-// };
-
-// type NormalizedHours = {
-//   same: boolean;
-//   same_time: DayBlock;
-
-//   monday: DayBlock;
-//   tuesday: DayBlock;
-//   wednesday: DayBlock;
-//   thursday: DayBlock;
-//   friday: DayBlock;
-//   saturday: DayBlock;
-//   sunday: DayBlock;
-// };
-
-// const DAYS = [
-//   "monday",
-//   "tuesday",
-//   "wednesday",
-//   "thursday",
-//   "friday",
-//   "saturday",
-//   "sunday",
-// ] as const;
-
-// function parseRange(range: string) {
-//   if (!range || range === "00:00 - 00:00") return null;
-//   const [open, close] = range.split(" - ");
-//   return { open, close };
-// }
-
-// function toISO(time: string) {
-//   const d = new Date().toISOString().split("T")[0];
-//   return new Date(`${d}T${time}:00.000Z`).toISOString();
-// }
-
-// export function rawToNormalized(raw: RawHours): NormalizedHours | null {
-//   const out: any = {};
-//   const weekdayRanges: string[] = [];
-
-//   for (const day of DAYS) {
-//     const range = raw[day];
-//     const parsed = parseRange(range);
-//     // if (!parsed?.close || !parsed?.open) return null;
-
-//     if (!parsed) {
-//       out[day] = { open: null, close: null, closed: true };
-//     } else {
-//       out[day] = {
-//         open: toISO(parsed.open),
-//         close: toISO(parsed.close),
-//         closed: false,
-//       };
-
-//       if (
-//         ["monday", "tuesday", "wednesday", "thursday", "friday"].includes(day)
-//       ) {
-//         weekdayRanges.push(range);
-//       }
-//     }
-//   }
-
-//   const same =
-//     weekdayRanges.length === 5 &&
-//     weekdayRanges.every((r) => r === weekdayRanges[0]);
-
-//   if (same) {
-//     const { open, close } = parseRange(weekdayRanges[0])!;
-//     out.same_time = {
-//       open: toISO(open),
-//       close: toISO(close),
-//       closed: false,
-//     };
-
-//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
-//       out[d] = { open: null, close: null, closed: true };
-//     }
-//   } else {
-//     out.same_time = { open: null, close: null, closed: true };
-//   }
-
-//   out.same = same;
-
-//   return out;
-// }
-
-// export function normalizedToRaw(n: NormalizedHours): RawHours {
-//   const out: any = {};
-
-//   function isoToRange(open: string | null, close: string | null) {
-//     if (!open || !close) return "00:00 - 00:00";
-//     return `${open.slice(11, 16)} - ${close.slice(11, 16)}`;
-//   }
-
-//   if (n.same && !n.same_time.closed) {
-//     const range = isoToRange(n.same_time.open, n.same_time.close);
-
-//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
-//       out[d] = range;
-//     }
-//   } else {
-//     for (const d of ["monday", "tuesday", "wednesday", "thursday", "friday"]) {
-//       out[d] = isoToRange(n[d].open, n[d].close);
-//     }
-//   }
-
-//   out.saturday = isoToRange(n.saturday.open, n.saturday.close);
-//   out.sunday = isoToRange(n.sunday.open, n.sunday.close);
-
-//   return out;
-// }
 
 type Day =
   | "monday"
@@ -558,3 +433,58 @@ export const businessClaim = (s: string) => {
   if (status === "in_progress") return "Claim in Progress";
   if (status === "unclaimed") return "Unclaimed Business";
 };
+
+
+export const getCategoryIcon = (categoryName: string): string => {
+    const name = categoryName.toLowerCase();
+    
+    // Mapping category keywords to appropriate icons
+    if (name.includes('restaurant') || name.includes('food') || name.includes('dining')) {
+      return 'pi-shopping-bag';
+    }
+    if (name.includes('hotel') || name.includes('accommodation') || name.includes('lodging')) {
+      return 'pi-building';
+    }
+    if (name.includes('health') || name.includes('medical') || name.includes('hospital')) {
+      return 'pi-heart';
+    }
+    if (name.includes('education') || name.includes('school') || name.includes('university')) {
+      return 'pi-book';
+    }
+    if (name.includes('entertainment') || name.includes('cinema') || name.includes('movie')) {
+      return 'pi-ticket';
+    }
+    if (name.includes('shop') || name.includes('retail') || name.includes('store')) {
+      return 'pi-shopping-cart';
+    }
+    if (name.includes('beauty') || name.includes('salon') || name.includes('spa')) {
+      return 'pi-sparkles';
+    }
+    if (name.includes('fitness') || name.includes('gym') || name.includes('sport')) {
+      return 'pi-heart-fill';
+    }
+    if (name.includes('auto') || name.includes('car') || name.includes('vehicle')) {
+      return 'pi-car';
+    }
+    if (name.includes('finance') || name.includes('bank') || name.includes('money')) {
+      return 'pi-wallet';
+    }
+    if (name.includes('tech') || name.includes('computer') || name.includes('electronics')) {
+      return 'pi-desktop';
+    }
+    if (name.includes('service') || name.includes('business')) {
+      return 'pi-briefcase';
+    }
+    if (name.includes('travel') || name.includes('tour') || name.includes('tourism')) {
+      return 'pi-compass';
+    }
+    if (name.includes('pet') || name.includes('animal') || name.includes('veterinary')) {
+      return 'pi-discord';
+    }
+    if (name.includes('home') || name.includes('furniture') || name.includes('decor')) {
+      return 'pi-home';
+    }
+    
+    // Default icon for unmatched categories
+    return 'pi-tag';
+  };
