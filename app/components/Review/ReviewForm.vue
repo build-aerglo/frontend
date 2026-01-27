@@ -457,4 +457,15 @@ onMounted(() => {
     fetchBranches(form.selectedBusinessId)
   }
 })
+watch(() => props.initialData, (newData) => {
+  if (newData) {
+    // This merges the new props into the existing reactive form
+    Object.assign(form, newData);
+    
+    // Trigger branch fetching if a business ID was passed in
+    if (newData.selectedBusinessId) {
+      fetchBranches(newData.selectedBusinessId);
+    }
+  }
+}, { immediate: true, deep: true });
 </script>

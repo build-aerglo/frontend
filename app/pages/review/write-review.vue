@@ -9,7 +9,7 @@
 
         <div class="md:col-span-6 md:order-2 rounded-xl bg-white p-6 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
           <ReviewForm 
-            
+            :key="formKey"
             :initial-data="pageDraft"
             @success="handlePageSuccess"
           />
@@ -60,9 +60,22 @@ import ReviewForm from '~/components/Review/ReviewForm.vue'
 
 const route = useRoute();
 const router = useRouter();
-
+const queryDraft = computed(() => {
+  if (route.query.bizId) {
+    return {
+      businessName: route.query.bizName || "",
+      selectedBusinessId: route.query.bizId || "",
+      selectedBusinessLogo: route.query.bizLogo || "",
+      rating: 0,
+      reviewBody: '',
+      images: [],
+      isAddingNewBusiness: false
+    };
+  }
+  return null;
+});
 const pageDraft = ref<any>(null);
-
+const formKey = ref(0);
 const featuredBusinesses = ref([
   { name: "KFC", location: "Yaba", rating: 0, hoverRating: 0, logo: "/images/logos/kfc.png" },
   { name: "Domino's Pizza", location: "Ikeja", rating: 0, hoverRating: 0, logo: "/images/logos/pizza.png" },
@@ -70,7 +83,17 @@ const featuredBusinesses = ref([
 ]);
 
 const handlePageSuccess = () => {
-  router.push('/end-user/profile');
+  pageDraft.value = {
+    businessName: "",
+    selectedBusinessId: "",
+    selectedBusinessLogo: "",
+    rating: 0,
+    reviewBody: '',
+    images: [],
+    isAddingNewBusiness: false
+  };
+  formKey.value++; 
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const rateBusiness = (index: number, value: number) => {
@@ -92,19 +115,11 @@ const getFraction = (event: MouseEvent): number => {
 onMounted(() => {
   const savedDraft = localStorage.getItem('review_draft');
   if (savedDraft) {
-    try {
-      pageDraft.value = JSON.parse(savedDraft);
-      localStorage.removeItem('review_draft');
-    } catch (e) {
-      console.error("Failed to parse saved draft", e);
-    }
-  } 
-  else if (route.query.bizId) {
-    pageDraft.value = {
-      businessName: route.query.bizName || "",
-      selectedBusinessId: route.query.bizId || "",
-      selectedBusinessLogo: route.query.bizLogo || ""
-    };
+    pageDraft.value = JSON.parse(savedDraft);
+    localStorage.removeItem('review_draft');
+  } else if (queryDraft.value) {
+    // 2. Assign the computed query draft to the ref
+    pageDraft.value = queryDraft.value;
   }
 });
 </script>

@@ -138,7 +138,7 @@ import { useUserStore } from '~/store/user'
 const router = useRouter()
 const userStore = useUserStore()
 const imageLoaded = ref<boolean>(false);
-
+const toast = useToast()
 onMounted((): void => {
   // Preload the background image
   const img: HTMLImageElement = new Image();
@@ -173,16 +173,7 @@ watch(() => userStore.isAuthenticated, (isLoggedIn) => {
 const showGeneralAuth = ref(false)
 
 const handleGeneralAuthSuccess = () => {
-  showGeneralAuth.value = false;
-  
-  // Get the user ID from your store after successful login
-  const userId = userStore?.id;
-  
-  if (userId) {
-    router.push(`/user/${userId}`);
-  } else {
-    // Fallback if ID isn't available for some reason
-    router.push('/end-user/profile');
-  }
+  showGeneralAuth.value = false;  
+  toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 })
 }
 </script>
