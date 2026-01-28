@@ -119,6 +119,7 @@ import useUser  from '~/composables/useUser'
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
 import spinner from '~/assets/svg/spinner.svg'
+import { useToast } from '#imports';
 
 const { loginUser } = useMethods();
 const store = useUser(); 
