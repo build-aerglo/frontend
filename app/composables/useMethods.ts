@@ -114,7 +114,7 @@ export default function () {
       // 4. Redirect based on the captured role
       const redirectPath = role === 'business_user' 
         ? '/business/auth/sign-in' 
-        : '/end-user/auth/sign-in';
+        : '/';
 
       await navigateTo(redirectPath, { replace: true });
       

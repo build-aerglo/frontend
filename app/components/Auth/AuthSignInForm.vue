@@ -21,14 +21,26 @@
 
       <button 
         type="button"
-        @click="handleSocialLogin('Facebook')" 
+        @click="handleSocialLogin('Apple')" 
         :disabled="isLoading" 
         class="w-full flex items-center justify-center gap-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-700"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#1877F2" viewBox="0 0 24 24">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.202-.029 2.265-1.186c1.063-1.156.908-2.482.878-2.516zM9.194 1.517c.02-.036.085-.118.133-.147.188.18.36.382.508.605.497.746.774 1.504.815 2.198-.545-.039-1.24-.319-1.777-.771a3.393 3.393 0 0 1-.679-.685zM14.973 12.33c-.457 1.1-1.434 3.22-2.89 3.22-1.455 0-1.928-.99-3.58-.99-1.652 0-2.161.99-3.58.99-1.419 0-2.856-2.99-3.58-5.22-.724-2.23-.362-4.485.905-5.922 1.266-1.437 3.129-1.854 4.416-1.854 1.287 0 2.41.834 3.057.834.646 0 1.944-.834 3.056-.834 1.112 0 3.033.417 4.12 1.854a1.03 1.03 0 0 1 .25.362c-2.25 1.146-1.875 4.312.625 5.375.125.05.25.1.375.125-.125.688-.75 2.063-1.25 3.063z"/>
         </svg>
-        Continue with Facebook
+        Continue with Apple
+      </button>
+
+      <button 
+        type="button"
+        @click="handleSocialLogin('Twitter')" 
+        :disabled="isLoading" 
+        class="w-full flex items-center justify-center gap-3 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-700"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+        </svg>
+        Continue with X
       </button>
     </div>
 
@@ -90,11 +102,11 @@ import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
 import spinner from '~/assets/svg/spinner.svg'
 
-const emit = defineEmits(['close', 'switch-to-signup']);
+const emit = defineEmits(['close', 'switch-to-signup', 'authenticated']);
 const { loginUser } = useMethods();
 const store = useUser(); 
 const toast = useToast();
-
+const router = useRouter();
 const userData = ref<LoginData>({ email: '', password: '' });
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
@@ -106,7 +118,7 @@ const { initiateSocialLogin } = useSocialAuth();
 const handleSocialLogin = async (provider: string) => {
   errorMessage.value = "";
   try {
-    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub'];
+    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
     if (!validProviders.includes(provider)) throw new Error(`Invalid provider: ${provider}`);
     localStorage.setItem('social_provider', provider);
     await initiateSocialLogin(provider);
@@ -118,25 +130,29 @@ const handleSocialLogin = async (provider: string) => {
 
 const HandleLogin = async () => {
   errorMessage.value = "";
-  if (!userData.value.email || !userData.value.password) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Fields required', life: 3000 });
-    return;
-  }
-
+  // ... validation ...
   isLoading.value = true;
+
   try {
     const res = await loginUser(userData.value);
+    
     if (res) {
       if (store.role !== 'end_user') {
         errorMessage.value = 'Not authorized for user access.';
         return;
       }
+
       toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in successfully', life: 3000 });
+
+      // Handle Remember Me logic
       if (rememberMe.value) {
         localStorage.setItem('rememberMe', 'true');
         localStorage.setItem('userEmail', userData.value.email);
       }
-      emit('close'); // Close modal on success
+
+      // ONLY emit the success event. DO NOT redirect here.
+      emit('authenticated'); 
+      emit('close');
     }
   } catch (error: any) {
     errorMessage.value = error.response?.data?.message || "Login failed";
