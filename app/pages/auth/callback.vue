@@ -10,9 +10,10 @@
 
 <script setup lang="ts">
 import useSocialAuth from '~/composables/useSocialAuth';
-
+import useUser from '~/composables/useUser';
 const route = useRoute();
 const router = useRouter();
+const userStore = useUser();
 const { handleSocialCallback } = useSocialAuth();
 
 onMounted(async () => {
@@ -33,11 +34,12 @@ onMounted(async () => {
   const success = await handleSocialCallback(provider, code, state);
 
   if (success) {
-    // 3. Cleanup and Redirect
-    localStorage.removeItem('social_provider');
-    router.push('/end-user/profile/'); // or your dashboard
-  } else {
-    router.push('../end-user/auth/sign-in?error=auth_failed');
+   if (userStore.id) {
+      router.push(`/user/${userStore.id}`);
+    } else {
+      // Fallback if ID isn't set for some reason
+      router.push('/');
+    }
   }
 });
 </script>

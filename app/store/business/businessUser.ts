@@ -100,6 +100,7 @@ export const useBusinessUserStore = defineStore("businessUser", {
       this.idToken = null;
       this.role = null;
       this.userData = null;
+      this.id = null;
     },
   },
 

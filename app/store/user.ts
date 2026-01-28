@@ -108,6 +108,7 @@ export const useUserStore = defineStore("EndUser", {
       this.idToken = null;
       this.role = null;
       this.userData = null;
+      this.id = null;
     },
     toggleTheme() {
       this.theme = this.theme === "light" ? "dark" : "light";

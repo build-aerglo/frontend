@@ -129,13 +129,13 @@
           <div class="flex flex-col gap-1">
             <button @click="showEmailInput = true" class="py-3 bg-[#008253] text-white rounded-xl">Review as
               guest</button>
-            <span class="text-center text-[12px] md:text-[14px] text-gray-700">No account needed</span>
+            <span class="text-center text-[12px] md:text-[14px] text-gray-500">No account needed</span>
           </div>
           <div class="flex flex-col gap-1">
             <button @click="emitOpenAuth"
               class="py-3 border border-[#008253] text-[#008253] rounded-xl font-medium hover:bg-green-100">Sign in and
               review</button>
-            <span class="text-center text-[12px] md:text-[14px] text-gray-700">Earn points and track your reviews</span>
+            <span class="text-center text-[12px] md:text-[14px] text-gray-500">Earn points and track your reviews</span>
           </div>
         </div>
         <div v-else>
