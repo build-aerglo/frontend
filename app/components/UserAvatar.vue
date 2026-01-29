@@ -38,9 +38,24 @@ const wrapperClass = computed(() => {
 });
 
 const initials = computed(() => {
-  const first = props.firstName?.[0]?.toUpperCase() || '';
-  const last = props.lastName?.[0]?.toUpperCase() || '';
-  return first + last || 'U';
+  // If both props are empty, return 'U'
+  if (!props.firstName && !props.lastName) return 'U';
+
+  // Helper to get first letter of a string
+  const getInitial = (name: string) => name?.[0]?.toUpperCase() || '';
+
+  // If we have both props separately
+  if (props.firstName && props.lastName) {
+    return getInitial(props.firstName) + getInitial(props.lastName);
+  }
+
+  // If we only have one string (like "Adeola Michael"), split it by space
+  const nameParts = props.firstName.trim().split(/\s+/);
+  if (nameParts.length >= 2) {
+    return getInitial(nameParts[0] ?? '') + getInitial(nameParts[nameParts.length - 1] ?? '');
+  }
+
+  return getInitial(nameParts[0] ?? '') || 'U';
 });
 
 const altText = computed(() => {

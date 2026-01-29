@@ -15,14 +15,24 @@
       <!-- Desktop Nav Links -->
        <!-- Right buttons -->
       <div class="flex items-right space-x-8">
-        <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-          <!-- For Business Dropdown -->
-        <NuxtLink to="/review/write-review">
-              <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition">
+        <ul class="hidden md:flex items-center space-x-6">
+          <li>
+            <NuxtLink to="/review/write-review">
+              <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition font-medium">
                 Write a review
               </button>
-          </NuxtLink>
-      </ul>
+            </NuxtLink>
+          </li>
+          <li>
+            <button 
+              @click="triggerLogout" 
+              class="flex items-center text-red-600 dark:text-gray-200 hover:text-red-700 transition font-medium"
+            >
+              <i class="pi pi-sign-out mr-2"></i>
+              Logout
+            </button>
+          </li>
+        </ul>
 
         <!-- Mobile toggle -->
         <button
@@ -49,10 +59,19 @@
       </div>
 
       <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/end-user/auth/sign-in" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
+        <li><NuxtLink to="/review/write-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
              after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
              hover:after:w-full"
             >Write a Review</NuxtLink></li>
+        <li>
+          <button 
+              @click="triggerLogout" 
+              class="flex items-center text-red-600 dark:text-gray-200 hover:text-red-700 transition font-medium"
+            >
+              <i class="pi pi-sign-out mr-2"></i>
+              Logout
+            </button>
+        </li>
       </ul>
     </div>
     <!-- Overlay when sidebar is open -->
@@ -74,7 +93,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '~/store/user'
-
+import useMethods from '~/composables/useMethods';
+const { triggerLogout } = useMethods()
 const isOpen = ref(false)
 const showBusinessDropdown = ref(false)
 const userStore = useUserStore()
