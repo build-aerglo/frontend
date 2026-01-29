@@ -1,4 +1,5 @@
 import type { UserReview } from "~/types";
+import type { TopCitiesResponse, TopCategoriesResponse } from "~/types/review";
 import useReviewApi from "./useReviewApi";
 
 export default function () {
@@ -6,7 +7,6 @@ export default function () {
 
   const submitUserReview = async (data: UserReview) => {
     try {
-      // Removed geolocation logic
       const res = await reviewApi.post("api/Review", data);
       return res.data;
     } catch (error: any) {
@@ -30,8 +30,40 @@ export default function () {
     }
   }
 
+  // Get user's top reviewed cities
+  const getUserTopCities = async (reviewerId?: string, email?: string): Promise<TopCitiesResponse> => {
+    try {
+      const params = new URLSearchParams();
+      if (reviewerId) params.append('reviewerId', reviewerId);
+      if (email) params.append('email', email);
+
+      const res = await reviewApi.get(`api/Review/user/top-cities?${params.toString()}`);
+      return res.data;
+    } catch (error: any) {
+      console.error("Error fetching top cities:", error);
+      throw error;
+    }
+  }
+
+  // Get user's top reviewed categories
+  const getUserTopCategories = async (reviewerId?: string, email?: string): Promise<TopCategoriesResponse> => {
+    try {
+      const params = new URLSearchParams();
+      if (reviewerId) params.append('reviewerId', reviewerId);
+      if (email) params.append('email', email);
+
+      const res = await reviewApi.get(`api/Review/user/top-categories?${params.toString()}`);
+      return res.data;
+    } catch (error: any) {
+      console.error("Error fetching top categories:", error);
+      throw error;
+    }
+  }
+
   return {
     submitUserReview,
     getUserReviews,
+    getUserTopCities,
+    getUserTopCategories,
   };
 }

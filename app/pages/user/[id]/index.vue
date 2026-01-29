@@ -172,7 +172,7 @@
               </button>
 
               <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
-              <div
+              <!-- <div
                 v-if="isUser"
                 class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden"
               >
@@ -190,7 +190,7 @@
                   }}</span>
                 </div>
               </div>
-              <!-- Small Mobile Badges (under 360px) - Stacked under user info -->
+              Small Mobile Badges (under 360px) - Stacked under user info
               <div
                 class="mt-4 hidden max-[359px]:flex max-[359px]:flex-col gap-2"
               >
@@ -207,7 +207,7 @@
                     badge.name
                   }}</span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -285,80 +285,104 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
+
+          
             <!-- Badges -->
-  <div class="bg-white rounded-xl shadow-sm p-6 md:block">
-    <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
-      <i class="pi pi-trophy text-gold"></i>
-      <span
-        v-if="isUser"
-        class="font-bold text-gray-800 text-lg mr--1"
-        >Your</span
-      >
-      Badges
-    </h5>
+          <div class="bg-white rounded-xl shadow-sm p-6 md:block">
+            <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <i class="pi pi-trophy text-gold"></i>
+              <span v-if="isUser" class="font-bold text-gray-800 text-lg mr--1">Your</span>
+              Badges
+              <span v-if="totalBadges > 0" class="text-sm text-gray-500">({{ totalBadges }})</span>
+            </h5>
 
-    <!-- Loading State -->
-    <div
-      v-if="loading"
-      class="flex items-center justify-center py-8"
-    >
-      <GeneralLoader />
-    </div>
+            <!-- Loading State -->
+            <div v-if="loading" class="flex items-center justify-center py-8">
+              <GeneralLoader />
+            </div>
 
-    <!-- Badges List (now includes tier badge) -->
-    <div class="space-y-3">
-      <!-- Tier Badge (from API) -->
-      <div
-        v-if="tierBadge"
-        :class="[
-          tierBadge.color,
-          'rounded-lg p-3 flex items-center gap-3',
-        ]"
-      >
-        <span class="text-lg">{{ tierBadge.icon }}</span>
-        <span class="font-medium text-gray-700 text-sm">{{ tierBadge.name }}</span>
-      </div>
+            <!-- No Badges State -->
+            <div v-else-if="!badges.length" class="text-center py-8 text-gray-500">
+              <i class="pi pi-trophy text-4xl mb-2 opacity-50"></i>
+              <p class="text-sm">No badges earned yet</p>
+            </div>
 
-      <!-- Earned Badges -->
-      <div
-        v-for="(badge, idx) in badges"
-        :key="idx"
-        :class="[
-          badge.color,
-          'rounded-lg p-3 flex items-center gap-3',
-        ]"
-      >
-        <i :class="[badge.icon, 'text-2xl']"></i>
-        <span class="font-medium text-gray-700 text-sm">{{ badge.name }}</span>
-      </div>
+            <!-- Badges List with Beautiful Tooltips -->
+            <div v-else class="space-y-3">
+              <BadgeToolTip
+                v-for="(badge, idx) in badges"
+                :key="idx"
+                :name="badge.name"
+                :icon="badge.icon"
+                :color="badge.color"
+                :description="badge.description"
+              />
+            </div>
+          </div>
 
-    </div>
-    
-  </div>
+            <!-- Replace your existing Top Categories and Top Locations sections with this -->
 
+          <div class="grid grid-cols-1 gap-6">
             <!-- Top Categories -->
             <div class="bg-white rounded-xl shadow-sm p-6">
               <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-star-fill text-gold"></i>
                 Top Reviewed Categories
               </h5>
-              <ul class="space-y-2">
-               <NuxtLink
-                  v-for="(cat, idx) in topCategories.slice(0, 3)"
-                  :key="cat.id || cat.categoryId || idx"
-                  :to="{ 
-                    path: '../end-user/landing/explore', 
-                    query: { 
-                      categoryId: cat.id || cat.categoryId, 
-                      category: cat.name 
-                    } 
-                  }"
-                  class="flex items-start gap-2 text-sm text-gray-600 hover:text-[#008253] transition-colors group"
-                >
-                  <span class="text-gold group-hover:scale-110 transition-transform">●</span>
-                  <span class="group-hover:underline">{{ cat.name }}</span>
-                </NuxtLink>
+              
+              <!-- Loading state -->
+              <div v-if="topDataLoading" class="space-y-3">
+                <GeneralLoader/>
+              </div>
+              
+              <!-- Empty state -->
+              <div v-else-if="topCategories.length === 0" class="text-sm flex gap-2 items-center justify-center text-gray-500 italic py-4 text-center">
+                <i class="pi pi-inbox text-2xl mb-2 block text-gray-400"></i>
+                No categories reviewed yet
+              </div>
+              
+              <!-- Categories list -->
+              <ul v-else class="space-y-3">
+                <li v-for="(cat, idx) in topCategories.slice(0, 3)" :key="cat.id || cat.categoryId || idx">
+                  <NuxtLink
+                    :to="{ 
+                      path: '/end-user/landing/explore', 
+                      query: { 
+                        categoryId: cat.id || cat.categoryId, 
+                        category: cat.name 
+                      } 
+                    }"
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all group"
+                  >
+                    <i :class="`pi ${cat.icon} text-gold text-lg group-hover:scale-110 transition-transform`"></i>
+                    <div class="flex-1 min-w-0">
+                      <span class="block text-sm font-medium text-gray-900 group-hover:text-[#008253] transition-colors truncate">
+                        {{ cat.name }}
+                      </span>
+                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-comment"></i>
+                          {{ cat.reviewCount }}
+                        </span>
+                        <span class="text-gray-300">•</span>
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-star-fill text-gold"></i>
+                          {{ cat.averageRating.toFixed(1) }}
+                        </span>
+                      </div>
+                    </div>
+                    <i class="pi pi-chevron-right text-gray-400 text-xs group-hover:text-[#008253] transition-colors"></i>
+                  </NuxtLink>
+                </li>
               </ul>
+              
+              <!-- Show all link -->
+              <div v-if="topCategories.length > 3" class="mt-4 pt-4 border-t border-gray-100">
+                <button class="text-sm text-[#008253] hover:text-[#006641] font-medium flex items-center gap-1 w-full justify-center">
+                  View all {{ topCategoriesData?.totalCategoriesReviewed }} categories
+                  <i class="pi pi-arrow-right text-xs"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Top Locations -->
@@ -367,19 +391,57 @@
                 <i class="pi pi-map-marker text-gold"></i>
                 Top Reviewed Locations
               </h5>
-              <ul class="space-y-2">
-                <NuxtLink
-                  to="/"
-                  v-for="(loc, idx) in topLocations.slice(0, 3)"
-                  :key="idx"
-                  class="flex items-start gap-2 text-sm text-gray-600"
-                >
-                  <span class="text-gold">●</span>
-                  <span>{{ loc }}</span>
-                </NuxtLink>
+              
+              <!-- Loading state -->
+              <div v-if="topDataLoading" class="space-y-3">
+                <GeneralLoader/>
+              </div>
+              
+              <!-- Empty state -->
+              <div v-else-if="topLocations.length === 0" class="text-sm flex gap-2 items-center justify-center text-gray-500 italic py-4 text-center">
+                <i class="pi pi-map text-2xl mb-2 block text-gray-400"></i>
+                No locations reviewed yet
+              </div>
+              
+              <!-- Locations list -->
+              <ul v-else class="space-y-3">
+                <li v-for="(loc, idx) in topLocations.slice(0, 3)" :key="idx">
+                  <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="pi pi-map-marker text-gold text-lg"></i>
+                    <div class="flex-1 min-w-0">
+                      <span class="block text-sm font-medium text-gray-900 truncate">
+                        {{ loc.display }}
+                      </span>
+                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-comment"></i>
+                          {{ loc.reviewCount }}
+                        </span>
+                        <span class="text-gray-300">•</span>
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-star-fill text-gold"></i>
+                          {{ loc.averageRating.toFixed(1) }}
+                        </span>
+                        <!-- <span class="text-gray-300">•</span>
+                        <span class="flex items-center gap-1">
+                          <i class="pi pi-building"></i>
+                          {{ loc.businessCount }}
+                        </span> -->
+                      </div>
+                    </div>
+                  </div>
+                </li>
               </ul>
+              
+              <!-- Show all link -->
+              <div v-if="topLocations.length > 3" class="mt-4 pt-4 border-t border-gray-100">
+                <button class="text-sm text-[#008253] hover:text-[#006641] font-medium flex items-center gap-1 w-full justify-center">
+                  View all {{ topCitiesData?.totalCitiesReviewed }} cities
+                  <i class="pi pi-arrow-right text-xs"></i>
+                </button>
+              </div>
             </div>
-
+          </div>
             <!-- Favourite Business -->
             <div class="bg-white rounded-xl shadow-sm p-6">
               <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -1503,40 +1565,40 @@
 </template>
 
 <script setup lang="ts">
+  //Vue and utils imports
 import { ref, computed, onMounted } from "vue";
+import { getCategoryIcon } from "~/utils";
+
+  //Components import
 import UserAvatar from "~/components/UserAvatar.vue";
+
+  //Composables import
 import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
-import useBusinessMethods from '~/composables/business/useBusinessMethods';
-const { getCategories } = useBusinessMethods();
-const topCategories = ref<any[]>([]);
+import useMethods from '~/composables/useMethods';
+import useEnrichedReviews from "~/composables/review/useEnrichedReviews";
+import useReviewMethods from "~/composables/review/useReviewMethods";
+import { useBadgeApi } from "~/composables/useBadgeApi";
+  //Types import
 import type {
-  Ad,
-  EditFormData,
-  ProfileData,
+  Ad, EditFormData, ProfileData,
 } from "~/types/user";
 import type {
-  Review,
-  EnrichedReview,
+  EnrichedReview, TopCitiesResponse, TopCategoriesResponse
 } from "~/types/review";
+import type { BadgeResponse, BadgeInfo } from '~/types/badge';
+import BadgeToolTip from "~/components/BadgeToolTip.vue";
 
-import type { DisplayBadge, BadgeResponse } from '~/types/badge';
-// import useReviewMethods from "~/composables/review/useReviewMethods";
-import useEnrichedReviews from "~/composables/review/useEnrichedReviews";
-
-const { getEnrichedUserReviews } = useEnrichedReviews();
+//////////////////////////////////////////////IMPORT ENDS//////////////////////////////////////////////
 
 // Composables and Stores
-const { getUserProfile, updateUserProfile, getUserId } =
-  useUserProfileMethods();
-// const { getUserReviews } = useReviewMethods();
+const { triggerLogout } = useMethods();
+const { getEnrichedUserReviews } = useEnrichedReviews();
+const { getUserProfile, updateUserProfile, getUserId } = useUserProfileMethods();
+const { getUserTopCities, getUserTopCategories } = useReviewMethods();
+const { getUserBadges, getBadgeInfoBatch, mapBadgesToDisplay } = useBadgeApi();
+
 const userId = getUserId();
 const route = useRoute();
-
-// Get user ID - try route parameter first, then fall back to idToken
-const currentUserId = computed(() => {
-  const routeId = route.params.id as string;
-  return routeId;
-});
 
 // Refs
 const userReviews = ref<EnrichedReview[]>([]);
@@ -1549,45 +1611,37 @@ const saveSuccess = ref<boolean>(false);
 const saveError = ref<string | null>(null);
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
-
-// Profile data from API
 const profileData = ref<ProfileData | null>(null);
 const isUser = ref(false);
-
 const editForm = ref<EditFormData>({
   username: "",
   phoneNumber: "",
   address: "",
 });
-
-// Constants
-const defaultProfileImage = "https://via.placeholder.com/200";
-
-const firstName = computed(() => {
-  const parts = profileData.value?.username?.trim().split(" ") || [];
-  return parts[0] || "";
-});
-
-const lastName = computed(() => {
-  const parts = profileData.value?.username?.trim().split(" ") || [];
-  return parts.slice(1).join(" ") || ""; // Handles middle names too
-});
-
-onMounted(async () => {
-  try {
-    const res = await getCategories();
-    // Assuming res.data contains the list or res itself is the list
-    const allCategories = Array.isArray(res) ? res : (res.data || []);
-    
-    // Sort or pick the ones you want, here we just take the first few
-    topCategories.value = allCategories;
-  } catch (error) {
-    console.error("Failed to fetch categories:", error);
-  }
-});
-
-const topLocations = ref<string[]>(["Ewekoro", "Oju-ore", "Ikeja"]);
-
+const notificationSettingsChanged = ref(false);
+const savingNotifications = ref(false);
+const notificationSaveSuccess = ref(false);
+const notificationSaveError = ref<string | null>(null);
+const darkModeChanged = ref(false);
+const savingDarkMode = ref(false);
+const darkModeSaveSuccess = ref(false);
+const darkModeSaveError = ref<string | null>(null);
+const originalNotificationSettings = ref<any>(null);
+const originalDarkMode = ref<boolean | null>(null);
+const isEditingSocialMedia = ref(false);
+const socialMediaAccounts = ref<Array<{ platform: string; handle: string }>>([
+  { platform: "", handle: "" },
+]);
+const savingSocialMedia = ref(false);
+const socialMediaSaveSuccess = ref(false);
+const socialMediaSaveError = ref<string | null>(null);
+const topCitiesData = ref<TopCitiesResponse | null>(null);
+const topCategoriesData = ref<TopCategoriesResponse | null>(null);
+const topDataLoading = ref(false);
+const reviewsCache = ref<Map<string, any[]>>(new Map());
+const badgeData = ref<BadgeResponse | null>(null);
+const tierBadgeInfo = ref<any | null>(null);
+const badgeInfoMap = ref<Map<string, BadgeInfo>>(new Map());
 const ads = ref<Ad[]>([
   {
     id: 1,
@@ -1604,6 +1658,71 @@ const ads = ref<Ad[]>([
     tagline: "Let us help you Relax and Unwind.",
   },
 ]);
+
+
+// Constants
+const defaultProfileImage = "https://via.placeholder.com/200";
+
+
+//Computed
+const currentUserId = computed(() => {
+  const routeId = route.params.id as string;
+  return routeId;
+});
+const firstName = computed(() => {
+  const parts = profileData.value?.username?.trim().split(" ") || [];
+  return parts[0] || "";
+});
+const lastName = computed(() => {
+  const parts = profileData.value?.username?.trim().split(" ") || [];
+  return parts.slice(1).join(" ") || ""; // Handles middle names too
+});
+const canSaveSocialMedia = computed(() => {
+  // At least one account must have both platform and handle filled
+  return socialMediaAccounts.value.some(
+    (acc) => acc.platform.trim() && acc.handle.trim()
+  );
+});
+const topCategories = computed(() => {
+  if (!topCategoriesData.value?.topCategories) return [];
+  
+  return topCategoriesData.value.topCategories.map(cat => ({
+    id: cat.categoryId,
+    categoryId: cat.categoryId,
+    name: cat.categoryName,
+    reviewCount: cat.reviewCount,
+    businessCount: cat.businessCount,
+    averageRating: cat.averageRating,
+    icon: getCategoryIcon(cat.categoryName)
+  }));
+});
+const topLocations = computed(() => {
+  if (!topCitiesData.value?.topCities) return [];
+  
+  return topCitiesData.value.topCities.map(city => {
+    const stateInfo = city.state !== 'Unknown' ? `, ${city.state}` : '';
+    return {
+      display: `${city.city}${stateInfo}`,
+      city: city.city,
+      state: city.state,
+      reviewCount: city.reviewCount,
+      businessCount: city.businessCount,
+      averageRating: city.averageRating
+    };
+  });
+});
+const badges = computed(() => {
+  if (!badgeData.value?.badges?.length) return [];
+  return mapBadgesToDisplay(
+    badgeData.value.badges,
+    badgeInfoMap.value
+  );
+});
+
+const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
+// const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
+// const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
+
 
 // Methods
 const loadProfile = async () => {
@@ -1724,23 +1843,6 @@ const handleImageError = (e: Event) => {
   target.src = defaultProfileImage;
 };
 
-// Settings Tab - Additional State
-const notificationSettingsChanged = ref(false);
-const savingNotifications = ref(false);
-const notificationSaveSuccess = ref(false);
-const notificationSaveError = ref<string | null>(null);
-
-const darkModeChanged = ref(false);
-const savingDarkMode = ref(false);
-const darkModeSaveSuccess = ref(false);
-const darkModeSaveError = ref<string | null>(null);
-
-// Store original settings for comparison
-const originalNotificationSettings = ref<any>(null);
-const originalDarkMode = ref<boolean | null>(null);
-
-// 3. ADD WATCHER (After state variables)
-// Watch for profile data changes to store originals
 watch(
   () => profileData.value,
   (newProfile) => {
@@ -1758,11 +1860,6 @@ watch(
   { immediate: true, deep: true }
 );
 
-// 4. ADD METHODS (Before onMounted)
-
-/**
- * Toggle a notification setting
- */
 const toggleNotification = (settingKey: string) => {
   if (!profileData.value?.notificationPreferences) return;
 
@@ -1774,9 +1871,6 @@ const toggleNotification = (settingKey: string) => {
   checkNotificationChanges();
 };
 
-/**
- * Check if notification settings have changed from original
- */
 const checkNotificationChanges = () => {
   if (
     !profileData.value?.notificationPreferences ||
@@ -1796,9 +1890,6 @@ const checkNotificationChanges = () => {
     current.marketingEmails !== original.marketingEmails;
 };
 
-/**
- * Save notification settings to API
- */
 const saveNotificationSettings = async () => {
   if (!currentUserId.value || !profileData.value) return;
 
@@ -1841,9 +1932,6 @@ const saveNotificationSettings = async () => {
   }
 };
 
-/**
- * Cancel notification changes and restore original values
- */
 const cancelNotificationChanges = () => {
   if (!profileData.value || !originalNotificationSettings.value) return;
 
@@ -1856,9 +1944,6 @@ const cancelNotificationChanges = () => {
   notificationSaveError.value = null;
 };
 
-/**
- * Toggle dark mode
- */
 const toggleDarkMode = () => {
   if (!profileData.value) return;
 
@@ -1869,9 +1954,6 @@ const toggleDarkMode = () => {
   checkDarkModeChange();
 };
 
-/**
- * Check if dark mode has changed from original
- */
 const checkDarkModeChange = () => {
   if (!profileData.value || originalDarkMode.value === null) {
     darkModeChanged.value = false;
@@ -1881,9 +1963,6 @@ const checkDarkModeChange = () => {
   darkModeChanged.value = profileData.value.darkMode !== originalDarkMode.value;
 };
 
-/**
- * Save dark mode setting to API
- */
 const saveDarkModeSetting = async () => {
   if (!currentUserId.value || !profileData.value) return;
 
@@ -1924,9 +2003,6 @@ const saveDarkModeSetting = async () => {
   }
 };
 
-/**
- * Cancel dark mode change and restore original value
- */
 const cancelDarkModeChange = () => {
   if (!profileData.value || originalDarkMode.value === null) return;
 
@@ -1940,29 +2016,6 @@ const cancelDarkModeChange = () => {
 // SOCIAL MEDIA WITH PLATFORMS - SCRIPT METHODS
 // ========================================
 
-// 1. ADD STATE VARIABLES (with your other refs)
-const isEditingSocialMedia = ref(false);
-const socialMediaAccounts = ref<Array<{ platform: string; handle: string }>>([
-  { platform: "", handle: "" },
-]);
-const savingSocialMedia = ref(false);
-const socialMediaSaveSuccess = ref(false);
-const socialMediaSaveError = ref<string | null>(null);
-
-// 2. ADD COMPUTED PROPERTY
-const canSaveSocialMedia = computed(() => {
-  // At least one account must have both platform and handle filled
-  return socialMediaAccounts.value.some(
-    (acc) => acc.platform.trim() && acc.handle.trim()
-  );
-});
-
-// 3. ADD HELPER METHODS
-
-/**
- * Parse social media string into accounts array
- * Format: "WhatsApp:+234123456789|Instagram:@johndoe|X (Twitter):@john"
- */
 const parseSocialMediaAccounts = (socialMediaString: string) => {
   if (!socialMediaString || !socialMediaString.trim()) return [];
 
@@ -1980,10 +2033,7 @@ const parseSocialMediaAccounts = (socialMediaString: string) => {
   return accounts;
 };
 
-/**
- * Get icon for social media platform
- */
-const getSocialMediaIcon = (platform: string) => {
+const getSocialMediaIcon = (platform: string): string => {
   const icons: Record<string, string> = {
     WhatsApp: "pi pi-whatsapp text-green-600",
     Instagram: "pi pi-instagram text-pink-600",
@@ -1999,9 +2049,6 @@ const getSocialMediaIcon = (platform: string) => {
   return icons[platform] || "pi pi-link text-gray-600";
 };
 
-/**
- * Get placeholder text based on platform
- */
 const getPlaceholder = (platform: string) => {
   const placeholders: Record<string, string> = {
     WhatsApp: "+234 123 456 7890",
@@ -2019,11 +2066,6 @@ const getPlaceholder = (platform: string) => {
   return placeholders[platform] || "Enter username or link";
 };
 
-// 4. ADD MAIN METHODS
-
-/**
- * Start editing social media
- */
 const startEditSocialMedia = () => {
   const currentAccounts = parseSocialMediaAccounts(
     profileData.value?.socialMedia || ""
@@ -2040,9 +2082,6 @@ const startEditSocialMedia = () => {
   socialMediaSaveError.value = null;
 };
 
-/**
- * Cancel editing social media
- */
 const cancelEditSocialMedia = () => {
   isEditingSocialMedia.value = false;
   socialMediaAccounts.value = [{ platform: "", handle: "" }];
@@ -2050,9 +2089,6 @@ const cancelEditSocialMedia = () => {
   socialMediaSaveError.value = null;
 };
 
-/**
- * Add another social media account
- */
 const addSocialMediaAccount = () => {
   socialMediaAccounts.value.push({ platform: "", handle: "" });
 };
@@ -2124,15 +2160,36 @@ const saveSocialMedia = async () => {
   }
 };
 
-// Updated script section for app/pages/user/[id]/index.vue
-// Replace the loadUserReviews function and related imports
+
+// Fetch function (call this in your existing onMounted or wherever you load data)
+const fetchTopData = async () => {
+  if (!currentUserId.value && !profileData.value?.email) return;
+
+  try {
+    topDataLoading.value = true;
+
+    const [citiesResponse, categoriesResponse] = await Promise.all([
+      getUserTopCities(
+        currentUserId.value ?? undefined,
+        profileData.value?.email ?? undefined
+      ),
+      getUserTopCategories(
+        currentUserId.value ?? undefined,
+        profileData.value?.email ?? undefined
+      )
+    ]);
+
+    topCitiesData.value = citiesResponse;
+    topCategoriesData.value = categoriesResponse;
+  } catch (err) {
+    console.error("Error fetching top data:", err);
+  } finally {
+    topDataLoading.value = false;
+  }
+};
 
 
 
-// ===== REPLACE loadUserReviews FUNCTION =====
-/**
- * Load user reviews with enriched business information
- */
 const loadUserReviews = async () => {
   if (!currentUserId.value) {
     console.error("No user ID available for loading reviews");
@@ -2166,11 +2223,6 @@ const loadUserReviews = async () => {
   }
 };
 
-// ===== OPTIONAL: Add caching for better performance =====
-/**
- * Load user reviews with caching to avoid redundant API calls
- */
-const reviewsCache = ref<Map<string, any[]>>(new Map());
 
 const loadUserReviewsWithCache = async () => {
   if (!currentUserId.value) {
@@ -2219,13 +2271,6 @@ const clearReviewsCache = () => {
   console.log("🗑️ Reviews cache cleared");
 };
 
-// ===== USAGE NOTES =====
-// 1. The enriched reviews will now have proper businessName and location
-// 2. If a business fetch fails, fallback data is provided
-// 3. Consider using loadUserReviewsWithCache for better performance
-// 4. The watcher and onBeforeMount logic remain the same
-
-// ✅ ADD WATCHER for tab changes (add this after your other watchers)
 watch(activeTab, (newTab) => {
   if (
     newTab === "your-reviews" &&
@@ -2236,25 +2281,16 @@ watch(activeTab, (newTab) => {
   }
 });
 
-const { getUserBadges, getBadgeInfo, createTierBadge, mapBadgesToDisplay } = useBadgeApi();
+watch(
+  () => profileData.value,
+  (profile) => {
+    if (profile) {
+      fetchTopData();
+    }
+  },
+  { immediate: true }
+);
 
-const badgeData = ref<BadgeResponse | null>(null);
-const tierBadgeInfo = ref<any | null>(null);
-
-const badges = computed(() => {
-  if (!badgeData.value?.badges?.length) return [];
-  return mapBadgesToDisplay(badgeData.value.badges);
-});
-
-const tierBadge = computed(() => {
-  if (!badgeData.value || !tierBadgeInfo.value) return null;
-  return createTierBadge(tierBadgeInfo.value, badgeData.value.currentTier);
-});
-
-const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
-const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
-
-console.log(currentTier.value, tierBadge.value, 'printed thiss')
 
 const fetchBadges = async () => {
   if (!userId) return;
@@ -2266,11 +2302,13 @@ const fetchBadges = async () => {
     if (response) {
       badgeData.value = response;
       
-      // Fetch tier badge info for icon and display name
-      const tierInfo = await getBadgeInfo(response.currentTier);
-      if (tierInfo) {
-        tierBadgeInfo.value = tierInfo;
-      }
+      // Fetch all badge info for icons and details
+      const infoRecord = await getBadgeInfoBatch(response.badges);
+
+      badgeInfoMap.value = new Map(
+        Object.entries(infoRecord)
+      );
+
     }
   } catch (err) {
     console.error('Failed to fetch badges:', err);
@@ -2279,27 +2317,27 @@ const fetchBadges = async () => {
   }
 };
 
-onMounted(() => {
-  fetchBadges();
-});
-
-watch(() => userId, () => {
-  fetchBadges();
-});
-
-// ✅ UPDATE onBeforeMount to load reviews on initial page load
+// Lifecycle
 onBeforeMount(async () => {
   await loadProfile();
-  // Load reviews if on reviews tab by default
+  await fetchTopData();
+
   if (activeTab.value === "your-reviews") {
     await loadUserReviews();
   }
 });
 
-// Lifecycle
-onBeforeMount(async () => {
-  await loadProfile();
+onMounted(() => {
+  fetchBadges();
 });
+
+watch(
+  () => userId,
+  () => {
+    fetchBadges();
+  }
+);
+
 </script>
 
 <style scoped>

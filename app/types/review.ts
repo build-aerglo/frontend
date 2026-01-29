@@ -108,4 +108,30 @@ export interface EnrichedReview {
   createdAt: string;
 }
 
-// Then update your ref declaration:
+// Types for the top cities endpoint
+export interface TopCity {
+  city: string;
+  state: string;
+  reviewCount: number;
+  businessCount: number;
+  averageRating: number;
+}
+
+export interface TopCitiesResponse {
+  topCities: TopCity[];
+  totalCitiesReviewed: number;
+}
+
+// Types for the top categories endpoint
+export interface TopCategory {
+  categoryId: string;
+  categoryName: string;
+  reviewCount: number;
+  businessCount: number;
+  averageRating: number;
+}
+
+export interface TopCategoriesResponse {
+  topCategories: TopCategory[];
+  totalCategoriesReviewed: number;
+}

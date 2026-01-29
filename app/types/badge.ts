@@ -1,11 +1,14 @@
 // Badge API Response Types
 export interface Badge {
   id: string;
-  name: string;
-  description: string;
-  icon: string;
+  userId: string;
+  badgeType: string;  // ← This is what the API returns
+  location: string | null;  // ← API returns this
+  category: string | null;  // ← API returns this
   earnedAt: string;
-  tier: string;
+  isActive: boolean;  // ← API returns this
+  displayName: string;  // ← API returns this
+  description: string;
 }
 
 export interface BadgeResponse {
@@ -28,5 +31,5 @@ export interface DisplayBadge {
   icon: string;
   color: string;
   tier?: string;
-  desc?: string;
+  description?: string;  // ← Changed from 'desc' to 'description'
 }
