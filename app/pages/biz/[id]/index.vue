@@ -1,17 +1,27 @@
 <template>
   <Toast />
   <GeneralLoader v-if="isLoading" />
-  <Business
-    v-else
-    :business="business"
-    :to-edit="toEdit"
-    :page="page"
-    @edit="loadBusinessData"
-    :isBusiness="isBusiness"
-    :categories="categories"
-    :reviews="reviews"
-    status="verified"
-  />
+  <div v-else class="max-w-[1440px] mx-auto px-8 pt-4">
+    <button 
+      @click="goBack" 
+      class="flex items-center text-gray-500 hover:text-[#008253] transition-colors duration-200 group mb-4"
+    >
+      <div class="p-2 rounded-full group-hover:bg-green-50 dark:group-hover:bg-gray-800 mr-1 transition-all">
+        <i class="pi pi-arrow-left text-sm"></i>
+      </div>
+      <span class="font-medium text-sm">Back</span>
+    </button>
+    <Business
+      :business="business"
+      :to-edit="toEdit"
+      :page="page"
+      @edit="loadBusinessData"
+      :isBusiness="isBusiness"
+      :categories="categories"
+      :reviews="reviews"
+      status="verified"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -25,7 +35,7 @@ import useReviewMethods from "~/composables/method/useReviewMethods";
 import type { BusinessProfileResponse } from "~/types/business";
 
 const pageData = usePageData();
-
+const router = useRouter();
 const route = useRoute();
 const {
   getBusinessProfile,
@@ -121,7 +131,13 @@ useHead({
 onBeforeMount(async () => {
   await loadBusinessData();
 });
-
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/end-user/landing/categories');
+  }
+};
 // // #push data
 // provide('businessData', business.value)
 // const count = ref(0)

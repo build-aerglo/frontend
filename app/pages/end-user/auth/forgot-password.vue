@@ -81,10 +81,13 @@
           </form>
 
           <div class="text-center mt-6">
-            <NuxtLink to="/end-user/auth/sign-in" class="text-sm font-medium text-[#008253] hover:underline">
+            <button 
+              @click="handleBackToSignIn" 
+              class="text-sm font-medium text-[#008253] hover:underline"
+            >
               <i class="pi pi-arrow-left mr-2"></i>
               Back to Sign In
-            </NuxtLink>
+            </button>
           </div>
         </div>
       </div>
@@ -97,7 +100,7 @@ const email = ref<string>('')
 const isSubmitted = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 const error = ref<string>('')
-
+const router = useRouter()
 const handleSubmit = async () => {
   error.value = ''
   
@@ -105,7 +108,6 @@ const handleSubmit = async () => {
     error.value = 'Please enter your email address'
     return
   }
-  
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email.value)) {
     error.value = 'Please enter a valid email address'
@@ -130,5 +132,11 @@ const handleSubmit = async () => {
   } finally {
     isLoading.value = false
   }
+}
+ const handleBackToSignIn = () => {
+  router.push({
+    path: '/',
+    query: { auth: 'login' } 
+  })
 }
 </script>
