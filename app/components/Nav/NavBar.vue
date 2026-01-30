@@ -170,6 +170,7 @@ import useMethods from '~/composables/useMethods';
 const { triggerLogout } = useMethods()
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
 const { getUserProfile } = useUserProfileMethods();
 // --- UI State ---
 const isOpen = ref(false)               
@@ -270,6 +271,12 @@ onMounted(() => {
     // ADD THESE TWO LINES
     showAuthModal.value = false // Ensure the login modal is closed on mount
     showReviewModal.value = true
+  }
+  if (route.query.auth === 'login') {
+    showGeneralAuth.value = true
+    
+    // Optional: Clean up the URL so it doesn't reopen on refresh
+    router.replace({ query: { ...route.query, auth: undefined } })
   }
 })
 const navigateToClaimPage = (businessName: string) => {
