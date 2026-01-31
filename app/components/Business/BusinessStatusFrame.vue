@@ -46,7 +46,7 @@
 
     <!-- Claim Status Text -->
     <div
-      class="text-[90%] font-medium px-2 py-0.5 rounded-sm whitespace-nowrap"
+      class="text-[75%] font-medium px-2 py-0.5 rounded-sm whitespace-nowrap"
       :class="claimStatusClass"
     >
       {{ claimStatusText }}

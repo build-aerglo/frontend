@@ -451,6 +451,7 @@ import useBusinessMethods from '~/composables/business/useBusinessMethods';
 import type { Business } from '~/types/business';
 
 const route = useRoute()
+const router = useRouter();
 const { search } = useSearch()
 const { getCategories, getBusinessByCategory, getBusinessByTag } = useBusinessMethods(); 
 
@@ -686,38 +687,42 @@ onMounted(async () => {
     const res = await getCategories();
     categories.value = Array.isArray(res) ? res : (res.data || []);
     
-    // 1. Check for Category ID in query (from your new NuxtLink)
-    if (route.query.categoryId) {
-      filters.value.categoryId = route.query.categoryId as string;
-      // Note: we don't need to manually call performMainFetch here 
-      // because the 'watch' on filters.categoryId will trigger it.
-    } 
-    // 2. Fallback for your old "name-based" query (?category=Pharmacy)
-    else if (route.query.category) {
-      const cat = categories.value.find(
-        c => (c.name || '').toLowerCase() === (route.query.category as string).toLowerCase()
-      );
-      if (cat) filters.value.categoryId = cat.categoryId || cat.id;
+    // 1. Sync filters from URL Query Params
+    if (Object.keys(route.query).length > 0) {
+      Object.keys(filters.value).forEach(key => {
+        if (route.query[key]) {
+          filters.value[key] = route.query[key];
+        }
+      });
     }
-    
-    // 3. Handle Tags
-    const tagId = route.query.tagId as string;
-    const tagName = route.query.tagName as string;
-    
-    if (tagId) {
-      filters.value.tagId = tagId;
-      filters.value.tagName = tagName || 'Tag';
-      await fetchByTag(tagId);
-    } else if (!filters.value.categoryId) {
-      // Only call default fetch if no Category or Tag was found in URL
+
+    // 2. Trigger the correct fetch based on restored state
+    if (filters.value.tagId) {
+      await fetchByTag(filters.value.tagId);
+    } else {
+      // This will handle name search OR category search restored from URL
       await performMainFetch();
     }
   } catch (error) {
-    console.error("Initialization error:", error);
+    console.error("Init error:", error);
   } finally {
     isLoading.value = false;
   }
 })
+watch(filters, (newFilters) => {
+  const query = { ...newFilters };
+
+  // Remove empty or internal keys so the URL stays clean
+  Object.keys(query).forEach(key => {
+    if (!query[key] || key === 'tagId') { 
+      delete query[key];
+    }
+  });
+
+  // Navigate to the same page with new query params
+  // { replace: true } prevents the "Back" button from getting stuck in a loop of filter changes
+  router.push({ query, replace: true });
+}, { deep: true });
 </script>
 
 <style scoped>
