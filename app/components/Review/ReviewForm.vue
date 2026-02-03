@@ -282,17 +282,25 @@ const fetchBranches = async (id: string) => {
     ])
 
     const all = []
+    const profileData = profile?.data
 
-    // Add main business address as pseudo-branch
-    if (profile?.data?.businessAddress) {
-      const address = profile.data.businessAddress
-      const addressParts = address.split(',').map((s: string) => s.trim())
-
+    if (profileData) {
       let city = ""
       let state = ""
-      if (addressParts.length >= 2) {
-        state = addressParts[addressParts.length - 1]
-        city = addressParts[addressParts.length - 2]
+
+      // Logic: If businessAddress exists, parse it. 
+      // Otherwise, use city/state columns directly.
+      if (profileData.businessAddress) {
+        const addressParts = profileData.businessAddress.split(',').map((s: string) => s.trim())
+
+        if (addressParts.length >= 2) {
+          state = addressParts[addressParts.length - 1]
+          city = addressParts[addressParts.length - 2]
+        }
+      } else {
+        // Fallback to specific columns
+        city = profileData.businessCityTown || 'Main Location'
+        state = profileData.businessState || ''
       }
 
       all.push({
