@@ -89,6 +89,8 @@ export interface EnrichedReview {
   businessId: string;
   businessName: string;
   location: string;
+  branchCity: string;
+  branchState: string;
   businessCity: string;
   businessState: string;
   businessAddress: string;

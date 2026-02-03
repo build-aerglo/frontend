@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <!-- Beautiful Tooltip -->
+    <!-- Simplified Tooltip -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
       enter-from-class="opacity-0 scale-95 translate-y-1"
@@ -29,37 +29,26 @@
     >
       <div
         v-if="showTooltip && description"
-        class="absolute z-50 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-64"
+        class="absolute z-50 left-1/2 transform -translate-x-1/2 bottom-full mb-2 w-56"
       >
         <div
           :class="[
-            'rounded-xl shadow-2xl p-4 border-2',
-            'bg-gradient-to-br from-white to-gray-50',
+            'rounded-lg shadow-xl p-2 border',
+            'bg-white',
             getBorderColor(color)
           ]"
         >
-          <!-- Tooltip Header -->
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-3xl">{{ icon }}</span>
-            <h6 class="font-bold text-gray-800 text-base">{{ name }}</h6>
-          </div>
-
-          <!-- Tooltip Description -->
-          <p class="text-sm text-gray-600 leading-relaxed">
+          <!-- Just the description - smaller and greyer -->
+          <p class="text-xs text-gray-500 leading-relaxed">
             {{ description }}
           </p>
-
-          <!-- Sparkle decoration -->
-          <!-- <div class="absolute -top-1 -right-1 text-yellow-400 text-xl animate-pulse">
-            ✨
-          </div> -->
         </div>
 
         <!-- Arrow -->
         <div
           :class="[
             'absolute left-1/2 transform -translate-x-1/2 top-full',
-            'w-0 h-0 border-l-8 border-r-8 border-t-8',
+            'w-0 h-0 border-l-6 border-r-6 border-t-6',
             'border-l-transparent border-r-transparent',
             getArrowColor(color)
           ]"
