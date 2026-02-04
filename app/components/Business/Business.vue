@@ -823,6 +823,12 @@
         @clicked="setSection('review')"
       />
       <ButtonCustom
+        label="Review Summary"
+        inputClass="w-max"
+        :primary="currentPage === 'summary' ? true : false"
+        @clicked="setSection('summary')"
+      />
+      <ButtonCustom
         v-if="isBusiness && canEdit"
         label="Get Reviews"
         inputClass="w-max"
@@ -845,6 +851,10 @@
       :business="business"
       :isBusiness="isBusiness"
     />
+    <BusinessReviewSummary
+      v-if="currentPage === 'summary'"
+      :business="business"
+    />
     <BusinessQr
       v-if="isBusiness && currentPage === 'qr'"
       :business="business"
@@ -860,6 +870,7 @@ import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
 import useReviewMethods from "~/composables/method/useReviewMethods";
+
 const { getBusinessReviews } = useReviewMethods()
 const businessBadgeStatus = computed(() => {
   if (props.status === "trusted") return "trusted";

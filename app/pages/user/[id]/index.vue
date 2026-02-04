@@ -120,7 +120,7 @@
     <div v-else-if="profileData">
       <!-- User Profile Section -->
       <div class="bg-gradient-to-b from-blue-50 to-white py-8 mb-2">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl flex justify-between mx-auto px-4 sm:px-6 lg:px-8">
           <div
             class="flex flex-col md:flex-row items-center md:items-start gap-6"
           >
@@ -136,155 +136,141 @@
               <div
                 class="flex items-center text-bold text-2xl justify-center md:justify-start text-gray-800"
               >
-                <span>{{ profileData.username }}</span>
+                <span class="font-semibold text-3xl text-gray-800">{{ profileData.username }}</span>
               </div>
+
+              <div class="flex items-center divide-x divide-gray-300 text-sm text-gray-600">
+                <span class="px-3">
+                  <span class="font-medium text-gray-900">{{ profileData.totalReviews || 0}}</span> Total Reviews
+                </span>
+                <span class="px-3">
+                  <span class="font-medium text-gray-900">0</span> Helpful Reviews
+                </span>
+                <span class="px-3">
+                  <span class="font-medium text-gray-900">0</span> Responses
+                </span>
+              </div>
+
 
               <div
-                v-if="isUser"
-                class="flex items-center justify-center md:justify-start gap-2 text-gray-600"
-              >
-                <i class="pi pi-envelope text-gray-400"></i>
-                <span class="text-sm sm:text-base">{{
-                  profileData.email
-                }}</span>
-                <span v-if="profileData.phone" class="text-sm sm:text-base">
-                  |
-                  <i class="pi pi-phone text-gray-400 ml-2"></i>
-                  {{ profileData.phone }}</span
-                >
+              v-if="isUser"
+              class="flex flex-wrap items-center justify-center md:justify-start
+                    gap-x-4 gap-y-2 text-gray-600 text-sm sm:text-base"
+            >
+              <!-- Email -->
+              <div class="flex items-center gap-2">
+                <i class="pi pi-envelope"></i>
+                <span>{{ profileData.email }}</span>
               </div>
 
+              <!-- Phone -->
+              <div
+                v-if="profileData.phone"
+                class="flex items-center gap-2"
+              >
+                <span class="hidden md:block h-5 w-px bg-gray-300"></span>
+                <i class="pi pi-phone"></i>
+                <span>{{ profileData.phone }}</span>
+              </div>
+
+              <!-- Address -->
               <div
                 v-if="profileData.address"
-                class="flex items-center justify-center md:justify-start gap-2 text-gray-600"
+                class="flex items-center gap-2"
               >
-                <i class="pi pi-home text-gray-400"></i>
-                <span class="text-sm">{{ profileData.address }}</span>
+                <span class="hidden md:block h-5 w-px bg-gray-300"></span>
+                <i class="pi pi-home"></i>
+                <span class="truncate max-w-xs">{{ profileData.address }}</span>
               </div>
+            </div>
 
-              <button
+
+          
+            </div>
+          </div>
+          <div class="">
+            <button
                 v-if="isUser"
                 @click="startEdit"
-                class="mt-2 text-blue-500 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
+                class="mt-2 border rounded-md py-3 px-4 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
               >
-                <i class="pi pi-pencil text-xs"></i>
-                <span class="text-sm">Edit Profile</span>
+                <i class="pi pi-pencil text-base"></i>
+                <span class="text-base">Edit Profile</span>
               </button>
-
-              <!-- Mobile Badges (360px and up) - Horizontal beside user info -->
-              <!-- <div
-                v-if="isUser"
-                class="mt-4 flex gap-2 overflow-x-auto pb-2 md:hidden max-[359px]:hidden"
-              >
-                <div
-                  v-for="(badge, idx) in badges"
-                  :key="`mobile-${idx}`"
-                  :class="[
-                    badge.color,
-                    'rounded-lg p-2 flex items-center gap-2 whitespace-nowrap flex-shrink-0',
-                  ]"
-                >
-                  <i :class="[badge.icon, 'text-lg']"></i>
-                  <span class="font-medium text-gray-700 text-xs">{{
-                    badge.name
-                  }}</span>
-                </div>
-              </div>
-              Small Mobile Badges (under 360px) - Stacked under user info
-              <div
-                class="mt-4 hidden max-[359px]:flex max-[359px]:flex-col gap-2"
-              >
-                <div
-                  v-for="(badge, idx) in badges"
-                  :key="`small-mobile-${idx}`"
-                  :class="[
-                    badge.color,
-                    'rounded-lg p-2 flex items-center gap-2',
-                  ]"
-                >
-                  <i :class="[badge.icon, 'text-base']"></i>
-                  <span class="font-medium text-gray-700 text-xs">{{
-                    badge.name
-                  }}</span>
-                </div>
-              </div> -->
-            </div>
           </div>
         </div>
       </div>
 
       <!-- Menu Bar (Desktop/Tablet) -->
       <div
-        v-if="isUser"
-        class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block"
+  v-if="isUser"
+  class="bg-white border-b border-gray-200 sticky top-16 z-40 hidden md:block"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3 py-4">
+
+      <button
+        @click="activeTab = 'your-reviews'"
+        :class="[
+          'px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2',
+          activeTab === 'your-reviews'
+            ? 'bg-[#008253] text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
       >
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex flex-wrap items-center justify-between py-4 gap-4">
-            <div class="flex flex-wrap gap-2 sm:gap-4">
-              <button
-                @click="activeTab = 'your-reviews'"
-                :class="[
-                  'px-4 py-2 rounded-lg font-medium transition',
-                  activeTab === 'your-reviews'
-                    ? 'bg-[#008253] text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                ]"
-              >
-                <i class="pi pi-star mr-2"></i>
-                <span v-if="isUser" class="inherit">Your</span> Reviews
-              </button>
+        <i class="pi pi-star"></i>
+        Your Reviews
+      </button>
 
-              <button
-                v-if="isUser"
-                @click="activeTab = 'rewards'"
-                :class="[
-                  'px-4 py-2 rounded-lg font-medium transition',
-                  activeTab === 'rewards'
-                    ? 'bg-[#008253] text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                ]"
-              >
-                <i class="pi pi-star mr-2"></i>
-                Rewards
-              </button>
+      <button
+        @click="activeTab = 'rewards'"
+        :class="[
+          'px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2',
+          activeTab === 'rewards'
+            ? 'bg-[#008253] text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
+      >
+        <i class="pi pi-gift"></i>
+        Rewards
+      </button>
 
-              <button
-                v-if="isUser"
-                @click="activeTab = 'notifications'"
-                :class="[
-                  'px-4 py-2 rounded-lg font-medium transition',
-                  activeTab === 'notifications'
-                    ? 'bg-[#008253] text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                ]"
-              >
-                <i class="pi pi-bell mr-2"></i>
-                Notifications
-              </button>
+      <button
+        @click="activeTab = 'notifications'"
+        :class="[
+          'px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2',
+          activeTab === 'notifications'
+            ? 'bg-[#008253] text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
+      >
+        <i class="pi pi-bell"></i>
+        Notifications
+      </button>
 
-              <button
-                v-if="isUser"
-                @click="activeTab = 'settings'"
-                :class="[
-                  'px-4 py-2 rounded-lg font-medium transition',
-                  activeTab === 'settings'
-                    ? 'bg-[#008253] text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                ]"
-              >
-                <i class="pi pi-clock mr-2"></i>
-                Settings
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button
+        @click="activeTab = 'settings'"
+        :class="[
+          'px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2',
+          activeTab === 'settings'
+            ? 'bg-[#008253] text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
+      >
+        <i class="pi pi-cog"></i>
+        Settings
+      </button>
+
+    </div>
+  </div>
+</div>
+
 
       <!-- Main Content Grid -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <!-- Left Column -->
-          <div class="md:col-span-3 space-y-6">
+          <div class="md:col-span-2 space-y-6">
 
           
             <!-- Badges -->
@@ -325,7 +311,7 @@
           <div class="grid grid-cols-1 gap-6">
             <!-- Top Categories -->
             <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <h5 class="font-bold text-base whitespace-nowrap text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-star-fill text-gold"></i>
                 Top Reviewed Categories
               </h5>
@@ -343,37 +329,35 @@
               
               <!-- Categories list -->
               <ul v-else class="space-y-3">
-                <li v-for="(cat, idx) in topCategories.slice(0, 3)" :key="cat.id || cat.categoryId || idx">
-                  <NuxtLink
-                    :to="{ 
-                      path: '/end-user/landing/explore', 
-                      query: { 
-                        categoryId: cat.id || cat.categoryId, 
-                        category: cat.name 
-                      } 
-                    }"
-                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all group"
-                  >
-                    <i :class="`pi ${cat.icon} text-gold text-lg group-hover:scale-110 transition-transform`"></i>
-                    <div class="flex-1 min-w-0">
-                      <span class="block text-sm font-medium text-gray-900 group-hover:text-[#008253] transition-colors truncate">
-                        {{ cat.name }}
-                      </span>
-                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                        <span class="flex items-center gap-1">
-                          <i class="pi pi-comment"></i>
-                          {{ cat.reviewCount }}
-                        </span>
-                        <span class="text-gray-300">•</span>
-                        <span class="flex items-center gap-1">
-                          <i class="pi pi-star-fill text-gold"></i>
-                          {{ cat.averageRating.toFixed(1) }}
-                        </span>
-                      </div>
-                    </div>
-                    <i class="pi pi-chevron-right text-gray-400 text-xs group-hover:text-[#008253] transition-colors"></i>
-                  </NuxtLink>
-                </li>
+                <li v-for="(cat, idx) in topCategories.slice(0, 3)" :key="cat.id || idx">
+  <NuxtLink
+    :to="{ 
+      path: '/end-user/landing/explore', 
+      query: { 
+        categoryId: cat.id, 
+        category: cat.name 
+      } 
+    }"
+    class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all"
+  >
+    <!-- Icon (unchanged color) -->
+          <component :is="cat.icon" class="w-6 h-6" :class="cat.color || 'text-gray-400'"/>
+
+    <!-- Text -->
+    <div class="flex-1 min-w-0">
+      <span class="block text-sm font-medium text-gray-900 truncate">
+        {{ cat.name }}
+      </span>
+
+      <span class="block text-xs text-gray-400 leading-tight">
+        ({{ cat.reviewCount }} reviews)
+      </span>
+    </div>
+
+    <i class="pi pi-chevron-right text-gray-400 text-xs"></i>
+  </NuxtLink>
+</li>
+
               </ul>
               
               <!-- Show all link -->
@@ -387,7 +371,7 @@
 
             <!-- Top Locations -->
             <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <h5 class="font-bold whitespace-nowrap text-base text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-map-marker text-gold"></i>
                 Top Reviewed Locations
               </h5>
@@ -412,22 +396,10 @@
                       <span class="block text-sm font-medium text-gray-900 truncate">
                         {{ loc.display }}
                       </span>
-                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-                        <span class="flex items-center gap-1">
-                          <i class="pi pi-comment"></i>
-                          {{ loc.reviewCount }}
-                        </span>
-                        <span class="text-gray-300">•</span>
-                        <span class="flex items-center gap-1">
-                          <i class="pi pi-star-fill text-gold"></i>
-                          {{ loc.averageRating.toFixed(1) }}
-                        </span>
-                        <!-- <span class="text-gray-300">•</span>
-                        <span class="flex items-center gap-1">
-                          <i class="pi pi-building"></i>
-                          {{ loc.businessCount }}
-                        </span> -->
-                      </div>
+
+                      <span class="block text-xs text-gray-400 leading-tight">
+                        ({{ loc.reviewCount }} reviews)
+                      </span>
                     </div>
                   </div>
                 </li>
@@ -444,7 +416,7 @@
           </div>
             <!-- Favourite Business -->
             <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <h5 class="font-bold text-base text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-shop text-gold"></i>
                 Favourite Businesses
               </h5>
@@ -456,7 +428,7 @@
           </div>
 
           <!-- Middle Column -->
-          <div class="md:col-span-6">
+          <div class="md:col-span-8">
             <!-- Menu Bar (Mobile) -->
             <div
               class="md:hidden bg-white border-b border-gray-200 mb-6 -mx-4 px-4"
@@ -520,8 +492,8 @@
             <div class="bg-white rounded-xl shadow-sm p-6">
 
 
-              <!-- Your Reviews Tab -->
-              <div v-if="activeTab === 'your-reviews'" class="space-y-6">
+             <!-- Your Reviews Tab -->
+            <div v-if="activeTab === 'your-reviews'" class="space-y-6">
               <h2 class="text-2xl font-bold text-[#008253]">
                 <span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span>
                 Reviews
@@ -561,153 +533,132 @@
               </div>
 
               <!-- ✅ Reviews List -->
-              <div v-else class="space-y-6">
+              <div v-else class="space-y-4">
                 <div
                   v-for="review in userReviews"
                   :key="review.id"
                   :class="[
-                    'border rounded-lg p-6 transition-all',
+                    'border rounded-lg p-4 transition-all',
                     review.isGrayedOut
                       ? 'border-gray-200 bg-gray-50/50 opacity-75'
-                      : 'border-gray-200 bg-white'
+                      : 'border-gray-200 bg-white hover:shadow-md'
                   ]"
                 >
-                  <!-- Header with Business Name and Status -->
-                  <div class="flex justify-between items-start mb-3">
-                    <div class="flex-1">
-                      <h3 
+                  <!-- Main Layout: Left (Logo + Business Info) | Right (Stars + Date + Status) -->
+                  <div class="flex md:flex-row flex-col justify-between items-start gap-4 relative">
+                    
+                    <!-- Left Section: Business Logo + Info -->
+                    <div class="flex gap-3 flex-1">
+                      <!-- Business Logo -->
+                      <div class="flex-shrink-0">
+                        <img
+                          :src="(Array.isArray(review.photoUrls) ? review.photoUrls[0] : review.photoUrls) || '/images/default-business-logo.png'"
+                          :alt="review.businessName"
+                          :class="[
+                            'w-14 h-14 rounded-lg object-cover border border-gray-200',
+                            review.isGrayedOut && 'opacity-50'
+                          ]"
+                        />
+                      </div>
+
+                      <!-- Business Name + Location + Category -->
+                      <div class="flex flex-col gap-2">
+                        <h2 
+                          :class="[
+                            'text-base font-semibold truncate m-0 p-0',
+                            review.isGrayedOut ? 'text-gray-500' : 'text-gray-800'
+                          ]"
+                        >
+                          {{ review.businessName }}
+                        </h2>
+                        
+                        <!-- Location (small, grey, below logo) -->
+                        <p 
+                          :class="[
+                            'text-xs truncate',
+                            review.isGrayedOut ? 'text-gray-400' : 'text-gray-500'
+                          ]"
+                        >
+                          {{review.branchState || review.businessState }} <span v-if="review.branchState || review.businessState">,</span> {{review.branchCity ||  review.businessCity }}
+                        </p>
+
+                      </div>
+                    </div>
+
+                    <!-- Right Section: Stars + Date + Status Icon -->
+                    <div class="flex md:flex-col items-end gap-2 flex-shrink-0">
+                      <!-- Stars (smaller size) -->
+                      <div class="flex items-center">
+                        <Stars
+                          v-for="n in 5"
+                          :key="n"
+                          :filled="n <= review.rating"
+                          :colorLevel="n <= review.rating ? Math.round(review.rating) : 0"
+                          :class="['w-4 h-4', review.isGrayedOut && 'opacity-50']"
+                        />
+                      </div>
+
+                      <!-- Date (dd/mm/yy format) -->
+                      <span 
                         :class="[
-                          'text-lg font-semibold',
-                          review.isGrayedOut ? 'text-gray-500' : 'text-gray-800'
+                          'text-xs',
+                          review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
                         ]"
                       >
-                        {{ review.businessName }}
-                      </h3>
-          
-          <!-- Category Tag (if available) -->
-          <div v-if="review.category" class="mt-1">
-            <span 
-              :class="[
-                'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium',
-                review.isGrayedOut 
-                  ? 'bg-gray-100 text-gray-500' 
-                  : 'bg-blue-50 text-blue-700'
-              ]"
-            >
-              <i class="pi pi-tag text-xs"></i>
-              {{ review.category }}
-            </span>
-          </div>
-        </div>
-        
-        <!-- Status Badge -->
-        <span
-          :class="[
-            'px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-3',
-            review.statusClass
-          ]"
-        >
-          {{ review.status }}
-        </span>
-      </div>
+                        {{ formatDateShort(review.date) }}
+                      </span>
 
-      <!-- Location and Date -->
-      <div class="flex flex-wrap gap-4 text-sm mb-3">
-        <span 
-          :class="[
-            'flex items-center gap-1',
-            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
-          ]"
-        >
-          <i class="pi pi-map-marker"></i>
-          {{ review.location }}
-        </span>
-        <span 
-          :class="[
-            'flex items-center gap-2',
-            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
-          ]"
-        >
-          <i class="pi pi-calendar"></i>
-          {{ review.date }}
-        </span>
-      </div>
+                    </div>
+                      <!-- Status Icon with Tooltip -->
+                      <div class="absolute group right-[-22px] top-[-22px] bg-white">
+                        <i 
+                          :class="[
+                            'pi text-2xl cursor-help',
+                            getStatusIcon(review.rawStatus).icon,
+                            getStatusIcon(review.rawStatus).color
+                          ]"
+                        ></i>
+                        
+                        <!-- Tooltip -->
+                        <div class="absolute right-0 top-full mt-1 hidden group-hover:block z-10 w-48">
+                          <div class="bg-white text-gray-500 leading-relaxed text-xs rounded-lg px-3 py-2 shadow-lg">
+                            <!-- <p class="font-medium">{{ getStatusIcon(review.rawStatus).title }}</p> -->
+                            <p class="text-gray-500 text-xs">{{ getStatusIcon(review.rawStatus).message }}</p>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
 
-      <!-- Star Rating -->
-      <div class="flex items-center gap-2 mb-3">
-        <div class="flex">
-            <!-- :filled="n <= Math.round(review.rating)"
-            :colorLevel="Math.round(review.rating)" -->
-          <Stars
-            v-for="n in 5"
-            :key="n"
-            :filled="n <= review.rating"
-            :colorLevel="n <= review.rating ? Math.round(review.rating) : 0"
-            :class="['w-6 h-6', review.isGrayedOut && 'opacity-50']"
-          />
-        </div>
-        <span 
-          :class="[
-            'text-sm font-medium',
-            review.isGrayedOut ? 'text-gray-400' : 'text-gray-600'
-          ]"
-        >
-          {{ review.rating.toFixed(1) }}
-        </span>
-      </div>
+                  <!-- Review Body -->
+                  <div class="mt-4">
+                    <p 
+                      :class="[
+                        'text-sm leading-relaxed',
+                        review.isGrayedOut ? 'text-gray-500' : 'text-gray-700'
+                      ]"
+                    >
+                      {{ review.body }}
+                    </p>
+                  </div>
 
-            <!-- Review Body -->
-            <p 
-              :class="[
-                review.isGrayedOut ? 'text-gray-500' : 'text-gray-700'
-              ]"
-            >
-              {{ review.body }}
-            </p>
-
-            <!-- Photos (if available) -->
-            <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
-              <div class="flex gap-2 flex-wrap">
-                <img
-                  v-for="(photo, idx) in review.photoUrls"
-                  :key="idx"
-                  :src="photo"
-                  alt="Review photo"
-                  :class="[
-                    'w-24 h-24 object-cover rounded-lg',
-                    review.isGrayedOut && 'opacity-50'
-                  ]"
-                />
-              </div>
-            </div>
-
-            <!-- Pending/Rejected Info Messages -->
-            <div v-if="review.rawStatus === 'PENDING'" class="mt-4 p-3 bg-gray-100 border border-gray-200 rounded-lg">
-              <div class="flex items-start gap-2">
-                <i class="pi pi-clock text-gray-600 text-sm mt-0.5"></i>
-                <div class="text-sm text-gray-600">
-                  <p class="font-medium">Review Pending Approval</p>
-                  <p class="text-xs text-gray-500 mt-1">
-                    Your review is being reviewed by our team and will be published soon.
-                  </p>
+                  <!-- Photos (if available) -->
+                  <!-- <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
+                    <div class="flex gap-2 flex-wrap">
+                      <img
+                        v-for="(photo, idx) in review.photoUrls"
+                        :key="idx"
+                        :src="photo"
+                        alt="Review photo"
+                        :class="[
+                          'w-20 h-20 object-cover rounded-lg border border-gray-200',
+                          review.isGrayedOut && 'opacity-50'
+                        ]"
+                      />
+                    </div>
+                  </div> -->
                 </div>
               </div>
             </div>
-
-            <div v-else-if="review.rawStatus === 'REJECTED'" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <div class="flex items-start gap-2">
-                <i class="pi pi-times-circle text-red-600 text-sm mt-0.5"></i>
-                <div class="text-sm text-red-700">
-                  <p class="font-medium">Review Not Approved</p>
-                  <p class="text-xs text-red-600 mt-1">
-                    This review did not meet our community guidelines and will not be published.
-                  </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
               <!-- Rewards Tab -->
               <div
                 v-if="activeTab === 'rewards'"
@@ -1530,7 +1481,7 @@
           </div>
 
           <!-- Right Column - Ads -->
-          <div class="md:col-span-3 space-y-6">
+          <div class="md:col-span-2 space-y-6">
             <div
               class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-sm p-4 border border-yellow-200"
             >
@@ -1567,7 +1518,12 @@
 <script setup lang="ts">
   //Vue and utils imports
 import { ref, computed, onMounted } from "vue";
-import { getCategoryIcon } from "~/utils";
+import {
+  getCategoryIcon,
+  getCategoryIconColor
+} from '~/utils/categoryIcons'
+
+
 
   //Components import
 import UserAvatar from "~/components/UserAvatar.vue";
@@ -1693,7 +1649,8 @@ const topCategories = computed(() => {
     reviewCount: cat.reviewCount,
     businessCount: cat.businessCount,
     averageRating: cat.averageRating,
-    icon: getCategoryIcon(cat.categoryName)
+    icon: getCategoryIcon(cat.categoryName),
+    color: getCategoryIconColor(cat.categoryName)
   }));
 });
 const topLocations = computed(() => {
@@ -1725,6 +1682,46 @@ const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
 
 
 // Methods
+const formatDateShort = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
+};
+
+
+const getStatusIcon = (status: string): { icon: string; color: string; title: string; message: string } => {
+  const statusMap: Record<string, { icon: string; color: string; title: string; message: string }> = {
+    'APPROVED': {
+      icon: 'pi-check-circle',
+      color: 'text-green-600',
+      title: 'Published',
+      message: 'Your review is live and visible to everyone'
+    },
+    'PENDING': {
+      icon: 'pi-clock',
+      color: 'text-gray-600',
+      title: 'Pending Review',
+      message: 'Being reviewed by our team'
+    },
+    'REJECTED': {
+      icon: 'pi-times-circle',
+      color: 'text-red-600',
+      title: 'Not Approved',
+      message: 'Did not meet community guidelines'
+    },
+    'FLAGGED': {
+      icon: 'pi-flag',
+      color: 'text-orange-600',
+      title: 'Flagged',
+      message: 'Under review for potential issues'
+    }
+  };
+
+  return statusMap[status] ?? statusMap['PENDING']!;
+};
+
 const loadProfile = async () => {
   if (!currentUserId.value) {
     error.value = "User ID is missing";
@@ -2212,6 +2209,9 @@ const loadUserReviews = async () => {
 
     // The reviews are already in the correct format
     userReviews.value = enrichedReviews;
+    if (profileData.value) {
+      profileData.value.totalReviews = userReviews.value.length;
+    }
 
     console.log(`📊 Total reviews loaded: ${userReviews.value.length}`);
   } catch (err: any) {
@@ -2256,6 +2256,8 @@ const loadUserReviewsWithCache = async () => {
     userReviews.value = enrichedReviews;
 
     console.log(`📊 Total reviews loaded: ${userReviews.value.length}`);
+
+    
   } catch (err: any) {
     console.error("❌ Error loading reviews:", err);
     reviewsError.value =

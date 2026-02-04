@@ -38,4 +38,5 @@ export interface ProfileData {
   notificationPreferences: any | null
   darkMode: boolean | null
   userSettings: any | null
+  totalReviews: number
 }
