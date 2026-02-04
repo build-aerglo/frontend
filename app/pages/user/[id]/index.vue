@@ -545,7 +545,7 @@
                   ]"
                 >
                   <!-- Main Layout: Left (Logo + Business Info) | Right (Stars + Date + Status) -->
-                  <div class="flex justify-between items-start gap-4">
+                  <div class="flex justify-between items-start gap-4 relative">
                     
                     <!-- Left Section: Business Logo + Info -->
                     <div class="flex gap-3 flex-1">
@@ -588,7 +588,7 @@
                     <!-- Right Section: Stars + Date + Status Icon -->
                     <div class="flex flex-col items-end gap-2 flex-shrink-0">
                       <!-- Stars (smaller size) -->
-                      <div class="flex items-center gap-1">
+                      <div class="flex items-center">
                         <Stars
                           v-for="n in 5"
                           :key="n"
@@ -610,7 +610,7 @@
 
                     </div>
                       <!-- Status Icon with Tooltip -->
-                      <div class="relative group">
+                      <div class="absolute group right-[-22px] top-[-22px] bg-white">
                         <i 
                           :class="[
                             'pi text-2xl cursor-help',
