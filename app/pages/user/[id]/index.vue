@@ -545,7 +545,7 @@
                   ]"
                 >
                   <!-- Main Layout: Left (Logo + Business Info) | Right (Stars + Date + Status) -->
-                  <div class="flex justify-between items-start gap-4 relative">
+                  <div class="flex md:flex-row flex-col justify-between items-start gap-4 relative">
                     
                     <!-- Left Section: Business Logo + Info -->
                     <div class="flex gap-3 flex-1">
@@ -586,7 +586,7 @@
                     </div>
 
                     <!-- Right Section: Stars + Date + Status Icon -->
-                    <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                    <div class="flex md:flex-col items-end gap-2 flex-shrink-0">
                       <!-- Stars (smaller size) -->
                       <div class="flex items-center">
                         <Stars
