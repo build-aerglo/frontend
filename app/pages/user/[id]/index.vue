@@ -274,10 +274,10 @@
 
           
             <!-- Badges -->
-          <div class="bg-white rounded-xl shadow-sm p-6 md:block">
-            <h5 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <div class="bg-white rounded-xl shadow-sm p-4 md:block">
+            <h5 class="font-bold text-sm text-gray-800 mb-4 flex items-center gap-2">
               <i class="pi pi-trophy text-gold"></i>
-              <span v-if="isUser" class="font-bold text-gray-800 text-lg mr--1">Your</span>
+              <span v-if="isUser" class="font-bold text-gray-800 text-sm mr--1">Your</span>
               Badges
               <span v-if="totalBadges > 0" class="text-sm text-gray-500">({{ totalBadges }})</span>
             </h5>
@@ -310,8 +310,8 @@
 
           <div class="grid grid-cols-1 gap-6">
             <!-- Top Categories -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold text-base whitespace-nowrap text-gray-900 mb-4 flex items-center gap-2">
+            <div class="bg-white rounded-xl shadow-sm p-4">
+              <h5 class="font-bold text-sm whitespace-nowrap text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-star-fill text-gold"></i>
                 Top Reviewed Categories
               </h5>
@@ -370,8 +370,8 @@
             </div>
 
             <!-- Top Locations -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold whitespace-nowrap text-base text-gray-900 mb-4 flex items-center gap-2">
+            <div class="bg-white rounded-xl shadow-sm p-4">
+              <h5 class="font-bold whitespace-nowrap text-sm text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-map-marker text-gold"></i>
                 Top Reviewed Locations
               </h5>
@@ -388,7 +388,7 @@
               </div>
               
               <!-- Locations list -->
-              <ul v-else class="space-y-3">
+              <ul v-else class="space-y-1">
                 <li v-for="(loc, idx) in topLocations.slice(0, 3)" :key="idx">
                   <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all">
                     <i class="pi pi-map-marker text-gold text-lg"></i>
@@ -415,8 +415,8 @@
             </div>
           </div>
             <!-- Favourite Business -->
-            <div class="bg-white rounded-xl shadow-sm p-6">
-              <h5 class="font-bold text-base text-gray-900 mb-4 flex items-center gap-2">
+            <div class="bg-white rounded-xl shadow-sm p-4">
+              <h5 class="font-bold text-sm text-gray-900 mb-4 flex items-center gap-2">
                 <i class="pi pi-shop text-gold"></i>
                 Favourite Businesses
               </h5>
@@ -552,7 +552,7 @@
                       <!-- Business Logo -->
                       <div class="flex-shrink-0">
                         <img
-                          :src="(Array.isArray(review.photoUrls) ? review.photoUrls[0] : review.photoUrls) || '/images/default-business-logo.png'"
+                          :src="'/images/default-business-logo.png'"
                           :alt="review.businessName"
                           :class="[
                             'w-14 h-14 rounded-lg object-cover border border-gray-200',
@@ -642,7 +642,7 @@
                   </div>
 
                   <!-- Photos (if available) -->
-                  <!-- <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
+                  <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
                     <div class="flex gap-2 flex-wrap">
                       <img
                         v-for="(photo, idx) in review.photoUrls"
@@ -655,7 +655,7 @@
                         ]"
                       />
                     </div>
-                  </div> -->
+                  </div>
                 </div>
               </div>
             </div>
