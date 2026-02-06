@@ -822,12 +822,7 @@
         :primary="currentPage === 'review' ? true : false"
         @clicked="setSection('review')"
       />
-      <ButtonCustom
-        label="Review Summary"
-        inputClass="w-max"
-        :primary="currentPage === 'summary' ? true : false"
-        @clicked="setSection('summary')"
-      />
+      
       <ButtonCustom
         v-if="isBusiness && canEdit"
         label="Get Reviews"
@@ -851,10 +846,7 @@
       :business="business"
       :isBusiness="isBusiness"
     />
-    <BusinessReviewSummary
-      v-if="currentPage === 'summary'"
-      :business="business"
-    />
+    
     <BusinessQr
       v-if="isBusiness && currentPage === 'qr'"
       :business="business"
