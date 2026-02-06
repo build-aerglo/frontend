@@ -21,7 +21,7 @@
       </div>
     </div>
     
-    <div class="flex-1 border mt-[80px] sm:px-[50px] px-[10px] py-[20px]">
+    <div class="flex-1 border mt-[60px] sm:px-[8px] px-[8px] py-[20px]">
       <slot />
     </div>
 
