@@ -12,8 +12,9 @@
     />
   </div>
 
-  <div v-else class="grid grid-cols-1 md:grid-cols-5 gap-[30px] items-start">
-    <div class="md:col-span-3 flex flex-col gap-[20px]">
+  <div v-else class="flex flex-col-reverse md:flex-row gap-[30px] items-start">
+    
+    <div class="flex flex-col gap-[20px] w-full md:w-[60%]">
       <Card class="sticky top-0 shadow-lg z-[10]">
         <template #content>
           <div class="w-full">
@@ -58,76 +59,76 @@
       </div>
     </div>
 
-    <div class="md:col-span-2 flex flex-col gap-[20px]">
-    <Card class="shadow-md border border-slate-100">
-    <template #header>
-        <div class="px-6 pt-6 font-bold text-lg text-slate-800">Review Summary</div>
-    </template>
-    <template #content>
-        <div class="flex flex-col gap-6">
-        
-        <div class="flex flex-row gap-4 sm:gap-8 items-start justify-between">
+    <div class="flex flex-col gap-[20px] w-full md:w-[40%]">
+      <Card class="shadow-md border border-slate-100">
+        <template #header>
+          <div class="px-6 pt-6 font-bold text-lg text-slate-800">Review Summary</div>
+        </template>
+        <template #content>
+          <div class="flex flex-col gap-6">
             
-            <div class="flex flex-col items-start shrink-0">
+            <div class="flex flex-row gap-4 sm:gap-6 items-start justify-between">
+              
+              <div class="flex flex-col items-center sm:items-start shrink-0">
                 <h3 class="text-4xl sm:text-6xl font-black text-slate-800 leading-none mb-2">
-                    {{ business?.avgRating?.toFixed(1) || "0.0" }}
-                    </h3>
+                  {{ business?.avgRating?.toFixed(1) || "0.0" }}
+                </h3>
                 <div class="mb-1 scale-75 sm:scale-100 origin-left">
-                    <Star :count="business?.avgRating || 0" />
+                  <Star :count="business?.avgRating || 0" />
                 </div>
                 <p class="text-[10px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">
-                    Based on {{ reviews.length }}
-                    {{ reviews.length === 1 ? "Review" : "Reviews" }}
+                  Based on {{ reviews.length }}
+                  {{ reviews.length === 1 ? "Review" : "Reviews" }}
                 </p>
-            </div>
+              </div>
 
-            <div class="flex-1 space-y-2">
-            <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="flex items-center gap-2 sm:gap-3">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-600 w-2">{{ star }}</span>
-                
-                <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 48 48" class="w-full h-full">
-                    <defs>
-                    <filter :id="`starDrop-${star}`" x="-50%" y="-50%" width="200%" height="200%">
-                        <feDropShadow dx="0" dy="2.2" stdDeviation="2.2" flood-color="#000" flood-opacity="0.32" />
-                    </filter>
-                    </defs>
-                    <circle cx="32" cy="32" r="22" :fill="getStarColor(star)" />
-                    <path
-                    d="M32 19 L36.3 27.5 L45.5 28.4 L38.1 34.4 L40 43.5 L32 38.9 L24 43.5 L25.9 34.4 L18.5 28.4 L27.7 27.5 Z"
-                    fill="#ffffff"
-                    :filter="`url(#starDrop-${star})`"
-                    />
-                </svg>
+              <div class="flex-1 space-y-2">
+                <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="flex items-center gap-2 sm:gap-3">
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-600 w-2">{{ star }}</span>
+                  
+                  <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 48 48" class="w-full h-full">
+                      <defs>
+                        <filter :id="`starDrop-${star}`" x="-50%" y="-50%" width="200%" height="200%">
+                          <feDropShadow dx="0" dy="2.2" stdDeviation="2.2" flood-color="#000" flood-opacity="0.32" />
+                        </filter>
+                      </defs>
+                      <circle cx="32" cy="32" r="22" :fill="getStarColor(star)" />
+                      <path
+                        d="M32 19 L36.3 27.5 L45.5 28.4 L38.1 34.4 L40 43.5 L32 38.9 L24 43.5 L25.9 34.4 L18.5 28.4 L27.7 27.5 Z"
+                        fill="#ffffff"
+                        :filter="`url(#starDrop-${star})`"
+                      />
+                    </svg>
+                  </div>
+
+                  <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full rounded-full transition-all duration-500"
+                      :style="{ 
+                          width: `${distribution[star]}%`,
+                          backgroundColor: getStarColor(star)
+                      }"
+                    ></div>
+                  </div>
+                  <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 w-6 sm:w-7 text-right">
+                      {{ Math.round(distribution[star] ?? 0) }}%
+                  </span>
                 </div>
-
-                <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                    class="h-full rounded-full transition-all duration-500"
-                    :style="{ 
-                        width: `${distribution[star]}%`,
-                        backgroundColor: getStarColor(star)
-                    }"
-                ></div>
-                </div>
-                <span class="text-[9px] sm:text-[10px] font-semibold text-slate-400 w-6 sm:w-7 text-right">
-                    {{ Math.round(distribution[star] ?? 0) }}%
-                </span>
+              </div>
             </div>
-            </div>
-        </div>
 
-        <div class="bg-primary/5 border-l-4 border-primary p-3 sm:p-4 rounded-r-lg">
-            <p class="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
-            What people are saying
-            </p>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            {{ ratingDescription }}
-            </p>
-        </div>
-        </div>
-       </template>
-     </Card>
+            <div class="bg-primary/5 border-l-4 border-primary p-3 sm:p-4 rounded-r-lg">
+              <p class="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
+                What people are saying
+              </p>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+                {{ ratingDescription }}
+              </p>
+            </div>
+          </div>
+        </template>
+      </Card>
 
       <Card v-if="business?.businessAddress" class="shadow-sm border border-slate-100">
         <template #content>
