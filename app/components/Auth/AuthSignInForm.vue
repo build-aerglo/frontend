@@ -4,10 +4,6 @@
       <h2 class="text-xl md:text-2xl font-bold text-gray-900">Sign In to Your Account</h2>
     </div>
 
-    <div v-if="errorMessage" class="bg-red-50 border border-red-100 text-red-600 px-4 py-2 rounded-lg text-xs text-center">
-      {{ errorMessage }}
-    </div>
-
     <div class="space-y-3">
       <button 
         type="button"
@@ -97,17 +93,16 @@
 
 <script setup lang="ts">
 import useSocialAuth from '~/composables/useSocialAuth';
-import useUser from '~/composables/useUser' 
+import useUser from '~/composables/useUser';
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
-import spinner from '~/assets/svg/spinner.svg'
 
 const emit = defineEmits(['close', 'switch-to-signup', 'success']);
 const { loginUser } = useMethods();
 const store = useUser(); 
 const toast = useToast();
-const router = useRouter();
 const userData = ref<LoginData>({ email: '', password: '' });
+
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
@@ -115,47 +110,127 @@ const errorMessage = ref<string | null>(null);
 
 const { initiateSocialLogin } = useSocialAuth();
 
+/**
+ * SOCIAL LOGIN HANDLER
+ */
 const handleSocialLogin = async (provider: string) => {
   errorMessage.value = "";
   try {
     const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
-    if (!validProviders.includes(provider)) throw new Error(`Invalid provider: ${provider}`);
+    
+    if (!validProviders.includes(provider)) {
+      throw new Error(`Invalid social login provider: ${provider}`);
+    }
+
     localStorage.setItem('social_provider', provider);
     await initiateSocialLogin(provider);
+    
   } catch (error: any) {
-    errorMessage.value = error.message || "Social login failed";
+    console.error(`Social login error for ${provider}:`, error);
+    
+    const displayProviderName = provider === 'google-oauth2' ? 'Google' : provider;
+    
+    if (error.message?.includes('popup') || error.message?.includes('blocked')) {
+      errorMessage.value = `Pop-up blocked. Please allow pop-ups for ${displayProviderName}.`;
+    } else if (error.message?.includes('cancelled') || error.message?.includes('closed')) {
+      errorMessage.value = `${displayProviderName} login was cancelled.`;
+      return;
+    } else {
+      errorMessage.value = error.message || `Unable to connect with ${displayProviderName}.`;
+    }
+    
     toast.add({ severity: 'error', summary: 'Error', detail: errorMessage.value, life: 4000 });
   }
 }
 
+/**
+ * EMAIL/PASSWORD LOGIN HANDLER
+ */
 const HandleLogin = async () => {
   errorMessage.value = "";
-  // ... validation ...
+
+  // 1. Client-side Validation
+  if (!userData.value.email || !userData.value.password) {
+    errorMessage.value = 'Please enter both email and password.';
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(userData.value.email)) {
+    errorMessage.value = 'Please enter a valid email address.';
+    return;
+  }
+
+  if (userData.value.password.length < 6) {
+    errorMessage.value = 'Password must be at least 6 characters.';
+    return;
+  }
+
   isLoading.value = true;
 
   try {
     const res = await loginUser(userData.value);
     
     if (res) {
+      // Check Role Authorization
       if (store.role !== 'end_user') {
-        errorMessage.value = 'Not authorized for user access.';
+        errorMessage.value = 'This account is not authorized for user access.';
+        isLoading.value = false;
         return;
       }
-
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in successfully', life: 3000 });
 
       // Handle Remember Me logic
       if (rememberMe.value) {
         localStorage.setItem('rememberMe', 'true');
         localStorage.setItem('userEmail', userData.value.email);
+      } else {
+        localStorage.removeItem('rememberMe');
+        localStorage.removeItem('userEmail');
       }
 
-      // ONLY emit the success event. DO NOT redirect here.
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in successfully', life: 3000 });
       emit('success'); 
-      // emit('close');
+    } else {
+      errorMessage.value = 'Invalid email or password. Please try again.';
     }
   } catch (error: any) {
-    errorMessage.value = error.response?.data?.message || "Login failed";
+    console.error('Login error:', error);
+
+    // 2. Advanced API Error Handling
+    if (error.response) {
+      const status = error.response.status;
+      const apiMsg = error.response.data?.message || error.response.data?.error;
+
+      switch (status) {
+        case 400:
+          errorMessage.value = apiMsg || 'Invalid request. Check your credentials.';
+          break;
+        case 401:
+          errorMessage.value = 'Invalid email or password.';
+          break;
+        case 403:
+          if (apiMsg?.toLowerCase().includes('suspended')) {
+            errorMessage.value = 'Your account has been suspended.';
+          } else if (apiMsg?.toLowerCase().includes('verified')) {
+            errorMessage.value = 'Please verify your email address first.';
+          } else {
+            errorMessage.value = apiMsg || 'Access denied.';
+          }
+          break;
+        case 429:
+          errorMessage.value = 'Too many attempts. Try again later.';
+          break;
+        case 500:
+          errorMessage.value = 'Server error. Please try again later.';
+          break;
+        default:
+          errorMessage.value = apiMsg || 'An unexpected error occurred.';
+      }
+    } else {
+      errorMessage.value = 'Network error. Please check your connection.';
+    }
+
+    toast.add({ severity: 'error', summary: 'Login Error', detail: errorMessage.value, life: 4000 });
   } finally {
     isLoading.value = false;
   }
