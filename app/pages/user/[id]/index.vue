@@ -120,9 +120,9 @@
     <div v-else-if="profileData">
       <!-- User Profile Section -->
       <div class="bg-gradient-to-b from-blue-50 to-white py-8 mb-2">
-        <div class="max-w-7xl flex justify-between mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl flex md:flex-row flex-col md:justify-between justify-center items-center mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            class="flex flex-col md:flex-row items-center md:items-start gap-6"
+            class="flex flex-col md:flex-row items-center md:items-start gap-5"
           >
             <!-- Profile Image -->
             <UserAvatar
@@ -132,11 +132,11 @@
             />
 
             <!-- Text Section -->
-            <div class="space-y-2">
+            <div class="space-y-1">
               <div
                 class="flex items-center text-bold text-2xl justify-center md:justify-start text-gray-800"
               >
-                <span class="font-semibold text-3xl text-gray-800">{{ profileData.username }}</span>
+                <span class="font-semibold md:text-3xl text-xl  text-gray-800">{{ profileData.username }}</span>
               </div>
 
               <div class="flex items-center divide-x divide-gray-300 text-sm text-gray-600">
@@ -194,8 +194,8 @@
                 @click="startEdit"
                 class="mt-2 border rounded-md py-3 px-4 hover:text-[#008253] flex items-center gap-2 justify-center md:justify-start"
               >
-                <i class="pi pi-pencil text-base"></i>
-                <span class="text-base">Edit Profile</span>
+                <i class="pi pi-pencil md:text-base text-xs"></i>
+                <span class="md:text-base text-xs">Edit Profile</span>
               </button>
           </div>
         </div>
@@ -270,42 +270,60 @@
       <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <!-- Left Column -->
-          <div class="md:col-span-2 space-y-6">
+          <div class="md:col-span-3 space-y-6">
 
           
             <!-- Badges -->
-          <div class="bg-white rounded-xl shadow-sm p-4 md:block">
-            <h5 class="font-bold text-sm text-gray-800 mb-4 flex items-center gap-2">
-              <i class="pi pi-trophy text-gold"></i>
-              <span v-if="isUser" class="font-bold text-gray-800 text-sm mr--1">Your</span>
-              Badges
-              <span v-if="totalBadges > 0" class="text-sm text-gray-500">({{ totalBadges }})</span>
-            </h5>
+          <!-- REPLACE YOUR CURRENT BADGE SECTION WITH THIS -->
 
-            <!-- Loading State -->
-            <div v-if="loading" class="flex items-center justify-center py-8">
-              <GeneralLoader />
-            </div>
+<!-- Badges -->
+<div class="bg-white rounded-xl shadow-sm p-4 md:block">
+  <h5 class="font-bold text-sm text-gray-800 mb-4 flex items-center gap-2">
+    <i class="pi pi-trophy text-gold"></i>
+    <span v-if="isUser" class="font-bold text-gray-800 text-sm mr--1">Your</span>
+    Badges
+    <span v-if="totalBadges > 0" class="text-sm text-gray-500">({{ totalBadges + 1 }})</span>
+  </h5>
 
-            <!-- No Badges State -->
-            <div v-else-if="!badges.length" class="text-center py-8 text-gray-500">
-              <i class="pi pi-trophy text-4xl mb-2 opacity-50"></i>
-              <p class="text-sm">No badges earned yet</p>
-            </div>
+  <!-- Loading State -->
+  <div v-if="loading" class="flex items-center justify-center py-8">
+    <GeneralLoader />
+  </div>
 
-            <!-- Badges List with Beautiful Tooltips -->
-            <div v-else class="space-y-3">
-              <BadgeToolTip
-                v-for="(badge, idx) in badges"
-                :key="idx"
-                :name="badge.name"
-                :icon="badge.icon"
-                :color="badge.color"
-                :description="badge.description"
-              />
-            </div>
-          </div>
+  <!-- No Badges State -->
+  <div v-else-if="!tierBadge && !badges.length" class="text-center py-8 text-gray-500">
+    <i class="pi pi-trophy text-4xl mb-2 opacity-50"></i>
+    <p class="text-sm">
+      {{ isUser ? "You haven't earned any badges yet" : "No badges earned yet" }}
+    </p>
+    <p v-if="isUser" class="text-xs text-gray-400 mt-2">
+      Keep reviewing to unlock badges!
+    </p>
+  </div>
 
+  <!-- Badges List with Tooltips -->
+  <div v-else class="space-y-3">
+    <!-- Tier Badge (First) -->
+    <BadgeToolTip
+      v-if="tierBadge"
+      :name="tierBadge.name"
+      :icon="tierBadge.icon"
+      :color="tierBadge.color"
+      :description="tierBadge.description || ''"
+    />
+
+    <!-- Earned Badges -->
+    <BadgeToolTip
+      v-for="(badge, idx) in badges"
+      :key="idx"
+      :name="badge.name"
+      :icon="badge.icon"
+      :color="badge.color"
+      :description="badge.description || ''"
+    />
+
+  </div>
+</div>
             <!-- Replace your existing Top Categories and Top Locations sections with this -->
 
           <div class="grid grid-cols-1 gap-6">
@@ -428,12 +446,12 @@
           </div>
 
           <!-- Middle Column -->
-          <div class="md:col-span-8">
+          <div class="md:col-span-7">
             <!-- Menu Bar (Mobile) -->
-            <div
+            <div v-if="isUser"
               class="md:hidden bg-white border-b border-gray-200 mb-6 -mx-4 px-4"
             >
-              <div class="flex flex-wrap gap-2 py-4">
+              <div class="flex justify-between py-4">
                 <button
                   @click="activeTab = 'your-reviews'"
                   :class="[
@@ -443,8 +461,8 @@
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                   ]"
                 >
-                  <i class="pi pi-star mr-2"></i>
-                  <span v-if="isUser">Your</span> Reviews
+                  <i class="pi pi-star"></i>
+                  <!-- <span v-if="isUser">Your</span> Reviews -->
                 </button>
 
                 <button
@@ -456,8 +474,8 @@
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                   ]"
                 >
-                  <i class="pi pi-star mr-2"></i>
-                  Rewards
+                  <i class="pi pi-gift"></i>
+                  <!-- Rewards -->
                 </button>
 
                 <button
@@ -469,8 +487,8 @@
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                   ]"
                 >
-                  <i class="pi pi-bell mr-2"></i>
-                  Notifications
+                  <i class="pi pi-bell"></i>
+                  <!-- Notifications -->
                 </button>
 
                 <button
@@ -483,8 +501,8 @@
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                   ]"
                 >
-                  <i class="pi pi-clock mr-2"></i>
-                  Settings
+                  <i class="pi pi-clock"></i>
+                  <!-- Settings -->
                 </button>
               </div>
             </div>
@@ -494,8 +512,8 @@
 
              <!-- Your Reviews Tab -->
             <div v-if="activeTab === 'your-reviews'" class="space-y-6">
-              <h2 class="text-2xl font-bold text-[#008253]">
-                <span v-if="isUser" class="text-2xl font-bold text-[#008253]">Your</span>
+              <h2 class="md:text-2xl text-xl font-bold text-[#008253]">
+                <span v-if="isUser" class="md:text-2xl text-xl font-bold text-[#008253]">Your</span>
                 Reviews
               </h2>
 
@@ -1541,17 +1559,18 @@ import type {
 import type {
   EnrichedReview, TopCitiesResponse, TopCategoriesResponse
 } from "~/types/review";
-import type { BadgeResponse, BadgeInfo } from '~/types/badge';
+import type { DisplayBadge, BadgeResponse, BadgeInfo } from '~/types/badge';
 import BadgeToolTip from "~/components/BadgeToolTip.vue";
 
 //////////////////////////////////////////////IMPORT ENDS//////////////////////////////////////////////
+
 
 // Composables and Stores
 const { triggerLogout } = useMethods();
 const { getEnrichedUserReviews } = useEnrichedReviews();
 const { getUserProfile, updateUserProfile, getUserId } = useUserProfileMethods();
 const { getUserTopCities, getUserTopCategories } = useReviewMethods();
-const { getUserBadges, getBadgeInfoBatch, mapBadgesToDisplay } = useBadgeApi();
+const { getUserBadges, getBadgeInfo, createTierBadge, mapBadgesToDisplay,  enrichBadgesWithIcons } = useBadgeApi();
 
 const userId = getUserId();
 const route = useRoute();
@@ -1668,17 +1687,23 @@ const topLocations = computed(() => {
     };
   });
 });
-const badges = computed(() => {
-  if (!badgeData.value?.badges?.length) return [];
-  return mapBadgesToDisplay(
-    badgeData.value.badges,
-    badgeInfoMap.value
-  );
+const badges = computed<DisplayBadge[]>(() => {
+  if (!badgeData.value || !badgeData.value.badges.length) {
+    return [];
+  }
+  // Just map - we'll enrich with icons in fetchBadges
+  return mapBadgesToDisplay(badgeData.value.badges);
 });
 
+const tierBadge = computed<DisplayBadge | null>(() => {
+  if (!badgeData.value || !tierBadgeInfo.value) {
+    return null;
+  }
+  return createTierBadge(tierBadgeInfo.value, badgeData.value.currentTier);
+});
+
+const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
 const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
-// const currentTier = computed(() => badgeData.value?.currentTier || 'newbie');
-// const totalBadges = computed(() => badgeData.value?.totalBadges || 0);
 
 
 // Methods
@@ -2295,30 +2320,53 @@ watch(
 
 
 const fetchBadges = async () => {
-  if (!userId) return;
+  if (!currentUserId.value) return;
   
   loading.value = true;
+
   try {
     // Fetch user badges
-    const response = await getUserBadges(userId);
+    const response = await getUserBadges(currentUserId.value);
     if (response) {
-      badgeData.value = response;
+      console.log('✅ Badge data loaded:', response);
       
-      // Fetch all badge info for icons and details
-      const infoRecord = await getBadgeInfoBatch(response.badges);
+      // Fetch tier badge info
+      const tierInfo = await getBadgeInfo(response.currentTier);
+      if (tierInfo) {
+        tierBadgeInfo.value = tierInfo;
+        console.log('✅ Tier badge info loaded:', tierInfo);
+      }
 
-      badgeInfoMap.value = new Map(
-        Object.entries(infoRecord)
-      );
-
+      // Enrich earned badges with icons
+      if (response.badges.length > 0) {
+        const mappedBadges = mapBadgesToDisplay(response.badges);
+        const enrichedBadges = await enrichBadgesWithIcons(mappedBadges);
+        
+        // Store enriched badges back with proper typing
+        badgeData.value = {
+          ...response,
+          badges: response.badges.map((badge, idx) => {
+            const enrichedBadge = enrichedBadges[idx];
+            return {
+              ...badge,
+              // Add icon with fallback to ensure it's always a string
+              icon: enrichedBadge?.icon || '🏆' // ✅ Always a string now
+            };
+          })
+        };
+        
+        console.log('✅ Badges enriched with icons:', badgeData.value.badges);
+      } else {
+        // No earned badges, just store the response
+        badgeData.value = response;
+      }
     }
-  } catch (err) {
-    console.error('Failed to fetch badges:', err);
+  } catch (err: any) {
+    console.error('❌ Failed to fetch badges:', err);
   } finally {
     loading.value = false;
   }
 };
-
 // Lifecycle
 onBeforeMount(async () => {
   await loadProfile();
@@ -2333,12 +2381,9 @@ onMounted(() => {
   fetchBadges();
 });
 
-watch(
-  () => userId,
-  () => {
-    fetchBadges();
-  }
-);
+watch(() => currentUserId.value, () => {
+  fetchBadges();
+});
 
 </script>
 
