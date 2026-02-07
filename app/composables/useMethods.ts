@@ -82,10 +82,7 @@ export default function () {
         throw new Error("Login failed");
       }
     } catch (err: any) {
-      console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
-      );
-      return null;
+      throw err;
     }
   };
   const triggerLogout = () => {
@@ -143,10 +140,7 @@ export default function () {
         throw new Error("Registration failed");
       }
     } catch (err: any) {
-      console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
-      );
-      return null;
+      throw err;
     }
   };
 

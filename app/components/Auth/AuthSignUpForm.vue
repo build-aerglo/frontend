@@ -3,10 +3,9 @@
     <div class="text-center">
       <h2 class="text-xl md:text-2xl font-bold text-gray-900">Create Your Account</h2>
     </div>
-
-    <div v-if="isLoading" class="flex flex-col items-center">
+    <!-- <div v-if="isLoading" class="flex flex-col items-center">
       <img :src="spinner" class="h-8 w-8" />
-    </div>
+    </div> -->
 
    <div class="space-y-3">
       <button 
@@ -122,16 +121,16 @@
 
 <script setup lang="ts">
 import useMethods from '~/composables/useMethods'; 
-import useSocialAuth from '~/composables/useSocialAuth'; // Added social auth
+import useSocialAuth from '~/composables/useSocialAuth'; 
 import type { EndUser } from "~/types";
-import spinner from '~/assets/svg/spinner.svg'
 
 const emit = defineEmits(['close', 'switch-to-signin', 'success']);
 const { registerEndUser, loginUser } = useMethods();
-const { initiateSocialLogin } = useSocialAuth(); // Added social auth
+const { initiateSocialLogin } = useSocialAuth();
 const toast = useToast();
 
 const confirmPassword = ref('');
+const registrationError = ref<string | null>(null);
 const form = ref<EndUser>({ username: "", email: "", phone: "", password: "", socialMedia: "" });
 const isLoading = ref(false);
 const showPassword = ref(false);
@@ -142,62 +141,100 @@ const validComplexity = ref(false);
 const validNumeric = ref(false);
 const allValid = computed(() => validLength.value && validNumeric.value && validComplexity.value);
 
+// Password Watcher
 watch(() => form.value.password, (newVal) => {
   validLength.value = newVal.length >= 8;
   validNumeric.value = /[0-9]/.test(newVal);
   validComplexity.value = /[@#&$_?]/.test(newVal);
 });
 
-// Added social login handler
+/**
+ * FORM VALIDATION LOGIC
+ */
+const validateForm = (): { isValid: boolean; errorMessage?: string } => {
+  if (form.value.username.trim().length < 3) return { isValid: false, errorMessage: 'Username must be at least 3 characters.' };
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(form.value.email)) return { isValid: false, errorMessage: 'Please enter a valid email address.' };
+
+  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+  if (!phoneRegex.test(form.value.phone) || form.value.phone.replace(/\D/g, '').length < 10) {
+    return { isValid: false, errorMessage: 'Please enter a valid phone number (min 10 digits).' };
+  }
+
+  if (!allValid.value) return { isValid: false, errorMessage: 'Please fulfill all password requirements.' };
+  
+  if (confirmPassword.value !== form.value.password) return { isValid: false, errorMessage: 'Passwords do not match.' };
+
+  return { isValid: true };
+};
+
+/**
+ * SOCIAL LOGIN
+ */
 const handleSocialLogin = async (provider: string) => {
+  registrationError.value = null;
   try {
     const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
     if (!validProviders.includes(provider)) throw new Error(`Invalid provider: ${provider}`);
     localStorage.setItem('social_provider', provider);
     await initiateSocialLogin(provider);
   } catch (error: any) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error.message || "Social login failed", life: 4000 });
+    registrationError.value = error.message || "Social login failed";
+    toast.add({ severity: 'error', summary: 'Error', detail: registrationError.value, life: 4000 });
   }
 }
 
+/**
+ * MAIN REGISTRATION
+ */
 const handleEndUserRegistration = async () => {
-  if (form.value.password !== confirmPassword.value) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Passwords do not match', life: 3000 });
+  registrationError.value = null;
+
+  const validation = validateForm();
+  if (!validation.isValid) {
+    registrationError.value = validation.errorMessage!;
     return;
   }
-  if (!allValid.value) return;
 
   isLoading.value = true;
   try {
     const res = await registerEndUser(form.value);
     
     if (res) {
-      // 1. Silent Login: Use the credentials the user just typed
-      // Note: check if your login API expects 'email' or 'username'
+      // Silent Login
       const loginRes = await loginUser({ 
         email: form.value.email, 
         password: form.value.password 
       });
 
       if (loginRes) {
-        toast.add({ 
-          severity: 'success', 
-          summary: 'Success!', 
-          detail: 'Account created and logged in.', 
-          life: 2000 
-        });
-
-        // 2. Tell the parent to close the modal and refresh state
+        toast.add({ severity: 'success', summary: 'Success!', detail: 'Account created and logged in.', life: 2000 });
         emit('success'); 
       }
     }
   } catch (error: any) {
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Failed', 
-      detail: error.response?.data?.message || "Registration failed", 
-      life: 4000 
-    });
+    console.error('Registration error:', error);
+    if (error.response) {
+      const status = error.response.status;
+      const apiMsg = error.response.data?.message || error.response.data?.error;
+
+      switch (status) {
+        case 409:
+          if (apiMsg?.toLowerCase().includes('email')) registrationError.value = 'Email already exists.';
+          else if (apiMsg?.toLowerCase().includes('username')) registrationError.value = 'Username is taken.';
+          else registrationError.value = 'An account with these details already exists.';
+          break;
+        case 422:
+          registrationError.value = 'Check that all fields are filled correctly.';
+          break;
+        default:
+          registrationError.value = apiMsg || 'Registration failed.';
+      }
+    } else {
+      registrationError.value = 'Network error. Please check your connection.';
+    }
+    toast.add({ severity: 'error', summary: 'Registration Error', detail: registrationError.value, life: 4000 });
   } finally {
     isLoading.value = false;
   }
