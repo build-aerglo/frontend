@@ -54,7 +54,7 @@
 
           <p class="text-green-700 max-w-xl md:text-base text-sm mx-auto leading-relaxed">
             Real reviews from real people. Build trust, choose smarter, and grow with confidence.
-            We’re launching soon — join the waitlist.
+            We're launching soon — join the waitlist.
           </p>
 
           <!-- ================= ROLE SELECTION ================= -->
@@ -85,7 +85,7 @@
                 </div>
               </button>
 
-              <!-- User Card -->
+              <!-- Customer Card -->
               <button
                 @click="selectedRole = 'user'"
                 :class="[
@@ -99,11 +99,11 @@
                   <i class="pi pi-user md:text-3xl text-2xl text-yellow-600"></i>
                   <div class="space-y-2">
                     <span class="font-medium text-green-900 md:text-lg text-base">
-                      User
+                      Customer
                     </span>
                     <p class="md:text-sm text-xs text-green-700">
                       Discover trusted businesses, read honest experiences,
-                      and make decisions you actually feel good about.
+                      and make decisions you actually feel confident about.
                     </p>
                   </div>
                 </div>
@@ -176,16 +176,79 @@
             </div>
 
             <div v-else class="text-yellow-600 font-semibold text-xl text-center">
-                🎉 We’re live!
+                🎉 We're live!
             </div>
             </div>
 
+          <!-- ================= WHY JOIN EARLY ================= -->
+          <div class="max-w-2xl mx-auto pt-8">
+            <h2 class="text-xl md:text-2xl font-semibold text-green-900 mb-6">
+              Why Join Early?
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 text-left">
+              <!-- Early Access -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-bolt text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Early Access</h6>
+                    <p class="text-sm text-green-700">
+                      Be the first to experience CleReview before the public launch. Get early access to all premium features.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Exclusive Perks -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-star text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Exclusive Perks</h6>
+                    <p class="text-sm text-green-700">
+                      Enjoy discounts, special badges, and exclusive features reserved only for founding members.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Free Business Setup -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-gift text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Free Business Setup</h6>
+                    <p class="text-sm text-green-700">
+                      Get help with profile setup, in-store review invites and any other business specifics.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shape the Future -->
+              <div class="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-green-100 shadow-sm hover:shadow-md transition">
+                <div class="flex items-start gap-3">
+                  <i class="pi pi-megaphone text-yellow-600 text-xl mt-1"></i>
+                  <div>
+                    <h6 class="font-semibold text-green-900 mb-2">Shape the Future</h6>
+                    <p class="text-sm text-green-700">
+                      Your feedback will directly influence the product. Help us build the review platform you've always wanted.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- ================= SOCIALS ================= -->
-          <div class="flex justify-center gap-6 text-2xl text-green-700">
-            <i class="pi pi-twitter hover:text-green-900 transition"></i>
-            <i class="pi pi-instagram hover:text-green-900 transition"></i>
-            <i class="pi pi-facebook hover:text-green-900 transition"></i>
-            <i class="pi pi-at hover:text-green-900 transition"></i>
+          <div class="flex justify-center items-center gap-6 text-2xl text-green-700">
+            <i class="pi pi-twitter hover:text-green-900 transition cursor-pointer"></i>
+            <a href="https://www.instagram.com/cle_review/" target="_blank" rel="noopener noreferrer">
+              <i class="pi pi-instagram hover:text-green-900 transition cursor-pointer"></i>
+            </a>
+            <i class="pi pi-facebook hover:text-green-900 transition cursor-pointer"></i>
+            <i class="pi pi-at hover:text-green-900 transition cursor-pointer"></i>
           </div>
 
         </div>
@@ -210,20 +273,20 @@ onMounted(() => {
 /* ================= WAITLIST COUNT =================
    Replace this later with a real API call.
 */
-const waitlistCount = ref(1342);
+const waitlistCount = ref(142);
 
 /* ================= JOIN HANDLER ================= */
 const joinWaitlist = () => {
   if (selectedRole.value === "business") {
-    window.open("https://forms.gle/your-business-form", "_blank");
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSfuiebV9xUOC10BUrDayfgER6DhM2_k40HVilovAd-fOxdFcg/viewform?usp=publish-editor", "_blank");
   }
   if (selectedRole.value === "user") {
-    window.open("https://forms.gle/your-user-form", "_blank");
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSeyRSBmn8WMh2pzaUMVQWUscGaef0qvJSEYtx0S_YKj5CsZmA/viewform?usp=publish-editor", "_blank");
   }
 };
 
 /* ================= COUNTDOWN ================= */
-const target = new Date("2026-12-31T23:59:59");
+const target = new Date("2026-03-15T23:59:59");
 
 const timeLeft = reactive({
   days: 0,
