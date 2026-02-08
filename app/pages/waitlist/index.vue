@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen relative overflow-hidden
+    class="min-h-screen relative overflow-hidden py-5 md:py-0
            bg-gradient-to-br from-green-100/60 via-transparent to-yellow-100/50"
   >
     <!-- ================= PRELOADER ================= -->
@@ -9,7 +9,7 @@
         v-if="loading"
         class="absolute inset-0 z-50 flex items-center justify-center bg-green-50"
       >
-        <GeneralLoader/>
+        <GeneralLoader />
       </div>
     </Transition>
 
@@ -36,112 +36,159 @@
         v-if="!loading"
         class="relative z-10 min-h-screen flex items-center justify-center"
       >
-       <div class="relative max-w-3xl w-full px-6 text-center space-y-8">
+        <div class="relative max-w-3xl w-full px-6 text-center space-y-8">
 
-      <!-- Logo -->
-      <NuxtLink to="/" class="flex justify-center md:justify-start">
-        <img
-          src="~/assets/images/e-user-logo.png"
-          alt="Logo"
-          class="h-10"
-        />
-      </NuxtLink>
+          <!-- Logo -->
+          <div class="flex justify-center md:justify-start">
+            <img
+              src="~/assets/images/e-user-logo.png"
+              alt="Logo"
+              class="h-10 "
+            />
+          </div>
 
-      <!-- Heading -->
-      <h1 class="text-4xl md:text-5xl font-semibold leading-tight gradient-text animate-gradient pt-10">
-            Review & Grow
-            Your Business
-        </h1>
+          <!-- Heading -->
+          <h1 class="text-2xl md:text-4xl font-semibold leading-tight gradient-text animate-gradient">
+            Let real experiences guide you
+          </h1>
 
+          <p class="text-green-700 max-w-xl md:text-base text-sm mx-auto leading-relaxed">
+            Real reviews from real people. Build trust, choose smarter, and grow with confidence.
+            We’re launching soon — join the waitlist.
+          </p>
 
-      <Transition name="slide-fade" mode="out-in">
-            <div v-if="!showTabs" key="intro" class="space-y-8">
-              <p class="text-green-700 max-w-2xl mx-auto leading-relaxed">
-                Collect real reviews, build customer trust, and grow your business
-                effortlessly. We’re launching soon — join the waitlist.
-              </p>
+          <!-- ================= ROLE SELECTION ================= -->
+          <div class="pt">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto">
 
-              <div class="flex justify-center">
-                <button
-                  @click="showTabs = true"
-                  class="bg-green-700 text-yellow-200 px-12 py-4 rounded-full text-lg
-                         flex items-center gap-2 shadow-md
-                         hover:bg-green-800 hover:scale-105 transition"
-                >
-                  Join the waitlist
-                  <i class="pi pi-arrow-right"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- ===== TABS ===== -->
-            <div v-else key="tabs" class="space-y-6 pt-4 flex flex-col">
-              <a
-                href="https://forms.gle/your-business-form"
-                target="_blank"
-                class="block rounded-xl bg-white backdrop-blur border-2 border-green-100
-                       p-3 text-left shadow-sm hover:shadow-md transition hover:-translate-y-1 hover:scale-[1.01]"
+              <!-- Business Card -->
+              <button
+                @click="selectedRole = 'business'"
+                :class="[
+                  baseCardClass,
+                  selectedRole === 'business'
+                    ? activeCardClass
+                    : inactiveCardClass
+                ]"
               >
-                <div class="flex gap-4 items-center justify-start ">
-                  <i class="pi pi-briefcase text-3xl text-yellow-700"></i>
-                  <div class="flex flex-col gap-2">
-                    <span class="font-medium text-green-900">Business</span>
-                    <p class="text-sm text-green-700">
-                      Collect reviews, build trust, and grow faster.
+                <div class="flex gap-4 items-start">
+                <i class="pi pi-briefcase md:text-3xl text-2xl text-yellow-700"></i>
+                  <div class="space-y-2">
+                    <span class="font-medium text-green-900 md:text-lg text-base">
+                      Business
+                    </span>
+                    <p class="md:text-sm text-xs text-green-700">
+                      Collect authentic reviews, build lasting trust,
+                      and turn happy customers into your strongest marketing channel.
                     </p>
                   </div>
                 </div>
-              </a>
+              </button>
 
-              <a
-                href="https://forms.gle/your-user-form"
-                target="_blank"
-                class="block rounded-lg bg-white backdrop-blur border-2 border-green-100
-                       p-3 text-left shadow-sm hover:shadow-md transition hover:-translate-y-1 hover:scale-[1.01]"
+              <!-- User Card -->
+              <button
+                @click="selectedRole = 'user'"
+                :class="[
+                  baseCardClass,
+                  selectedRole === 'user'
+                    ? activeCardClass
+                    : inactiveCardClass
+                ]"
               >
-                <div class="flex gap-4 items-center justify-start ">
-                  <i class="pi pi-user text-3xl text-yellow-600"></i>
-                  <div  class="flex flex-col gap-2">
-                    <span class="font-medium text-green-900">User</span>
-                    <p class="text-sm text-green-700">
-                      Discover trusted businesses and ....
+                <div class="flex gap-4 items-start">
+                  <i class="pi pi-user md:text-3xl text-2xl text-yellow-600"></i>
+                  <div class="space-y-2">
+                    <span class="font-medium text-green-900 md:text-lg text-base">
+                      User
+                    </span>
+                    <p class="md:text-sm text-xs text-green-700">
+                      Discover trusted businesses, read honest experiences,
+                      and make decisions you actually feel good about.
                     </p>
                   </div>
                 </div>
-              </a>
+              </button>
+
             </div>
-          </Transition>
+          </div>
 
+          <!-- ================= CTA ================= -->
+          <div class="flex flex-col items-center md:pt-6 pt-3 gap-3">
+            <button
+              :disabled="!selectedRole"
+              @click="joinWaitlist"
+              class="bg-green-700 text-yellow-200 md:px-12 px-8 py-4 rounded-full text-base md:text-lg
+                     flex items-center gap-2 shadow-md transition
+                     hover:bg-green-800 hover:scale-105
+                     disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              Join the waitlist
+              <i class="pi pi-arrow-right"></i>
+            </button>
 
-      <!-- Countdown -->
-      <div class="pt-10">
-        <div
-          v-if="!timeLeft.expired"
-          class="flex justify-center gap-4 text-3xl md:text-4xl font-mono text-green-900"
-        >
-          <div class="md:text-xl text-base"><span class="text-yellow-600 md:text-3xl text-xl">{{ pad(timeLeft.days) }}</span>d</div>
-          <div class="md:text-3xl">:</div>
-          <div class="md:text-xl text-base"><span class="text-yellow-600 md:text-3xl text-xl">{{ pad(timeLeft.hours) }}</span>h</div>
-          <div class="md:text-3xl">:</div>
-          <div class="md:text-xl text-base"><span class="text-yellow-600 md:text-3xl text-xl">{{ pad(timeLeft.minutes) }}</span>m</div>
-          <div class="md:text-3xl">:</div>
-          <div class="md:text-xl text-base"><span class="text-yellow-600 md:text-3xl text-xl">{{ pad(timeLeft.seconds) }}</span>s</div>
+            <!-- Social Proof -->
+            <p class="text-sm text-green-700 flex items-center gap-2">
+              <i class="pi pi-users text-green-600"></i>
+              <span>
+                <strong>{{ waitlistCount.toLocaleString() }}</strong>
+                people already joined
+              </span>
+            </p>
+          </div>
+
+            <!-- ================= COUNTDOWN ================= -->
+            <div class="">
+            <div
+                v-if="!timeLeft.expired"
+                class="flex justify-center gap-2 md:gap-6 px-5"
+            >
+                <!-- Days -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.days) }}
+                </span>
+                <span class="countdown-label">Days</span>
+                </div>
+
+                <!-- Hours -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.hours) }}
+                </span>
+                <span class="countdown-label">Hours</span>
+                </div>
+
+                <!-- Minutes -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.minutes) }}
+                </span>
+                <span class="countdown-label">Minutes</span>
+                </div>
+
+                <!-- Seconds -->
+                <div class="countdown-card">
+                <span class="countdown-number">
+                    {{ pad(timeLeft.seconds) }}
+                </span>
+                <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+
+            <div v-else class="text-yellow-600 font-semibold text-xl text-center">
+                🎉 We’re live!
+            </div>
+            </div>
+
+          <!-- ================= SOCIALS ================= -->
+          <div class="flex justify-center gap-6 text-2xl text-green-700">
+            <i class="pi pi-twitter hover:text-green-900 transition"></i>
+            <i class="pi pi-instagram hover:text-green-900 transition"></i>
+            <i class="pi pi-facebook hover:text-green-900 transition"></i>
+            <i class="pi pi-at hover:text-green-900 transition"></i>
+          </div>
+
         </div>
-
-        <div v-else class="text-yellow-600 font-semibold text-xl">
-          🎉 We’re live!
-        </div>
-      </div>
-
-      <!-- Socials -->
-      <div class="flex justify-center gap-6 pt-12 text-2xl text-green-700">
-        <i class="pi pi-twitter hover:text-green-900 transition"></i>
-        <i class="pi pi-instagram hover:text-green-900 transition"></i>
-        <i class="pi pi-facebook hover:text-green-900 transition"></i>
-        <i class="pi pi-at hover:text-green-900 transition"></i>
-      </div>
-
-    </div>
       </div>
     </Transition>
   </div>
@@ -151,15 +198,31 @@
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 
 const loading = ref(true);
-const showTabs = ref(false);
+const selectedRole = ref<"business" | "user" | null>(null);
 
-// Fake preload delay (lets animations settle)
+// Fake preload delay
 onMounted(() => {
   setTimeout(() => {
     loading.value = false;
-  }, 1200); // tweak duration if needed
+  }, 1200);
 });
 
+/* ================= WAITLIST COUNT =================
+   Replace this later with a real API call.
+*/
+const waitlistCount = ref(1342);
+
+/* ================= JOIN HANDLER ================= */
+const joinWaitlist = () => {
+  if (selectedRole.value === "business") {
+    window.open("https://forms.gle/your-business-form", "_blank");
+  }
+  if (selectedRole.value === "user") {
+    window.open("https://forms.gle/your-user-form", "_blank");
+  }
+};
+
+/* ================= COUNTDOWN ================= */
 const target = new Date("2026-12-31T23:59:59");
 
 const timeLeft = reactive({
@@ -192,6 +255,18 @@ onMounted(() => {
 
 onUnmounted(() => clearInterval(timer));
 
+/* ================= STYLES ================= */
+const baseCardClass =
+  "h-full text-left rounded-xl bg-white border-2 p-4 shadow-sm transition " +
+  "hover:-translate-y-1 hover:shadow-md";
+
+const activeCardClass =
+  "border-green-600 ring-2 ring-green-300 scale-[1.02]";
+
+const inactiveCardClass =
+  "border-green-100";
+
+/* ================= DECORATIONS ================= */
 const randomStarStyle = () => ({
   top: Math.random() * 100 + "%",
   left: Math.random() * 100 + "%",
@@ -283,4 +358,80 @@ const pad = (num: number) => String(num).padStart(2, "0");
   opacity: 0;
   transform: translateY(-20px);
 }
+
+/* ===== Countdown Cards ===== */
+.countdown-card {
+  /* background: white; */
+  background: #ca8a04;;
+  border: 2px solid #d1fae5; /* green-100 */
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  min-width: 72px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.countdown-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+.countdown-number {
+  display: block;
+  font-size: 1.50rem;
+  font-weight: 700;
+  line-height: 1;
+  /* color: #ca8a04; */
+  color: white;
+}
+
+.countdown-label {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* color: #065f46; green-800 */
+  color: white;
+
+}
+@media screen and (max-width: 600px) {
+  .countdown-card {
+  /* background: white; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #ca8a04;;
+  border: 2px solid #d1fae5; /* green-100 */
+  border-radius: 0.75rem;
+  padding: 0.6rem .7rem;
+  min-width: 50px;
+  text-align: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+  .countdown-number {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  /* color: #ca8a04; */
+  color: white;
+}
+
+.countdown-label {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* color: #065f46; green-800 */
+  color: white;
+
+}
+}
+
 </style>
