@@ -18,6 +18,11 @@ export const useSupportUserStore = defineStore("supportUser", {
     expires_in: new Date(),
     userData: null,
   }),
+  getters: {
+    isAuthenticated: (state): boolean => {
+      return !!state.idToken || !!state.accessToken;
+    },
+  },
 
   actions: {
     getUser() {

@@ -5,14 +5,23 @@ import type { SupportUser } from "~/types/support";
 import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
+
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
 const logoutError = ref("");
+
 export default function () {
   const store = useBusinessUser();
   const supportStore = useSupportUser();
   const api = useApi();
   const userStore = useUser();
+  
+  const clearAllStores = () => {
+    store.clearUser();
+    userStore.clearUser();
+    supportStore.clearUser();
+  };
+
   const registerBusiness = async (data: BusinessUser) => {
     try {
       const res = await api.post("api/User/business", data);
@@ -52,22 +61,36 @@ export default function () {
     }
   };
 
-  const loginUser = async (data: LoginData) => {
+  const loginUser = async (data: LoginData, expectedRole?: 'business_user' | 'end_user' | 'support_user') => {
     try {
+      clearAllStores();
       const res = await api.post("api/auth/login", {
         email: data.email,
         password: data.password,
       });
+      
       console.log(res);
+      
       if (res.status === 200 && res.data) {
         const { access_token, id_token, expires_in, roles, id } = res.data;
         const role = roles[0];
+
+        // Role validation - if expectedRole is provided, verify it matches
+        if (expectedRole && role !== expectedRole) {
+          // Clear any tokens that might have been set
+          clearAllStores();
+          
+          // Throw generic error to prevent role enumeration
+          throw new Error("Invalid credentials");
+        }
+
         const loginPayload = {
           access_token: access_token,
           id_token: id_token,
           role: role,
           expires: new Date(Date.now() + 23 * 60 * 60 * 1000), // 23hrs
         };
+
         if (role === "business_user") {
           store.clearUser();
           store.setLoginData(loginPayload);
@@ -76,15 +99,23 @@ export default function () {
           userStore.clearUser();
           userStore.setLoginData(loginPayload);
           userStore.setId(id);
+        } else if (role === "support_user") {
+          supportStore.clearUser();
+          supportStore.setLoginData(loginPayload);
+          // supportStore.setId(id);
         }
+        
         return res.data;
       } else {
         throw new Error("Login failed");
       }
     } catch (err: any) {
+      // Clear stores on any error
+      clearAllStores();
       throw err;
     }
   };
+
   const triggerLogout = () => {
     showLogoutModal.value = true;
   };
@@ -100,18 +131,22 @@ export default function () {
       await api.post("api/auth/logout");
 
       // 2. Identify role before clearing state
-      const role = store.role || userStore.role;
+      const role = store.role || userStore.role || supportStore.role;
 
       // 3. Clear local state ONLY after successful API response
       store.clearUser();
       userStore.clearUser();
+      supportStore.clearUser();
       
       showLogoutModal.value = false;
 
       // 4. Redirect based on the captured role
-      const redirectPath = role === 'business_user' 
-        ? '/business/auth/sign-in' 
-        : '/';
+      let redirectPath = '/';
+      if (role === 'business_user') {
+        redirectPath = '/business/auth/sign-in';
+      } else if (role === 'support_user') {
+        redirectPath = '/support/auth/sign-in';
+      }
 
       await navigateTo(redirectPath, { replace: true });
       
@@ -144,6 +179,11 @@ export default function () {
     }
   };
 
+  const handleRoleSwitch = async (targetPath: string) => {
+    clearAllStores();
+    await navigateTo(targetPath);
+  };
+  
   return {
     loginUser,
     registerBusiness,
@@ -153,6 +193,8 @@ export default function () {
     triggerLogout,
     showLogoutModal,
     isLoggingOut,
-    logoutError
+    logoutError,
+    handleRoleSwitch,
+    clearAllStores,
   };
 }

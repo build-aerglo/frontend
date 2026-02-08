@@ -50,7 +50,11 @@
       <div>
         <label class="block text-sm text-gray-700 mb-1">Email</label>
         <input 
-          v-model="userData.email" type="email" placeholder="your@email.com" required :disabled="isLoading"
+          v-model="userData.email" 
+          type="email" 
+          placeholder="your@email.com" 
+          required 
+          :disabled="isLoading"
           class="w-full rounded-lg border border-gray-200 p-3 text-sm outline-none focus:ring-1 focus:ring-[#008253] focus:border-[#008253] transition" 
         />
       </div>
@@ -59,7 +63,11 @@
         <label class="block text-sm text-gray-700 mb-1">Password</label>
         <div class="relative">
           <input 
-            v-model="userData.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••" required :disabled="isLoading"
+            v-model="userData.password" 
+            :type="showPassword ? 'text' : 'password'" 
+            placeholder="••••••••" 
+            required 
+            :disabled="isLoading"
             class="w-full border border-gray-200 rounded-lg p-3 pr-10 text-sm outline-none focus:ring-1 focus:ring-[#008253] focus:border-[#008253] transition" 
           />
           <i 
@@ -77,7 +85,8 @@
       </div>
 
       <button 
-        type="submit" :disabled="isLoading" 
+        type="submit" 
+        :disabled="isLoading" 
         class="btn btn-primary w-full"
       >
         {{ isLoading ? 'Signing In...' : 'Sign In' }}
@@ -169,16 +178,10 @@ const HandleLogin = async () => {
   isLoading.value = true;
 
   try {
-    const res = await loginUser(userData.value);
+    // Pass 'end_user' as the expected role
+    const res = await loginUser(userData.value, 'end_user');
     
     if (res) {
-      // Check Role Authorization
-      if (store.role !== 'end_user') {
-        errorMessage.value = 'This account is not authorized for user access.';
-        isLoading.value = false;
-        return;
-      }
-
       // Handle Remember Me logic
       if (rememberMe.value) {
         localStorage.setItem('rememberMe', 'true');
@@ -187,26 +190,26 @@ const HandleLogin = async () => {
         localStorage.removeItem('rememberMe');
         localStorage.removeItem('userEmail');
       }
-
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in successfully', life: 3000 });
       emit('success'); 
     } else {
-      errorMessage.value = 'Invalid email or password. Please try again.';
+      errorMessage.value = 'Invalid credentials. Please try again.';
     }
   } catch (error: any) {
     console.error('Login error:', error);
 
-    // 2. Advanced API Error Handling
-    if (error.response) {
+    // Handle role mismatch with generic message
+    if (error.message === 'Invalid credentials') {
+      errorMessage.value = 'Invalid credentials. Please try again.';
+    } else if (error.response) {
       const status = error.response.status;
       const apiMsg = error.response.data?.message || error.response.data?.error;
 
       switch (status) {
         case 400:
-          errorMessage.value = apiMsg || 'Invalid request. Check your credentials.';
-          break;
         case 401:
-          errorMessage.value = 'Invalid email or password.';
+        case 404:
+        case 422:
+          errorMessage.value = 'Invalid credentials. Please try again.';
           break;
         case 403:
           if (apiMsg?.toLowerCase().includes('suspended')) {
@@ -214,7 +217,7 @@ const HandleLogin = async () => {
           } else if (apiMsg?.toLowerCase().includes('verified')) {
             errorMessage.value = 'Please verify your email address first.';
           } else {
-            errorMessage.value = apiMsg || 'Access denied.';
+            errorMessage.value = 'Invalid credentials. Please try again.';
           }
           break;
         case 429:
@@ -224,13 +227,18 @@ const HandleLogin = async () => {
           errorMessage.value = 'Server error. Please try again later.';
           break;
         default:
-          errorMessage.value = apiMsg || 'An unexpected error occurred.';
+          errorMessage.value = 'Invalid credentials. Please try again.';
       }
     } else {
       errorMessage.value = 'Network error. Please check your connection.';
     }
 
-    toast.add({ severity: 'error', summary: 'Login Error', detail: errorMessage.value, life: 4000 });
+    toast.add({ 
+      severity: 'error', 
+      summary: 'Login Error', 
+      detail: errorMessage.value, 
+      life: 4000 
+    });
   } finally {
     isLoading.value = false;
   }
