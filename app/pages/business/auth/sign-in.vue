@@ -32,12 +32,14 @@
                   </NuxtLink>
               </div>
               </div>
-              <div v-if="loginError" class="text-red-500">{{ loginError }}</div>
-              <ButtonCustom :label="isLoading ? 'Authenticating...' : 'Login'"
-              :disabled="isLoading" 
-              size="lg" primary="true" 
-              input-class="p-3 text-[15px]" 
-              type="submit" />
+              <ButtonCustom 
+                :label="isLoading ? 'Authenticating...' : 'Login'"
+                :disabled="isLoading" 
+                size="lg" 
+                primary="true" 
+                input-class="p-3 text-[15px]" 
+                type="submit" 
+              />
             </form>
 
             <p class="text-center md:text[100%] pt-1">
@@ -60,7 +62,8 @@ import type { LoginData } from "~/types";
 
 const { loginUser } = useMethods();
 const store = useBusinessUser(); 
-const toast = useToast()
+const toast = useToast();
+
 const loginData = ref<LoginData>({
   email: '',
   password: '',
@@ -101,23 +104,13 @@ const HandleLogin = async () => {
   isLoading.value = true;
 
   try {
-    const res = await loginUser(loginData.value);
+    // Pass 'business_user' as the expected role
+    const res = await loginUser(loginData.value, 'business_user');
 
     if (res) {
       // Check if we have the required authentication data
       if (!store.accessToken) {
         throw new Error('Authentication failed - no access token received');
-      }
-
-      if (store.role !== 'business_user') {
-        loginError.value = 'This account is not authorized for business access.';
-        toast.add({ 
-          severity: 'error', 
-          summary: 'Access Denied', 
-          detail: loginError.value, 
-          life: 4000 
-        });
-        return;
       }
 
       // Successful login
@@ -135,7 +128,7 @@ const HandleLogin = async () => {
       }
     } else {
       // Login returned false - generic failure
-      loginError.value = 'Invalid email or password. Please try again.';
+      loginError.value = 'Invalid credentials. Please try again.';
       toast.add({ 
         severity: 'error', 
         summary: 'Login Failed', 
@@ -144,26 +137,31 @@ const HandleLogin = async () => {
       });
     }
   } catch (error: any) {
+    console.error('Login error:', error);
+
     // Handle specific error responses from the API
-    if (error.response) {
+    if (error.message === 'Invalid credentials') {
+      // This covers both wrong password AND wrong role
+      loginError.value = 'Invalid credentials. Please try again.';
+    } else if (error.response) {
       const status = error.response.status;
       const errorMessage = error.response.data?.message || error.response.data?.error;
 
       switch (status) {
         case 400:
-          loginError.value = errorMessage || 'Invalid request. Please check your credentials.';
+          loginError.value = 'Invalid credentials. Please try again.';
           break;
         case 401:
-          loginError.value = 'Invalid email or password.';
+          loginError.value = 'Invalid credentials. Please try again.';
           break;
         case 403:
           loginError.value = 'Your account has been suspended. Please contact support.';
           break;
         case 404:
-          loginError.value = 'Account not found. Please check your email address.';
+          loginError.value = 'Invalid credentials. Please try again.';
           break;
         case 422:
-          loginError.value = errorMessage || 'Invalid credentials format.';
+          loginError.value = 'Invalid credentials. Please try again.';
           break;
         case 429:
           loginError.value = 'Too many login attempts. Please try again later.';
@@ -180,8 +178,8 @@ const HandleLogin = async () => {
       // Network error - request was made but no response received
       loginError.value = 'Network error. Please check your internet connection.';
     } else {
-      // Other errors (e.g., thrown errors)
-      loginError.value = error.message || 'An unexpected error occurred. Please try again.';
+      // Other errors
+      loginError.value = 'Invalid credentials. Please try again.';
     }
 
     toast.add({ 
