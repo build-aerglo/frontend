@@ -348,7 +348,7 @@
               <!-- Categories list -->
               <ul v-else class="space-y-3">
                 <li v-for="(cat, idx) in topCategories.slice(0, 3)" :key="cat.id || idx">
-  <NuxtLink
+  <!-- <NuxtLink
     :to="{ 
       path: '/end-user/landing/explore', 
       query: { 
@@ -357,7 +357,8 @@
       } 
     }"
     class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all"
-  >
+  > -->
+  <div class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all">
     <!-- Icon (unchanged color) -->
           <component :is="cat.icon" class="w-6 h-6" :class="cat.color || 'text-gray-400'"/>
 
@@ -372,8 +373,9 @@
       </span>
     </div>
 
-    <i class="pi pi-chevron-right text-gray-400 text-xs"></i>
-  </NuxtLink>
+    <!-- <i class="pi pi-chevron-right text-gray-400 text-xs"></i> -->
+    </div>
+  <!-- </NuxtLink> -->
 </li>
 
               </ul>
