@@ -47,6 +47,9 @@ export const useBusinessUserStore = defineStore("businessUser", {
     //     return null;
     //   }
     // },
+    isAuthenticated: (state): boolean => {
+      return !!state.idToken || !!state.accessToken;
+    },
     businessId: (state): string | null => {
       return state.userData?.businessId || null;
     },
