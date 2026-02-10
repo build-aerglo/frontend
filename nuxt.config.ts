@@ -40,11 +40,14 @@ export default defineNuxtConfig({
       app_url: process.env.APP_URL!,
     },
   },
-  routeRules: {
-    "/business/**": {
-      appMiddleware: ["businessauth"],
-    },
-  },
+  // routeRules: {
+  //   "/business/**": {
+  //     appMiddleware: ["businessauth"],
+  //   },
+  //   "/end-user/**": {
+  //     appMiddleware: ["userauth"],
+  //   },
+  // },
   // nitro: {
   //   devProxy : {
   //     '/api/' : {

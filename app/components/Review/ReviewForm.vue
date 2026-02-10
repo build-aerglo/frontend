@@ -129,13 +129,13 @@
           <div class="flex flex-col gap-1">
             <button @click="showEmailInput = true" class="py-3 bg-[#008253] text-white rounded-xl">Review as
               guest</button>
-            <span class="text-center text-[12px] md:text-[14px] text-gray-700">No account needed</span>
+            <span class="text-center text-[11px] md:text-[12px] text-gray-500">No account needed</span>
           </div>
           <div class="flex flex-col gap-1">
             <button @click="emitOpenAuth"
               class="py-3 border border-[#008253] text-[#008253] rounded-xl font-medium hover:bg-green-100">Sign in and
               review</button>
-            <span class="text-center text-[12px] md:text-[14px] text-gray-700">Earn points and track your reviews</span>
+            <span class="text-center text-[11px] md:text-[12px] text-gray-500">Earn points and track your reviews</span>
           </div>
         </div>
         <div v-else>
@@ -282,17 +282,25 @@ const fetchBranches = async (id: string) => {
     ])
 
     const all = []
+    const profileData = profile?.data
 
-    // Add main business address as pseudo-branch
-    if (profile?.data?.businessAddress) {
-      const address = profile.data.businessAddress
-      const addressParts = address.split(',').map((s: string) => s.trim())
-
+    if (profileData) {
       let city = ""
       let state = ""
-      if (addressParts.length >= 2) {
-        state = addressParts[addressParts.length - 1]
-        city = addressParts[addressParts.length - 2]
+
+      // Logic: If businessAddress exists, parse it. 
+      // Otherwise, use city/state columns directly.
+      if (profileData.businessAddress) {
+        const addressParts = profileData.businessAddress.split(',').map((s: string) => s.trim())
+
+        if (addressParts.length >= 2) {
+          state = addressParts[addressParts.length - 1]
+          city = addressParts[addressParts.length - 2]
+        }
+      } else {
+        // Fallback to specific columns
+        city = profileData.businessCityTown || 'Main Location'
+        state = profileData.businessState || ''
       }
 
       all.push({

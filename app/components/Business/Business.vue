@@ -822,6 +822,7 @@
         :primary="currentPage === 'review' ? true : false"
         @clicked="setSection('review')"
       />
+      
       <ButtonCustom
         v-if="isBusiness && canEdit"
         label="Get Reviews"
@@ -845,6 +846,7 @@
       :business="business"
       :isBusiness="isBusiness"
     />
+    
     <BusinessQr
       v-if="isBusiness && currentPage === 'qr'"
       :business="business"
@@ -860,6 +862,7 @@ import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
 import useReviewMethods from "~/composables/method/useReviewMethods";
+
 const { getBusinessReviews } = useReviewMethods()
 const businessBadgeStatus = computed(() => {
   if (props.status === "trusted") return "trusted";

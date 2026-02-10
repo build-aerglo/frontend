@@ -10,7 +10,7 @@
   >
     <form @submit.prevent="saveBranch(openType)" class="flex flex-col gap-2.5">
       <div>
-        <label for="email">Branch Name</label>
+        <label for="branchName">Branch Name</label>
         <InputText
           fluid
           class="flex-auto"
@@ -21,7 +21,7 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
         <div>
-          <label for="email">Branch Street</label>
+          <label for="branchStreet">Branch Street</label>
           <InputText
             fluid
             class="flex-auto"
@@ -30,25 +30,30 @@
             v-model="branch.branchStreet"
           />
         </div>
+
         <div>
-          <label for="email">Branch City / Town</label>
-          <InputText
-            fluid
-            class="flex-auto"
+          <label>Branch State</label>
+          <select 
+            v-model="branch.branchState" 
             required
-            autocomplete="off"
-            v-model="branch.branchCityTown"
-          />
+            class="w-full border rounded-md px-3 py-2 text-sm outline-none h-[42px] border-gray-300 focus:border-[#008253]"
+          >
+            <option value="">Select State *</option>
+            <option v-for="s in states" :key="s" :value="s">{{ s }}</option>
+          </select>
         </div>
+
         <div>
-          <label for="email">Branch State</label>
-          <InputText
-            fluid
-            class="flex-auto"
+          <label>Branch City / Town</label>
+          <select 
+            v-model="branch.branchCityTown" 
+            :disabled="!branch.branchState"
             required
-            autocomplete="off"
-            v-model="branch.branchState"
-          />
+            class="w-full border rounded-md px-3 py-2 text-sm outline-none h-[42px] border-gray-300 focus:border-[#008253] disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            <option value="">Select City *</option>
+            <option v-for="c in availableCities" :key="c" :value="c">{{ c }}</option>
+          </select>
         </div>
       </div>
       <div class="flex justify-end gap-2 mt-[20px]">
@@ -180,10 +185,13 @@
     </template>
   </Card>
 </template>
+
 <script setup lang="ts">
 definePageMeta({ layout: "business" });
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref, computed, watch } from "vue";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
+import useNigerianLocations from "~/composables/useNigerianLocations";
+
 const {
   createBranch,
   updateBranch,
@@ -191,6 +199,11 @@ const {
   getBusinessBranches,
   getBusinessUser,
 } = useBusinessMethods();
+
+// Location logic
+const { getStates, getCitiesByState } = useNigerianLocations();
+const states = getStates();
+
 const isLoading = ref(true);
 const businessId = getBusinessUser();
 const toast = useToast();
@@ -205,12 +218,13 @@ interface BusinessBranch {
   branchCityTown?: string;
   branchState?: string;
 }
+
 const businessBranches = ref<BusinessBranch[]>([]);
 const search = ref("");
 const isDeleting = ref(false);
 
-const rows = ref(5); // items per page
-const first = ref(0); // index of first item
+const rows = ref(5);
+const first = ref(0);
 
 const openBranchEditor = ref(false);
 const openType = ref("new");
@@ -218,8 +232,7 @@ const isSubmitting = ref(false);
 
 const filteredBranches = computed(() => {
   return businessBranches.value.filter((branch: BusinessBranch) =>
-    // @ts-ignore
-    branch.branchName.toLowerCase().includes(search.value.toLowerCase()),
+    branch.branchName?.toLowerCase().includes(search.value.toLowerCase()),
   );
 });
 
@@ -234,6 +247,18 @@ const branch = ref({
   branchStreet: "",
   branchCityTown: "",
   branchState: "",
+});
+
+// Cities filtered by the state selected in the form
+const availableCities = computed(() => {
+  return branch.value.branchState ? getCitiesByState(branch.value.branchState) : [];
+});
+
+// Reset city when state changes
+watch(() => branch.value.branchState, (newState, oldState) => {
+  if (oldState && newState !== oldState) {
+    branch.value.branchCityTown = "";
+  }
 });
 
 const resetBranch = () => {
@@ -358,8 +383,8 @@ const showEditor = (type: string, data: BusinessBranch | null) => {
     openType.value = "edit";
     branch.value.branchName = data?.branchName!;
     branch.value.branchStreet = data?.branchStreet!;
-    branch.value.branchCityTown = data?.branchCityTown!;
-    branch.value.branchState = data?.branchState!;
+    branch.value.branchState = data?.branchState!; // Set state first
+    branch.value.branchCityTown = data?.branchCityTown!; // Then set city
     branch.value.id = data?.id!;
   }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-[10px] p-[20px]">
+    <div class="bg-white rounded-[10px] p-[20px] border-1 border-gray-200">
         <div class="flex gap-[10px]">
             <div :style="{ backgroundColor: getColorCode(initials) }"
                 :class="`rounded-full h-[44px] w-[44px] font-bold flex justify-center items-center`">
