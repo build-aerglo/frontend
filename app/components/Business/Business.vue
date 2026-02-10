@@ -651,9 +651,9 @@
                   :color-level="Math.floor(business.avgRating ?? 0)"
                 />
               </div>
-              <div class="text-center text-xs sm:text-sm">
-                {{ business?.reviewCount ?? 0 }}
-                Review{{ business?.reviewCount !== 1 ? "s" : "" }}
+              <div class="text-center text-xs text-gray-500">
+                ({{ business?.reviewCount ?? 0 }}
+                Review{{ business?.reviewCount !== 1 ? "s" : "" }})
               </div>
             </div>
           </div>
