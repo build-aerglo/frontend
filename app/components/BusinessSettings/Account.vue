@@ -273,7 +273,8 @@ import type {
 } from "~/types/business";
 
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
-const { getBusinessSettings, updateBusinessSettings } = useBusinessMethods();
+const { getBusinessSettings, updateBusinessSettings, updateEmail } =
+  useBusinessMethods();
 const { updatePassword } = useMethods();
 
 const toast = useToast();
@@ -460,7 +461,36 @@ const updatePasswordAsync = async () => {
   }
 };
 
-const updateEmailAsync = async () => {};
+const isUpdatingEmail = ref(false);
+const updateEmailAsync = async () => {
+  try {
+    isUpdatingEmail.value = true;
+    const res = await updateEmail(
+      updatedEmail.value.email,
+      updatedEmail.value.reason,
+    );
+
+    if (res.ok) {
+      return toast.add({
+        severity: "success",
+        summary: "SUCCESS",
+        detail: "Email update request submitted.",
+        life: 3000,
+      });
+    }
+
+    return toast.add({
+      severity: "info",
+      summary: "INFO",
+      detail: `${res.data.message ?? "An error occured."}`,
+      life: 3000,
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isUpdatingEmail.value = false;
+  }
+};
 
 const reset = () => {
   updateEmailToggle.value = false;

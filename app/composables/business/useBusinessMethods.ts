@@ -278,6 +278,30 @@ export default function () {
     }
   };
 
+  const updateEmail = async (email: string, reason: string) => {
+    try {
+      const res = await businessApi.post("api/auth/request-email-update", {
+        emailAddress: email,
+        businessId: getBusinessUser().id,
+        reason: reason,
+      });
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -299,5 +323,6 @@ export default function () {
     getBusinessSubscriptions,
     getBusinessSubscriptionSummary,
     updateBusinessAutoResponse,
+    updateEmail,
   };
 }
