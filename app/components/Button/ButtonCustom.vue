@@ -1,12 +1,13 @@
 <template>
-<button
+  <button
     :type="type || 'button'"
     :disabled="isLoading || disabled"
     @click="$emit('clicked')"
-    class="flex items-center justify-center gap-[5px] text-[14px] w-full 
-           transition transform duration-150 ease-in-out hover:scale-105
-           disabled:cursor-not-allowed disabled:opacity-70"
+    class="flex items-center justify-center gap-[5px] text-[14px] w-full disabled:cursor-not-allowed disabled:opacity-70"
     :class="[
+      noZoom
+        ? ''
+        : 'transition transform duration-150 ease-in-out hover:scale-105',
       // Base style (depends on primary)
       primary
         ? '!bg-primary text-white'
@@ -19,10 +20,8 @@
       rounded ? 'rounded-full' : 'rounded-[5px]',
 
       // External custom styles (overrides)
-      inputClass
-      
+      inputClass,
     ]"
-    
   >
     <i v-if="icon" :class="`pi pi-${icon}`" class="px-3"></i>
     {{ label }}
@@ -30,6 +29,18 @@
 </template>
 
 <script setup>
-const props = defineProps(['type', 'primary', 'label', 'disabled', 'icon', 'isLoading', 'size', 'inputClass', 'rounded', 'isEditing']);
-const events = defineEmits(['clicked'])
+const props = defineProps([
+  "type",
+  "primary",
+  "label",
+  "disabled",
+  "icon",
+  "isLoading",
+  "size",
+  "inputClass",
+  "rounded",
+  "isEditing",
+  "noZoom",
+]);
+const events = defineEmits(["clicked"]);
 </script>

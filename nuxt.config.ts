@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
-    "nuxt-qrcode"
+    "nuxt-qrcode",
   ],
   primevue: {
     options: {
@@ -32,10 +32,12 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL!,
       businessApiUrl: process.env.BUSINESS_API_URL!,
-      reviewApiUrl:process.env.REVIEW_API_URL,
-      reviewApiUrl: process.env.REVIEW_API_URL!,
+      reviewApiUrl: process.env.REVIEW_API_URL,
+      notification_url: process.env.NOTIFICATION_API_URL!,
       QR_API_BASE: "https://api.qrserver.com/v1/create-qr-code/",
-      QR_SIZE: "400x400", 
+      QR_SIZE: "400x400",
+      encrypt_key: process.env.ENCODE_KEY!,
+      app_url: process.env.APP_URL!,
     },
   },
   routeRules: {

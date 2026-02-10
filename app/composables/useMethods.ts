@@ -27,7 +27,7 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
     }
@@ -46,7 +46,7 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
     }
@@ -83,7 +83,7 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
     }
@@ -94,9 +94,9 @@ export default function () {
 
   const logoutUser = async () => {
     if (isLoggingOut.value) return;
-    
+
     isLoggingOut.value = true;
-    logoutError.value = ""; 
+    logoutError.value = "";
 
     try {
       // 1. Attempt the API call
@@ -108,23 +108,22 @@ export default function () {
       // 3. Clear local state ONLY after successful API response
       store.clearUser();
       userStore.clearUser();
-      
+
       showLogoutModal.value = false;
 
       // 4. Redirect based on the captured role
-      const redirectPath = role === 'business_user' 
-        ? '/business/auth/sign-in' 
-        : '/';
+      const redirectPath =
+        role === "business_user" ? "/business/auth/sign-in" : "/";
 
       await navigateTo(redirectPath, { replace: true });
-      
     } catch (err: any) {
       // 5. ON FAILURE: No redirect, no local data wipe
       console.error("Logout failed:", err);
-      
+
       // Capture the specific error message from the backend
-      logoutError.value = err?.response?.data?.message || "Server error: Could not invalidate session. Please try again.";
-      
+      logoutError.value =
+        err?.response?.data?.message ||
+        "Server error: Could not invalidate session. Please try again.";
     } finally {
       isLoggingOut.value = false;
     }
@@ -144,9 +143,84 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
+    }
+  };
+
+  const requestResetPassword = async (id: string, type = "email") => {
+    try {
+      const res = await api.post("api/password/request-password-reset", {
+        id,
+        type,
+      });
+
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
+
+  const resetPassword = async (id: string, password: string) => {
+    try {
+      const res = await api.post("api/password/reset-password", {
+        id: id,
+        password: password,
+      });
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
+
+  const updatePassword = async (
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+  ) => {
+    try {
+      const res = await api.post("api/password/update-password", {
+        email: email,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      });
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
     }
   };
 
@@ -159,6 +233,9 @@ export default function () {
     triggerLogout,
     showLogoutModal,
     isLoggingOut,
-    logoutError
+    logoutError,
+    requestResetPassword,
+    resetPassword,
+    updatePassword,
   };
 }

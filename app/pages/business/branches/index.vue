@@ -66,7 +66,6 @@
           :icon="isSubmitting ? 'spinner pi-spin' : null"
           input-class="w-max"
           type="submit"
-          @clicked="deleteBranchAsync(deleteBranchId)"
         />
       </div>
     </form>

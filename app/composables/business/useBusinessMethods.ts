@@ -42,12 +42,12 @@ export default function () {
 
   const saveBusinessPreferences = async (
     businessId: string,
-    data: BusinessPreference
+    data: BusinessPreference,
   ) => {
     try {
       const res = await businessApi.patch(
         `api/business/${businessId}/settings`,
-        data
+        data,
       );
       console.log("Preferences saved:", res.data);
 
@@ -136,7 +136,7 @@ export default function () {
     try {
       const res = await businessApi.post(
         "api/business-branch",
-        JSON.stringify(data)
+        JSON.stringify(data),
       );
       return { statusCode: res.status, data: res.data };
     } catch (error) {
@@ -150,7 +150,7 @@ export default function () {
     try {
       const res = await businessApi.patch(
         "api/business-branch",
-        JSON.stringify(data)
+        JSON.stringify(data),
       );
       return { statusCode: res.status, data: res.data };
     } catch (error) {
@@ -185,6 +185,99 @@ export default function () {
     }
   };
 
+  const getBusinessSettings = async () => {
+    try {
+      const res = await businessApi.get(
+        `api/business/${getBusinessUser().id}/settings`,
+      );
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateBusinessSettings = async (
+    id: string,
+    currentUserId: string,
+    data: any,
+  ) => {
+    try {
+      const res = await businessApi.patch(
+        `api/business/${id}/settings?currentUserId=${currentUserId}`,
+        data,
+      );
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateBusinessAutoResponse = async (data: {
+    positiveResponse: string;
+    negativeResponse: string;
+    neutralResponse: string;
+    allowAutoResponse: boolean;
+  }) => {
+    try {
+      const res = await businessApi.patch(
+        `api/BusinessAutoResponse/${getBusinessUser().id}`,
+        data,
+      );
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBusinessAutoResponse = async () => {
+    try {
+      const res = await businessApi.get(
+        `api/BusinessAutoResponse/${getBusinessUser().id}`,
+      );
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBusinessSubscriptions = async () => {
+    try {
+      const res = await businessApi.get(`api/Subscription/plans`);
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBusinessSubscriptionSummary = async () => {
+    try {
+      const res = await businessApi.get(
+        `api/Subscription/business/${getBusinessUser().id}`,
+      );
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -200,5 +293,11 @@ export default function () {
     createBranch,
     updateBranch,
     deleteBranch,
+    getBusinessSettings,
+    updateBusinessSettings,
+    getBusinessAutoResponse,
+    getBusinessSubscriptions,
+    getBusinessSubscriptionSummary,
+    updateBusinessAutoResponse,
   };
 }
