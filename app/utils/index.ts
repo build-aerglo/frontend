@@ -286,7 +286,6 @@ export const truncateDate = (s: string) => {
   return returnDay;
 };
 
-
 type Day =
   | "monday"
   | "tuesday"
@@ -346,7 +345,7 @@ function toISO(time: string): string {
 // }
 function isoToRange(
   open: string | Date | null,
-  close: string | Date | null
+  close: string | Date | null,
 ): string {
   if (!open || !close) {
     return "00:00 - 00:00";
@@ -433,3 +432,182 @@ export const businessClaim = (s: string) => {
   if (status === "in_progress") return "Claim in Progress";
   if (status === "unclaimed") return "Unclaimed Business";
 };
+
+export const getCategoryIcon = (categoryName: string): string => {
+  const name = categoryName.toLowerCase();
+
+  // Mapping category keywords to appropriate icons
+  if (
+    name.includes("restaurant") ||
+    name.includes("food") ||
+    name.includes("dining")
+  ) {
+    return "pi-shopping-bag";
+  }
+  if (
+    name.includes("hotel") ||
+    name.includes("accommodation") ||
+    name.includes("lodging")
+  ) {
+    return "pi-building";
+  }
+  if (
+    name.includes("health") ||
+    name.includes("medical") ||
+    name.includes("hospital")
+  ) {
+    return "pi-heart";
+  }
+  if (
+    name.includes("education") ||
+    name.includes("school") ||
+    name.includes("university")
+  ) {
+    return "pi-book";
+  }
+  if (
+    name.includes("entertainment") ||
+    name.includes("cinema") ||
+    name.includes("movie")
+  ) {
+    return "pi-ticket";
+  }
+  if (
+    name.includes("shop") ||
+    name.includes("retail") ||
+    name.includes("store")
+  ) {
+    return "pi-shopping-cart";
+  }
+  if (
+    name.includes("beauty") ||
+    name.includes("salon") ||
+    name.includes("spa")
+  ) {
+    return "pi-sparkles";
+  }
+  if (
+    name.includes("fitness") ||
+    name.includes("gym") ||
+    name.includes("sport")
+  ) {
+    return "pi-heart-fill";
+  }
+  if (
+    name.includes("auto") ||
+    name.includes("car") ||
+    name.includes("vehicle")
+  ) {
+    return "pi-car";
+  }
+  if (
+    name.includes("finance") ||
+    name.includes("bank") ||
+    name.includes("money")
+  ) {
+    return "pi-wallet";
+  }
+  if (
+    name.includes("tech") ||
+    name.includes("computer") ||
+    name.includes("electronics")
+  ) {
+    return "pi-desktop";
+  }
+  if (name.includes("service") || name.includes("business")) {
+    return "pi-briefcase";
+  }
+  if (
+    name.includes("travel") ||
+    name.includes("tour") ||
+    name.includes("tourism")
+  ) {
+    return "pi-compass";
+  }
+  if (
+    name.includes("pet") ||
+    name.includes("animal") ||
+    name.includes("veterinary")
+  ) {
+    return "pi-discord";
+  }
+  if (
+    name.includes("home") ||
+    name.includes("furniture") ||
+    name.includes("decor")
+  ) {
+    return "pi-home";
+  }
+
+  // Default icon for unmatched categories
+  return "pi-tag";
+};
+
+// const ENCRYPTION_KEY = "YourSecure32CharacterKeyHere123";
+
+export async function encryptPasswordNative(password: string): Promise<string> {
+  // Convert key to bytes (ensure 32 bytes for AES-256)
+  const config = useRuntimeConfig();
+  const ENCRYPTION_KEY = config.public.encrypt_key as string;
+
+  const keyBytes = new TextEncoder().encode(
+    ENCRYPTION_KEY.padEnd(32).substring(0, 32),
+  );
+
+  // Generate random 16-byte IV
+  const iv = crypto.getRandomValues(new Uint8Array(16));
+
+  // Import key for AES-CBC
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    keyBytes,
+    { name: "AES-CBC" },
+    false,
+    ["encrypt"],
+  );
+
+  // Encrypt
+  const passwordBytes = new TextEncoder().encode(password);
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-CBC", iv: iv },
+    cryptoKey,
+    passwordBytes,
+  );
+
+  // Combine IV and ciphertext
+  const combined = new Uint8Array(iv.length + encrypted.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(encrypted), iv.length);
+
+  // Convert to Base64
+  return btoa(String.fromCharCode(...combined));
+}
+
+export function moneyFormat(amount: number) {
+  if (isNaN(amount)) return "";
+
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function getDayWithSuffix(day: number) {
+  if (day > 3 && day < 21) return `${day}th`;
+  switch (day % 10) {
+    case 1:
+      return `${day}st`;
+    case 2:
+      return `${day}nd`;
+    case 3:
+      return `${day}rd`;
+    default:
+      return `${day}th`;
+  }
+}
+
+export function dateFormat(dateString: string) {
+  const date = new Date(dateString);
+  const day = getDayWithSuffix(date.getDate());
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const year = date.getFullYear();
+
+  return `${day} ${month}, ${year}`;
+}
