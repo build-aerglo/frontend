@@ -174,6 +174,6 @@ const showGeneralAuth = ref(false)
 
 const handleGeneralAuthSuccess = () => {
   showGeneralAuth.value = false;  
-  toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 })
+  
 }
 </script>

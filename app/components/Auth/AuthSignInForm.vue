@@ -190,6 +190,7 @@ const HandleLogin = async () => {
         localStorage.removeItem('rememberMe');
         localStorage.removeItem('userEmail');
       }
+      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 })
       emit('success'); 
     } else {
       errorMessage.value = 'Invalid credentials. Please try again.';

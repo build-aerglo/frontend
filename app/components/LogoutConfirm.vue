@@ -6,7 +6,8 @@
       <div class="relative bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="text-center">
           <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
-            <i :class="isLoggingOut ? 'pi pi-spin pi-spinner' : 'pi pi-exclamation-triangle'" class="text-red-600 text-xl"></i>
+            <GeneralLoader v-if="isLoggingOut" height="32px" />
+            <i v-else class="pi pi-exclamation-triangle text-red-600 text-2xl"></i>
           </div>
           <h3 class="text-xl font-bold text-gray-900 dark:text-white">Sign Out</h3>
           <p class="text-gray-500 dark:text-gray-400 mt-2">Are you sure you want to log out?</p>

@@ -4,6 +4,16 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import useAutoLogout from '~/composables/useAutoLogout';
 
+const { startAutoLogoutCheck, stopAutoLogoutCheck } = useAutoLogout();
+
+onMounted(() => {
+  startAutoLogoutCheck();
+});
+
+onUnmounted(() => {
+  stopAutoLogoutCheck();
+});
 </script>
