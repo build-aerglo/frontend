@@ -10,7 +10,6 @@
         :isLayoutCollapsed="isLayoutCollapsed"
         :menuItems="menuItems"
       />
-      
 
       <div class="layout-page">
         <nav
@@ -127,7 +126,7 @@
 </template>
 
 <script setup>
-import LogoutConfirm from '~/components/LogoutConfirm.vue'
+import LogoutConfirm from "~/components/LogoutConfirm.vue";
 const route = useRoute();
 const menuItems = [
   { name: "Dashboard", to: "/business/dashboard", icon: "pi pi-home" },
@@ -145,7 +144,7 @@ const menuItems = [
     to: "/business/branches/",
     icon: "pi pi-warehouse",
   },
-  { name: "Settings", to: "/business/settings", icon: "pi pi-cog" },
+  { name: "Settings", to: "/business/setting/", icon: "pi pi-cog" },
   {
     name: "Help and support",
     to: "/business/help",
@@ -167,7 +166,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 const defaultAvatar = "https://www.gravatar.com/avatar/?d=mp&s=100";
 const previewUrl = ref(null);
@@ -211,7 +210,9 @@ const handleFileChange = (event) => {
     background-color: white;
     transform: translateX(-100%);
     opacity: 0;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transition:
+      transform 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
     z-index: 1050;
     pointer-events: none;
   }
@@ -228,7 +229,9 @@ const handleFileChange = (event) => {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
   }
 
   .menu-overlay.opacity-100.visible {

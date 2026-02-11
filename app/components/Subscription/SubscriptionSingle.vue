@@ -24,15 +24,36 @@
       <div class="flex flex-col gap-2.5">
         <div class="flex items-center gap-2.5">
           <i class="pi pi-check !text-primary mb-[1px]"></i>
-          <div>{{ tier.monthlyReplyLimit }} Monthly reply limit</div>
+          <div>
+            {{
+              tier.monthlyReplyLimit > 1000
+                ? "Unlimited"
+                : tier.monthlyReplyLimit
+            }}
+            Monthly reply limit
+          </div>
         </div>
         <div class="flex items-center gap-2.5">
           <i class="pi pi-check !text-primary mb-[1px]"></i>
-          <div>{{ tier.monthlyDisputeLimit }} Monthly dispute limit</div>
+          <div>
+            {{
+              tier.monthlyDisputeLimit > 1000
+                ? "Unlimited"
+                : tier.monthlyDisputeLimit
+            }}
+            Monthly dispute limit
+          </div>
         </div>
         <div class="flex items-center gap-2.5">
           <i class="pi pi-check !text-primary mb-[1px]"></i>
-          <div>{{ tier.externalSourceLimit }} External source limit</div>
+          <div>
+            {{
+              tier.externalSourceLimit > 1000
+                ? "Unlimited"
+                : tier.externalSourceLimit
+            }}
+            External source limit
+          </div>
         </div>
         <div class="flex items-center gap-2.5">
           <i class="pi pi-check !text-primary mb-[1px]"></i>

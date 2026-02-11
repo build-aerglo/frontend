@@ -267,6 +267,8 @@ const props = defineProps({
   canPrivateReviews: Boolean,
 });
 
+import { encryptPasswordNative } from "~/utils";
+
 import type {
   BusinessSettings,
   BusinessSettingsRequest,
