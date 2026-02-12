@@ -1,6 +1,6 @@
 <template>
   <div v-if="image.url">
-    <label>{{ label }}</label>
+    <label :class="editLabel ? 'label' : ''">{{ label }}</label>
     <div class="flex justify-between items-center gap-2.5">
       <div class="flex-1" v-if="isDeleting">Deleting Uploaded File...</div>
       <div class="flex-1" v-else>{{ fileData.name }}</div>
@@ -12,7 +12,7 @@
     </div>
   </div>
   <div v-else>
-    <label>{{ label }}</label>
+    <label :class="editLabel ? 'label' : ''">{{ label }}</label>
     <div class="flex justify-between items-center gap-2.5">
       <div class="flex-1" v-if="isLoading">Uploading File...</div>
       <div class="flex-1" v-else>Select File ({{ acceptDescription }})</div>
@@ -41,6 +41,7 @@ const props = defineProps([
   "accept",
   "acceptDescription",
   "id",
+  "editLabel",
 ]);
 const emit = defineEmits(["uploaded", "deleted"]);
 
@@ -106,3 +107,10 @@ const deleteUrl = async () => {
   }
 };
 </script>
+<style scoped>
+label.label {
+  font-weight: 400;
+  color: gray;
+  font-size: 90%;
+}
+</style>

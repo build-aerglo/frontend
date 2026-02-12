@@ -856,3 +856,20 @@ export const reviewConstants = [
     name: null,
   },
 ];
+
+export const idVerificationTypes = [
+  { code: "cac_certificate", name: "CAC Certificate", requiresIdNumber: true },
+  { code: "tin_certificate", name: "TIN Certificate", requiresIdNumber: true },
+  { code: "vat_certificate", name: "VAT Certificate", requiresIdNumber: true },
+  {
+    code: "partnership_deed",
+    name: "Partnership Deed",
+    requiresIdNumber: false,
+  },
+  {
+    code: "operating_license",
+    name: "Operating License",
+    requiresIdNumber: false,
+  },
+  { code: "other", name: "Other", requiresIdNumber: true },
+];

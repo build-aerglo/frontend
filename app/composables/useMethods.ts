@@ -183,6 +183,81 @@ export default function () {
     clearAllStores();
     await navigateTo(targetPath);
   };
+
+  const requestResetPassword = async (id: string, type = "email") => {
+    try {
+      const res = await api.post("api/password/request-password-reset", {
+        id,
+        type,
+      });
+
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
+
+  const resetPassword = async (id: string, password: string) => {
+    try {
+      const res = await api.post("api/password/reset-password", {
+        id: id,
+        password: password,
+      });
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
+
+  const updatePassword = async (
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+  ) => {
+    try {
+      const res = await api.post("api/password/update-password", {
+        email: email,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      });
+      return {
+        ok: true,
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error: any) {
+      const statusCode = error?.response?.status ?? 500;
+      const data = error?.response?.data ?? { message: "Something went wrong" };
+
+      return {
+        ok: false,
+        statusCode,
+        data,
+      };
+    }
+  };
   
   return {
     loginUser,
@@ -196,5 +271,8 @@ export default function () {
     logoutError,
     handleRoleSwitch,
     clearAllStores,
+    requestResetPassword,
+    resetPassword,
+    updatePassword
   };
 }

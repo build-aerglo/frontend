@@ -172,3 +172,82 @@ export interface ClaimData {
   proofOfOwnerShipUrl: string | null;
   cacNumber: string;
 }
+
+export interface BusinessSettings {
+  id: string;
+  businessId: string;
+  reviewsPrivate: boolean;
+  reviewsPrivateEnabledAt: string;
+  privateReviewsReason: string;
+  dndModeEnabled: boolean;
+  dndModeEnabledAt: string | Date;
+  dndModeExpiresAt: string | Date;
+  dndModeReason: null;
+  dndExtensionCount: number;
+  dndModeMessage: string;
+  remainingDndHours: string;
+  autoResponseEnabled: boolean;
+  autoResponseEnabledAt: string;
+  externalSourcesConnected: number;
+  createdAt: string;
+  updatedAt: string;
+  modifiedByUserId: string;
+}
+
+export interface BusinessSettingsRequest {
+  reviewsPrivate: boolean;
+  privateReviewsReason: string;
+  dndModeEnabled: boolean;
+  dndModeDurationHours?: number;
+  dndModeReason?: string;
+  dndModeMessage: string;
+  autoResponseEnabled: boolean;
+}
+
+export interface Subscription {
+  id: string;
+  name: string;
+  tier: number;
+  description: string;
+  monthlyPrice: number;
+  annualPrice: number;
+  currency: string;
+  monthlyReplyLimit: number;
+  monthlyDisputeLimit: number;
+  externalSourceLimit: number;
+  userLoginLimit: number;
+  privateReviewsEnabled: boolean;
+  dataApiEnabled: boolean;
+  dndModeEnabled: boolean;
+  autoResponseEnabled: boolean;
+  branchComparisonEnabled: boolean;
+  competitorComparisonEnabled: boolean;
+  isActive: boolean;
+}
+
+export interface BusinessSubscription {
+  id: string;
+  businessId: string;
+  subscriptionPlanId: string;
+  planName: string;
+  tier: number;
+  startDate: string;
+  endDate: string;
+  isAnnual: true;
+  daysRemaining: number;
+  status: number;
+  isActive: boolean;
+  usage: {
+    repliesUsed: number;
+    repliesLimit: number;
+    repliesRemaining: number;
+    repliesPercentage: number;
+    disputesUsed: number;
+    disputesLimit: number;
+    disputesRemaining: number;
+    disputesPercentage: number;
+    usageResetDate: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
