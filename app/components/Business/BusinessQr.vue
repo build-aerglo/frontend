@@ -6,13 +6,10 @@
                     
                     <div class="flex justify-center items-start">
                         <div 
-                            class="bg-white border-2 border-slate-100 shadow-2xl rounded-2xl p-8 flex flex-col items-center w-full max-w-[350px] text-center"
+                            id="qr-poster-area" class="bg-white border-2 border-slate-100 shadow-2xl rounded-2xl p-8 flex flex-col items-center w-full max-w-[350px] text-center"
                         >
                             <div class="mb-6 flex flex-col items-center">
                                 <img v-if="business?.logo" :src="business.logo" class="w-16 h-16 object-contain mb-2" />
-                                <div v-else class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-2">
-                                    <i class="pi pi-briefcase text-slate-300 text-2xl"></i>
-                                </div>
                                 <h2 class="text-2xl font-bold text-gray-700">{{ business?.name }}</h2>
                             </div>
 
@@ -77,7 +74,7 @@
 
 <script setup>
 import { ref, onBeforeMount } from 'vue'
-
+import * as htmlToImage from 'html-to-image';
 const props = defineProps(['business'])
 const qr = ref("")
 const copied = ref(false)
@@ -108,55 +105,80 @@ const copyToClipboard = async () => {
     }
 };
 
-const downloadQRCode = () => {
-    const link = document.createElement("a");
-    // Prefix backend string or use generated hook
-    link.href = props.business?.qrCodeBase64 
-        ? `data:image/png;base64,${props.business.qrCodeBase64}` 
-        : qrUrlGenerated.value;
-        
-    link.download = `${props.business.name.replace(/\s+/g, "-").toLowerCase()}-qr-code.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+const printQRCode = async () => {
+    const node = document.getElementById('qr-poster-area');
+    if (!node) return;
+
+    try {
+        // We use htmlToImage to get a clean dataURL so the print window 
+        // doesn't have to worry about loading external images or CORS
+        const dataUrl = await htmlToImage.toPng(node, {
+            backgroundColor: '#ffffff',
+            pixelRatio: 2,
+        });
+
+        const popup = window.open("", "_blank");
+        if (!popup) return;
+
+        popup.document.write(`
+            <html>
+                <head>
+                    <title>Print QR Code - ${props.business?.name}</title>
+                    <style>
+                        body { 
+                            margin: 0; 
+                            display: flex; 
+                            justify-content: center; 
+                            align-items: center; 
+                            min-height: 100vh; 
+                            background: #fff;
+                        }
+                        img { 
+                            max-width: 90%; 
+                            max-height: 90vh; 
+                            object-fit: contain;
+                            /* Ensures the shadow isn't clipped by the page edge */
+                            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
+                        }
+                        @page { size: auto; margin: 0mm; }
+                    </style>
+                </head>
+                <body>
+                    <img src="${dataUrl}" />
+                    <script>
+                        window.onload = () => { 
+                            setTimeout(() => { 
+                                window.print(); 
+                                window.close(); 
+                            }, 300); 
+                        }
+                    <\/script>
+                </body>
+            </html>
+        `);
+        popup.document.close();
+    } catch (err) {
+        console.error("Print failed:", err);
+    }
 };
 
-const printQRCode = () => {
-    const popup = window.open("", "_blank");
-    if (!popup) return;
+const downloadQRCode = async () => {
+    // We target the specific ID we added to your template: id="qr-poster-area"
+    const node = document.getElementById('qr-poster-area');
 
-    const qrSrc = props.business?.qrCodeBase64 
-        ? `data:image/png;base64,${props.business.qrCodeBase64}` 
-        : qrUrlGenerated.value;
+    try {
+        const dataUrl = await htmlToImage.toPng(node, {
+            backgroundColor: '#ffffff', // Ensures the background isn't transparent
+            pixelRatio: 3, // Doubles the resolution for a crisp, high-quality print
+        });
 
-    popup.document.write(`
-        <html>
-            <head>
-                <title>Print QR Code - ${props.business.name}</title>
-                <style>
-                    body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; font-family:sans-serif; }
-                    .poster { border:2px solid #e5e7eb; padding:40px; border-radius:20px; text-align:center; width:350px; }
-                    .logo { height:60px; margin-bottom:10px; }
-                    .qr-box { background:#f9fafb; padding:20px; border-radius:15px; margin:20px 0; }
-                    img.qr { width:100%; display:block; }
-                    .footer { color:#9ca3af; font-size:12px; margin-top:30px; border-top:1px solid #eee; padding-top:20px; text-transform:uppercase; letter-spacing:1px; }
-                </style>
-            </head>
-            <body>
-                <div class="poster">
-                    ${props.business.logo ? `<img src="${props.business.logo}" class="logo" />` : ''}
-                    <h1>${props.business.name}</h1>
-                    <div class="qr-box">
-                        <img src="${qrSrc}" class="qr" />
-                    </div>
-                    <p><b>Scan to leave a review</b></p>
-                    <div class="footer">Powered by Clereview</div>
-                </div>
-                <script>window.onload = () => { setTimeout(() => { window.print(); window.close(); }, 300); }<\/script>
-            </body>
-        </html>
-    `);
-    popup.document.close();
+        const link = document.createElement('a');
+        link.download = `${props.business.name.replace(/\s+/g, "-")}-qr-poster.png`;
+        link.href = dataUrl;
+        link.click();
+    } catch (error) {
+        console.error('Oops, something went wrong!', error);
+    }
 };
 
 const shareQRCode = async () => {
