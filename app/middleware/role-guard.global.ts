@@ -21,8 +21,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     },
     {
       pattern: /^\/end-user(?!\/auth)/,  // /end-user/* but NOT /end-user/auth/*
-      blockedRoles: ['business_user', 'support_user'],
-      redirect: '/'  // Redirect to home page
+      blockedRoles: ['business_user', 'support_user'],  // Block business and support users
+      redirect: '/'  // Or '/support/dashboard' depending on role
     },
     {
       pattern: /^\/(user|review)/,  // /user/* or /review/*
@@ -48,7 +48,13 @@ export default defineNuxtRouteMiddleware((to, from) => {
       // Handle blocked roles (for end-user routes)
       if (rule.blockedRoles && currentRole && rule.blockedRoles.includes(currentRole)) {
         console.warn(`Access denied: ${currentRole} tried to access ${to.path}`);
-        return navigateTo(rule.redirect);  // Use the rule's redirect (home page)
+        
+        // Redirect based on their actual role
+        if (currentRole === 'business_user') {
+          return navigateTo('/business/dashboard');
+        } else if (currentRole === 'support_user') {
+          return navigateTo('/support/dashboard');
+        }
       }
       
       // Handle allowed roles (for business/support/user routes)

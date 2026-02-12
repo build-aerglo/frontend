@@ -18,10 +18,85 @@
               Build customer trust through real feedback!
             </p>
 
-            <form @submit.prevent="handleRegistration" class="mb-6">
+            <!-- CLAIM BUSINESS SECTION - Shows when unclaimed business is found -->
+            <div v-if="showClaimOption && unclaimedBusiness" class="text-center py-8">
+              <div class="mb-4">
+                <i class="pi pi-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Already Exists!</h3>
+              <p class="text-gray-600 mb-2">
+                A business with the name <strong>"{{ unclaimedBusiness.name }}"</strong> already exists but is unclaimed.
+              </p>
+              <p class="text-gray-600 mb-6">
+                If this is your business, you can claim it instead of creating a new one.
+              </p>
+              
+              <div class="flex flex-col gap-3 max-w-md mx-auto">
+                <ButtonCustom
+                  :label="`Claim '${unclaimedBusiness.name}'`"
+                  primary="true"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="handleClaimRedirect"
+                />
+                <ButtonCustom
+                  label="Register Different Business"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="resetSearch"
+                />
+              </div>
+            </div>
 
-              <div class="form-control-validation">
-                <InputTextCustom v-model="businessData.name" label="Business Name" type="text" required />
+            <!-- BUSINESS CLAIMED SECTION - Shows when claimed business is found -->
+            <div v-else-if="showClaimedWarning && claimedBusiness" class="text-center py-8">
+              <div class="mb-4">
+                <i class="pi pi-times-circle text-red-500 text-5xl mb-4"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Name Already Taken</h3>
+              <p class="text-gray-600 mb-2">
+                A business with the name <strong>"{{ claimedBusiness.name }}"</strong> is already registered and verified.
+              </p>
+              <p class="text-gray-600 mb-6">
+                Please choose a different business name or contact support if you believe this is an error.
+              </p>
+              
+              <div class="flex flex-col gap-3 max-w-md mx-auto">
+                <ButtonCustom
+                  label="Try Different Name"
+                  primary="true"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="resetSearch"
+                />
+              </div>
+            </div>
+
+            <!-- REGISTRATION FORM - Shows when no business found or search not triggered -->
+            <form v-else @submit.prevent="handleRegistration" class="mb-6">
+
+              <div class="form-control-validation relative">
+                <InputTextCustom 
+                  v-model="businessData.name" 
+                  label="Business Name" 
+                  type="text" 
+                  required 
+                  @blur="handleBusinessNameBlur"
+                  @input="handleBusinessNameInput"
+                />
+                
+                <!-- Search Loading Indicator -->
+                <div v-if="isSearching" class="absolute right-3 top-10">
+                  <i class="pi pi-spin pi-spinner text-primary"></i>
+                </div>
+
+                <!-- Search Results Indicator -->
+                <div v-if="searchCompleted && !isSearching" class="mt-2 text-sm">
+                  <div v-if="businessNameAvailable" class="flex items-center text-green-600">
+                    <i class="pi pi-check-circle mr-2"></i>
+                    Business name is available
+                  </div>
+                </div>
               </div>
 
               <div class="form-control-validation">
@@ -35,10 +110,19 @@
               <!-- FIXED: MULTIPLE SELECT -->
               <div class="form-control-validation">
                 <span class="text-contrast text-[95%] mb-1">Business Sector</span>
-                <Select v-model="businessData.categoryIds" :options="categories"  :selectionLimit="1" optionLabel="name" optionValue="id" filter required
-                :maxSelectedLabels="3" class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] 
-                focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
-                bg-secondaryLinen" />               
+                <Select 
+                  v-model="businessData.categoryIds" 
+                  :options="categories"  
+                  :selectionLimit="1" 
+                  optionLabel="name" 
+                  optionValue="id" 
+                  filter 
+                  required
+                  :maxSelectedLabels="3" 
+                  class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] 
+                  focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 
+                  bg-secondaryLinen" 
+                />               
               </div>
 
               <div class="form-password-toggle form-control-validation">
@@ -64,7 +148,7 @@
                 <InputTextCustom v-model="confirmPassword" label="Confirm Password" type="password" required />
               </div>
 
-              <div v-if="registrationError" class="text-red-500">{{ registrationError }}</div>
+              <div v-if="registrationError" class="text-red-500 text-sm mt-2">{{ registrationError }}</div>
 
               <ButtonCustom
                 :label="isLoading ? 'Registering...' : 'Register your business'"
@@ -76,7 +160,7 @@
               />
             </form>
 
-            <p class="text-center md:text-[100%]">
+            <p v-if="!showClaimOption && !showClaimedWarning" class="text-center md:text-[100%]">
               <span class="text-contrast">Already have an account?</span>
               <NuxtLink to="sign-in">
                 <span class="ms-1 hover:underline text-link">Sign in instead</span>
@@ -94,13 +178,26 @@
 <script setup lang="ts">
 import useMethods from '~/composables/useMethods';
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
+import useSearch from '~/composables/search/useSearch';
 import type { BusinessUser } from "~/types/business";
 
 const { getCategories } = useBusinessMethods();
 const { registerBusiness } = useMethods();
+const { search } = useSearch();
 const toast = useToast();
+const router = useRouter();
 
 const categories = ref<{ id: string; name: string }[]>([]);
+
+// Search-related state
+const isSearching = ref(false);
+const searchCompleted = ref(false);
+const businessNameAvailable = ref(false);
+const showClaimOption = ref(false);
+const showClaimedWarning = ref(false);
+const unclaimedBusiness = ref<any>(null);
+const claimedBusiness = ref<any>(null);
+let searchTimeout: NodeJS.Timeout | null = null;
 
 onMounted(async () => {
   try {
@@ -169,6 +266,110 @@ watch(password, (newVal) => {
 watch([password, confirmPassword], () => {
   if (isValid.value) isValid.value = false;
 });
+
+// Handle business name input with debounce
+const handleBusinessNameInput = () => {
+  // Clear previous timeout
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+
+  // Reset search states
+  searchCompleted.value = false;
+  businessNameAvailable.value = false;
+  showClaimOption.value = false;
+  showClaimedWarning.value = false;
+  unclaimedBusiness.value = null;
+  claimedBusiness.value = null;
+
+  // Don't search if name is too short
+  if (businessData.value.name.trim().length < 3) {
+    return;
+  }
+
+  // Debounce search - wait 800ms after user stops typing
+  searchTimeout = setTimeout(() => {
+    searchBusinessName(businessData.value.name.trim());
+  }, 800);
+};
+
+// Search for business name
+const searchBusinessName = async (name: string) => {
+  if (!name || name.length < 3) return;
+
+  try {
+    isSearching.value = true;
+    const results = await search(name);
+
+    if (results && results.length > 0) {
+      // Find exact match (case-insensitive)
+      const exactMatch = results.find(
+        (business: any) => business.name.toLowerCase() === name.toLowerCase()
+      );
+
+      if (exactMatch) {
+        // Check if business is claimed
+        if (exactMatch.isClaimed === false || exactMatch.businessStatus === 'pending' || exactMatch.businessStatus === 'unclaimed') {
+          // Business exists but is unclaimed
+          unclaimedBusiness.value = exactMatch;
+          showClaimOption.value = true;
+          showClaimedWarning.value = false;
+          businessNameAvailable.value = false;
+        } else {
+          // Business exists and is claimed
+          claimedBusiness.value = exactMatch;
+          showClaimedWarning.value = true;
+          showClaimOption.value = false;
+          businessNameAvailable.value = false;
+        }
+      } else {
+        // No exact match - name is available
+        businessNameAvailable.value = true;
+        showClaimOption.value = false;
+        showClaimedWarning.value = false;
+      }
+    } else {
+      // No results - name is available
+      businessNameAvailable.value = true;
+      showClaimOption.value = false;
+      showClaimedWarning.value = false;
+    }
+
+    searchCompleted.value = true;
+  } catch (error: any) {
+    console.error('Search error:', error);
+    // On error, allow registration to proceed
+    businessNameAvailable.value = true;
+    searchCompleted.value = true;
+  } finally {
+    isSearching.value = false;
+  }
+};
+
+// Handle blur event (when user leaves the field)
+const handleBusinessNameBlur = () => {
+  if (businessData.value.name.trim().length >= 3 && !searchCompleted.value) {
+    searchBusinessName(businessData.value.name.trim());
+  }
+};
+
+// Reset search and go back to form
+const resetSearch = () => {
+  showClaimOption.value = false;
+  showClaimedWarning.value = false;
+  unclaimedBusiness.value = null;
+  claimedBusiness.value = null;
+  searchCompleted.value = false;
+  businessNameAvailable.value = false;
+  businessData.value.name = '';
+};
+
+// Redirect to claim business page
+const handleClaimRedirect = () => {
+  if (unclaimedBusiness.value && unclaimedBusiness.value.id) {
+    router.push(`/biz/${unclaimedBusiness.value.id}/claim-business`);
+  }
+};
 
 const validateForm = (): { isValid: boolean; errorMessage?: string } => {
   // Validate business name
@@ -250,6 +451,18 @@ const handleRegistration = async () => {
   // Clear previous errors
   registrationError.value = null;
 
+  // Check if business name was searched and is available
+  if (!searchCompleted.value && businessData.value.name.trim().length >= 3) {
+    registrationError.value = 'Please wait while we check if the business name is available.';
+    // Trigger search
+    await searchBusinessName(businessData.value.name.trim());
+    
+    // If business exists, prevent registration
+    if (showClaimOption.value || showClaimedWarning.value) {
+      return;
+    }
+  }
+
   // Validate form
   const validation = validateForm();
   if (!validation.isValid) {
@@ -263,7 +476,7 @@ const handleRegistration = async () => {
     return;
   }
 
-  // ✅ Ensure categoryIds is always an array before sending
+  // Ensure categoryIds is always an array before sending
   const payload = {
     ...businessData.value,
     categoryIds: Array.isArray(businessData.value.categoryIds) 
@@ -275,7 +488,7 @@ const handleRegistration = async () => {
   try {
     isLoading.value = true;
 
-    const res = await registerBusiness(payload);  // ✅ Use payload instead of businessData.value
+    const res = await registerBusiness(payload);
     
     if (res) {
       toast.add({ 
@@ -315,7 +528,6 @@ const handleRegistration = async () => {
           registrationError.value = errorMessage || 'Invalid registration data. Please check your input.';
           break;
         case 409:
-          // Conflict - usually means email or business already exists
           registrationError.value = errorMessage || 'An account with this email already exists.';
           break;
         case 422:
@@ -333,10 +545,8 @@ const handleRegistration = async () => {
           registrationError.value = errorMessage || 'Registration failed. Please try again.';
       }
     } else if (error.request) {
-      // Network error - request was made but no response received
       registrationError.value = 'Network error. Please check your internet connection and try again.';
     } else {
-      // Other errors
       registrationError.value = error.message || 'An unexpected error occurred. Please try again.';
     }
 
@@ -350,8 +560,6 @@ const handleRegistration = async () => {
     isLoading.value = false;
   }
 };
-
-
 </script>
 
 <style scoped>
