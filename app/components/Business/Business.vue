@@ -642,14 +642,9 @@
             <div
               class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0"
             >
-              <div class="flex justify-center scale-75 sm:scale-90">
-                <Star
-                  v-for="n in 5"
-                  :key="n"
-                  :value="(business.avgRating ?? 0) - (n - 1)"
-                  class="w-8 h-8"
-                  :color-level="Math.floor(business.avgRating ?? 0)"
-                />
+              <div class="flex justify-center items-center gap-2 scale-75 sm:scale-90">
+                <span class="font-bold text-[150%]">{{ displayAvgRating }}</span>
+                <Star :count="business?.avgRating || 0" :rounded="true"/>
               </div>
               <div class="text-center text-xs text-gray-500">
                 ({{ business?.reviewCount ?? 0 }}
@@ -676,7 +671,7 @@
                     </a>
                     <NuxtLink
                       class="text-sm cursor-pointer text-primary underline"
-                      to="claim-business"
+                      :to="`/biz/${business?.id}/claim-business`"
                       v-if="business?.businessStatus === 'unclaimed'"
                     >
                       Claim Business
@@ -686,7 +681,7 @@
                 <div class="flex gap-2.5">
                   <NuxtLink
                     class="sm:block hidden"
-                    to="claim-business"
+                    :to="`/biz/${business?.id}/claim-business`"
                     v-if="business?.businessStatus === 'unclaimed'"
                   >
                     <ButtonCustom
@@ -857,7 +852,6 @@
 </template>
 
 <script setup lang="ts">
-import Star from "~/components/Stars.vue";
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
@@ -1232,6 +1226,23 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
+
+const displayAvgRating = computed(() => {
+  const rating = props.business?.avgRating ?? 0;
+  const decimal = rating % 1;
+  
+  let displayValue;
+  if (decimal <= 0.4) {
+    displayValue = Math.floor(rating);
+  } else if (decimal >= 0.6) {
+    displayValue = Math.ceil(rating);
+  } else {
+    displayValue = rating;
+  }
+  
+  // Format to 1 decimal place
+  return displayValue.toFixed(1);
+});
 </script>
 
 <style scoped>

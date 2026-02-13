@@ -49,30 +49,56 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
-  count: { type: Number, default: 0 }
-})
+  count: { type: Number, default: 0 },
+  rounded: { type: Boolean, default: false } // ✅ Add this prop
+});
 
-const instanceId = Math.random().toString(36).substring(2, 7)
-const MAX_WIDTH = 48
+const instanceId = Math.random().toString(36).substring(2, 7);
+const MAX_WIDTH = 48;
 
-// Determines how much of each specific circle is filled
-const getFillWidth = (index) => {
-  const diff = props.count - (index - 1)
-  const fillPercentage = Math.min(Math.max(diff, 0), 1)
-  return MAX_WIDTH * fillPercentage
-}
-
-// All stars in a set usually share the color level of the total score
-const getCircleColor = computed(() => {
-  const level = Math.round(props.count)
-  switch (level) {
-    case 1: return "#FF4101"
-    case 2: return "#FF6F01"
-    case 3: return "#FE9900"
-    case 4: return "#C39A28"
-    case 5: return "#deae29"
-    default: return "#CECECE"
+// ✅ Conditional rounding based on prop
+const displayRating = computed(() => {
+  const rating = props.count;
+  
+  // If rounded prop is false, return exact rating
+  if (!props.rounded) {
+    console.log(`🔵 Not rounded: ${rating}`);
+    return rating;
   }
-})
+  
+  // Apply rounding logic
+  const decimal = Math.round((rating % 1) * 10) / 10;
+  console.log(`🟢 Rating: ${rating}, Decimal: ${decimal}, Rounded prop: ${props.rounded}`);
+  if (decimal <= 0.4) {
+    console.log(`⬇️ Rounding down: ${Math.floor(rating)}`);
+    return Math.floor(rating);   
+  } else if (decimal >= 0.6) {
+    console.log(`⬆️ Rounding up: ${Math.ceil(rating)}`);
+    return Math.ceil(rating);
+  } else {
+    console.log(`➡️ Keeping half: ${rating}`);
+    return Math.floor(rating) + 0.5;
+  }
+});
+
+const getFillWidth = (index) => {
+  const diff = displayRating.value - (index - 1);
+  const fillPercentage = Math.min(Math.max(diff, 0), 1);
+  return MAX_WIDTH * fillPercentage;
+};
+
+const getCircleColor = computed(() => {
+  const level = Math.floor(displayRating.value);
+  switch (level) {
+    case 1: return "#FF4101";
+    case 2: return "#FF6F01";
+    case 3: return "#FE9900";
+    case 4: return "#C39A28";
+    case 5: return "#deae29";
+    default: return "#CECECE";
+  }
+});
 </script>
