@@ -643,13 +643,7 @@
               class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0"
             >
               <div class="flex justify-center scale-75 sm:scale-90">
-                <Star
-                  v-for="n in 5"
-                  :key="n"
-                  :value="displayRating - (n - 1)"
-                  class="w-8 h-8"
-                  :color-level="colorLevel"
-                />
+                <Star :count="business?.avgRating || 0" />
               </div>
               <div class="text-center text-xs text-gray-500">
                 ({{ business?.reviewCount ?? 0 }}
@@ -857,7 +851,6 @@
 </template>
 
 <script setup lang="ts">
-import Star from "~/components/Stars.vue";
 import type { BusinessProfileResponse } from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
@@ -1232,22 +1225,7 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
-const displayRating = computed(() => {
-  const rating = props.business?.avgRating ?? 0; // Access via props.business
-  const decimal = rating % 1;
-  
-  if (decimal <= 0.4) {
-    return Math.floor(rating);
-  } else if (decimal >= 0.6) {
-    return Math.ceil(rating);
-  } else {
-    return rating;
-  }
-});
 
-const colorLevel = computed(() => {
-  return Math.floor(displayRating.value);
-});
 
 </script>
 

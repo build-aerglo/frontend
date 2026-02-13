@@ -11,7 +11,13 @@
                 <small>{{ maskEmail(data.email) }}</small>
             </div>
             <div class="w-[100px]">
-                <Star :count="data.starRating" />
+                <Star
+                  v-for="n in 5"
+                  :key="n"
+                  :value="displayRating - (n - 1)"
+                  class="w-8 h-8"
+                  :color-level="colorLevel"
+                />
                 <small>{{ timeAgo(data.createdAt) }}</small>
             </div>
         </div>
@@ -64,7 +70,7 @@
 
 <script setup lang="ts">
 import useReviewMethods from '~/composables/method/useReviewMethods';
-import Star from '../Star/Star.vue';
+
 const props = defineProps(['data', 'upvotes', 'isBusiness'])
 
 const { upvoteReview } = useReviewMethods()

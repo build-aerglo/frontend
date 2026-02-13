@@ -71,7 +71,7 @@
               
               <div class="flex flex-col items-center sm:items-start shrink-0">
                 <h3 class="text-4xl sm:text-6xl font-black text-slate-800 leading-none mb-2">
-                  {{ business?.avgRating?.toFixed(1) || "0.0" }}
+                  {{ displayAvgRating }}
                 </h3>
                 <div class="mb-1 scale-75 sm:scale-100 origin-left">
                   <Star :count="business?.avgRating || 0" />
@@ -144,14 +144,39 @@
     </div>
   </div>
 
-  <Teleport to="body">
-    </Teleport>
+   <Teleport to="body">
+    <!-- Review Modal -->
+    <div v-if="showReviewModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeReviewAndClearDraft"></div>
+      <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+        <button @click="closeReviewAndClearDraft" class="absolute top-5 right-5 text-gray-400">
+          <i class="pi pi-times text-xl"></i>
+        </button>
+        
+        <ReviewForm 
+          v-if="reviewDraft"
+          :initial-data="reviewDraft"
+          @close="closeReviewAndClearDraft" 
+          @open-auth="handleOpenAuth" 
+          @success="closeReviewAndClearDraft"
+        />
+      </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <AuthUnifiedModal 
+      v-if="showAuthModal" 
+      @close="showAuthModal = false" 
+      @authenticated="onUserAuthenticated"
+      @back-to-review="handleBackToReview"
+    />
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { useUserStore } from "~/store/user";
 import ReviewForm from "~/components/Review/ReviewForm.vue";
-import Star from "~/components/Star/Star.vue"; 
+ 
 import useReviewMethods from "~/composables/method/useReviewMethods";
 const { getBusinessReviews } = useReviewMethods();
 
@@ -275,12 +300,70 @@ const ratingDescription = computed(() => {
 });
 
 // Handlers for Writing Review (Preserved)
-const handleWriteReviewClick = () => { /* ... (Same as before) */ };
-const closeReviewAndClearDraft = () => { /* ... (Same as before) */ };
-const handleOpenAuth = (data: any) => { /* ... */ };
-const onUserAuthenticated = () => { /* ... */ };
-const handleBackToReview = () => { /* ... */ };
+const handleWriteReviewClick = () => {
+  if (userStore.isAuthenticated) {
+    // Redirect directly to the write-review page
+    navigateTo({
+      path: '/review/write-review',
+      query: { 
+        bizId: props.business.id, 
+        bizName: props.business.name,
+        bizLogo: props.business.logo 
+      }
+    });
+  } else {
+    // 2. If guest, show the modal flow
+    reviewDraft.value = {
+      businessName: props.business.name,
+      selectedBusinessId: props.business.id,
+      selectedBusinessLogo: props.business.logo,
+      rating: 0,
+      reviewBody: '',
+      images: [],
+      isAddingNewBusiness: false
+    };
+    showReviewModal.value = true;
+  }
+}
 
+const handleOpenAuth = (currentFormData: any) => {
+  reviewDraft.value = currentFormData;
+  localStorage.setItem('review_draft', JSON.stringify(currentFormData));
+  showReviewModal.value = false;
+  showAuthModal.value = true;
+};
+
+const onUserAuthenticated = () => {
+  showAuthModal.value = false;
+  showReviewModal.value = true; 
+};
+
+const handleBackToReview = () => {
+  showAuthModal.value = false;
+  showReviewModal.value = true;
+};
+
+const closeReviewAndClearDraft = () => {
+  showReviewModal.value = false;
+  reviewDraft.value = null;
+  localStorage.removeItem('review_draft');
+};
+const displayAvgRating = computed(() => {
+  const rating = props.business?.avgRating ?? 0;
+  const decimal = rating % 1;
+  
+  let displayValue;
+  if (decimal <= 0.4) {
+    displayValue = Math.floor(rating);
+  } else if (decimal >= 0.6) {
+    displayValue = Math.ceil(rating);
+  } else {
+    displayValue = rating;
+  }
+  
+  // Format to 1 decimal place
+  return displayValue.toFixed(1);
+});
 watch([sortValue, filterValue, searchValue], () => { first.value = 0; });
 </script>
 
