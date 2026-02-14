@@ -21,19 +21,19 @@
             <!-- CLAIM BUSINESS SECTION - Shows when unclaimed business is found -->
             <div v-if="showClaimOption && unclaimedBusiness" class="text-center py-8">
               <div class="mb-4">
-                <i class="pi pi-exclamation-triangle text-yellow-500 text-5xl mb-4"></i>
+                <i class="pi pi-info-circle text-blue-500 text-5xl mb-4"></i>
               </div>
-              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Already Exists!</h3>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Profile Available to Claim</h3>
               <p class="text-gray-600 mb-2">
-                A business with the name <strong>"{{ unclaimedBusiness.name }}"</strong> already exists but is unclaimed.
+                A business profile for <strong>"{{ unclaimedBusiness.name }}"</strong> already exists on Clereview.
               </p>
               <p class="text-gray-600 mb-6">
-                If this is your business, you can claim it instead of creating a new one.
+                Claim this profile to respond to reviews, update your details, and manage your business reputation on Clereview.
               </p>
               
               <div class="flex flex-col gap-3 max-w-md mx-auto">
                 <ButtonCustom
-                  :label="`Claim '${unclaimedBusiness.name}'`"
+                  label="Claim My Business"
                   primary="true"
                   size="lg"
                   input-class="p-3 text-[15px]"
@@ -51,14 +51,18 @@
             <!-- BUSINESS CLAIMED SECTION - Shows when claimed business is found -->
             <div v-else-if="showClaimedWarning && claimedBusiness" class="text-center py-8">
               <div class="mb-4">
-                <i class="pi pi-times-circle text-red-500 text-5xl mb-4"></i>
+                <i class="pi pi-check-circle text-green-500 text-5xl mb-4"></i>
               </div>
-              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Name Already Taken</h3>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">Business Already Claimed</h3>
               <p class="text-gray-600 mb-2">
-                A business with the name <strong>"{{ claimedBusiness.name }}"</strong> is already registered and verified.
+                This business already exists and has been claimed.
               </p>
-              <p class="text-gray-600 mb-6">
-                Please choose a different business name or contact support if you believe this is an error.
+              <p class="text-gray-600 mb-4">
+                Confirm the business name is correct and contact us at 
+                <a href="mailto:support@clereview.com" class="text-primary underline font-semibold">
+                  support@clereview.com
+                </a> 
+                if you think there's been an issue.
               </p>
               
               <div class="flex flex-col gap-3 max-w-md mx-auto">
@@ -69,6 +73,9 @@
                   input-class="p-3 text-[15px]"
                   @clicked="resetSearch"
                 />
+                <a href="mailto:support@clereview.com" class="text-sm text-primary underline">
+                  Contact Support
+                </a>
               </div>
             </div>
 
@@ -181,7 +188,7 @@ import useBusinessMethods from '~/composables/business/useBusinessMethods';
 import useSearch from '~/composables/search/useSearch';
 import type { BusinessUser } from "~/types/business";
 
-const { getCategories } = useBusinessMethods();
+const { getCategories, getBusinessProfile } = useBusinessMethods();
 const { registerBusiness } = useMethods();
 const { search } = useSearch();
 const toast = useToast();
@@ -293,7 +300,7 @@ const handleBusinessNameInput = () => {
   }, 800);
 };
 
-// Search for business name
+// Search for business name and fetch full profile to check businessStatus
 const searchBusinessName = async (name: string) => {
   if (!name || name.length < 3) return;
 
@@ -308,19 +315,59 @@ const searchBusinessName = async (name: string) => {
       );
 
       if (exactMatch) {
-        // Check if business is claimed
-        if (exactMatch.isClaimed === false || exactMatch.businessStatus === 'pending' || exactMatch.businessStatus === 'unclaimed') {
-          // Business exists but is unclaimed
-          unclaimedBusiness.value = exactMatch;
-          showClaimOption.value = true;
-          showClaimedWarning.value = false;
-          businessNameAvailable.value = false;
-        } else {
-          // Business exists and is claimed
-          claimedBusiness.value = exactMatch;
-          showClaimedWarning.value = true;
+        // ✅ Use businessId directly from elastic search result
+        const businessId = exactMatch.businessId;
+
+        if (!businessId) {
+          console.error('Business ID not found in search result');
+          businessNameAvailable.value = true;
+          searchCompleted.value = true;
+          return;
+        }
+
+        // ✅ Fetch full business profile using the businessId
+        try {
+          const profileResponse = await getBusinessProfile(businessId);
+          
+          if (profileResponse?.statusCode === 200 && profileResponse.data) {
+            const businessProfile = profileResponse.data;
+            const businessStatus = businessProfile.businessStatus;
+
+            console.log(`Business found: ${businessProfile.name}, Status: ${businessStatus}`);
+
+            // ✅ Check businessStatus from full profile
+            if (businessStatus === 'approved' || businessStatus === 'claimed') {
+              // Business is claimed
+              claimedBusiness.value = businessProfile;
+              showClaimedWarning.value = true;
+              showClaimOption.value = false;
+              businessNameAvailable.value = false;
+            } else if (businessStatus === 'unclaimed' || businessStatus === 'pending') {
+              // Business is unclaimed
+              unclaimedBusiness.value = businessProfile;
+              showClaimOption.value = true;
+              showClaimedWarning.value = false;
+              businessNameAvailable.value = false;
+            } else {
+              // Unexpected status - treat as available
+              console.warn(`Unexpected business status: ${businessStatus}`);
+              businessNameAvailable.value = true;
+              showClaimOption.value = false;
+              showClaimedWarning.value = false;
+            }
+          } else {
+            // Failed to fetch profile - treat as available
+            console.error('Failed to fetch business profile:', profileResponse);
+            businessNameAvailable.value = true;
+            showClaimOption.value = false;
+            showClaimedWarning.value = false;
+          }
+        } catch (profileError) {
+          console.error('Error fetching business profile:', profileError);
+          // On error, allow registration to proceed
+          businessNameAvailable.value = true;
           showClaimOption.value = false;
-          businessNameAvailable.value = false;
+          showClaimedWarning.value = false;
         }
       } else {
         // No exact match - name is available

@@ -74,7 +74,7 @@
                   {{ displayAvgRating }}
                 </h3>
                 <div class="mb-1 scale-75 sm:scale-100 origin-left">
-                  <Star :count="business?.avgRating || 0" />
+                  <Star :count="business?.avgRating || 0" :rounded="true" />
                 </div>
                 <p class="text-[10px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">
                   Based on {{ reviews.length }}

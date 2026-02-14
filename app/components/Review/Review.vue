@@ -11,13 +11,7 @@
                 <small>{{ maskEmail(data.email) }}</small>
             </div>
             <div class="w-[100px]">
-                <Star
-                  v-for="n in 5"
-                  :key="n"
-                  :value="displayRating - (n - 1)"
-                  class="w-8 h-8"
-                  :color-level="colorLevel"
-                />
+                <Star :count="data.starRating" :rounded="false" />
                 <small>{{ timeAgo(data.createdAt) }}</small>
             </div>
         </div>
