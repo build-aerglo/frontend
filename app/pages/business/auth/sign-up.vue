@@ -88,8 +88,10 @@
                   label="Business Name" 
                   type="text" 
                   required 
-                  @blur="handleBusinessNameBlur"
+                  @focus="handleInputFocus"
                   @input="handleBusinessNameInput"
+                  @keydown.escape="closeDropdown"
+                  autocomplete="off"
                 />
                 
                 <!-- Search Loading Indicator -->
@@ -97,9 +99,47 @@
                   <i class="pi pi-spin pi-spinner text-primary"></i>
                 </div>
 
-                <!-- Search Results Indicator -->
-                <div v-if="searchCompleted && !isSearching" class="mt-2 text-sm">
-                  <div v-if="businessNameAvailable" class="flex items-center text-green-600">
+                <!-- Business Suggestions Dropdown -->
+                <div 
+                  v-if="showDropdown && searchResults.length > 0 && !isSearching" 
+                  class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                  @click.stop
+                >
+                  <div
+                    v-for="business in searchResults"
+                    :key="business.businessId"
+                    @click="handleBusinessSelect(business)"
+                    class="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+                  >
+                    <div class="flex items-start gap-3">
+                      <!-- Business Logo/Icon -->
+                      <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <img 
+                          v-if="business.logo" 
+                          :src="business.logo" 
+                          :alt="business.name"
+                          class="w-full h-full object-cover"
+                        />
+                        <i v-else class="pi pi-building text-gray-400"></i>
+                      </div>
+                      
+                      <!-- Business Info -->
+                      <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-gray-800 truncate">{{ business.name }}</div>
+                        <div class="text-xs text-gray-500 truncate" v-if="business.categories && business.categories.length > 0">
+                          {{ business.categories.map((c: { name: string }) => c.name).join(', ') }}
+                        </div>
+                        <div class="text-xs text-gray-400 truncate" v-if="business.businessAddress">
+                          <i class="pi pi-map-marker text-[10px]"></i> {{ business.businessAddress }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- No Results Message -->
+                <div v-if="showDropdown && searchResults.length === 0 && !isSearching && searchCompleted" class="mt-2 text-sm">
+                  <div class="flex items-center text-green-600">
                     <i class="pi pi-check-circle mr-2"></i>
                     Business name is available
                   </div>
@@ -204,6 +244,8 @@ const showClaimOption = ref(false);
 const showClaimedWarning = ref(false);
 const unclaimedBusiness = ref<any>(null);
 const claimedBusiness = ref<any>(null);
+const searchResults = ref<any[]>([]);
+const showDropdown = ref(false);
 let searchTimeout: NodeJS.Timeout | null = null;
 
 onMounted(async () => {
@@ -237,6 +279,11 @@ onMounted(async () => {
       life: 4000
     });
   }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    closeDropdown();
+  });
 });
 
 const businessData = ref<BusinessUser>({
@@ -274,6 +321,18 @@ watch([password, confirmPassword], () => {
   if (isValid.value) isValid.value = false;
 });
 
+// Handle input focus
+const handleInputFocus = () => {
+  if (businessData.value.name.trim().length >= 2 && searchResults.value.length > 0) {
+    showDropdown.value = true;
+  }
+};
+
+// Close dropdown
+const closeDropdown = () => {
+  showDropdown.value = false;
+};
+
 // Handle business name input with debounce
 const handleBusinessNameInput = () => {
   // Clear previous timeout
@@ -290,102 +349,44 @@ const handleBusinessNameInput = () => {
   claimedBusiness.value = null;
 
   // Don't search if name is too short
-  if (businessData.value.name.trim().length < 3) {
+  if (businessData.value.name.trim().length < 2) {
+    searchResults.value = [];
+    showDropdown.value = false;
     return;
   }
 
-  // Debounce search - wait 800ms after user stops typing
+  // Show dropdown
+  showDropdown.value = true;
+
+  // Debounce search - wait 500ms after user stops typing
   searchTimeout = setTimeout(() => {
     searchBusinessName(businessData.value.name.trim());
-  }, 800);
+  }, 500);
 };
 
-// Search for business name and fetch full profile to check businessStatus
+// Search for business name
 const searchBusinessName = async (name: string) => {
-  if (!name || name.length < 3) return;
+  if (!name || name.length < 2) return;
 
   try {
     isSearching.value = true;
     const results = await search(name);
 
     if (results && results.length > 0) {
-      // Find exact match (case-insensitive)
-      const exactMatch = results.find(
-        (business: any) => business.name.toLowerCase() === name.toLowerCase()
-      );
-
-      if (exactMatch) {
-        // ✅ Use businessId directly from elastic search result
-        const businessId = exactMatch.businessId;
-
-        if (!businessId) {
-          console.error('Business ID not found in search result');
-          businessNameAvailable.value = true;
-          searchCompleted.value = true;
-          return;
-        }
-
-        // ✅ Fetch full business profile using the businessId
-        try {
-          const profileResponse = await getBusinessProfile(businessId);
-          
-          if (profileResponse?.statusCode === 200 && profileResponse.data) {
-            const businessProfile = profileResponse.data;
-            const businessStatus = businessProfile.businessStatus;
-
-            console.log(`Business found: ${businessProfile.name}, Status: ${businessStatus}`);
-
-            // ✅ Check businessStatus from full profile
-            if (businessStatus === 'approved' || businessStatus === 'claimed') {
-              // Business is claimed
-              claimedBusiness.value = businessProfile;
-              showClaimedWarning.value = true;
-              showClaimOption.value = false;
-              businessNameAvailable.value = false;
-            } else if (businessStatus === 'unclaimed' || businessStatus === 'pending') {
-              // Business is unclaimed
-              unclaimedBusiness.value = businessProfile;
-              showClaimOption.value = true;
-              showClaimedWarning.value = false;
-              businessNameAvailable.value = false;
-            } else {
-              // Unexpected status - treat as available
-              console.warn(`Unexpected business status: ${businessStatus}`);
-              businessNameAvailable.value = true;
-              showClaimOption.value = false;
-              showClaimedWarning.value = false;
-            }
-          } else {
-            // Failed to fetch profile - treat as available
-            console.error('Failed to fetch business profile:', profileResponse);
-            businessNameAvailable.value = true;
-            showClaimOption.value = false;
-            showClaimedWarning.value = false;
-          }
-        } catch (profileError) {
-          console.error('Error fetching business profile:', profileError);
-          // On error, allow registration to proceed
-          businessNameAvailable.value = true;
-          showClaimOption.value = false;
-          showClaimedWarning.value = false;
-        }
-      } else {
-        // No exact match - name is available
-        businessNameAvailable.value = true;
-        showClaimOption.value = false;
-        showClaimedWarning.value = false;
-      }
+      // Store all results for dropdown
+      searchResults.value = results;
+      showDropdown.value = true;
+      businessNameAvailable.value = false;
     } else {
       // No results - name is available
+      searchResults.value = [];
       businessNameAvailable.value = true;
-      showClaimOption.value = false;
-      showClaimedWarning.value = false;
     }
 
     searchCompleted.value = true;
   } catch (error: any) {
     console.error('Search error:', error);
-    // On error, allow registration to proceed
+    searchResults.value = [];
     businessNameAvailable.value = true;
     searchCompleted.value = true;
   } finally {
@@ -393,10 +394,83 @@ const searchBusinessName = async (name: string) => {
   }
 };
 
-// Handle blur event (when user leaves the field)
-const handleBusinessNameBlur = () => {
-  if (businessData.value.name.trim().length >= 3 && !searchCompleted.value) {
-    searchBusinessName(businessData.value.name.trim());
+// Handle business selection from dropdown
+const handleBusinessSelect = async (selectedBusiness: any) => {
+  // Close dropdown
+  closeDropdown();
+  
+  // Set the business name in the input
+  businessData.value.name = selectedBusiness.name;
+
+  // Get the businessId
+  const businessId = selectedBusiness.businessId;
+
+  if (!businessId) {
+    console.error('Business ID not found in selected business');
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Unable to load business details',
+      life: 3000
+    });
+    return;
+  }
+
+  // Show loading state
+  isSearching.value = true;
+
+  try {
+    // Fetch full business profile using the businessId
+    const profileResponse = await getBusinessProfile(businessId);
+    
+    if (profileResponse?.statusCode === 200 && profileResponse.data) {
+      const businessProfile = profileResponse.data;
+      const businessStatus = businessProfile.businessStatus;
+
+      console.log(`Business selected: ${businessProfile.name}, Status: ${businessStatus}`);
+
+      // Check businessStatus from full profile
+      if (businessStatus === 'approved' || businessStatus === 'claimed') {
+        // Business is claimed
+        claimedBusiness.value = businessProfile;
+        showClaimedWarning.value = true;
+        showClaimOption.value = false;
+        businessNameAvailable.value = false;
+      } else if (businessStatus === 'unclaimed' || businessStatus === 'pending') {
+        // Business is unclaimed
+        unclaimedBusiness.value = businessProfile;
+        showClaimOption.value = true;
+        showClaimedWarning.value = false;
+        businessNameAvailable.value = false;
+      } else {
+        // Unexpected status
+        console.warn(`Unexpected business status: ${businessStatus}`);
+        toast.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'Unable to determine business status',
+          life: 3000
+        });
+      }
+    } else {
+      console.error('Failed to fetch business profile:', profileResponse);
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Unable to load business details',
+        life: 3000
+      });
+    }
+  } catch (profileError) {
+    console.error('Error fetching business profile:', profileError);
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed to load business information',
+      life: 3000
+    });
+  } finally {
+    isSearching.value = false;
   }
 };
 
@@ -409,6 +483,8 @@ const resetSearch = () => {
   searchCompleted.value = false;
   businessNameAvailable.value = false;
   businessData.value.name = '';
+  searchResults.value = [];
+  showDropdown.value = false;
 };
 
 // Redirect to claim business page
@@ -497,18 +573,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
 const handleRegistration = async () => {
   // Clear previous errors
   registrationError.value = null;
-
-  // Check if business name was searched and is available
-  if (!searchCompleted.value && businessData.value.name.trim().length >= 3) {
-    registrationError.value = 'Please wait while we check if the business name is available.';
-    // Trigger search
-    await searchBusinessName(businessData.value.name.trim());
-    
-    // If business exists, prevent registration
-    if (showClaimOption.value || showClaimedWarning.value) {
-      return;
-    }
-  }
 
   // Validate form
   const validation = validateForm();
