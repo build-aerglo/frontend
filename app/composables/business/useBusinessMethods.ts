@@ -13,9 +13,7 @@ export default function () {
   const profileStore = useBusinessProfileStore();
 
   const getBusinessUser = () => {
-    return {
-      id: store.id,
-    };
+    return profileStore.getProfile()!;
   };
 
   const getCategories = async () => {
@@ -32,7 +30,7 @@ export default function () {
       const res = await businessApi.patch(`api/Business/${id}`, data);
       console.log(res);
       // Save to store
-      // profileStore.setProfileData(res.data);
+      profileStore.setProfileData(res.data);
       return res.data;
     } catch (error: any) {
       console.error("Error saving business profile:", error);
@@ -62,6 +60,9 @@ export default function () {
     try {
       const res = await businessApi.get(`api/business/${id}`);
       if (res.status === 200) {
+        // update store
+        profileStore.setProfileData(res.data);
+
         return { statusCode: 200, data: res.data };
       }
 

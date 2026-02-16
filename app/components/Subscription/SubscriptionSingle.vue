@@ -124,6 +124,8 @@
           size="lg"
           v-if="tier.id !== businessPlan"
           @click="emit('clicked', tier)"
+          :disabled="disabled"
+          :is-loading="disabled"
         />
       </div>
     </template>
@@ -131,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["tier", "isAnnually", "businessPlan"]);
+const props = defineProps(["tier", "isAnnually", "businessPlan", "disabled"]);
 const emit = defineEmits(["clicked"]);
 </script>
 
