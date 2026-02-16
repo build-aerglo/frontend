@@ -1,7 +1,7 @@
 export interface EndUser {
   username: string;
   email: string;
-  phone: string;
+  phone: string | null;
   password: string;
   socialMedia: string;
 }

@@ -82,15 +82,29 @@
                   required
                 />
               </div>
-              <InputFile
-                accept-description="image / pdf"
-                accept="image/*,.pdf"
-                label="Personal Identity Document"
-                path="userid"
-                @uploaded="setUpload"
-                @deleted="setDeleted"
-                id="userId"
-              />
+              <div>
+                <label>Business Category:</label>
+                <Select
+                  v-model="selectedCategory"
+                  :options="categories"
+                  optionLabel="name"
+                  optionValue="id"
+                  required
+                  placeholder="Select Category"
+                  fluid
+                />
+              </div>
+              <div>
+                <InputFile
+                  accept-description="image / pdf"
+                  accept="image/*,.pdf"
+                  label="Personal Identity Document:"
+                  path="userid"
+                  @uploaded="setUpload"
+                  @deleted="setDeleted"
+                  id="userId"
+                />
+              </div>
             </div>
 
             <div class="mt-10 header font-bold">Business Information:</div>
@@ -161,12 +175,18 @@ import { onBeforeMount } from "vue";
 import InputFile from "~/components/Input/InputFile.vue";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import { usePageData } from "~/composables/method/usePageData";
-import type { BusinessProfileResponse, ClaimData } from "~/types/business";
+import type {
+  BusinessProfileResponse,
+  ClaimData,
+  Category,
+} from "~/types/business";
 
 const pageData = usePageData();
 const route = useRoute();
 const toast = useToast();
-const { getBusinessProfile, claimBusinessAsync } = useBusinessMethods();
+
+const { getBusinessProfile, claimBusinessAsync, getCategories } =
+  useBusinessMethods();
 
 const isLoading = ref(true);
 const business = ref<BusinessProfileResponse>();
@@ -174,6 +194,7 @@ const business = ref<BusinessProfileResponse>();
 const isClaimed = ref(false);
 const isSubmitting = ref(false);
 
+const selectedCategory = ref<Category>();
 const claimData = ref<ClaimData>({
   fullName: "",
   businessId: route.params.id as string,
@@ -184,10 +205,12 @@ const claimData = ref<ClaimData>({
   cacDocumentUrl: null,
   proofOfOwnerShipUrl: null,
   cacNumber: "",
+  categoryId: "",
 });
 
 const claimBusiness = async (data: ClaimData) => {
   try {
+    data.categoryId = selectedCategory.value?.id!;
     isSubmitting.value = true;
     const res = await claimBusinessAsync(data);
     if (res?.statusCode !== 200) {
@@ -217,16 +240,34 @@ const claimBusiness = async (data: ClaimData) => {
   }
 };
 
+const categories = ref<Category[]>([]);
+const isLoadingCategory = ref(false);
+
+const loadCategoryAsync = async () => {
+  try {
+    isLoadingCategory.value = true;
+    const res = await getCategories();
+    categories.value = res;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoadingCategory.value = false;
+  }
+};
+
 const loadBusinessData = async () => {
   const id = route.params.id as string;
-  
+
   try {
     isLoading.value = true;
     const res = await getBusinessProfile(id);
 
     if (res?.statusCode === 200 && res.data) {
+      // load categories
+      await loadCategoryAsync();
+
       business.value = res.data;
-      
+
       // Update claimData with the verified ID
       claimData.value.businessId = res.data.id;
 
@@ -238,11 +279,19 @@ const loadBusinessData = async () => {
       }
     } else {
       // If the ID is invalid or doesn't exist, show 404
-      throw createError({ statusCode: 404, statusMessage: "Business not found" });
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Business not found",
+        fatal: true,
+      });
     }
   } catch (error) {
     console.error("Error loading business for claim:", error);
-    throw createError({ statusCode: 404, statusMessage: "Business not found" });
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Business not found",
+      fatal: true,
+    });
   } finally {
     isLoading.value = false;
   }
@@ -252,8 +301,9 @@ const pageTitle = computed(
   () =>
     `${business.value?.name ?? "Business Profile"} - ${
       business.value?.categories[0]?.name ?? ""
-    } | Clereview`
+    } | Clereview`,
 );
+
 useHead({
   title: pageTitle,
   meta: [
@@ -342,6 +392,7 @@ const softReset = () => {
     cacDocumentUrl: null,
     proofOfOwnerShipUrl: null,
     cacNumber: "",
+    categoryId: "",
   };
 };
 </script>

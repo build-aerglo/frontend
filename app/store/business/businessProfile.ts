@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
-import type { BusinessProfile } from "~/types/business";
+import type { BusinessProfileResponse } from "~/types/business";
 
 export interface ProfileState {
-  profileData: BusinessProfile | null;
+  profileData: BusinessProfileResponse;
 }
 
 export const useBusinessProfileStore = defineStore("businessProfile", {
   state: (): ProfileState => ({
-    profileData: null,
+    profileData: {} as BusinessProfileResponse,
   }),
 
   actions: {
@@ -15,18 +15,17 @@ export const useBusinessProfileStore = defineStore("businessProfile", {
       return this.profileData;
     },
 
-    setProfileData(profile: BusinessProfile) {
+    setProfileData(profile: BusinessProfileResponse) {
       this.profileData = profile;
     },
 
-    updateProfile(partial: Partial<BusinessProfile>) {
-      if (!this.profileData) return;
+    updateProfile(partial: Partial<BusinessProfileResponse>) {
       this.profileData = { ...this.profileData, ...partial };
     },
 
     clearProfile() {
-      this.profileData = null;
-    }
+      this.profileData = {} as BusinessProfileResponse;
+    },
   },
 
   persist: true,

@@ -24,14 +24,14 @@
           </a>
 
           <div class="flex items-center justify-between w-full px-0">
-            <div
+            <!-- <div
               v-if="route.path === '/business/settings'"
               class="hidden md:flex items-center space-x-4"
             >
               <ClientOnly>
                 <SettingTab />
               </ClientOnly>
-            </div>
+            </div> -->
 
             <div class="flex items-center gap-4 ml-auto">
               <i class="pi pi-bell text-xl text-contrast cursor-pointer"></i>

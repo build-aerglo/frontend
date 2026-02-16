@@ -62,7 +62,7 @@ export interface BusinessProfile {
   }[];
 }
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
   description: string | null;
@@ -171,6 +171,7 @@ export interface ClaimData {
   cacDocumentUrl: string | null;
   proofOfOwnerShipUrl: string | null;
   cacNumber: string;
+  categoryId: string;
 }
 
 export interface BusinessSettings {

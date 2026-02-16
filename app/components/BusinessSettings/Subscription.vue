@@ -20,12 +20,10 @@
     </div>
     <template #footer>
       <div class="flex justify-end">
-        <ButtonCustom
+        <Button
           label="Continue to checkout"
-          primary="true"
-          input-class="w-max"
           @click="checkoutAsync"
-          size="lg"
+          :loading="isCheckingOut"
         />
       </div>
     </template>
@@ -89,6 +87,7 @@
               :business-plan="businessSubscription?.subscriptionPlanId ?? null"
               :is-annually="isAnnually"
               @clicked="setPaymentPlan"
+              :disabled="isLoadingPaymentButton"
             />
           </div>
         </div>
@@ -219,21 +218,23 @@
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import usePayments from "~/composables/payment/usePayments";
 import type { Subscription, BusinessSubscription } from "~/types/business";
-const { getBusinessSubscriptions, getBusinessSubscriptionSummary } =
-  useBusinessMethods();
-const { checkoutPaystack } = usePayments();
+const {
+  getBusinessSubscriptions,
+  getBusinessSubscriptionSummary,
+  getBusinessUser,
+} = useBusinessMethods();
+import type { Plan } from "~/types/payment";
+const { checkoutPayment, downgradePlan } = usePayments();
 
 const isAnnually = ref(false);
 const toast = useToast();
 
-const business = ref({
-  businessEmail: "etiketochukwu@gmail.com",
-});
+const business = getBusinessUser();
 const paymentSetup = ref({
   plan: "",
   amount: 0,
   method: "paystack",
-  email: business.value.businessEmail,
+  email: business.businessEmail,
   reference: "",
 });
 
@@ -241,8 +242,45 @@ const showPaymentMethods = ref(false);
 const setPaymentMethod = (method: string) => {
   paymentSetup.value.method = method;
 };
-const setPaymentPlan = (plan: Subscription) => {
+
+const isLoadingPaymentButton = ref(false);
+const setPaymentPlan = async (plan: Subscription) => {
   if (!plan) return;
+  if (plan.tier === 0) {
+    // downgrade once instead of doing the subscription process
+    try {
+      isLoadingPaymentButton.value = true;
+      const newPlan = {
+        businessId: business.id,
+        newPlanId: plan.id,
+        isAnnual: isAnnually.value,
+        paymentReference: "basic_plan_subscription",
+      };
+      const res = await downgradePlan(newPlan);
+      if (res.ok) {
+        toast.add({
+          severity: "success",
+          summary: "SUCCESS",
+          detail: "Business subscription activated.",
+          life: 3000,
+        });
+        return await loadPage();
+      }
+
+      toast.add({
+        severity: "error",
+        summary: "ERROR",
+        detail: res.data.message ?? "Error updating business subscription.",
+        life: 3000,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isLoadingPaymentButton.value = false;
+    }
+
+    return;
+  }
 
   paymentSetup.value.plan = plan.id;
   paymentSetup.value.amount = isAnnually.value
@@ -252,6 +290,7 @@ const setPaymentPlan = (plan: Subscription) => {
   showPaymentMethods.value = true;
 };
 
+const isCheckingOut = ref(false);
 const checkoutAsync = async () => {
   if (!paymentSetup.value.plan || !paymentSetup.value.email) {
     return toast.add({
@@ -271,18 +310,36 @@ const checkoutAsync = async () => {
     });
   }
 
+  isCheckingOut.value = true;
   try {
-    const res = await checkoutPaystack({
+    const res = await checkoutPayment({
       email: paymentSetup.value.email,
-      amount: paymentSetup.value.amount * 100,
+      businessId: business.id!,
+      subscriptionId: paymentSetup.value.plan,
+      isAnnual: isAnnually.value,
+      platform: paymentSetup.value.method,
     });
 
     if (res.ok) {
-      paymentSetup.value.reference = res.reference!;
-      console.log(res.url);
+      toast.add({
+        severity: "success",
+        summary: "SUCCESS",
+        detail: res.data.message ?? "Transaction Initiated",
+        life: 3000,
+      });
+      return await navigateTo(`/pay/invoice/${res.data.invoice}`);
     }
+
+    toast.add({
+      severity: "error",
+      summary: "ERROR",
+      detail: res.data.message ?? "An error occured",
+      life: 3000,
+    });
   } catch (error) {
     console.log(error);
+  } finally {
+    isCheckingOut.value = false;
   }
 };
 
@@ -334,7 +391,7 @@ const getBusinessSubscriptionSummaryAsync = async () => {
   }
 };
 
-onBeforeMount(async () => {
+const loadPage = async () => {
   try {
     const [res, businessRes] = await Promise.all([
       getBusinessSubscriptionsAsync(),
@@ -348,71 +405,11 @@ onBeforeMount(async () => {
     if (businessRes?.statusCode === 200) {
       businessSubscription.value = businessRes.data;
     }
-
-    // subscriptions.value = [
-    //   {
-    //     id: "cdd7c928-f88f-4a96-b3fc-00dc9b6ecb4f",
-    //     name: "Basic",
-    //     tier: 0,
-    //     description: "Free plan with essential features",
-    //     monthlyPrice: 0,
-    //     annualPrice: 0,
-    //     currency: "NGN",
-    //     monthlyReplyLimit: 10,
-    //     monthlyDisputeLimit: 5,
-    //     externalSourceLimit: 1,
-    //     userLoginLimit: 1,
-    //     privateReviewsEnabled: false,
-    //     dataApiEnabled: false,
-    //     dndModeEnabled: false,
-    //     autoResponseEnabled: false,
-    //     branchComparisonEnabled: false,
-    //     competitorComparisonEnabled: false,
-    //     isActive: true,
-    //   },
-    //   {
-    //     id: "fca29884-95a2-4673-a09d-69cf9e8885a1",
-    //     name: "Premium",
-    //     tier: 1,
-    //     description: "Enhanced features for growing businesses",
-    //     monthlyPrice: 15000,
-    //     annualPrice: 150000,
-    //     currency: "NGN",
-    //     monthlyReplyLimit: 120,
-    //     monthlyDisputeLimit: 25,
-    //     externalSourceLimit: 3,
-    //     userLoginLimit: 3,
-    //     privateReviewsEnabled: true,
-    //     dataApiEnabled: false,
-    //     dndModeEnabled: false,
-    //     autoResponseEnabled: false,
-    //     branchComparisonEnabled: false,
-    //     competitorComparisonEnabled: false,
-    //     isActive: true,
-    //   },
-    //   {
-    //     id: "9832a474-f956-4408-b1de-82fb872f4ad5",
-    //     name: "Enterprise",
-    //     tier: 2,
-    //     description: "Full-featured plan for large businesses",
-    //     monthlyPrice: 50000,
-    //     annualPrice: 500000,
-    //     currency: "NGN",
-    //     monthlyReplyLimit: 2147483647,
-    //     monthlyDisputeLimit: 2147483647,
-    //     externalSourceLimit: 2147483647,
-    //     userLoginLimit: 10,
-    //     privateReviewsEnabled: true,
-    //     dataApiEnabled: true,
-    //     dndModeEnabled: true,
-    //     autoResponseEnabled: true,
-    //     branchComparisonEnabled: true,
-    //     competitorComparisonEnabled: true,
-    //     isActive: true,
-    //   },
-    // ];
   } catch (error) {
     console.log(error);
   }
+};
+onBeforeMount(async () => {
+  await loadPage();
 });
 </script>
