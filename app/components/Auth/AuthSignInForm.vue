@@ -123,34 +123,47 @@ const { initiateSocialLogin } = useSocialAuth();
  * SOCIAL LOGIN HANDLER
  */
 const handleSocialLogin = async (provider: string) => {
-  errorMessage.value = "";
+  errorMessage.value = null;
+  isLoading.value = true;
+
   try {
     const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
-    
     if (!validProviders.includes(provider)) {
       throw new Error(`Invalid social login provider: ${provider}`);
     }
 
     localStorage.setItem('social_provider', provider);
-    await initiateSocialLogin(provider);
-    
+
+    // ✅ Now returns true/false after popup closes
+    const success = await initiateSocialLogin(provider);
+
+    if (success) {
+      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 });
+      emit('success'); // ✅ Closes modal, user stays on page
+    }
+    // If false (user closed popup or error), do nothing - just stay on modal
+
   } catch (error: any) {
     console.error(`Social login error for ${provider}:`, error);
     
     const displayProviderName = provider === 'google-oauth2' ? 'Google' : provider;
     
     if (error.message?.includes('popup') || error.message?.includes('blocked')) {
-      errorMessage.value = `Pop-up blocked. Please allow pop-ups for ${displayProviderName}.`;
+      errorMessage.value = `Pop-up blocked. Please allow pop-ups for this site.`;
     } else if (error.message?.includes('cancelled') || error.message?.includes('closed')) {
-      errorMessage.value = `${displayProviderName} login was cancelled.`;
+      errorMessage.value = null; // User cancelled, no need to show error
       return;
     } else {
       errorMessage.value = error.message || `Unable to connect with ${displayProviderName}.`;
     }
-    
-    toast.add({ severity: 'error', summary: 'Error', detail: errorMessage.value, life: 4000 });
+
+    if (errorMessage.value) {
+      toast.add({ severity: 'error', summary: 'Error', detail: errorMessage.value, life: 4000 });
+    }
+  } finally {
+    isLoading.value = false;
   }
-}
+};
 
 /**
  * EMAIL/PASSWORD LOGIN HANDLER

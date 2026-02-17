@@ -28,6 +28,7 @@
                 root: { class: 'border-slate-300 rounded-xl' },
                 input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
               }"
+              @change="onCategoryDropdownChange"
             />
           </div>
 
@@ -84,7 +85,7 @@
           <span class="text-sm text-slate-600">Active filters:</span>
           <template v-for="(value, key) in filters" :key="key">
             <button
-              v-if="value && !['tag', 'tagId'].includes(String(key))"
+              v-if="value && !['tag', 'tagId', 'category'].includes(String(key))"
               @click="clearFilter(String(key))"
               class="text-xs bg-slate-100 text-[#008253] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
             >
@@ -99,161 +100,152 @@
       </div>
 
       <!-- MOBILE FILTER BAR (< md) -->
-<div class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 sticky top-[60px] z-30">
-  <div class="flex gap-3">
-    <!-- Search Input -->
-    <div class="flex-1">
-      <input 
-        v-model="filters.name"
-        type="text"
-        placeholder="Search businesses..."
-        class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all text-sm"
-      />
-    </div>
+      <div class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 sticky top-[60px] z-30">
+        <div class="flex gap-3">
+          <div class="flex-1">
+            <input 
+              v-model="filters.name"
+              type="text"
+              placeholder="Search businesses..."
+              class="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all text-sm"
+            />
+          </div>
 
-    <!-- Filters Button -->
-    <button
-      @click="showFilterDrawer = true"
-      class="flex items-center gap-2 px-4 py-2.5 bg-[#008253] text-white rounded-xl hover:bg-[#006f45] transition-colors font-medium text-sm relative"
-    >
-      <i class="pi pi-filter"></i>
-      <span>Filters</span>
-      <span v-if="activeFilterCount > 0" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
-        {{ activeFilterCount }}
-      </span>
-    </button>
-  </div>
-
-  <!-- Active Filters Pills (Mobile) -->
-  <div v-if="hasActiveFilters" class="mt-3 flex items-center gap-2 flex-wrap">
-    <span class="text-xs text-slate-600">Active:</span>
-    <template v-for="(value, key) in filters" :key="String(key)">
-      <button
-        v-if="value && !['tag', 'tagId', 'name'].includes(key as string)"
-        @click="clearFilter(key as string)"
-        class="text-xs bg-slate-100 text-[#008253] px-2 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
-      >
-        {{ getFilterLabel(key, value) }}
-        <i class="pi pi-times text-[10px]"></i>
-      </button>
-    </template>
-  </div>
-</div>
-
-<!-- MOBILE FILTER DRAWER (Custom) -->
-<Teleport to="body">
-  <Transition name="drawer">
-    <div v-if="showFilterDrawer" class="fixed inset-0 z-50">
-      <!-- Backdrop -->
-      <div 
-        @click="showFilterDrawer = false" 
-        class="absolute inset-0 bg-black bg-opacity-50"
-      ></div>
-      
-      <!-- Drawer Panel -->
-      <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl">
-        <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <h3 class="text-lg font-bold text-slate-900">Filter Results</h3>
-          <button @click="showFilterDrawer = false" class="text-slate-500 hover:text-slate-700">
-            <i class="pi pi-times text-lg"></i>
+          <button
+            @click="showFilterDrawer = true"
+            class="flex items-center gap-2 px-4 py-2.5 bg-[#008253] text-white rounded-xl hover:bg-[#006f45] transition-colors font-medium text-sm relative"
+          >
+            <i class="pi pi-filter"></i>
+            <span>Filters</span>
+            <span v-if="activeFilterCount > 0" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+              {{ activeFilterCount }}
+            </span>
           </button>
         </div>
-        
-        <!-- Content (Scrollable) -->
-        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
-          <!-- Category Filter -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
-            <Dropdown 
-              v-model="tempFilters.categoryId" 
-              :options="categoryOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="All Categories"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
 
-          <!-- Badges Filter -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
-            <Dropdown 
-              v-model="tempFilters.badges" 
-              :options="badgeOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="All Badges"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
-
-          <!-- Location Filter -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
-            <Dropdown 
-              v-model="tempFilters.location" 
-              :options="locationOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="All Locations"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
-
-          <!-- Ratings Filter -->
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Minimum Rating</label>
-            <Dropdown 
-              v-model="tempFilters.stars" 
-              :options="ratingOptions" 
-              optionLabel="label" 
-              optionValue="value"
-              placeholder="Any Rating"
-              class="w-full"
-              :pt="{
-                root: { class: 'border-slate-300 rounded-xl' },
-                input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
-              }"
-            />
-          </div>
-        </div>
-
-        <!-- Fixed Bottom Actions -->
-        <div class="border-t border-slate-200 p-4 flex gap-3 bg-white">
-          <button 
-            @click="clearTempFilters" 
-            class="flex-1 px-4 py-3 border-2 border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors"
-          >
-            Clear All
-          </button>
-          <button 
-            @click="applyFilters" 
-            class="flex-1 px-4 py-3 bg-[#008253] text-white rounded-xl font-medium hover:bg-[#006f45] transition-colors"
-          >
-            Apply Filters
-          </button>
+        <!-- Active Filters Pills (Mobile) -->
+        <div v-if="hasActiveFilters" class="mt-3 flex items-center gap-2 flex-wrap">
+          <span class="text-xs text-slate-600">Active:</span>
+          <template v-for="(value, key) in filters" :key="String(key)">
+            <button
+              v-if="value && !['tag', 'tagId', 'name', 'category'].includes(key as string)"
+              @click="clearFilter(key as string)"
+              class="text-xs bg-slate-100 text-[#008253] px-2 py-1 rounded-full flex items-center gap-1 hover:bg-green-200 transition-colors"
+            >
+              {{ getFilterLabel(key, value) }}
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </template>
         </div>
       </div>
-    </div>
-  </Transition>
-</Teleport>
+
+      <!-- MOBILE FILTER DRAWER -->
+      <Teleport to="body">
+        <Transition name="drawer">
+          <div v-if="showFilterDrawer" class="fixed inset-0 z-50">
+            <div 
+              @click="showFilterDrawer = false" 
+              class="absolute inset-0 bg-black bg-opacity-50"
+            ></div>
+            
+            <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col shadow-2xl">
+              <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                <h3 class="text-lg font-bold text-slate-900">Filter Results</h3>
+                <button @click="showFilterDrawer = false" class="text-slate-500 hover:text-slate-700">
+                  <i class="pi pi-times text-lg"></i>
+                </button>
+              </div>
+              
+              <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 pb-24">
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Category</label>
+                  <Dropdown 
+                    v-model="tempFilters.categoryId" 
+                    :options="categoryOptions" 
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="All Categories"
+                    class="w-full"
+                    :pt="{
+                      root: { class: 'border-slate-300 rounded-xl' },
+                      input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+                    }"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Badges</label>
+                  <Dropdown 
+                    v-model="tempFilters.badges" 
+                    :options="badgeOptions" 
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="All Badges"
+                    class="w-full"
+                    :pt="{
+                      root: { class: 'border-slate-300 rounded-xl' },
+                      input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+                    }"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Location</label>
+                  <Dropdown 
+                    v-model="tempFilters.location" 
+                    :options="locationOptions" 
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="All Locations"
+                    class="w-full"
+                    :pt="{
+                      root: { class: 'border-slate-300 rounded-xl' },
+                      input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+                    }"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-slate-700 mb-2">Minimum Rating</label>
+                  <Dropdown 
+                    v-model="tempFilters.stars" 
+                    :options="ratingOptions" 
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="Any Rating"
+                    class="w-full"
+                    :pt="{
+                      root: { class: 'border-slate-300 rounded-xl' },
+                      input: { class: 'px-4 py-2.5 focus:ring-2 focus:ring-[#008253]' }
+                    }"
+                  />
+                </div>
+              </div>
+
+              <div class="border-t border-slate-200 p-4 flex gap-3 bg-white">
+                <button 
+                  @click="clearTempFilters" 
+                  class="flex-1 px-4 py-3 border-2 border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+                >
+                  Clear All
+                </button>
+                <button 
+                  @click="applyFilters" 
+                  class="flex-1 px-4 py-3 bg-[#008253] text-white rounded-xl font-medium hover:bg-[#006f45] transition-colors"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Teleport>
 
       <div class="mb-4">
         <p class="text-sm text-slate-600">
           Showing <span class="font-semibold text-slate-900">{{ filteredBusinesses.length }}</span> result(s)
+          <!-- <span v-if="filters.category" class="text-slate-400"> in <span class="text-[#008253] font-semibold">{{ filters.category }}</span></span>
+          <span v-else-if="filters.tagName" class="text-slate-400"> tagged <span class="text-[#008253] font-semibold">{{ filters.tagName }}</span></span> -->
         </p>
       </div>
 
@@ -287,7 +279,11 @@
                 <div class="flex flex-col gap-1">
                   <div class="relative w-24 h-24 max-[430px]:w-16 max-[430px]:h-16"> 
                     <div class="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-slate-200 overflow-hidden">
-                      <img @click.stop="focusedBusinessId = business.id || (business as any).businessId" :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" class="w-full h-full object-cover" />
+                      <img 
+                        @click.stop="focusedBusinessId = business.id || (business as any).businessId" 
+                        :src="('logo' in business ? business.logo : null) || '/images/default-business-logo.png'" 
+                        class="w-full h-full object-cover" 
+                      />
                     </div>
                     <div class="absolute -top-2 -right-2">
                       <Badge :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" />
@@ -300,7 +296,6 @@
                       <div class="hidden min-[401px]:flex">
                         <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
                       </div>
-                      <!-- Mobile (≤400px): Show 1 star -->
                       <div class="flex min-[401px]:hidden">
                         <Star :value="1" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
                       </div>
@@ -314,11 +309,23 @@
                 <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl my-4 mr-4 p-4 border border-slate-200 relative min-w-0">
                   <div class="flex justify-between items-start gap-2">
                     <div class="min-w-0 flex-1">
-                      <h3 @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xl font-bold text-slate-900 mb-3 break-words max-[430px]:text-sm">{{ business.name }}</h3>
+                      <h3 
+                        @click.stop="focusedBusinessId = business.id || (business as any).businessId" 
+                        class="text-xl font-bold text-slate-900 mb-3 break-words max-[430px]:text-sm"
+                      >
+                        {{ business.name }}
+                      </h3>
                     </div>
-                    <div class="relative group flex-shrink-0" @mouseenter="showContact = business.id || (business as any).businessId" @mouseleave="hideContact()">
+                    <div 
+                      class="relative group flex-shrink-0" 
+                      @mouseenter="showContact = business.id || (business as any).businessId" 
+                      @mouseleave="hideContact()"
+                    >
                       <i @click.stop class="pi pi-phone text-gray-500 text-lg cursor-pointer hover:text-slate-800"></i>
-                      <div v-if="showContact === (business.id || (business as any).businessId)" class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50">
+                      <div 
+                        v-if="showContact === (business.id || (business as any).businessId)" 
+                        class="absolute right-0 mt-2 w-56 bg-white text-sm text-slate-600 shadow-lg rounded-lg p-3 border border-slate-200 animate-fade z-50"
+                      >
                         <p><strong>Tel:</strong> {{ ('businessPhoneNumber' in business ? business.businessPhoneNumber : 'N/A') ?? 'N/A' }}</p>   
                         <p><strong>Address:</strong> {{ ('businessAddress' in business ? business.businessAddress : 'N/A') ?? 'N/A' }}</p>
                       </div>
@@ -339,6 +346,7 @@
                   </div>
                 </div>
               </div>
+
               <div 
                 v-if="focusedBusinessId === (business.id || (business as any).businessId)"
                 class="md:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
@@ -350,7 +358,6 @@
                   />
                   <div>
                     <h3 class="text-sm font-demibold mb-1">{{ business.name }}</h3>
-                    
                     <div class="flex flex-wrap gap-1">
                       <template v-if="business.tags && business.tags.length > 0">
                         <span 
@@ -361,10 +368,7 @@
                           {{ typeof tag === 'object' ? tag.name : tag }}
                         </span>
                       </template>
-                      
-                      <span v-else class="text-[10px] text-slate-400 italic font-medium">
-                        No tags
-                      </span>
+                      <span v-else class="text-[10px] text-slate-400 italic font-medium">No tags</span>
                     </div>
                   </div>
                 </div>
@@ -400,45 +404,48 @@
         </div>
 
         <div class="hidden md:block md:col-span-1 sticky top-60 self-start">
-            <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
-                  <img :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : '/images/default-business-logo.png'" class="w-16 h-16 rounded-full object-cover border border-slate-200" />
-                  <div class="min-w-0 flex-1">
-                    <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
-                  <div class="flex flex-wrap gap-1 mt-1">
-                      <template v-if="focusedBusiness.tags && focusedBusiness.tags.length > 0">
-                        <span 
-                          v-for="tag in focusedBusiness.tags" 
-                          :key="typeof tag === 'object' ? tag.id : tag"
-                          class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded uppercase font-medium"
-                        >
-                          {{ typeof tag === 'object' ? tag.name : tag }}
-                        </span>
-                      </template>
-                      <span v-else class="text-[10px] text-slate-400 italic">No tags</span>
-                    </div>
-                  </div>
+          <div v-if="focusedBusiness" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-center gap-4 mb-2 pb-2 border-b border-slate-200">
+              <img 
+                :src="('logo' in focusedBusiness && focusedBusiness.logo) ? String(focusedBusiness.logo) : '/images/default-business-logo.png'" 
+                class="w-16 h-16 rounded-full object-cover border border-slate-200" 
+              />
+              <div class="min-w-0 flex-1">
+                <h3 class="text-sm font-bold truncate">{{ focusedBusiness.name }}</h3>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <template v-if="focusedBusiness.tags && focusedBusiness.tags.length > 0">
+                    <span 
+                      v-for="tag in focusedBusiness.tags" 
+                      :key="typeof tag === 'object' ? tag.id : tag"
+                      class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded uppercase font-medium"
+                    >
+                      {{ typeof tag === 'object' ? tag.name : tag }}
+                    </span>
+                  </template>
+                  <span v-else class="text-[10px] text-slate-400 italic">No tags</span>
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Review Summary</p>
-                <div class="bg-slate-50 rounded-lg p-4">
-                  <p class="text-xs text-slate-700 leading-relaxed">
-                    {{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No summary available for this business.' }}
-                  </p>
-                </div>
-                <button 
-                  @click="navigateToBiz(focusedBusiness)"
-                  class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
-                >
-                  View Full Profile
-                </button>
-            </div> 
-            <div v-else class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
-                <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
-                <p class="text-sm text-slate-600">Click on a business to view details</p>
+              </div>
             </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Review Summary</p>
+            <div class="bg-slate-50 rounded-lg p-4">
+              <p class="text-xs text-slate-700 leading-relaxed">
+                {{ ('businessDescription' in focusedBusiness ? focusedBusiness.businessDescription : null) ?? 'No summary available for this business.' }}
+              </p>
+            </div>
+            <button 
+              @click="navigateToBiz(focusedBusiness)"
+              class="w-full mt-4 py-2 bg-[#008253] text-white rounded-xl text-sm font-bold hover:bg-[#006f45] transition-colors"
+            >
+              View Full Profile
+            </button>
+          </div> 
+          <div v-else class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
+            <i class="pi pi-arrow-left text-4xl text-slate-300 mb-4"></i>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Select a Business</h3>
+            <p class="text-sm text-slate-600">Click on a business to view details</p>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -478,8 +485,9 @@ const tempFilters = ref<{
 })
 
 const filters = ref<any>({
-  name: route.query.q || '',
-  categoryId: '', 
+  name: route.query.name || route.query.q || '',
+  categoryId: route.query.categoryId || '',  // ✅ Read categoryId from URL
+  category: route.query.category || '',      // ✅ Read category name from URL
   badges: '',
   location: '',
   stars: '',
@@ -489,13 +497,27 @@ const filters = ref<any>({
 
 const activeFilterCount = computed<number>(() => {
   let count = 0
-  if (filters.value.categoryId) count++
+  if (filters.value.categoryId) count++  // ✅ Count ID only, not name
   if (filters.value.badges) count++
   if (filters.value.location) count++
   if (filters.value.stars) count++
   return count
 })
 
+// ✅ When category dropdown changes, also update the category name
+const onCategoryDropdownChange = (event: any) => {
+  const selectedId = event.value;
+  if (!selectedId) {
+    filters.value.category = '';
+    return;
+  }
+  const match = categories.value.find(c => (c.categoryId || c.id) === selectedId);
+  if (match) {
+    filters.value.category = match.name;
+  }
+};
+
+// ✅ Also sets category name when clicking category tags on business cards
 const filterByCategoryName = (name: string) => {
   const match = categories.value.find(
     c => (c.name || '').toLowerCase() === name.toLowerCase()
@@ -503,6 +525,7 @@ const filterByCategoryName = (name: string) => {
 
   if (match) {
     filters.value.categoryId = match.categoryId || match.id;
+    filters.value.category = match.name;  // ✅ Set name alongside ID
     filters.value.tagId = ''; 
     filters.value.tagName = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -510,6 +533,15 @@ const filterByCategoryName = (name: string) => {
 };
 
 const applyFilters = (): void => {
+  // ✅ Also resolve category name when applying from mobile drawer
+  const selectedId = tempFilters.value.categoryId;
+  if (selectedId) {
+    const match = categories.value.find(c => (c.categoryId || c.id) === selectedId);
+    filters.value.category = match ? match.name : '';
+  } else {
+    filters.value.category = '';
+  }
+
   filters.value.categoryId = tempFilters.value.categoryId
   filters.value.badges = tempFilters.value.badges
   filters.value.location = tempFilters.value.location
@@ -577,24 +609,27 @@ const fetchResults = async (q: string) => {
   }
 }
 
-watch(() => filters.value.categoryId, async () => {
+// ✅ When categoryId changes, clear category name if ID was cleared
+watch(() => filters.value.categoryId, async (newId) => {
+  if (!newId) {
+    filters.value.category = '';
+  }
   filters.value.tagId = '';
   filters.value.tagName = '';
   await performMainFetch();
 })
 
-watch(() => filters.value.name, (newVal :string) => {
+watch(() => filters.value.name, (newVal: string) => {
   if (filters.value.categoryId || filters.value.tagId) return; 
-  // Don't set isSearchingName if the field is empty
   if (newVal) {
-  isSearchingName.value = true
+    isSearchingName.value = true
   }
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(async () => {
     if (newVal) {
-    await fetchResults(newVal)
+      await fetchResults(newVal)
     } else {
-      await performMainFetch() // Fetch default results when search is cleared
+      await performMainFetch()
     }
     isSearchingName.value = false
   }, 400)
@@ -624,7 +659,7 @@ const categoryOptions = computed(() => {
 const filteredBusinesses = computed(() => {
   if (isLoading.value) return [];
   
-  return businesses.value.filter ((b: Business) => {
+  return businesses.value.filter((b: Business) => {
     const searchName = (filters.value.name || '').toLowerCase();
     const matchesName = !filters.value.name || (b.name || '').toLowerCase().includes(searchName);
     const matchesBadge = !filters.value.badges || (filters.value.badges === 'verified' && ('isVerified' in b && b.isVerified));
@@ -635,7 +670,12 @@ const filteredBusinesses = computed(() => {
   });
 })
 
-const hasActiveFilters = computed(() => Object.values(filters.value).some(v => v));
+// ✅ Exclude 'category' from hasActiveFilters - it's display-only
+const hasActiveFilters = computed(() => 
+  Object.entries(filters.value).some(([key, v]) => 
+    v && !['category'].includes(key)
+  )
+);
 
 const focusedBusiness = computed(() => {
   if (!focusedBusinessId.value) return null;
@@ -649,11 +689,15 @@ const badgeOptions = ref([{ label: 'All', value: '' }, { label: 'Verified', valu
 const locationOptions = ref([{ label: 'All', value: '' }, { label: 'Lagos', value: 'lagos' }])
 const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: '4.5' }, { label: '4+', value: '4' }])
 
-const clearFilter = (key: string) : void => {
+const clearFilter = (key: string): void => {
   filters.value[key] = '';
-  if (key === 'categoryId' || key === 'tagName') {
-    // If we clear category or tag, we need to reset the whole list
-    filters.value.categoryId = '';
+  if (key === 'categoryId') {
+    filters.value.category = '';   // ✅ Clear name when ID is cleared
+    filters.value.tagId = '';
+    filters.value.tagName = '';
+    performMainFetch();
+  }
+  if (key === 'tagName') {
     filters.value.tagId = '';
     filters.value.tagName = '';
     performMainFetch();
@@ -661,15 +705,25 @@ const clearFilter = (key: string) : void => {
 };
 
 const clearAllFilters = () => {
-  filters.value = { name: '', categoryId: '', badges: '', location: '', stars: '', tagId: '', tagName: '' };
+  filters.value = { 
+    name: '', 
+    categoryId: '', 
+    category: '',    // ✅ Clear name too
+    badges: '', 
+    location: '', 
+    stars: '', 
+    tagId: '', 
+    tagName: '' 
+  };
   performMainFetch();
 };
 
 function getFilterLabel(key: any, value: any): string {
   const k = String(key);
   if (k === 'name') return String(value); 
-  if (k === 'tagName') return `${value}`;
-  if (k === 'categoryId') return categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
+  if (k === 'tagName') return String(value);
+  // ✅ Show category name directly instead of looking up by ID
+  if (k === 'categoryId') return filters.value.category || categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
   const optionsMap: Record<string, any[]> = { 
     badges: badgeOptions.value, 
@@ -679,7 +733,9 @@ function getFilterLabel(key: any, value: any): string {
   return optionsMap[k]?.find((opt: any) => opt.value === value)?.label || value;
 }
 
-function hideContact() { setTimeout(() => { showContact.value = null; }, 2000); }
+function hideContact() { 
+  setTimeout(() => { showContact.value = null; }, 2000); 
+}
 
 onMounted(async () => { 
   isLoading.value = true
@@ -687,7 +743,7 @@ onMounted(async () => {
     const res = await getCategories();
     categories.value = Array.isArray(res) ? res : (res.data || []);
     
-    // 1. Sync filters from URL Query Params
+    // ✅ Sync all filters from URL query params including category name
     if (Object.keys(route.query).length > 0) {
       Object.keys(filters.value).forEach(key => {
         if (route.query[key]) {
@@ -696,11 +752,17 @@ onMounted(async () => {
       });
     }
 
-    // 2. Trigger the correct fetch based on restored state
+    // ✅ If categoryId is in URL but category name isn't, resolve it from categories
+    if (filters.value.categoryId && !filters.value.category) {
+      const match = categories.value.find(
+        c => (c.categoryId || c.id) === filters.value.categoryId
+      );
+      if (match) filters.value.category = match.name;
+    }
+
     if (filters.value.tagId) {
       await fetchByTag(filters.value.tagId);
     } else {
-      // This will handle name search OR category search restored from URL
       await performMainFetch();
     }
   } catch (error) {
@@ -709,24 +771,22 @@ onMounted(async () => {
     isLoading.value = false;
   }
 })
+
+// ✅ Keep URL in sync with filters, excluding internal-only keys
 watch(filters, (newFilters) => {
   const query = { ...newFilters };
 
-  // Remove empty or internal keys so the URL stays clean
   Object.keys(query).forEach(key => {
     if (!query[key] || key === 'tagId') { 
       delete query[key];
     }
   });
 
-  // Navigate to the same page with new query params
-  // { replace: true } prevents the "Back" button from getting stuck in a loop of filter changes
   router.push({ query, replace: true });
 }, { deep: true });
 </script>
 
 <style scoped>
-/* Drawer transition */
 .drawer-enter-active,
 .drawer-leave-active {
   transition: all 0.3s ease;
@@ -753,6 +813,7 @@ watch(filters, (newFilters) => {
 }
 
 .text-gold { color: #deae29; }
+
 @keyframes fadeInOut {
   0%   { opacity: 0; transform: translateY(4px); }
   10%  { opacity: 1; transform: translateY(0); }
@@ -760,6 +821,7 @@ watch(filters, (newFilters) => {
   100% { opacity: 0; transform: translateY(4px); }
 }
 .animate-fade { animation: fadeInOut 2.5s forwards; }
+
 :deep(.p-dropdown) { background: rgb(248 250 252); border-color: rgb(203 213 225); border-radius: 0.75rem; }
 :deep(.p-dropdown:not(.p-disabled):hover) { border-color: #008253; }
 :deep(.p-dropdown:not(.p-disabled).p-focus) { outline: none; border-color: #008253; box-shadow: 0 0 0 2px rgba(0, 130, 83, 0.2); }

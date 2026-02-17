@@ -278,26 +278,28 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
  */
 const handleSocialLogin = async (provider: string) => {
   registrationError.value = null;
+  isLoading.value = true;
+
   try {
-    const validProviders = [
-      "google-oauth2",
-      "Facebook",
-      "Twitter",
-      "GitHub",
-      "Apple",
-    ];
-    if (!validProviders.includes(provider))
-      throw new Error(`Invalid provider: ${provider}`);
-    localStorage.setItem("social_provider", provider);
-    await initiateSocialLogin(provider);
+    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
+    if (!validProviders.includes(provider)) throw new Error(`Invalid provider: ${provider}`);
+    
+    localStorage.setItem('social_provider', provider);
+
+    // ✅ Now returns true/false after popup closes
+    const success = await initiateSocialLogin(provider);
+
+    if (success) {
+      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'Account created and logged in.', life: 3000 });
+      emit('success'); // ✅ Closes modal, user stays on page
+    }
+    // If false (user closed popup), just stay on modal
+
   } catch (error: any) {
     registrationError.value = error.message || "Social login failed";
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: registrationError.value,
-      life: 4000,
-    });
+    toast.add({ severity: 'error', summary: 'Error', detail: registrationError.value, life: 4000 });
+  } finally {
+    isLoading.value = false;
   }
 };
 

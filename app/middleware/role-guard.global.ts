@@ -20,9 +20,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
       redirect: '/support/auth/sign-in'
     },
     {
+      pattern: /^\/biz\/[^/]+(?!\/claim-business)/,  // /biz/[id] but NOT /biz/[id]/claim-business
+      blockedRoles: ['business_user', 'support_user'],
+      redirect: '/'  // Guests and end users can view, business/support users cannot
+    },
+    {
       pattern: /^\/end-user(?!\/auth)/,  // /end-user/* but NOT /end-user/auth/*
-      blockedRoles: ['business_user', 'support_user'],  // Block business and support users
-      redirect: '/'  // Or '/support/dashboard' depending on role
+      blockedRoles: ['business_user', 'support_user'],
+      redirect: '/'  // ✅ Both blocked roles redirect to home
     },
     {
       pattern: /^\/(user|review)/,  // /user/* or /review/*
@@ -45,19 +50,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
   for (const rule of routeRules) {
     if (rule.pattern.test(to.path)) {
       
-      // Handle blocked roles (for end-user routes)
+      // Handle blocked roles
       if (rule.blockedRoles && currentRole && rule.blockedRoles.includes(currentRole)) {
         console.warn(`Access denied: ${currentRole} tried to access ${to.path}`);
-        
-        // Redirect based on their actual role
-        if (currentRole === 'business_user') {
-          return navigateTo('/business/dashboard');
-        } else if (currentRole === 'support_user') {
-          return navigateTo('/support/dashboard');
-        }
+        // ✅ Use the rule's redirect directly instead of role-based hardcoded redirects
+        return navigateTo(rule.redirect);
       }
       
-      // Handle allowed roles (for business/support/user routes)
+      // Handle allowed roles
       if (rule.allowedRoles) {
         // If user is authenticated but has wrong role
         if (currentRole && !rule.allowedRoles.includes(currentRole)) {

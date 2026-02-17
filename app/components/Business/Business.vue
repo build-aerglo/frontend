@@ -622,9 +622,10 @@
                   class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0"
                 >
                   <img
-                    :src="business?.logo || '/images/default-business-logo.png'"
+                    :src="logoSrc"
                     class="w-full h-full object-contain"
                     :alt="business?.name"
+                    @error="handleLogoError"
                   />
                 </div>
 
@@ -640,10 +641,9 @@
 
             <!-- Star ratings and reviews -->
             <div
-              class="flex flex-col gap-1.5 justify-center w-full px-[20px] sm:w-auto sm:px-0"
+              class="flex flex-col gap-[1px] justify-center w-full px-[20px] sm:w-auto sm:px-0"
             >
-              <div class="flex justify-center items-center gap-2 scale-75 sm:scale-90">
-                <span class="font-bold text-[150%]">{{ displayAvgRating }}</span>
+              <div class="flex justify-center items-center scale-75 sm:scale-90">
                 <Star :count="business?.avgRating || 0" :rounded="true"/>
               </div>
               <div class="text-center text-xs text-gray-500">
@@ -904,7 +904,16 @@ function toggleHighlight(val: boolean, title: string): void {
     );
   }
 }
+// ✅ If business is a prop/computed ref, use this approach instead
+const logoSrc = ref('/images/default-business-logo.png')
 
+watch(() => props.business?.logo, (newLogo) => {
+  logoSrc.value = newLogo || '/images/default-business-logo.png'
+}, { immediate: true })
+
+const handleLogoError = () => {
+  logoSrc.value = '/images/default-business-logo.png'
+}
 const insertImage = (url: string) => {
   if (!businessData.value) return;
   addImage.value = false;
