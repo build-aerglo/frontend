@@ -50,7 +50,7 @@
               <i class="pi pi-user mr-2"></i> Username:</span
             >
             <span class="text-lg font-semibold text-gray-700">{{
-              profileData.username
+              cleanUsername
             }}</span>
           </div>
         </div>
@@ -136,7 +136,7 @@
               <div
                 class="flex items-center text-bold text-2xl justify-center md:justify-start text-gray-800"
               >
-                <span class="font-semibold md:text-3xl text-xl  text-gray-800">{{ profileData.username }}</span>
+                <span class="font-semibold md:text-3xl text-xl  text-gray-800">{{ cleanUsername }}</span>
               </div>
 
               <div class="flex items-center divide-x divide-gray-300 text-sm text-gray-600">
@@ -1646,13 +1646,22 @@ const currentUserId = computed(() => {
   const routeId = route.params.id as string;
   return routeId;
 });
+// Add this utility computed in your profile page script
+const cleanUsername = computed(() => {
+  const username = profileData.value?.username || '';
+  // Remove underscore + numbers at the end e.g. "Adelekan Ifeoluwa_110491" → "Adelekan Ifeoluwa"
+  return username.replace(/_\d+$/, '').trim();
+});
+
+// Update firstName and lastName to use cleanUsername
 const firstName = computed(() => {
-  const parts = profileData.value?.username?.trim().split(" ") || [];
+  const parts = cleanUsername.value.split(" ") || [];
   return parts[0] || "";
 });
+
 const lastName = computed(() => {
-  const parts = profileData.value?.username?.trim().split(" ") || [];
-  return parts.slice(1).join(" ") || ""; // Handles middle names too
+  const parts = cleanUsername.value.split(" ") || [];
+  return parts.slice(1).join(" ") || "";
 });
 const canSaveSocialMedia = computed(() => {
   // At least one account must have both platform and handle filled
