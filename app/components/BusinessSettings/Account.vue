@@ -275,8 +275,12 @@ import type {
 } from "~/types/business";
 
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
-const { getBusinessSettings, updateBusinessSettings, updateEmail } =
-  useBusinessMethods();
+const {
+  getBusinessSettings,
+  getBusinessUser,
+  updateBusinessSettings,
+  updateEmail,
+} = useBusinessMethods();
 const { updatePassword } = useMethods();
 
 const toast = useToast();
@@ -381,16 +385,13 @@ const preferenceToggles = ref([
   },
 ]);
 
-const business = {
-  id: "6aaeaf86-4d6d-483b-8514-7c59a2f1f25f",
-  businessEmail: "etiketochukwu@gmail.com",
-};
+const business = getBusinessUser();
 
 const savePreferences = async () => {
   try {
     const res = await updateBusinessSettings(
-      business.id,
-      business.id,
+      business.id!,
+      business.id!,
       businessSettings.value,
     );
     if (res?.statusCode === 200) {
@@ -442,7 +443,7 @@ const updatePasswordAsync = async () => {
   }
 
   const res = await updatePassword(
-    business.businessEmail,
+    business.businessEmail!,
     encryptedOldPassword,
     encryptedNewPassword,
   );
