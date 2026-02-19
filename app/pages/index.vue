@@ -38,8 +38,9 @@
         Clear reviews. Confident decisions.
       </p>
     </div>
-
-    <SearchBarHome />
+    <div ref="heroSearchRef" class="w-full flex justify-center">
+      <SearchBarHome />
+    </div>
   </section>
   <!--First Section Ends-->
 
@@ -176,4 +177,7 @@ const handleGeneralAuthSuccess = () => {
   showGeneralAuth.value = false;  
   
 }
+
+const heroSearchRef = ref<HTMLElement | null>(null)
+useHeroSearchObserver(heroSearchRef)
 </script>
