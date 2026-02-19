@@ -17,8 +17,9 @@
               <input
                 v-model="navbarSearchQuery"
                 type="text"
-                placeholder="search business or category"
+                placeholder="search business"
                 class="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition"
+                @input="onNavbarInput"
                 @keydown.enter="handleNavbarSearch"
               />
             </div>
@@ -248,13 +249,69 @@ import useRoleAccess from '~/composables/useRoleAccess';
 
 import { useNavbarSearch } from '~/composables/useNavbarSearch';
 
-const { showNavbarSearch } = useNavbarSearch()
+import useSearch from '~/composables/search/useSearch'
+
+const { search } = useSearch()
 const navbarSearchQuery = ref('')
+const navbarSuggestions = ref<{ id: string; name: string; logoUrl: string; rating: number; url: string }[]>([])
+const showNavbarSuggestions = ref(false)
+const navbarActiveIndex = ref(-1)
+let navbarDebounceTimer: number | null = null
+
+const onNavbarInput = () => {
+  if (navbarDebounceTimer) clearTimeout(navbarDebounceTimer)
+  navbarActiveIndex.value = -1
+
+  navbarDebounceTimer = window.setTimeout(async () => {
+    const trimmed = navbarSearchQuery.value.trim()
+    if (!trimmed) {
+      navbarSuggestions.value = []
+      showNavbarSuggestions.value = false
+      return
+    }
+
+    try {
+      const res = await search(trimmed)
+      const results = Array.isArray(res) ? res : (res.companies || [])
+      navbarSuggestions.value = results.slice(0, 6).map((b: any) => ({
+        id: b.businessId,
+        name: b.name,
+        url: b.website || '',
+        logoUrl: b.logo || '/images/default-business-logo.png',
+        rating: b.avgRating || 0
+      }))
+      showNavbarSuggestions.value = true
+    } catch (e) {
+      showNavbarSuggestions.value = false
+    }
+  }, 400)
+}
+
+const { showNavbarSearch } = useNavbarSearch()
 
 const handleNavbarSearch = () => {
-  if (!navbarSearchQuery.value.trim()) return
-  router.push(`/search?q=${encodeURIComponent(navbarSearchQuery.value.trim())}`)
+  const q = navbarSearchQuery.value.trim()
+  if (!q) return
+
+  showNavbarSuggestions.value = false
+
+  const exactMatch = navbarSuggestions.value.find(
+    c => c.name.toLowerCase() === q.toLowerCase()
+  )
+
+  if (exactMatch) {
+    router.push(`/biz/${exactMatch.id}`)
+  } else {
+    router.push({ path: '/end-user/landing/explore', query: { q } })
+  }
+
   navbarSearchQuery.value = ''
+}
+
+const selectNavbarSuggestion = (item: { id: string; name: string }) => {
+  navbarSearchQuery.value = ''
+  showNavbarSuggestions.value = false
+  router.push(`/biz/${item.id}`)
 }
 
 const { isGuest, isBusinessUser, isEndUser, isAuthenticated } = useRoleAccess();

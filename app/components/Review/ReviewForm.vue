@@ -105,7 +105,7 @@
         <Stars v-for="n in 5" :key="n" :value="(hoverRating || form.rating) - (n - 1)"
           :color-level="Math.ceil(hoverRating || form.rating)" class="cursor-pointer"
           @mousemove="hoverRating = n - 1 + getFraction($event)" @mouseleave="hoverRating = 0"
-          @click="form.rating = n - 1 + getFraction($event)" />
+          @click="form.rating = Math.max(n - 1 + getFraction($event), 1)" />
         <span class="ml-2 text-sm text-gray-700">
           {{ form.rating > 0 ? getRatingLabel(form.rating) : '' }}
           <span v-if="form.rating > 0" class="text-sm text-gray-500">({{ form.rating.toFixed(1) }})</span>
