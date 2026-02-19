@@ -8,7 +8,7 @@
             ref="fileInput" 
             type="file" 
             multiple 
-            accept="image/*" 
+            accept=".jpg,.jpeg,.png" 
             @change="handleUpload"
             class="hidden" 
         />
@@ -55,6 +55,9 @@ const emit = defineEmits(['update:modelValue'])
 const fileInput = ref<HTMLInputElement | null>(null)
 const images = ref<string[]>([...props.modelValue])
 const isUploading = ref(false)
+
+const allowedTypes = ['image/jpeg', 'image/png']
+
 const triggerFileInput = () => {
     fileInput.value?.click()
 }
@@ -73,6 +76,12 @@ const handleUpload = async (e: Event) => {
     isUploading.value = true
 
     for (const file of filesToUpload) {
+
+        if (!allowedTypes.includes(file.type)) {
+        alert('Only JPG, JPEG and PNG images are allowed')
+        continue
+    }
+    
         try {
             const form = new FormData()
             form.append('file', file)
