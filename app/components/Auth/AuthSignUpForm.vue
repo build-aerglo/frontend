@@ -23,46 +23,6 @@
         />
         Continue with Google
       </button>
-
-      <button
-        type="button"
-        @click="handleSocialLogin('Twitter')"
-        :disabled="isLoading"
-        class="w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-gray-200 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"
-          />
-        </svg>
-        Continue with X
-      </button>
-
-      <button
-        type="button"
-        @click="handleSocialLogin('Apple')"
-        :disabled="isLoading"
-        class="w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-black rounded-lg bg-black hover:bg-gray-800 transition text-sm font-medium text-white"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.202-.029 2.265-1.186c1.063-1.156.908-2.482.878-2.516zM9.194 1.517c.02-.036.085-.118.133-.147.188.18.36.382.508.605.497.746.774 1.504.815 2.198-.545-.039-1.24-.319-1.777-.771a3.393 3.393 0 0 1-.679-.685zM14.973 12.33c-.457 1.1-1.434 3.22-2.89 3.22-1.455 0-1.928-.99-3.58-.99-1.652 0-2.161.99-3.58.99-1.419 0-2.856-2.99-3.58-5.22-.724-2.23-.362-4.485.905-5.922 1.266-1.437 3.129-1.854 4.416-1.854 1.287 0 2.41.834 3.057.834.646 0 1.944-.834 3.056-.834 1.112 0 3.033.417 4.12 1.854a1.03 1.03 0 0 1 .25.362c-2.25 1.146-1.875 4.312.625 5.375.125.05.25.1.375.125-.125.688-.75 2.063-1.25 3.063z"
-          />
-        </svg>
-        Continue with Apple
-      </button>
     </div>
 
     <div class="relative flex items-center">

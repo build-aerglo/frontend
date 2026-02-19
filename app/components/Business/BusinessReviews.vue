@@ -350,20 +350,25 @@ const closeReviewAndClearDraft = () => {
 };
 const displayAvgRating = computed(() => {
   const rating = props.business?.avgRating ?? 0;
-  const decimal = rating % 1;
+  
+  // Split into whole number and decimal
+  const integerPart = Math.floor(rating);
+  const decimal = rating - integerPart;
   
   let displayValue;
-  if (decimal <= 0.4) {
-    displayValue = Math.floor(rating);
-  } else if (decimal >= 0.6) {
-    displayValue = Math.ceil(rating);
+
+  if (decimal <= 0.35) {
+    displayValue = integerPart;
+  } else if (decimal <= 0.65) {
+    displayValue = integerPart + 0.5;
   } else {
-    displayValue = rating;
+    // Round up (e.g., 4.7 -> 5.0)
+    displayValue = integerPart + 1;
   }
   
-  // Format to 1 decimal place
   return displayValue.toFixed(1);
 });
+
 watch([sortValue, filterValue, searchValue], () => { first.value = 0; });
 </script>
 
