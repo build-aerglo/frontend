@@ -292,12 +292,12 @@
 
                   <div class="text-center">
                     <div class="flex items-center gap-1 justify-center">
-                      <span class="text-lg font-bold text-slate-900">{{ business.avgRating ?? 0 }}</span>
+                      <span class="text-lg font-bold text-slate-900">{{ getDisplayRating(business.avgRating) }}</span>
                       <div class="hidden min-[401px]:flex">
-                        <Star v-for="n in 5" :key="n" :value="(business.avgRating ?? 0) - (n - 1)" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
+                        <Star :count="business?.avgRating || 0" :rounded="true"/>
                       </div>
                       <div class="flex min-[401px]:hidden">
-                        <Star :value="1" class="w-4 h-4" :color-level="Math.floor(business.avgRating ?? 0)" />
+                        <Star :count="business?.avgRating || 0" :rounded="true"/>
                       </div>
                     </div>
                     <button @click.stop="focusedBusinessId = business.id || (business as any).businessId" class="text-xs text-[#008253] font-semibold hover:underline">
@@ -451,7 +451,6 @@
 </template>
 
 <script setup lang="ts">
-import Star from '~/components/Stars.vue' 
 import Badge from '~/components/Badge.vue'
 import useSearch from '~/composables/search/useSearch'
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
@@ -486,8 +485,8 @@ const tempFilters = ref<{
 
 const filters = ref<any>({
   name: route.query.name || route.query.q || '',
-  categoryId: route.query.categoryId || '',  // ✅ Read categoryId from URL
-  category: route.query.category || '',      // ✅ Read category name from URL
+  categoryId: route.query.categoryId || '',  // Read categoryId from URL
+  category: route.query.category || '',      // Read category name from URL
   badges: '',
   location: '',
   stars: '',
@@ -497,14 +496,14 @@ const filters = ref<any>({
 
 const activeFilterCount = computed<number>(() => {
   let count = 0
-  if (filters.value.categoryId) count++  // ✅ Count ID only, not name
+  if (filters.value.categoryId) count++  // Count ID only, not name
   if (filters.value.badges) count++
   if (filters.value.location) count++
   if (filters.value.stars) count++
   return count
 })
 
-// ✅ When category dropdown changes, also update the category name
+// When category dropdown changes, also update the category name
 const onCategoryDropdownChange = (event: any) => {
   const selectedId = event.value;
   if (!selectedId) {
@@ -517,7 +516,7 @@ const onCategoryDropdownChange = (event: any) => {
   }
 };
 
-// ✅ Also sets category name when clicking category tags on business cards
+// Also sets category name when clicking category tags on business cards
 const filterByCategoryName = (name: string) => {
   const match = categories.value.find(
     c => (c.name || '').toLowerCase() === name.toLowerCase()
@@ -525,7 +524,7 @@ const filterByCategoryName = (name: string) => {
 
   if (match) {
     filters.value.categoryId = match.categoryId || match.id;
-    filters.value.category = match.name;  // ✅ Set name alongside ID
+    filters.value.category = match.name;  // Set name alongside ID
     filters.value.tagId = ''; 
     filters.value.tagName = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -533,7 +532,7 @@ const filterByCategoryName = (name: string) => {
 };
 
 const applyFilters = (): void => {
-  // ✅ Also resolve category name when applying from mobile drawer
+  //  Also resolve category name when applying from mobile drawer
   const selectedId = tempFilters.value.categoryId;
   if (selectedId) {
     const match = categories.value.find(c => (c.categoryId || c.id) === selectedId);
@@ -609,7 +608,7 @@ const fetchResults = async (q: string) => {
   }
 }
 
-// ✅ When categoryId changes, clear category name if ID was cleared
+//  When categoryId changes, clear category name if ID was cleared
 watch(() => filters.value.categoryId, async (newId) => {
   if (!newId) {
     filters.value.category = '';
@@ -670,7 +669,7 @@ const filteredBusinesses = computed(() => {
   });
 })
 
-// ✅ Exclude 'category' from hasActiveFilters - it's display-only
+// Exclude 'category' from hasActiveFilters - it's display-only
 const hasActiveFilters = computed(() => 
   Object.entries(filters.value).some(([key, v]) => 
     v && !['category'].includes(key)
@@ -692,7 +691,7 @@ const ratingOptions = ref([{ label: 'Any', value: '' }, { label: '4.5+', value: 
 const clearFilter = (key: string): void => {
   filters.value[key] = '';
   if (key === 'categoryId') {
-    filters.value.category = '';   // ✅ Clear name when ID is cleared
+    filters.value.category = '';   // Clear name when ID is cleared
     filters.value.tagId = '';
     filters.value.tagName = '';
     performMainFetch();
@@ -708,7 +707,7 @@ const clearAllFilters = () => {
   filters.value = { 
     name: '', 
     categoryId: '', 
-    category: '',    // ✅ Clear name too
+    category: '',    //  Clear name too
     badges: '', 
     location: '', 
     stars: '', 
@@ -722,7 +721,7 @@ function getFilterLabel(key: any, value: any): string {
   const k = String(key);
   if (k === 'name') return String(value); 
   if (k === 'tagName') return String(value);
-  // ✅ Show category name directly instead of looking up by ID
+  // Show category name directly instead of looking up by ID
   if (k === 'categoryId') return filters.value.category || categoryOptions.value.find(opt => opt.value === value)?.label || 'Category';
   
   const optionsMap: Record<string, any[]> = { 
@@ -784,6 +783,27 @@ watch(filters, (newFilters) => {
 
   router.push({ query, replace: true });
 }, { deep: true });
+const getDisplayRating = (rating: number | string | undefined): string => {
+  const numRating = typeof rating === 'string' ? parseFloat(rating) : (rating ?? 0);
+  
+  const integerPart = Math.floor(numRating);
+  const decimalPart = numRating - integerPart;
+  const decimal = Math.round(decimalPart * 100) / 100;
+  
+  let displayValue;
+  if (decimal <= 0.35) {
+    // Round down: 1.35 → 1.0, 2.35 → 2.0
+    displayValue = integerPart;
+  } else if (decimal <= 0.65) {
+    // Half star: 1.4-1.65 → 1.5, 2.4-2.65 → 2.5
+    displayValue = integerPart + 0.5;
+  } else {
+    // Round up: 1.7 → 2.0, 2.7 → 3.0
+    displayValue = integerPart + 1;
+  }
+  
+  return displayValue.toFixed(1);
+};
 </script>
 
 <style scoped>
