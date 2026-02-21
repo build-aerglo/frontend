@@ -590,47 +590,19 @@ const handleRegistration = async () => {
         life: 3000
       });
     }
-  } catch (error: any) {
-    console.error('Registration error:', error);
+  } catch (err: any) {
+  registrationError.value = err.message
 
-    if (error.response) {
-      const status = error.response.status;
-      const errorMessage = error.response.data?.message || error.response.data?.error;
+  toast.add({
+    severity: 'error',
+    summary: 'Registration Error',
+    detail: err.message,
+    life: 4000
+  })
+}
 
-      switch (status) {
-        case 400:
-          registrationError.value = errorMessage || 'Invalid registration data. Please check your input.';
-          break;
-        case 409:
-          registrationError.value = errorMessage || 'An account with this email already exists.';
-          break;
-        case 422:
-          registrationError.value = errorMessage || 'Please check that all required fields are filled correctly.';
-          break;
-        case 429:
-          registrationError.value = 'Too many registration attempts. Please try again later.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          registrationError.value = 'Server error. Please try again in a few moments.';
-          break;
-        default:
-          registrationError.value = errorMessage || 'Registration failed. Please try again.';
-      }
-    } else if (error.request) {
-      registrationError.value = 'Network error. Please check your internet connection and try again.';
-    } else {
-      registrationError.value = error.message || 'An unexpected error occurred. Please try again.';
-    }
 
-    toast.add({
-      severity: 'error',
-      summary: 'Registration Error',
-      detail: registrationError.value,
-      life: 4000
-    });
-  } finally {
+ finally {
     isLoading.value = false;
   }
 };

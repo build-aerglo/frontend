@@ -78,165 +78,105 @@
 
 <script setup lang="ts">
 import useSocialAuth from '~/composables/useSocialAuth';
-import useUser from '~/composables/useUser';
 import useMethods from '~/composables/useMethods';
 import type { LoginData } from "~/types";
 
 const emit = defineEmits(['close', 'switch-to-signup', 'success']);
 const { loginUser } = useMethods();
-const store = useUser(); 
+const { initiateSocialLogin } = useSocialAuth();
 const toast = useToast();
-const userData = ref<LoginData>({ email: '', password: '' });
 
+const userData = ref<LoginData>({ email: '', password: '' });
 const rememberMe = ref<boolean>(false);
 const showPassword = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string | null>(null);
 
-const { initiateSocialLogin } = useSocialAuth();
-
 /**
- * SOCIAL LOGIN HANDLER
+ * SOCIAL LOGIN
  */
 const handleSocialLogin = async (provider: string) => {
   errorMessage.value = null;
   isLoading.value = true;
 
   try {
-    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
-    if (!validProviders.includes(provider)) {
-      throw new Error(`Invalid social login provider: ${provider}`);
-    }
-
-    localStorage.setItem('social_provider', provider);
-
-    // ✅ Now returns true/false after popup closes
     const success = await initiateSocialLogin(provider);
 
     if (success) {
-      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 });
-      emit('success'); // ✅ Closes modal, user stays on page
-    }
-    // If false (user closed popup or error), do nothing - just stay on modal
-
-  } catch (error: any) {
-    console.error(`Social login error for ${provider}:`, error);
-    
-    const displayProviderName = provider === 'google-oauth2' ? 'Google' : provider;
-    
-    if (error.message?.includes('popup') || error.message?.includes('blocked')) {
-      errorMessage.value = `Pop-up blocked. Please allow pop-ups for this site.`;
-    } else if (error.message?.includes('cancelled') || error.message?.includes('closed')) {
-      errorMessage.value = null; // User cancelled, no need to show error
-      return;
-    } else {
-      errorMessage.value = error.message || `Unable to connect with ${displayProviderName}.`;
+      toast.add({
+        severity: 'success',
+        summary: 'Welcome!',
+        detail: 'You are now logged in.',
+        life: 3000
+      });
+      emit('success');
     }
 
-    if (errorMessage.value) {
-      toast.add({ severity: 'error', summary: 'Error', detail: errorMessage.value, life: 4000 });
-    }
+  } catch (err: any) {
+    errorMessage.value = err.message;
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err.message,
+      life: 4000
+    });
   } finally {
     isLoading.value = false;
   }
 };
 
 /**
- * EMAIL/PASSWORD LOGIN HANDLER
+ * EMAIL LOGIN
  */
 const HandleLogin = async () => {
-  errorMessage.value = "";
+  errorMessage.value = null;
 
-  // 1. Client-side Validation
+  // Basic UX validation only
   if (!userData.value.email || !userData.value.password) {
     errorMessage.value = 'Please enter both email and password.';
-    return;
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(userData.value.email)) {
-    errorMessage.value = 'Please enter a valid email address.';
-    return;
-  }
-
-  if (userData.value.password.length < 6) {
-    errorMessage.value = 'Password must be at least 6 characters.';
     return;
   }
 
   isLoading.value = true;
 
   try {
-    // Pass 'end_user' as the expected role
-    const res = await loginUser(userData.value, 'end_user');
-    
-    if (res) {
-      // Handle Remember Me logic
-      if (rememberMe.value) {
-        localStorage.setItem('rememberMe', 'true');
-        localStorage.setItem('userEmail', userData.value.email);
-      } else {
-        localStorage.removeItem('rememberMe');
-        localStorage.removeItem('userEmail');
-      }
-      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'You are now logged in.', life: 3000 })
-      emit('success'); 
-    } else {
-      errorMessage.value = 'Invalid credentials. Please try again.';
-    }
-  } catch (error: any) {
-    console.error('Login error:', error);
+    await loginUser(userData.value, 'end_user');
 
-    // Handle role mismatch with generic message
-    if (error.message === 'Invalid credentials') {
-      errorMessage.value = 'Invalid credentials. Please try again.';
-    } else if (error.response) {
-      const status = error.response.status;
-      const apiMsg = error.response.data?.message || error.response.data?.error;
-
-      switch (status) {
-        case 400:
-        case 401:
-        case 404:
-        case 422:
-          errorMessage.value = 'Invalid credentials. Please try again.';
-          break;
-        case 403:
-          if (apiMsg?.toLowerCase().includes('suspended')) {
-            errorMessage.value = 'Your account has been suspended.';
-          } else if (apiMsg?.toLowerCase().includes('verified')) {
-            errorMessage.value = 'Please verify your email address first.';
-          } else {
-            errorMessage.value = 'Invalid credentials. Please try again.';
-          }
-          break;
-        case 429:
-          errorMessage.value = 'Too many attempts. Try again later.';
-          break;
-        case 500:
-          errorMessage.value = 'Server error. Please try again later.';
-          break;
-        default:
-          errorMessage.value = 'Invalid credentials. Please try again.';
-      }
+    if (rememberMe.value) {
+      localStorage.setItem('rememberMe', 'true');
+      localStorage.setItem('userEmail', userData.value.email);
     } else {
-      errorMessage.value = 'Network error. Please check your connection.';
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('userEmail');
     }
 
-    toast.add({ 
-      severity: 'error', 
-      summary: 'Login Error', 
-      detail: errorMessage.value, 
-      life: 4000 
+    toast.add({
+      severity: 'success',
+      summary: 'Welcome!',
+      detail: 'You are now logged in.',
+      life: 3000
+    });
+
+    emit('success');
+
+  } catch (err: any) {
+    errorMessage.value = err.message;
+
+    toast.add({
+      severity: 'error',
+      summary: 'Login Error',
+      detail: err.message,
+      life: 4000
     });
   } finally {
     isLoading.value = false;
   }
-}
+};
 
 onMounted(() => {
   const remembered = localStorage.getItem('rememberMe');
   const savedEmail = localStorage.getItem('userEmail');
+
   if (remembered === 'true' && savedEmail) {
     rememberMe.value = true;
     userData.value.email = savedEmail;
