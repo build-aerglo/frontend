@@ -170,8 +170,10 @@ const { registerEndUser, loginUser } = useMethods();
 const { initiateSocialLogin } = useSocialAuth();
 const toast = useToast();
 
-const confirmPassword = ref("");
 const registrationError = ref<string | null>(null);
+const isLoading = ref(false);
+const showPassword = ref(false);
+
 const form = ref<EndUser>({
   username: "",
   email: "",
@@ -179,92 +181,74 @@ const form = ref<EndUser>({
   password: "",
   socialMedia: "",
 });
-const isLoading = ref(false);
-const showPassword = ref(false);
-const showConfirm = ref(false);
 
 const validLength = ref(false);
 const validComplexity = ref(false);
 const validNumeric = ref(false);
+
 const allValid = computed(
-  () => validLength.value && validNumeric.value && validComplexity.value,
+  () => validLength.value && validNumeric.value && validComplexity.value
 );
 
-// Password Watcher
-watch(
-  () => form.value.password,
-  (newVal) => {
-    validLength.value = newVal.length >= 8;
-    validNumeric.value = /[0-9]/.test(newVal);
-    validComplexity.value = /[@#&$_?]/.test(newVal);
-  },
-);
+watch(() => form.value.password, (newVal) => {
+  validLength.value = newVal.length >= 8;
+  validNumeric.value = /[0-9]/.test(newVal);
+  validComplexity.value = /[@#&$_?]/.test(newVal);
+});
 
 /**
- * FORM VALIDATION LOGIC
+ * VALIDATION
  */
 const validateForm = (): { isValid: boolean; errorMessage?: string } => {
   if (form.value.username.trim().length < 3)
-    return {
-      isValid: false,
-      errorMessage: "Username must be at least 3 characters.",
-    };
+    return { isValid: false, errorMessage: "Username must be at least 3 characters." };
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(form.value.email))
-    return {
-      isValid: false,
-      errorMessage: "Please enter a valid email address.",
-    };
-
-  // const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  // if (!phoneRegex.test(form.value.phone) || form.value.phone.replace(/\D/g, '').length < 10) {
-  //   return { isValid: false, errorMessage: 'Please enter a valid phone number (min 10 digits).' };
-  // }
+    return { isValid: false, errorMessage: "Please enter a valid email address." };
 
   if (!allValid.value)
-    return {
-      isValid: false,
-      errorMessage: "Please fulfill all password requirements.",
-    };
-
-  // if (confirmPassword.value !== form.value.password) return { isValid: false, errorMessage: 'Passwords do not match.' };
+    return { isValid: false, errorMessage: "Please fulfill all password requirements." };
 
   return { isValid: true };
 };
 
 /**
- * SOCIAL LOGIN
+ * SOCIAL SIGNUP
  */
 const handleSocialLogin = async (provider: string) => {
   registrationError.value = null;
   isLoading.value = true;
 
   try {
-    const validProviders = ['google-oauth2', 'Facebook', 'Twitter', 'GitHub', 'Apple'];
-    if (!validProviders.includes(provider)) throw new Error(`Invalid provider: ${provider}`);
-    
-    localStorage.setItem('social_provider', provider);
-
-    // ✅ Now returns true/false after popup closes
     const success = await initiateSocialLogin(provider);
 
     if (success) {
-      toast.add({ severity: 'success', summary: 'Welcome!', detail: 'Account created and logged in.', life: 3000 });
-      emit('success'); // ✅ Closes modal, user stays on page
+      toast.add({
+        severity: 'success',
+        summary: 'Welcome!',
+        detail: 'Account created and logged in.',
+        life: 3000
+      });
+      emit('success');
     }
-    // If false (user closed popup), just stay on modal
 
-  } catch (error: any) {
-    registrationError.value = error.message || "Social login failed";
-    toast.add({ severity: 'error', summary: 'Error', detail: registrationError.value, life: 4000 });
+  } catch (err: any) {
+    registrationError.value = err.message;
+
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err.message,
+      life: 4000
+    });
   } finally {
     isLoading.value = false;
   }
 };
 
 /**
- * MAIN REGISTRATION
+ * REGISTRATION
  */
 const handleEndUserRegistration = async () => {
   registrationError.value = null;
@@ -276,56 +260,31 @@ const handleEndUserRegistration = async () => {
   }
 
   isLoading.value = true;
+
   try {
-    const res = await registerEndUser(form.value);
+    await registerEndUser(form.value);
 
-    if (res) {
-      // Silent Login
-      const loginRes = await loginUser({
-        email: form.value.email,
-        password: form.value.password,
-      });
+    await loginUser({
+      email: form.value.email,
+      password: form.value.password,
+    });
 
-      if (loginRes) {
-        toast.add({
-          severity: "success",
-          summary: "Success!",
-          detail: "Account created and logged in.",
-          life: 2000,
-        });
-        emit("success");
-      }
-    }
-  } catch (error: any) {
-    console.error("Registration error:", error);
-    if (error.response) {
-      const status = error.response.status;
-      const apiMsg = error.response.data?.message || error.response.data?.error;
+    toast.add({
+      severity: "success",
+      summary: "Success!",
+      detail: "Account created and logged in.",
+      life: 2000,
+    });
 
-      switch (status) {
-        case 409:
-          if (apiMsg?.toLowerCase().includes("email"))
-            registrationError.value = "Email already exists.";
-          else if (apiMsg?.toLowerCase().includes("username"))
-            registrationError.value = "Username is taken.";
-          else
-            registrationError.value =
-              "An account with these details already exists.";
-          break;
-        case 422:
-          registrationError.value =
-            "Check that all fields are filled correctly.";
-          break;
-        default:
-          registrationError.value = apiMsg || "Registration failed.";
-      }
-    } else {
-      registrationError.value = "Network error. Please check your connection.";
-    }
+    emit("success");
+
+  } catch (err: any) {
+    registrationError.value = err.message;
+
     toast.add({
       severity: "error",
       summary: "Registration Error",
-      detail: registrationError.value,
+      detail: err.message,
       life: 4000,
     });
   } finally {
@@ -333,3 +292,4 @@ const handleEndUserRegistration = async () => {
   }
 };
 </script>
+
