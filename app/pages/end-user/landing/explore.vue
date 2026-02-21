@@ -332,13 +332,13 @@
                     </div>
                   </div>
 
-                  <div class="flex flex-wrap gap-1">
+                  <div class="flex flex-wrap gap-1 ">
                     <template v-if="'categories' in business && business.categories">
                       <button
                         v-for="cat in business.categories"
                         :key="cat.id"
                         @click.stop="filterByCategoryName(cat.name)"
-                        class="text-sm bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-primary transition-all"
+                        class="text-xs bg-white px-2 py-1 rounded-lg text-slate-500 border border-slate-300 hover:bg-[#008253] hover:text-primary transition-all"
                       >
                         {{ cat.name }}
                       </button>

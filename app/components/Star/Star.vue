@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center gap-1">
-    <div v-for="i in 5" :key="i" class="w-5 h-5 flex items-center justify-center">
+  <div class="flex items-center gap-0">
+    <div v-for="i in 5" :key="i" class="w-4 h-4 flex items-center justify-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="8 8 48 48"
