@@ -2,11 +2,13 @@
   <Toast />
   <GeneralLoader v-if="isLoading" />
   <div v-else class="max-w-[1440px] mx-auto px-8 pt-4">
-    <button 
-      @click="goBack" 
+    <button
+      @click="goBack"
       class="flex items-center text-gray-500 hover:text-[#008253] transition-colors duration-200 group mb-4"
     >
-      <div class="p-2 rounded-full group-hover:bg-green-50 dark:group-hover:bg-gray-800 mr-1 transition-all">
+      <div
+        class="p-2 rounded-full group-hover:bg-green-50 dark:group-hover:bg-gray-800 mr-1 transition-all"
+      >
         <i class="pi pi-arrow-left text-sm"></i>
       </div>
       <span class="font-medium text-sm">Back</span>
@@ -69,7 +71,7 @@ const loadBusinessData = async () => {
     isLoading.value = true;
 
     const [res, categoryRes, reviewRes] = await Promise.all([
-      getBusinessProfile(id),
+      getBusinessProfile(id, true),
       getCategories(),
       getBusinessReviews(id),
     ]);
@@ -79,7 +81,8 @@ const loadBusinessData = async () => {
     }
 
     if (reviewRes?.statusCode === 200) {
-      reviews.value = reviewRes.data;
+      // console.log(reviewRes);
+      reviews.value = reviewRes.data.reviews;
     }
 
     if (res?.statusCode === 200) {
@@ -116,7 +119,7 @@ const pageTitle = computed(
   () =>
     `${business.value?.name ?? "Business Profile"} - ${
       business.value?.categories[0]?.name ?? "Business"
-    } | Clereview`
+    } | Clereview`,
 );
 useHead({
   title: pageTitle,
@@ -135,7 +138,7 @@ const goBack = () => {
   if (window.history.length > 1) {
     router.back();
   } else {
-    router.push('/end-user/landing/categories');
+    router.push("/end-user/landing/categories");
   }
 };
 // // #push data

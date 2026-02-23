@@ -6,6 +6,9 @@ import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
 
+import { useBusinessProfileStore } from "~/store/business/businessProfile";
+import { useBusinessSubscription } from "~/store/business/businessSubscription";
+
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
 const logoutError = ref("");
@@ -15,11 +18,18 @@ export default function () {
   const supportStore = useSupportUser();
   const api = useApi();
   const userStore = useUser();
-  
+
+  // misc business stores
+  const profileStore = useBusinessProfileStore();
+  const businessSubscription = useBusinessSubscription();
+
   const clearAllStores = () => {
     store.clearUser();
     userStore.clearUser();
     supportStore.clearUser();
+    //
+    profileStore.clearProfile();
+    businessSubscription.clearPlan();
   };
 
   const registerBusiness = async (data: BusinessUser) => {
@@ -36,7 +46,7 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
     }
@@ -55,22 +65,25 @@ export default function () {
       }
     } catch (err: any) {
       console.error(
-        err?.response?.data?.message || err.message || "Something went wrong"
+        err?.response?.data?.message || err.message || "Something went wrong",
       );
       return null;
     }
   };
 
-  const loginUser = async (data: LoginData, expectedRole?: 'business_user' | 'end_user' | 'support_user') => {
+  const loginUser = async (
+    data: LoginData,
+    expectedRole?: "business_user" | "end_user" | "support_user",
+  ) => {
     try {
       clearAllStores();
       const res = await api.post("api/auth/login", {
         email: data.email,
         password: data.password,
       });
-      
+
       console.log(res);
-      
+
       if (res.status === 200 && res.data) {
         const { access_token, id_token, expires_in, roles, id } = res.data;
         const role = roles[0];
@@ -79,7 +92,7 @@ export default function () {
         if (expectedRole && role !== expectedRole) {
           // Clear any tokens that might have been set
           clearAllStores();
-          
+
           // Throw generic error to prevent role enumeration
           throw new Error("Invalid credentials");
         }
@@ -104,7 +117,7 @@ export default function () {
           supportStore.setLoginData(loginPayload);
           // supportStore.setId(id);
         }
-        
+
         return res.data;
       } else {
         throw new Error("Login failed");
@@ -122,9 +135,9 @@ export default function () {
 
   const logoutUser = async () => {
     if (isLoggingOut.value) return;
-    
+
     isLoggingOut.value = true;
-    logoutError.value = ""; 
+    logoutError.value = "";
 
     try {
       // 1. Attempt the API call
@@ -134,29 +147,30 @@ export default function () {
       const role = store.role || userStore.role || supportStore.role;
 
       // 3. Clear local state ONLY after successful API response
-      store.clearUser();
-      userStore.clearUser();
-      supportStore.clearUser();
-      
+      // store.clearUser();
+      // userStore.clearUser();
+      // supportStore.clearUser();
+      clearAllStores();
+
       showLogoutModal.value = false;
 
       // 4. Redirect based on the captured role
-      let redirectPath = '/';
-      if (role === 'business_user') {
-        redirectPath = '/business/auth/sign-in';
-      } else if (role === 'support_user') {
-        redirectPath = '/support/auth/sign-in';
+      let redirectPath = "/";
+      if (role === "business_user") {
+        redirectPath = "/business/auth/sign-in";
+      } else if (role === "support_user") {
+        redirectPath = "/support/auth/sign-in";
       }
 
       await navigateTo(redirectPath, { replace: true });
-      
     } catch (err: any) {
       // 5. ON FAILURE: No redirect, no local data wipe
       console.error("Logout failed:", err);
-      
+
       // Capture the specific error message from the backend
-      logoutError.value = err?.response?.data?.message || "Server error: Could not invalidate session. Please try again.";
-      
+      logoutError.value =
+        err?.response?.data?.message ||
+        "Server error: Could not invalidate session. Please try again.";
     } finally {
       isLoggingOut.value = false;
     }
@@ -258,7 +272,7 @@ export default function () {
       };
     }
   };
-  
+
   return {
     loginUser,
     registerBusiness,
@@ -273,6 +287,6 @@ export default function () {
     clearAllStores,
     requestResetPassword,
     resetPassword,
-    updatePassword
+    updatePassword,
   };
 }

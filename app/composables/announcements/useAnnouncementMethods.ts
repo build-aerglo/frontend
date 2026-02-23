@@ -41,7 +41,7 @@ export default function () {
     description: "Business phone number needs reverification.",
     header: "Reverify business profile",
     url: "/business/verification/",
-    urlLabel: "Reverify Profile",
+    urlLabel: "Re-verify Profile",
     isClosable: false,
     hasLink: true,
   };

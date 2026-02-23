@@ -101,6 +101,11 @@ export interface BusinessProfileResponse {
   businessState?: string;
   businessStreet?: string;
   businessCityTown?: string;
+  reviewSummary: string;
+  idVerified: boolean;
+  idVerificationType: string;
+  bayesianAverage: number;
+  userId: string;
 }
 
 export interface BusinessPreference {
@@ -251,4 +256,13 @@ export interface BusinessSubscription {
   };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface DisputeCategory {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  requiresEvidence: boolean;
+  priority: number;
 }
