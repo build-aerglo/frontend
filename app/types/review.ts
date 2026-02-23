@@ -3,39 +3,56 @@ export interface Review {
   id: string;
   businessId: string;
   businessName: string;
-  
+
   // Location Details
   location: string;
   businessCity?: string;
   businessState?: string;
   businessAddress?: string;
-  
+
   // Category
   category?: string | null;
-  
+
   // Review Content
   body: string;
   rating: number;
   date: string;
-  
+
   // Status Information
-  status: string;                // "Posted" | "Pending" | "Rejected"
-  statusClass: string;           // CSS classes for status badge
-  textClass: string;             // CSS classes for text color
-  isGrayedOut: boolean;          // Whether review should be grayed out
-  rawStatus: string;             // Original status: "APPROVED" | "PENDING" | "REJECTED"
-  
+  status: string; // "Posted" | "Pending" | "Rejected"
+  statusClass: string; // CSS classes for status badge
+  textClass: string; // CSS classes for text color
+  isGrayedOut: boolean; // Whether review should be grayed out
+  rawStatus: string; // Original status: "APPROVED" | "PENDING" | "REJECTED"
+
   // Media
   photoUrls?: string[] | null;
-  
+
   // Metadata
   reviewAsAnon?: boolean;
   isGuestReview?: boolean;
   validatedAt?: string | null;
   createdAt?: string;
-  
+
   // Optional legacy fields
   author?: string;
+}
+
+export interface ReviewDashboard {
+  id: string;
+  locationName: string;
+  locationId: string;
+  reviewBody: string;
+  replyBody: string;
+  photoUrls: string[] | null;
+  starRating: number;
+  email: string;
+  anonymous: boolean;
+  status: string;
+  sentiment: string | null;
+  uploadedDate: string;
+  errors: string[] | null;
+  warnings: string[] | null;
 }
 
 // ===================================================================
@@ -48,31 +65,31 @@ export interface EnrichedReview {
   id: string;
   businessId: string;
   businessName: string;
-  
+
   // Location Details
   location: string;
   businessCity: string;
   businessState: string;
   businessAddress: string;
-  
+
   // Category
   category: string | null;
-  
+
   // Review Content
   body: string;
   rating: number;
   date: string;
-  
+
   // Status Information
-  status: string;                // "Posted" | "Pending" | "Rejected"
-  statusClass: string;           // CSS classes for status badge
-  textClass: string;             // CSS classes for text color
-  isGrayedOut: boolean;          // Whether review should be grayed out
-  rawStatus: string;             // Original status: "APPROVED" | "PENDING" | "REJECTED"
-  
+  status: string; // "Posted" | "Pending" | "Rejected"
+  statusClass: string; // CSS classes for status badge
+  textClass: string; // CSS classes for text color
+  isGrayedOut: boolean; // Whether review should be grayed out
+  rawStatus: string; // Original status: "APPROVED" | "PENDING" | "REJECTED"
+
   // Media
   photoUrls: string[] | null;
-  
+
   // Metadata
   reviewAsAnon: boolean;
   isGuestReview: boolean;

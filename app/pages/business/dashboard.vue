@@ -559,7 +559,10 @@
 import { ref, computed } from "vue";
 import { useSampleAnalytics } from "@/composables/useSampleAnalytics";
 import Star from "~/components/Stars.vue";
-
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
+import useBusinessUser from "~/composables/business/useBusinessUser";
+const { getBusinessUser, getBusinessProfile, getBusinessSubscriptionSummary } =
+  useBusinessMethods();
 const {
   businessInfo,
   keyMetrics,
@@ -573,6 +576,9 @@ const {
 } = useSampleAnalytics();
 
 definePageMeta({ layout: "business" });
+
+// const business = getBusinessUser();
+const store = useBusinessUser();
 
 // Local state
 const wordCloudView = ref<"positive" | "negative">("positive");
@@ -795,4 +801,11 @@ const exportCard = (cardType: string) => {
   console.log(`Exporting ${cardType} data...`);
   alert(`Exporting ${cardType} data...`);
 };
+
+onBeforeMount(async () => {
+  await Promise.all([
+    getBusinessProfile(store.id!),
+    getBusinessSubscriptionSummary(),
+  ]);
+});
 </script>

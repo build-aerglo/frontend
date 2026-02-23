@@ -873,3 +873,33 @@ export const idVerificationTypes = [
   },
   { code: "other", name: "Other", requiresIdNumber: true },
 ];
+
+export const getMaxData = (tier: number) => {
+  let max = {
+    MAX_MEDIA: 0,
+    MAX_FAQS: 0,
+    MAX_TAGS: 5,
+  };
+
+  switch (tier) {
+    case 0:
+      max.MAX_MEDIA = 1;
+      max.MAX_TAGS = 3;
+      break;
+
+    case 1:
+      max.MAX_MEDIA = 3;
+      max.MAX_TAGS = 6;
+      break;
+
+    case 2:
+      max.MAX_MEDIA = 6;
+      max.MAX_TAGS = 8;
+      break;
+
+    default:
+      break;
+  }
+
+  return max;
+};

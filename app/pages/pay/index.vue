@@ -6,7 +6,7 @@
         <div class="sm:w-[400px] w-full rounded-md text-center p-[20px]">
           <div class="flex justify-center items-center mb-[20px]">
             <i
-              class="text-[500%]"
+              class="!text-[500%]"
               :class="`${responseData.icon} text-[${responseData.color}]`"
             ></i>
           </div>
@@ -52,9 +52,11 @@ interface ValidateResponse {
   success: boolean;
 }
 
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import usePayments from "~/composables/payment/usePayments";
 
 const { validatePayment } = usePayments();
+const { getBusinessSubscriptionSummary } = useBusinessMethods();
 const isLoading = ref(true);
 
 const response = ref<ValidateResponse>();
@@ -67,6 +69,10 @@ const validatePaymentAsync = async () => {
     isLoading.value = true;
     const res = await validatePayment(reference);
     if (res.ok) {
+      if (response.value?.status === "success") {
+        // refetch user subscription
+        await getBusinessSubscriptionSummary(true);
+      }
       return (response.value = res.data);
     }
 
