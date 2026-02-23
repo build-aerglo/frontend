@@ -2,14 +2,33 @@
   <nav class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
     <div class="mx-auto px-8 flex items-center justify-between h-16">
       
-      <div class="flex items-center">
+
+      <div class="flex items-center w-40 flex-shrink-0">
         <NuxtLink to="/">
           <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-10 w-auto" />
         </NuxtLink>
       </div>
 
-      <div class="flex items-center space-x-6">
-        
+      <div class="flex-1 flex justify-center px-4">
+        <Transition name="fade">
+          <div v-if="showNavbarSearch" class="w-full max-w-sm">
+            <div class="relative w-full">
+              <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+              <input
+                v-model="navbarSearchQuery"
+                type="text"
+                placeholder="search business"
+                class="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition"
+                @input="onNavbarInput"
+                @keydown.enter="handleNavbarSearch"
+              />
+            </div>
+          </div>
+        </Transition>
+      </div>
+
+      <div class="flex items-center space-x-6 flex-shrink-0">
+      <div class="flex items-center space-x-6"> 
         <!-- FOR BUSINESS DROPDOWN (Desktop) - Only show when NOT authenticated as business user -->
         <div class="hidden md:block relative" v-if="!isEndUser && !businessStore.isAuthenticated">
           <button @click.stop="toggleBusinessDropdown" class="flex items-center dark:text-gray-200 font-medium hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
@@ -94,6 +113,7 @@
           <i class="pi pi-bars text-sm"></i>
         </button>
       </div>
+    </div>
     </div>
 
     <!-- MOBILE MENU -->
@@ -227,6 +247,73 @@ import useMethods from '~/composables/useMethods';
 import useBusinessUser from '~/composables/business/useBusinessUser';
 import useRoleAccess from '~/composables/useRoleAccess';
 
+import { useNavbarSearch } from '~/composables/useNavbarSearch';
+
+import useSearch from '~/composables/search/useSearch'
+
+const { search } = useSearch()
+const navbarSearchQuery = ref('')
+const navbarSuggestions = ref<{ id: string; name: string; logoUrl: string; rating: number; url: string }[]>([])
+const showNavbarSuggestions = ref(false)
+const navbarActiveIndex = ref(-1)
+let navbarDebounceTimer: number | null = null
+
+const onNavbarInput = () => {
+  if (navbarDebounceTimer) clearTimeout(navbarDebounceTimer)
+  navbarActiveIndex.value = -1
+
+  navbarDebounceTimer = window.setTimeout(async () => {
+    const trimmed = navbarSearchQuery.value.trim()
+    if (!trimmed) {
+      navbarSuggestions.value = []
+      showNavbarSuggestions.value = false
+      return
+    }
+
+    try {
+      const res = await search(trimmed)
+      const results = Array.isArray(res) ? res : (res.companies || [])
+      navbarSuggestions.value = results.slice(0, 6).map((b: any) => ({
+        id: b.businessId,
+        name: b.name,
+        url: b.website || '',
+        logoUrl: b.logo || '/images/default-business-logo.png',
+        rating: b.avgRating || 0
+      }))
+      showNavbarSuggestions.value = true
+    } catch (e) {
+      showNavbarSuggestions.value = false
+    }
+  }, 400)
+}
+
+const { showNavbarSearch } = useNavbarSearch()
+
+const handleNavbarSearch = () => {
+  const q = navbarSearchQuery.value.trim()
+  if (!q) return
+
+  showNavbarSuggestions.value = false
+
+  const exactMatch = navbarSuggestions.value.find(
+    c => c.name.toLowerCase() === q.toLowerCase()
+  )
+
+  if (exactMatch) {
+    router.push(`/biz/${exactMatch.id}`)
+  } else {
+    router.push({ path: '/end-user/landing/explore', query: { q } })
+  }
+
+  navbarSearchQuery.value = ''
+}
+
+const selectNavbarSuggestion = (item: { id: string; name: string }) => {
+  navbarSearchQuery.value = ''
+  showNavbarSuggestions.value = false
+  router.push(`/biz/${item.id}`)
+}
+
 const { isGuest, isBusinessUser, isEndUser, isAuthenticated } = useRoleAccess();
 const { triggerLogout } = useMethods()
 const businessStore = useBusinessUser()
@@ -348,3 +435,14 @@ const handleGeneralAuthSuccess = () => {
   showGeneralAuth.value = false
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

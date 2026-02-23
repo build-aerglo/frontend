@@ -57,29 +57,16 @@
           </div>
         </div>
 
-        <!-- Header Section -->
-        <div class="mt-[100px] mb-[50px]">
-          <div class="max-w-7xl mx-auto text-center">
-            <h4 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
-              Upgrade Business Plan
-            </h4>
-            <p class="text-gray-600 w-full sm:w-[500px] mx-auto">
-              With our flexible pricing options, you can upgrade, downgrade, or
-              cancel a subscription service anytime.
-            </p>
-          </div>
-        </div>
-
         <div class="pb-[20px]">
-          <div
+          <!--<div
             v-if="subscriptions.length > 0"
             class="flex mb-[20px] gap-2.5 items-center justify-end"
           >
             <ToggleSwitch v-model="isAnnually" />
             <div>Annual Payment</div>
-          </div>
+          </div>-->
           <GeneralLoader v-if="isLoading" height="300px" />
-          <div class="grid sm:grid-cols-3 grid-cols-1 gap-2.5" v-else>
+          <!-- <div class="grid sm:grid-cols-3 grid-cols-1 gap-2.5" v-else>
             <SubscriptionSingle
               v-for="(i, idx) in subscriptions"
               :key="idx"
@@ -89,7 +76,14 @@
               @clicked="setPaymentPlan"
               :disabled="isLoadingPaymentButton"
             />
-          </div>
+          </div>-->
+          <SubscriptionPlans
+            :subscriptions="subscriptions"
+            :business-plan="businessSubscription?.subscriptionPlanId ?? null"
+            :disabled="isLoadingPaymentButton"
+            @clicked="setPaymentPlan"
+          />
+          <CustomPlanBanner @contact="handleCustomPlanContact" />
         </div>
       </template>
     </Card>
@@ -359,6 +353,11 @@ useHead({
     },
   ],
 });
+
+const handleCustomPlanContact = () => {
+  // open a modal, navigate to contact page, etc.
+  // e.g. navigateTo('/contact?inquiry=custom-plan')
+}
 
 const businessSubscription = ref<BusinessSubscription>();
 const subscriptions = ref<Subscription[]>([]);

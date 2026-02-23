@@ -14,7 +14,7 @@
     >
       <span class="text-2xl">{{ icon }}</span>
       <div class="flex-1">
-        <span class="font-medium text-gray-700 text-sm">{{ name }}</span>
+        <span class="font-medium text-gray-700 text-sm capitalize">{{ name }}</span>
       </div>
     </div>
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex items-center gap-1">
-    <div v-for="i in 5" :key="i" class="w-5 h-5 flex items-center justify-center">
+  <div class="flex items-center gap-0">
+    <div v-for="i in 5" :key="i" class="w-4 h-4 flex items-center justify-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="8 8 48 48"
@@ -53,34 +53,30 @@ import { computed } from 'vue';
 
 const props = defineProps({
   count: { type: Number, default: 0 },
-  rounded: { type: Boolean, default: false } // ✅ Add this prop
+  rounded: { type: Boolean, default: false }
 });
 
 const instanceId = Math.random().toString(36).substring(2, 7);
 const MAX_WIDTH = 48;
 
-// ✅ Conditional rounding based on prop
 const displayRating = computed(() => {
   const rating = props.count;
   
-  // If rounded prop is false, return exact rating
   if (!props.rounded) {
-    console.log(`🔵 Not rounded: ${rating}`);
     return rating;
   }
   
-  // Apply rounding logic
-  const decimal = Math.round((rating % 1) * 10) / 10;
-  console.log(`🟢 Rating: ${rating}, Decimal: ${decimal}, Rounded prop: ${props.rounded}`);
-  if (decimal <= 0.4) {
-    console.log(`⬇️ Rounding down: ${Math.floor(rating)}`);
-    return Math.floor(rating);   
-  } else if (decimal >= 0.6) {
-    console.log(`⬆️ Rounding up: ${Math.ceil(rating)}`);
-    return Math.ceil(rating);
+  const integerPart = Math.floor(rating);
+  const decimalPart = rating - integerPart;
+  
+  const decimal = Math.round(decimalPart * 100) / 100;
+  
+  if (decimal <= 0.35) {
+    return integerPart;
+  } else if (decimal <= 0.65) {
+    return integerPart + 0.5;
   } else {
-    console.log(`➡️ Keeping half: ${rating}`);
-    return Math.floor(rating) + 0.5;
+    return integerPart + 1;
   }
 });
 

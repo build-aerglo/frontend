@@ -23,46 +23,6 @@
         />
         Continue with Google
       </button>
-
-      <button
-        type="button"
-        @click="handleSocialLogin('Twitter')"
-        :disabled="isLoading"
-        class="w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-gray-200 rounded-lg bg-gray-100 hover:bg-gray-200 transition text-sm font-medium text-gray-700"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"
-          />
-        </svg>
-        Continue with X
-      </button>
-
-      <button
-        type="button"
-        @click="handleSocialLogin('Apple')"
-        :disabled="isLoading"
-        class="w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-black rounded-lg bg-black hover:bg-gray-800 transition text-sm font-medium text-white"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.202-.029 2.265-1.186c1.063-1.156.908-2.482.878-2.516zM9.194 1.517c.02-.036.085-.118.133-.147.188.18.36.382.508.605.497.746.774 1.504.815 2.198-.545-.039-1.24-.319-1.777-.771a3.393 3.393 0 0 1-.679-.685zM14.973 12.33c-.457 1.1-1.434 3.22-2.89 3.22-1.455 0-1.928-.99-3.58-.99-1.652 0-2.161.99-3.58.99-1.419 0-2.856-2.99-3.58-5.22-.724-2.23-.362-4.485.905-5.922 1.266-1.437 3.129-1.854 4.416-1.854 1.287 0 2.41.834 3.057.834.646 0 1.944-.834 3.056-.834 1.112 0 3.033.417 4.12 1.854a1.03 1.03 0 0 1 .25.362c-2.25 1.146-1.875 4.312.625 5.375.125.05.25.1.375.125-.125.688-.75 2.063-1.25 3.063z"
-          />
-        </svg>
-        Continue with Apple
-      </button>
     </div>
 
     <div class="relative flex items-center">
@@ -210,8 +170,10 @@ const { registerEndUser, loginUser } = useMethods();
 const { initiateSocialLogin } = useSocialAuth();
 const toast = useToast();
 
-const confirmPassword = ref("");
 const registrationError = ref<string | null>(null);
+const isLoading = ref(false);
+const showPassword = ref(false);
+
 const form = ref<EndUser>({
   username: "",
   email: "",
@@ -219,90 +181,74 @@ const form = ref<EndUser>({
   password: "",
   socialMedia: "",
 });
-const isLoading = ref(false);
-const showPassword = ref(false);
-const showConfirm = ref(false);
 
 const validLength = ref(false);
 const validComplexity = ref(false);
 const validNumeric = ref(false);
+
 const allValid = computed(
-  () => validLength.value && validNumeric.value && validComplexity.value,
+  () => validLength.value && validNumeric.value && validComplexity.value
 );
 
-// Password Watcher
-watch(
-  () => form.value.password,
-  (newVal) => {
-    validLength.value = newVal.length >= 8;
-    validNumeric.value = /[0-9]/.test(newVal);
-    validComplexity.value = /[@#&$_?]/.test(newVal);
-  },
-);
+watch(() => form.value.password, (newVal) => {
+  validLength.value = newVal.length >= 8;
+  validNumeric.value = /[0-9]/.test(newVal);
+  validComplexity.value = /[@#&$_?]/.test(newVal);
+});
 
 /**
- * FORM VALIDATION LOGIC
+ * VALIDATION
  */
 const validateForm = (): { isValid: boolean; errorMessage?: string } => {
   if (form.value.username.trim().length < 3)
-    return {
-      isValid: false,
-      errorMessage: "Username must be at least 3 characters.",
-    };
+    return { isValid: false, errorMessage: "Username must be at least 3 characters." };
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(form.value.email))
-    return {
-      isValid: false,
-      errorMessage: "Please enter a valid email address.",
-    };
-
-  // const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  // if (!phoneRegex.test(form.value.phone) || form.value.phone.replace(/\D/g, '').length < 10) {
-  //   return { isValid: false, errorMessage: 'Please enter a valid phone number (min 10 digits).' };
-  // }
+    return { isValid: false, errorMessage: "Please enter a valid email address." };
 
   if (!allValid.value)
-    return {
-      isValid: false,
-      errorMessage: "Please fulfill all password requirements.",
-    };
-
-  // if (confirmPassword.value !== form.value.password) return { isValid: false, errorMessage: 'Passwords do not match.' };
+    return { isValid: false, errorMessage: "Please fulfill all password requirements." };
 
   return { isValid: true };
 };
 
 /**
- * SOCIAL LOGIN
+ * SOCIAL SIGNUP
  */
 const handleSocialLogin = async (provider: string) => {
   registrationError.value = null;
+  isLoading.value = true;
+
   try {
-    const validProviders = [
-      "google-oauth2",
-      "Facebook",
-      "Twitter",
-      "GitHub",
-      "Apple",
-    ];
-    if (!validProviders.includes(provider))
-      throw new Error(`Invalid provider: ${provider}`);
-    localStorage.setItem("social_provider", provider);
-    await initiateSocialLogin(provider);
-  } catch (error: any) {
-    registrationError.value = error.message || "Social login failed";
+    const success = await initiateSocialLogin(provider);
+
+    if (success) {
+      toast.add({
+        severity: 'success',
+        summary: 'Welcome!',
+        detail: 'Account created and logged in.',
+        life: 3000
+      });
+      emit('success');
+    }
+
+  } catch (err: any) {
+    registrationError.value = err.message;
+
     toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: registrationError.value,
-      life: 4000,
+      severity: 'error',
+      summary: 'Error',
+      detail: err.message,
+      life: 4000
     });
+  } finally {
+    isLoading.value = false;
   }
 };
 
 /**
- * MAIN REGISTRATION
+ * REGISTRATION
  */
 const handleEndUserRegistration = async () => {
   registrationError.value = null;
@@ -314,56 +260,31 @@ const handleEndUserRegistration = async () => {
   }
 
   isLoading.value = true;
+
   try {
-    const res = await registerEndUser(form.value);
+    await registerEndUser(form.value);
 
-    if (res) {
-      // Silent Login
-      const loginRes = await loginUser({
-        email: form.value.email,
-        password: form.value.password,
-      });
+    await loginUser({
+      email: form.value.email,
+      password: form.value.password,
+    });
 
-      if (loginRes) {
-        toast.add({
-          severity: "success",
-          summary: "Success!",
-          detail: "Account created and logged in.",
-          life: 2000,
-        });
-        emit("success");
-      }
-    }
-  } catch (error: any) {
-    console.error("Registration error:", error);
-    if (error.response) {
-      const status = error.response.status;
-      const apiMsg = error.response.data?.message || error.response.data?.error;
+    toast.add({
+      severity: "success",
+      summary: "Success!",
+      detail: "Account created and logged in.",
+      life: 2000,
+    });
 
-      switch (status) {
-        case 409:
-          if (apiMsg?.toLowerCase().includes("email"))
-            registrationError.value = "Email already exists.";
-          else if (apiMsg?.toLowerCase().includes("username"))
-            registrationError.value = "Username is taken.";
-          else
-            registrationError.value =
-              "An account with these details already exists.";
-          break;
-        case 422:
-          registrationError.value =
-            "Check that all fields are filled correctly.";
-          break;
-        default:
-          registrationError.value = apiMsg || "Registration failed.";
-      }
-    } else {
-      registrationError.value = "Network error. Please check your connection.";
-    }
+    emit("success");
+
+  } catch (err: any) {
+    registrationError.value = err.message;
+
     toast.add({
       severity: "error",
       summary: "Registration Error",
-      detail: registrationError.value,
+      detail: err.message,
       life: 4000,
     });
   } finally {
@@ -371,3 +292,4 @@ const handleEndUserRegistration = async () => {
   }
 };
 </script>
+

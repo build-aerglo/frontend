@@ -1,9 +1,9 @@
 <template>
   <Toast />
   <GeneralLoader v-if="isLoading" />
-  <div v-else class="max-w-[1440px] mx-auto px-8 pt-4">
-    <button
-      @click="goBack"
+  <div v-else class="max-w-[1440px] mx-auto px-5 pt-1">
+    <button 
+      @click="goBack" 
       class="flex items-center text-gray-500 hover:text-[#008253] transition-colors duration-200 group mb-4"
     >
       <div

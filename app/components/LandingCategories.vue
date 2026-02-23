@@ -9,7 +9,7 @@
             'flex flex-col items-center justify-center space-y-2 cursor-pointer hover:scale-110 transition-transform duration-200',
             index >= 4 ? 'hidden md:flex' : ''
           ]"
-          @click="navigateToCategory(category.name)"
+          @click="navigateToCategory(category)"
         >
           <component
             :is="category.icon"
@@ -42,19 +42,21 @@ import {
 } from 'lucide-vue-next'
 
 interface Category {
+  id: string       // ✅ Added id
   icon: any
   name: string
   color: string
 }
 
 const { getCategories } = useBusinessMethods()
+
 const iconMapping: Record<string, { icon: any, color: string }> = {
   'Education and Training': { icon: GraduationCap, color: 'text-yellow-500' },
-  'Hotels, BnB and vacation': { icon: Hotel, color: 'text-sky-400' },
+  'Hotels,BnB and vacation': { icon: Hotel, color: 'text-sky-400' },
   'Health and Wellness': { icon: HeartPlus, color: 'text-red-600' },
   'Food and Resturants': { icon: Utensils, color: 'text-orange-500' },
   'Finance': { icon: Wallet, color: 'text-emerald-600' },
-  'Fashion and Baauty': { icon: Sparkles, color: 'text-pink-400' },
+  'Fashion and Beauty': { icon: Sparkles, color: 'text-pink-400' },
   'Tourism': { icon: Palmtree, color: 'text-teal-500' },
   'Shopping': { icon: ShoppingCart, color: 'text-purple-500' },
   'Retail': { icon: Store, color: 'text-indigo-500' }
@@ -63,6 +65,7 @@ const iconMapping: Record<string, { icon: any, color: string }> = {
 // Initialize with 8 skeletons
 const categories = ref<Category[]>(
   Array(8).fill(null).map(() => ({
+    id: '',
     icon: CircleEllipsis,
     name: '...',
     color: 'text-gray-300'
@@ -78,13 +81,16 @@ onMounted(async () => {
         const match = iconMapping[item.name]
         
         return {
+          id: item.id,       // ✅ Map id from API response
           name: item.name,
           icon: match ? match.icon : CircleEllipsis,
           color: match ? match.color : 'text-gray-400'
         }
       })
+
       while (mappedData.length < 8) {
         mappedData.push({
+          id: '',
           name: 'More',
           icon: CircleEllipsis,
           color: 'text-gray-400'
@@ -97,11 +103,17 @@ onMounted(async () => {
     console.error('Error fetching categories:', error)
   }
 })
-const navigateToCategory = (categoryName: string) => {
-  // Navigate to explore page with category query parameter
+
+// ✅ Now receives full category object and passes both id and name
+const navigateToCategory = (category: Category) => {
+  if (!category.id) return // Don't navigate for skeleton/More items
+
   navigateTo({
     path: '/end-user/landing/explore',
-    query: { category: categoryName.toLowerCase() }
+    query: {
+      categoryId: category.id,
+      category: category.name.toLowerCase()
+    }
   })
 }
 </script>

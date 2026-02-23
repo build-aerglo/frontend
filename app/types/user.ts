@@ -40,3 +40,87 @@ export interface ProfileData {
   userSettings: any | null
   totalReviews: number
 }
+
+// ─── New consolidated summary types ───────────────────────────────────────────
+
+export interface PaginatedReviews {
+  items: SummaryReview[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+
+export interface SummaryReview {
+  id: string;
+  businessId: string;
+  locationId: string;
+  reviewerId: string | null;
+  email: string;
+  starRating: number;
+  reviewBody: string;
+  photoUrls: string[];
+  reviewAsAnon: boolean;
+  isGuestReview: boolean;
+  createdAt: string;
+  status: string;           // "APPROVED" | "PENDING" | "REJECTED" | "FLAGGED"
+  validatedAt: string | null;
+  name: string;             // business name
+  logo: string | null;
+  isVerified: boolean;
+  businessAddress: string;  // "City, State"
+}
+
+export interface SummaryTopCity {
+  city: string;
+  state: string;
+  reviewCount: number;
+  businessCount: number;
+  averageRating: number;
+}
+
+export interface SummaryTopCategory {
+  categoryId: string;
+  categoryName: string;
+  reviewCount: number;
+  businessCount: number;
+  averageRating: number;
+}
+
+export interface SummaryBadge {
+  id: string;
+  userId: string;
+  badgeType: string;
+  location: string | null;
+  category: string | null;
+  earnedAt: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  icon: string;
+  description: string;
+}
+
+export interface SummaryActivity {
+  points: number;
+  transactionType: string;
+  description: string;
+  createdAt: string;
+}
+
+export interface UserSummary {
+  userId: string;
+  email: string;
+  profile: ProfileData;
+  reviews: PaginatedReviews;
+  topCities: SummaryTopCity[];
+  topCategories: SummaryTopCategory[];
+  tierBadge: SummaryBadge | null;
+  achievementBadges: SummaryBadge[];
+  points: number;
+  rank: number;
+  streak: number;
+  lifetimePoints: number;
+  recentActivity: SummaryActivity[];
+}

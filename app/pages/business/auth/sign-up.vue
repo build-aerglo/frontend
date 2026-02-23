@@ -19,7 +19,7 @@
               Build customer trust through real feedback!
             </p>
 
-            <!-- CLAIM BUSINESS SECTION - Shows when unclaimed business is found -->
+            <!-- CLAIM BUSINESS SECTION -->
             <div v-if="showClaimOption && unclaimedBusiness" class="text-center py-8">
               <div class="mb-4">
                 <i class="pi pi-info-circle text-blue-500 text-5xl mb-4"></i>
@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <!-- BUSINESS CLAIMED SECTION - Shows when claimed business is found -->
+            <!-- BUSINESS CLAIMED SECTION -->
             <div v-else-if="showClaimedWarning && claimedBusiness" class="text-center py-8">
               <div class="mb-4">
                 <i class="pi pi-check-circle text-green-500 text-5xl mb-4"></i>
@@ -80,7 +80,7 @@
               </div>
             </div>
 
-            <!-- REGISTRATION FORM - Shows when no business found or search not triggered -->
+            <!-- REGISTRATION FORM -->
             <form v-else @submit.prevent="handleRegistration" class="mb-6">
 
               <div class="form-control-validation relative">
@@ -95,9 +95,17 @@
                   autocomplete="off"
                 />
                 
-                <!-- Search Loading Indicator -->
+                <!-- ✅ Search Loading Indicator (right side of input) -->
                 <div v-if="isSearching" class="absolute right-3 top-10">
                   <i class="pi pi-spin pi-spinner text-primary"></i>
+                </div>
+
+                <!-- ✅ Available Checkmark (right side of input) -->
+                <div 
+                  v-else-if="businessNameAvailable && searchCompleted && !isSearching && businessData.name.trim().length >= 2" 
+                  class="absolute right-3 top-10"
+                >
+                  <i class="pi pi-check-circle text-green-500 text-lg"></i>
                 </div>
 
                 <!-- Business Suggestions Dropdown -->
@@ -137,14 +145,6 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- No Results Message -->
-                <div v-if="showDropdown && searchResults.length === 0 && !isSearching && searchCompleted" class="mt-2 text-sm">
-                  <div class="flex items-center text-green-600">
-                    <i class="pi pi-check-circle mr-2"></i>
-                    Business name is available
-                  </div>
-                </div>
               </div>
 
               <div class="form-control-validation">
@@ -155,7 +155,6 @@
                 <InputTextCustom v-model="businessData.phone" label="Phone Number" type="tel" required />
               </div>
 
-              <!-- FIXED: MULTIPLE SELECT -->
               <div class="form-control-validation">
                 <span class="text-contrast text-[95%] mb-1">Business Sector</span>
                 <Select 
@@ -322,26 +321,21 @@ watch([password, confirmPassword], () => {
   if (isValid.value) isValid.value = false;
 });
 
-// Handle input focus
 const handleInputFocus = () => {
   if (businessData.value.name.trim().length >= 2 && searchResults.value.length > 0) {
     showDropdown.value = true;
   }
 };
 
-// Close dropdown
 const closeDropdown = () => {
   showDropdown.value = false;
 };
 
-// Handle business name input with debounce
 const handleBusinessNameInput = () => {
-  // Clear previous timeout
   if (searchTimeout) {
     clearTimeout(searchTimeout);
   }
 
-  // Reset search states
   searchCompleted.value = false;
   businessNameAvailable.value = false;
   showClaimOption.value = false;
@@ -349,23 +343,19 @@ const handleBusinessNameInput = () => {
   unclaimedBusiness.value = null;
   claimedBusiness.value = null;
 
-  // Don't search if name is too short
   if (businessData.value.name.trim().length < 2) {
     searchResults.value = [];
     showDropdown.value = false;
     return;
   }
 
-  // Show dropdown
   showDropdown.value = true;
 
-  // Debounce search - wait 500ms after user stops typing
   searchTimeout = setTimeout(() => {
     searchBusinessName(businessData.value.name.trim());
   }, 500);
 };
 
-// Search for business name
 const searchBusinessName = async (name: string) => {
   if (!name || name.length < 2) return;
 
@@ -374,14 +364,12 @@ const searchBusinessName = async (name: string) => {
     const results = await search(name);
 
     if (results && results.length > 0) {
-      // Store all results for dropdown
       searchResults.value = results;
       showDropdown.value = true;
       businessNameAvailable.value = false;
     } else {
-      // No results - name is available
       searchResults.value = [];
-      businessNameAvailable.value = true;
+      businessNameAvailable.value = true; // ✅ Triggers green checkmark
     }
 
     searchCompleted.value = true;
@@ -395,15 +383,10 @@ const searchBusinessName = async (name: string) => {
   }
 };
 
-// Handle business selection from dropdown
 const handleBusinessSelect = async (selectedBusiness: any) => {
-  // Close dropdown
   closeDropdown();
-  
-  // Set the business name in the input
   businessData.value.name = selectedBusiness.name;
 
-  // Get the businessId
   const businessId = selectedBusiness.businessId;
 
   if (!businessId) {
@@ -417,11 +400,9 @@ const handleBusinessSelect = async (selectedBusiness: any) => {
     return;
   }
 
-  // Show loading state
   isSearching.value = true;
 
   try {
-    // Fetch full business profile using the businessId
     const profileResponse = await getBusinessProfile(businessId);
     
     if (profileResponse?.statusCode === 200 && profileResponse.data) {
@@ -430,21 +411,17 @@ const handleBusinessSelect = async (selectedBusiness: any) => {
 
       console.log(`Business selected: ${businessProfile.name}, Status: ${businessStatus}`);
 
-      // Check businessStatus from full profile
       if (businessStatus === 'approved' || businessStatus === 'claimed') {
-        // Business is claimed
         claimedBusiness.value = businessProfile;
         showClaimedWarning.value = true;
         showClaimOption.value = false;
         businessNameAvailable.value = false;
       } else if (businessStatus === 'unclaimed' || businessStatus === 'pending') {
-        // Business is unclaimed
         unclaimedBusiness.value = businessProfile;
         showClaimOption.value = true;
         showClaimedWarning.value = false;
         businessNameAvailable.value = false;
       } else {
-        // Unexpected status
         console.warn(`Unexpected business status: ${businessStatus}`);
         toast.add({
           severity: 'warn',
@@ -475,7 +452,6 @@ const handleBusinessSelect = async (selectedBusiness: any) => {
   }
 };
 
-// Reset search and go back to form
 const resetSearch = () => {
   showClaimOption.value = false;
   showClaimedWarning.value = false;
@@ -488,7 +464,6 @@ const resetSearch = () => {
   showDropdown.value = false;
 };
 
-// Redirect to claim business page
 const handleClaimRedirect = () => {
   if (unclaimedBusiness.value && unclaimedBusiness.value.id) {
     router.push(`/biz/${unclaimedBusiness.value.id}/claim-business`);
@@ -496,7 +471,6 @@ const handleClaimRedirect = () => {
 };
 
 const validateForm = (): { isValid: boolean; errorMessage?: string } => {
-  // Validate business name
   if (!businessData.value.name || businessData.value.name.trim().length === 0) {
     return { isValid: false, errorMessage: 'Business name is required.' };
   }
@@ -505,7 +479,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     return { isValid: false, errorMessage: 'Business name must be at least 2 characters long.' };
   }
 
-  // Validate email
   if (!businessData.value.email || businessData.value.email.trim().length === 0) {
     return { isValid: false, errorMessage: 'Email address is required.' };
   }
@@ -515,7 +488,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     return { isValid: false, errorMessage: 'Please enter a valid email address.' };
   }
 
-  // Validate phone
   if (!businessData.value.phone || businessData.value.phone.trim().length === 0) {
     return { isValid: false, errorMessage: 'Phone number is required.' };
   }
@@ -529,7 +501,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     return { isValid: false, errorMessage: 'Phone number must be at least 10 digits.' };
   }
 
-  // Validate website if provided
   if (businessData.value.website) {
     const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
     if (!urlRegex.test(businessData.value.website)) {
@@ -537,7 +508,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     }
   }
 
-  // Validate password
   if (!password.value || password.value.length === 0) {
     return { isValid: false, errorMessage: 'Password is required.' };
   }
@@ -554,7 +524,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     }
   }
 
-  // Validate password confirmation
   if (!confirmPassword.value || confirmPassword.value.length === 0) {
     return { isValid: false, errorMessage: 'Please confirm your password.' };
   }
@@ -563,7 +532,6 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
     return { isValid: false, errorMessage: 'Passwords do not match.' };
   }
 
-  // Validate categories
   if (!businessData.value.categoryIds || businessData.value.categoryIds.length === 0) {
     return { isValid: false, errorMessage: 'Please select at least one business category.' };
   }
@@ -572,10 +540,8 @@ const validateForm = (): { isValid: boolean; errorMessage?: string } => {
 };
 
 const handleRegistration = async () => {
-  // Clear previous errors
   registrationError.value = null;
 
-  // Validate form
   const validation = validateForm();
   if (!validation.isValid) {
     registrationError.value = validation.errorMessage || 'Please check your input.';
@@ -588,7 +554,6 @@ const handleRegistration = async () => {
     return;
   }
 
-  // Ensure categoryIds is always an array before sending
   const payload = {
     ...businessData.value,
     categoryIds: Array.isArray(businessData.value.categoryIds) 
@@ -610,7 +575,6 @@ const handleRegistration = async () => {
         life: 3000 
       });
       
-      // Clear sensitive data
       password.value = '';
       confirmPassword.value = '';
       businessData.value.password = '';
@@ -627,48 +591,19 @@ const handleRegistration = async () => {
         life: 3000
       });
     }
-  } catch (error: any) {
-    console.error('Registration error:', error);
+  } catch (err: any) {
+  registrationError.value = err.message
 
-    // Handle specific error responses from the API
-    if (error.response) {
-      const status = error.response.status;
-      const errorMessage = error.response.data?.message || error.response.data?.error;
+  toast.add({
+    severity: 'error',
+    summary: 'Registration Error',
+    detail: err.message,
+    life: 4000
+  })
+}
 
-      switch (status) {
-        case 400:
-          registrationError.value = errorMessage || 'Invalid registration data. Please check your input.';
-          break;
-        case 409:
-          registrationError.value = errorMessage || 'An account with this email already exists.';
-          break;
-        case 422:
-          registrationError.value = errorMessage || 'Please check that all required fields are filled correctly.';
-          break;
-        case 429:
-          registrationError.value = 'Too many registration attempts. Please try again later.';
-          break;
-        case 500:
-        case 502:
-        case 503:
-          registrationError.value = 'Server error. Please try again in a few moments.';
-          break;
-        default:
-          registrationError.value = errorMessage || 'Registration failed. Please try again.';
-      }
-    } else if (error.request) {
-      registrationError.value = 'Network error. Please check your internet connection and try again.';
-    } else {
-      registrationError.value = error.message || 'An unexpected error occurred. Please try again.';
-    }
 
-    toast.add({
-      severity: 'error',
-      summary: 'Registration Error',
-      detail: registrationError.value,
-      life: 4000
-    });
-  } finally {
+ finally {
     isLoading.value = false;
   }
 };
