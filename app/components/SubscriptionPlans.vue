@@ -159,9 +159,28 @@
               :class="i % 2 === 0 ? 'bg-slate-50/60' : 'bg-white'"
               class="hover:bg-slate-100/40 transition-colors"
             >
+              
               <td class="px-5 py-3.5 border-b border-slate-100 border-r border-r-slate-100 text-[0.78rem] font-medium text-slate-700">
-                {{ feature.name }}
+                <div class="relative inline-flex items-center gap-1">
+                <span>{{ feature.name }}</span>
+
+                <span
+                  v-if="feature.description"
+                  class="text-slate-400 text-[0.65rem] cursor-pointer"
+                  @click="openFeature = openFeature === i ? null : i"
+                >
+                  ⓘ
+                </span>
+
+                <div
+                  v-if="feature.description && openFeature === i"
+                  class="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-56 p-2 rounded-lg bg-slate-900 text-white text-[0.65rem] shadow-lg z-50"
+                >
+                  {{ feature.description }}
+                </div>
+              </div>
               </td>
+
               <td
                 v-for="(val, colIdx) in feature.values"
                 :key="colIdx"
@@ -259,9 +278,28 @@
               :class="i % 2 === 0 ? 'bg-slate-50/60' : 'bg-white'"
               class="hover:bg-slate-100/40 transition-colors"
             >
+
               <td class="px-4 py-3 border-b border-slate-100 border-r border-r-slate-100 text-[0.73rem] font-medium text-slate-700">
-                {{ feature.name }}
+                <div class="relative inline-flex items-center gap-1">
+                <span>{{ feature.name }}</span>
+
+                <span
+                  v-if="feature.description"
+                  class="text-slate-400 text-[0.65rem] cursor-pointer"
+                  @click="openFeature = openFeature === i ? null : i"
+                >
+                  ⓘ
+                </span>
+
+                <div
+                  v-if="feature.description && openFeature === i"
+                  class="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-52 p-2 rounded-lg bg-slate-900 text-white text-[0.65rem] shadow-lg z-50"
+                >
+                  {{ feature.description }}
+                </div>
+              </div>
               </td>
+
               <td
                 v-for="(val, colIdx) in feature.values"
                 :key="colIdx"
@@ -284,6 +322,8 @@
 import { defineComponent, h, ref, computed, type PropType } from 'vue'
 import type { Subscription } from "~/types/business";
 
+const openFeature = ref<number | null>(null)
+
 type FeatureValue = string | number | boolean | null
 
 interface PlanColor {
@@ -294,6 +334,7 @@ interface PlanColor {
 
 interface ComputedFeature {
   name: string
+  description?: string
   values: FeatureValue[]
 }
 
@@ -343,47 +384,96 @@ const limitVal = (n: number): FeatureValue => {
   return String(n)
 }
 
+const tempFrontendFeatures = {
+  businessMedia: [3, 6, 8],
+  brandedQR: [false, true, true],
+  enhancedAI: [false, false, true],
+  customReports: [false, false, true],
+  support: ['24 hours', '12 hours', '4 hours'],
+  websiteWidget: [true, true, true],
+}
+
 const features = computed<ComputedFeature[]>(() => [
   {
     name: 'Reply Limit',
+    description:'Respond to customer reviews and control your public reputation.',
     values: props.subscriptions.map(t => limitVal(t.monthlyReplyLimit)),
   },
   {
     name: 'Dispute Limit',
+    description:'Challenge unfair or inaccurate reviews and request moderation.',
     values: props.subscriptions.map(t => limitVal(t.monthlyDisputeLimit)),
   },
   {
     name: 'External Source Limit',
+    description:'Bring in reviews from other platforms into one dashboard (X, Marketplaces etc).',
     values: props.subscriptions.map(t => limitVal(t.externalSourceLimit)),
   },
   {
     name: 'Sub Accounts',
+    description:'Add team members to help manage reviews and responses.',
     values: props.subscriptions.map(t => limitVal(t.userLoginLimit)),
   },
   {
     name: 'Private Review',
+    description:'Collect private customer feedback while keeping your overall rating transparent.',
     values: props.subscriptions.map(t => t.privateReviewsEnabled),
   },
   {
     name: 'Secure Data API',
+    description:'Safely access your review data for internal tools and reporting.',
     values: props.subscriptions.map(t => t.dataApiEnabled),
   },
   {
     name: 'DND Mode',
+    description:'Pause public reviews during sensitive periods or maintenance.',
     values: props.subscriptions.map(t => t.dndModeEnabled),
   },
   {
     name: 'Auto Response',
+    description:'Instantly reply to reviews with smart, customizable templates.',
     values: props.subscriptions.map(t => t.autoResponseEnabled),
   },
   {
     name: 'Branch Comparison',
+    description:'Compare performance across multiple business locations.',
     values: props.subscriptions.map(t => t.branchComparisonEnabled),
   },
   {
     name: 'Competitor Benchmarking',
+    description:'See how your business stacks up against competitors nearby.',
     values: props.subscriptions.map(t => t.competitorComparisonEnabled),
   },
+  {
+  name: 'Business Media',
+  description:'Showcase your business with images that build trust.',
+  values: tempFrontendFeatures.businessMedia,
+},
+{
+  name: 'Branded QR Display',
+  description:'Use your business colours and font on your QR code printouts.',
+  values: tempFrontendFeatures.brandedQR,
+},
+{
+  name: 'Enhanced AI Analytics',
+  description:'Understand trends, customer sentiment, and performance over time.',
+  values: tempFrontendFeatures.enhancedAI,
+},
+{
+  name: 'Custom Reports',
+  description:'Download tailored reports for management or internal reviews.',
+  values: tempFrontendFeatures.customReports,
+},
+{
+  name: 'Support',
+  description:'Get faster responses from our support team when you need help.',
+  values: tempFrontendFeatures.support,
+},
+{
+  name: 'Website Widget',
+  description:'Proudly show your rating.',
+  values: tempFrontendFeatures.websiteWidget,
+},
 ])
 
 const mobilePlans = computed<MobilePlan[]>(() =>
