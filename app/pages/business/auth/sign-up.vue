@@ -228,7 +228,7 @@ import useSearch from '~/composables/search/useSearch';
 import type { BusinessUser } from "~/types/business";
 
 const { getCategories, getBusinessProfile } = useBusinessMethods();
-const { registerBusiness } = useMethods();
+const { registerBusiness, loginUser } = useMethods();
 const { search } = useSearch();
 const toast = useToast();
 const router = useRouter();
@@ -564,23 +564,41 @@ const handleRegistration = async () => {
   try {
     isLoading.value = true;
 
+    // 1. Register the business
     const res = await registerBusiness(payload);
     
     if (res) {
       toast.add({ 
         severity: 'success', 
         summary: 'Success', 
-        detail: 'Business registered successfully! Redirecting to login...', 
-        life: 3000 
+        detail: 'Registration successful! Logging you in...', 
+        life: 2000 
       });
-      
-      password.value = '';
-      confirmPassword.value = '';
-      businessData.value.password = '';
-      
-      setTimeout(() => {
-        navigateTo('./sign-in');
-      }, 1000);
+
+      // 2. Automatically log the user in using the credentials they just typed
+      try {
+        await loginUser({
+          email: businessData.value.email,
+          password: password.value
+        }, "business_user");
+
+        // 3. Clear sensitive data and redirect to dashboard
+        password.value = '';
+        confirmPassword.value = '';
+        businessData.value.password = '';
+        
+        router.push('/business/dashboard'); 
+      } catch (loginErr: any) {
+        console.error("Auto-login failed:", loginErr);
+        // Fallback: If auto-login fails, send them to sign-in page
+        toast.add({
+          severity: 'info',
+          summary: 'Notice',
+          detail: 'Registration successful. Please sign in to continue.',
+          life: 4000
+        });
+        router.push('/sign-in');
+      }
     } else {
       registrationError.value = 'Registration failed. Please try again.';
       toast.add({
@@ -591,18 +609,14 @@ const handleRegistration = async () => {
       });
     }
   } catch (err: any) {
-  registrationError.value = err.message
-
-  toast.add({
-    severity: 'error',
-    summary: 'Registration Error',
-    detail: err.message,
-    life: 4000
-  })
-}
-
-
- finally {
+    registrationError.value = err.message;
+    toast.add({
+      severity: 'error',
+      summary: 'Registration Error',
+      detail: err.message,
+      life: 4000
+    });
+  } finally {
     isLoading.value = false;
   }
 };

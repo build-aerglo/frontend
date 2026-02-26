@@ -9,12 +9,13 @@
         type="button"
         @click="handleSocialLogin('google-oauth2')" 
         :disabled="isLoading" 
-        class="w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-700 bg-white"
+        class=" w-full flex items-center justify-start gap-4 py-2.5 px-5 border border-gray-200 rounded-lg hover:bg-gray-200 transition-all duration-200 text-sm font-medium text-gray-700 bg-white"
       >
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google" />
         Continue with Google
       </button>
     </div>
+    
 
     <div class="relative flex items-center">
       <div class="flex-grow border-t border-gray-100"></div>
@@ -183,3 +184,11 @@ onMounted(() => {
   }
 });
 </script>
+<style scoped>
+button:hover:not(:disabled) {
+  background-color: rgb(249 250 251) !important; /* gray-50 */
+  border-color: rgb(209 213 219) !important; /* gray-300 */
+}
+</style>
+
+
