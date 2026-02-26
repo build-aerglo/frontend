@@ -1,479 +1,278 @@
-<template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center space-x-3">
-          <!-- Back Button (Mobile Only) -->
-          <button
-            v-if="selectedMessage && isMobileView"
-            @click="closeConversation"
-            class="md:hidden p-2 -ml-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <i class="pi pi-arrow-left"></i>
-          </button>
-          <h1 class="text-xl font-semibold text-gray-900">Messages</h1>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)]">
-        
-        <!-- Messages List -->
-        <div 
-          :class="[
-            'lg:col-span-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col',
-            selectedMessage && isMobileView ? 'hidden' : 'block',
-            'lg:block'
-          ]"
-        >
-          <!-- Search Bar -->
-          <div class="p-4 border-b border-gray-200">
-            <div class="relative">
-              <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Search messages..."
-                class="w-full pl-8 pr-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <!-- Filter Tabs -->
-          <div class="flex border-b border-gray-200">
-            <button
-              v-for="tab in filterTabs"
-              :key="tab.value"
-              @click="activeFilter = tab.value"
-              :class="[
-                'flex-1 px-4 py-3 text-sm font-medium transition-colors',
-                activeFilter === tab.value
-                  ? 'text-emerald-600 border-b-2 border-emerald-600 bg-blue-50'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              ]"
-            >
-              {{ tab.label }}
-              <span
-                v-if="tab.value === 'unread' && unreadCount > 0"
-                class="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold text-white bg-emerald-600 rounded-full"
-              >
-                {{ unreadCount }}
-              </span>
-            </button>
-          </div>
-
-          <!-- Messages List with Scroll -->
-          <div class="flex-1 overflow-y-auto">
-            <div
-              v-for="message in filteredMessages"
-              :key="message.id"
-              @click="selectMessage(message)"
-              :class="[
-                'p-4 border-b border-gray-100 cursor-pointer transition-colors',
-                selectedMessage?.id === message.id
-                  ? 'bg-green-50 border-l-4 border-l-emerald-600'
-                  : 'hover:bg-gray-50',
-                message.unread ? 'bg-emerald-50/50' : ''
-              ]"
-            >
-              <div class="flex items-start space-x-3">
-                <!-- Avatar -->
-                <div
-                  :class="[
-                    'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm',
-                    message.senderType === 'customer' ? 'bg-emerald-400' : 'bg-amber-400'
-                  ]"
-                >
-                  {{ message.avatar }}
-                </div>
-
-                <!-- Message Info -->
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between mb-1">
-                    <p :class="['text-sm font-medium truncate', message.unread ? 'text-gray-900' : 'text-gray-700']">
-                      {{ message.sender }}
-                    </p>
-                    <span class="text-xs text-gray-500 ml-2">{{ message.timestamp }}</span>
-                  </div>
-                  <p :class="['text-sm mb-1 truncate', message.unread ? 'font-medium text-gray-900' : 'text-gray-600']">
-                    {{ message.subject }}
-                  </p>
-                  <p class="text-sm text-gray-500 truncate">{{ message.preview }}</p>
-                </div>
-
-                <!-- Unread Indicator -->
-                <div v-if="message.unread" class="flex-shrink-0">
-                  <span class="inline-block w-2 h-2 bg-emerald-600 rounded-full"></span>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="filteredMessages.length === 0" class="p-8 text-center text-gray-500">
-              <i class="pi pi-inbox text-3xl mb-2"></i>
-              <p>No messages found</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Conversation View -->
-        <div 
-          :class="[
-            'lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col',
-            !selectedMessage && isMobileView ? 'hidden' : 'block',
-            'lg:block'
-          ]"
-        >
-          <div v-if="!selectedMessage" class="flex-1 flex items-center justify-center text-gray-400">
-            <div class="text-center">
-              <i class="pi pi-comments text-6xl my-4"></i>
-              <p class="text-lg">Select a message to view conversation</p>
-            </div>
-          </div>
-
-          <template v-else>
-            <!-- Conversation Header -->
-            <div class="p-4 border-b border-gray-200 bg-gray-50">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                  <div
-                    :class="[
-                      'w-10 h-10 rounded-full flex items-center justify-center text-white font-medium',
-                      selectedMessage.senderType === 'customer' ? 'bg-emerald-400' : 'bg-amber-400'
-                    ]"
-                  >
-                    {{ selectedMessage.avatar }}
-                  </div>
-                  <div>
-                    <h2 class="text-lg font-semibold text-gray-900">{{ selectedMessage.sender }}</h2>
-                    <p class="text-sm text-gray-600">{{ selectedMessage.subject }}</p>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-                    <i class="pi pi-ellipsis-v"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Messages with Scroll -->
-            <div ref="messagesContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
-              <div
-                v-for="msg in currentConversation"
-                :key="msg.id"
-                :class="['flex', msg.isOwner ? 'justify-end' : 'justify-start']"
-              >
-                <div :class="['max-w-2xl', msg.isOwner ? 'order-2' : 'order-1']">
-                  <div
-                    :class="[
-                      'rounded-lg px-4 py-3 shadow-sm',
-                      msg.isOwner
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
-                    ]"
-                  >
-                    <p class="text-sm leading-relaxed">{{ msg.content }}</p>
-                  </div>
-                  <p class="text-xs text-gray-500 mt-1 px-1">{{ msg.timestamp }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Reply Input -->
-            <div class="p-4 border-t border-gray-200 bg-gray-50">
-              <form @submit.prevent="sendMessage" class="space-y-3">
-                <textarea
-                  v-model="replyText"
-                  placeholder="Type your message..."
-                  rows="3"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
-                ></textarea>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <button
-                      type="button"
-                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                      title="Attach file"
-                    >
-                      <i class="pi pi-paperclip"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                      title="Add emoji"
-                    >
-                      <i class="pi pi-face-smile"></i>
-                    </button>
-                  </div>
-                  <button
-                    type="submit"
-                    :disabled="!replyText.trim()"
-                    class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center space-x-2"
-                  >
-                    <span>Send</span>
-                    <i class="pi pi-send"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </template>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+definePageMeta({ layout: "business" });
 
-interface Message {
-  id: number
-  sender: string
-  senderType: 'customer' | 'support'
-  subject: string
-  preview: string
-  timestamp: string
-  unread: boolean
-  avatar: string
+const {
+  filteredChats, activeChat, activeChatId,
+  searchQuery, isTyping, openChat, sendMessage,
+} = useMessages()
+
+const inputText    = ref('')
+const messagesEl   = ref<HTMLElement | null>(null)
+const textareaEl   = ref<HTMLTextAreaElement | null>(null)
+const showPanel    = ref(false)  // mobile: toggle between sidebar / chat
+
+function selectChat(id: number) {
+  openChat(id)
+  showPanel.value = true
 }
 
-interface ConversationMessage {
-  id: number
-  sender: string
-  content: string
-  timestamp: string
-  isOwner: boolean
+function handleSend() {
+  if (!inputText.value.trim()) return
+  sendMessage(inputText.value)
+  inputText.value = ''
+  if (textareaEl.value) textareaEl.value.style.height = 'auto'
 }
 
-interface Conversations {
-  [key: number]: ConversationMessage[]
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
 }
 
-const searchQuery = ref('')
-const activeFilter = ref('all')
-const selectedMessage = ref<Message | null>(null)
-const replyText = ref('')
-const isMobileView = ref(false)
-const messagesContainer = ref<HTMLElement | null>(null)
-
-const filterTabs = [
-  { label: 'All', value: 'all' },
-  { label: 'Unread', value: 'unread' },
-  { label: 'Customers', value: 'customers' },
-  { label: 'Support', value: 'support' }
-]
-
-// Sample messages - ready to be replaced with real data
-const messages = ref<Message[]>([
-  {
-    id: 1,
-    sender: 'Sarah Johnson',
-    senderType: 'customer',
-    subject: 'Question about review response',
-    preview: 'Hi, I noticed you responded to my review. I wanted to clarify...',
-    timestamp: '2 hours ago',
-    unread: true,
-    avatar: 'SJ'
-  },
-  {
-    id: 2,
-    sender: 'Michael Chen',
-    senderType: 'customer',
-    subject: 'Billing inquiry',
-    preview: 'I have a question about the charges on my account...',
-    timestamp: '5 hours ago',
-    unread: true,
-    avatar: 'MC'
-  },
-  {
-    id: 3,
-    sender: 'Support Team',
-    senderType: 'support',
-    subject: 'New feature announcement',
-    preview: "We're excited to share some updates to our platform...",
-    timestamp: '1 day ago',
-    unread: false,
-    avatar: 'ST'
-  }
-])
-
-// Separate conversations for each message - ready to be replaced with real data
-const conversations = ref<Conversations>({
-  1: [
-    {
-      id: 1,
-      sender: 'Sarah Johnson',
-      content: 'Hi, I noticed you responded to my review. I wanted to clarify something about the product I received. The quality was great, but the shipping took longer than expected.',
-      timestamp: '2 hours ago',
-      isOwner: false
-    },
-    {
-      id: 2,
-      sender: 'You',
-      content: "Thank you for reaching out, Sarah! I appreciate your feedback. I'm sorry about the shipping delay. We've been experiencing some logistics challenges lately. Would you mind sharing your order number so I can look into this for you?",
-      timestamp: '1 hour ago',
-      isOwner: true
-    },
-    {
-      id: 3,
-      sender: 'Sarah Johnson',
-      content: 'Sure! My order number is #12345. I understand these things happen. Overall, I\'m happy with the product itself.',
-      timestamp: '45 minutes ago',
-      isOwner: false
-    }
-  ],
-  2: [
-    {
-      id: 1,
-      sender: 'Michael Chen',
-      content: 'I have a question about the charges on my account. I was billed twice for the same subscription period.',
-      timestamp: '5 hours ago',
-      isOwner: false
-    },
-    {
-      id: 2,
-      sender: 'You',
-      content: 'Hi Michael, I sincerely apologize for the billing error. Let me look into this immediately. Can you please provide me with your account email and the transaction IDs?',
-      timestamp: '4 hours ago',
-      isOwner: true
-    },
-    {
-      id: 3,
-      sender: 'Michael Chen',
-      content: 'My email is michael.chen@example.com. The transaction IDs are TXN-12345 and TXN-12346, both charged on the same day.',
-      timestamp: '4 hours ago',
-      isOwner: false
-    },
-    {
-      id: 4,
-      sender: 'You',
-      content: 'Thank you for that information. I\'ve confirmed the duplicate charge and initiated a full refund for TXN-12346. You should see it back in your account within 3-5 business days. Again, my apologies for the inconvenience.',
-      timestamp: '3 hours ago',
-      isOwner: true
-    }
-  ],
-  3: [
-    {
-      id: 1,
-      sender: 'Support Team',
-      content: "We're excited to announce new features coming to your review management platform! We've added advanced analytics, automated response templates, and sentiment analysis.",
-      timestamp: '1 day ago',
-      isOwner: false
-    },
-    {
-      id: 2,
-      sender: 'You',
-      content: 'This sounds great! When will the sentiment analysis feature be available? That would really help us prioritize which reviews need immediate attention.',
-      timestamp: '1 day ago',
-      isOwner: true
-    },
-    {
-      id: 3,
-      sender: 'Support Team',
-      content: 'The sentiment analysis feature will be rolling out to all accounts over the next week. You should have access by next Monday. We\'ll send you a detailed guide on how to use it effectively!',
-      timestamp: '1 day ago',
-      isOwner: false
-    }
-  ]
-})
-
-const unreadCount = computed(() => {
-  return messages.value.filter(m => m.unread).length
-})
-definePageMeta({ layout: 'business' })
-const filteredMessages = computed(() => {
-  let filtered = messages.value
-
-  // Apply filter
-  if (activeFilter.value === 'unread') {
-    filtered = filtered.filter(m => m.unread)
-  } else if (activeFilter.value === 'customers') {
-    filtered = filtered.filter(m => m.senderType === 'customer')
-  } else if (activeFilter.value === 'support') {
-    filtered = filtered.filter(m => m.senderType === 'support')
-  }
-
-  // Apply search
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(m =>
-      m.sender.toLowerCase().includes(query) ||
-      m.subject.toLowerCase().includes(query) ||
-      m.preview.toLowerCase().includes(query)
-    )
-  }
-
-  return filtered
-})
-
-// Get current conversation based on selected message
-const currentConversation = computed(() => {
-  if (!selectedMessage.value) return []
-  return conversations.value[selectedMessage.value.id] || []
-})
-
-const checkMobileView = () => {
-  isMobileView.value = window.innerWidth < 1024
+function autoResize(e: Event) {
+  const el = e.target as HTMLTextAreaElement
+  el.style.height = 'auto'
+  el.style.height = `${Math.min(el.scrollHeight, 120)}px`
 }
 
-const selectMessage = (message: Message) => {
-  selectedMessage.value = message
-  
-  // Mark as read
-  const msg = messages.value.find(m => m.id === message.id)
-  if (msg) {
-    msg.unread = false
-  }
+function avatarUrl(seed: string, bg: string) {
+  return `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}&backgroundColor=${bg}`
 }
 
-const closeConversation = () => {
-  selectedMessage.value = null
-}
-
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-    }
-  })
-}
-
-const sendMessage = () => {
-  if (!replyText.value.trim() || !selectedMessage.value) return
-
-  const newMessage: ConversationMessage = {
-    id: currentConversation.value.length + 1,
-    sender: 'You',
-    content: replyText.value,
-    timestamp: 'Just now',
-    isOwner: true
-  }
-
-  // Add message to the current conversation
-  if (!conversations.value[selectedMessage.value.id]) {
-    conversations.value[selectedMessage.value.id] = []
-  }
-  conversations.value[selectedMessage.value.id]?.push(newMessage)
-
-  replyText.value = ''
-  scrollToBottom()
-}
-
-// Watch for conversation changes and scroll to bottom
-watch(selectedMessage, () => {
-  scrollToBottom()
-})
-
-onMounted(() => {
-  checkMobileView()
-  window.addEventListener('resize', checkMobileView)
-  scrollToBottom()
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', checkMobileView)
+// Scroll to bottom whenever messages or typing state change
+watchEffect(async () => {
+  const _m = activeChat.value?.messages.length
+  const _t = isTyping.value
+  await nextTick()
+  if (messagesEl.value) messagesEl.value.scrollTop = messagesEl.value.scrollHeight
 })
 </script>
+
+<template>
+  <div class="flex h-screen overflow-hidden bg-white font-sans text-em-100">
+
+    <!-- ═══════════════════════════════════════════  SIDEBAR ════════════════════════════════════════════ -->
+    <aside
+      :class="[
+        'flex flex-col flex-shrink-0 w-full md:w-80 lg:w-96',
+        'bg-white border-r border-em-900/40',
+        // mobile: hide sidebar when chat is open
+        showPanel ? 'hidden md:flex' : 'flex',
+      ]"
+    >
+      <!-- Header -->
+      <div class="flex items-center px-3">
+        <div class="flex-1">
+          <h1 class="font-semibold mx-5 text-[20px] text-emerald-700">Messages</h1>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="px-4 pb-3">
+        <div class="relative">
+          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-em-700 text-xs pointer-events-none" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search conversations…"
+            class="w-full bg-em-950/60 border border-em-900/50 rounded-xl pl-8 pr-3 py-2.5 text-[13px] text-em-200 placeholder-em-800 focus:outline-none focus:border-emerald-700 transition-colors"
+          />
+        </div>
+      </div>
+
+      <!-- Chat list -->
+      <div class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+        <div
+          v-for="chat in filteredChats"
+          :key="chat.id"
+          :class="[
+            'chat-item px-3 py-2.5 flex items-center gap-3',
+            activeChatId === chat.id ? 'active' : '',
+          ]"
+          @click="selectChat(chat.id)"
+        >
+          <!-- Avatar -->
+          <div class="relative flex-shrink-0">
+            <img :src="avatarUrl(chat.avatarSeed, chat.avatarBg)" class="w-10 h-10 rounded-full" />
+            <span v-if="chat.online" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-em-400 rounded-full online-dot" />
+          </div>
+          <!-- Meta -->
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-baseline gap-2">
+              <span class="text-[13px] font-semibold text-em-100 truncate">{{ chat.name }}</span>
+              <span class="text-[10px] text-em-700 flex-shrink-0 font-mono">{{ chat.messages.at(-1)?.time }}</span>
+            </div>
+            <div class="flex items-center justify-between mt-0.5 gap-2">
+              <p class="text-[11px] text-em-700 truncate">
+                <span v-if="chat.messages.at(-1)?.from === 'me'" class="text-em-600">You: </span>
+                {{ chat.messages.at(-1)?.text }}
+              </p>
+              <span
+                v-if="chat.unread > 0"
+                class="flex-shrink-0 min-w-[16px] h-4 px-1 rounded-full bg-em-500 flex items-center justify-center text-[9px] font-bold text-white"
+              >
+                {{ chat.unread }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty search -->
+        <div v-if="filteredChats.length === 0" class="flex flex-col items-center py-12 gap-3">
+          <i class="pi pi-inbox text-em-800 text-3xl" />
+          <p class="text-em-700 text-sm">No conversations found</p>
+        </div>
+      </div>
+
+      <!-- My profile -->
+      <div class="border-t border-em-900/30 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="relative">
+            <img :src="avatarUrl('me', '065f46')" class="w-7 h-7 rounded-full avatar-ring" />
+            <span class="absolute bottom-0 right-0 w-2 h-2 bg-em-400 rounded-full online-dot" />
+          </div>
+          <div>
+            <p class="text-[12px] font-medium text-em-200">User</p>
+            <p class="text-[10px] text-em-700">Active now</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════CHAT PANEL════════════════════════════════════════════ -->
+    <template v-if="activeChat">
+      <div
+        :class="[
+          'flex flex-col flex-1 min-w-0 bg-white',
+          showPanel ? 'flex' : 'hidden md:flex',
+        ]"
+      >
+        <!-- Chat header -->
+        <div class="flex items-center gap-3 px-5 py-4 border-b backdrop-blur-sm flex-shrink-0">
+          <button class="md:hidden w-8 h-8 rounded-lg hover:bg-em-800/40 flex items-center justify-center transition-colors" @click="showPanel = false">
+            <i class="pi pi-arrow-left text-em-400 text-sm" />
+          </button>
+          <div class="relative flex-shrink-0">
+            <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-10 h-10 rounded-full" />
+            <span v-if="activeChat.online" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-em-400 rounded-full online-dot" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="font-semibold text-[14px] text-slate-600 truncate">{{ activeChat.name }}</h2>
+            <p class="text-[11px]" :class="activeChat.online ? 'text-emerald/80' : 'text-emerald/70'">
+              {{ activeChat.online ? '● Active now' : activeChat.role }}
+            </p>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="w-8 h-8 rounded-lg hover:bg-em-800/40 flex items-center justify-center transition-colors">
+              <i class="pi pi-phone text-black text-sm" />
+            </button>
+            <button class="w-8 h-8 rounded-lg hover:bg-em-800/40 flex items-center justify-center transition-colors">
+              <i class="pi pi-video text-black text-sm" />
+            </button>
+            <button class="w-8 h-8 rounded-lg hover:bg-em-800/40 flex items-center justify-center transition-colors">
+              <i class="pi pi-ellipsis-v text-black text-sm" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div ref="messagesEl" class="flex-1 overflow-y-auto px-4 md:px-6 py-5 space-y-3 min-h-0">
+          <!-- Date separator -->
+          <div class="flex items-center gap-3 py-2">
+            <div class="flex-1 h-px bg-em-900/40" />
+            <span class="text-[10px] text-em-800 font-mono px-2">Today</span>
+            <div class="flex-1 h-px bg-em-900/40" />
+          </div>
+
+          <!-- Message bubbles -->
+          <template v-for="msg in activeChat.messages" :key="msg.id">
+            <!-- Incoming -->
+            <div v-if="msg.from === 'them'" class="flex items-end gap-2 animate-bubble-in">
+              <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-7 h-7 rounded-full flex-shrink-0" />
+              <div class="max-w-xs md:max-w-sm lg:max-w-md">
+                <div class="bg-[#0d1a14] border border-em-800/25 rounded-2xl rounded-bl-sm px-3.5 py-2.5">
+                  <p class="text-[13px] text-white leading-relaxed break-words">{{ msg.text }}</p>
+                </div>
+                <p class="text-[10px] text-em-800 mt-1 ml-1 font-mono">{{ msg.time }}</p>
+              </div>
+            </div>
+
+            <!-- Outgoing -->
+            <div v-else class="flex items-end justify-end gap-2 animate-bubble-self">
+              <div class="max-w-xs md:max-w-sm lg:max-w-md">
+                <div class="bg-white rounded-2xl rounded-br-sm px-3.5 py-2.5 shadow-md shadow-em-900/30">
+                  <p class="text-[13px] text-black leading-relaxed break-words">{{ msg.text }}</p>
+                </div>
+                <div class="flex items-center justify-end gap-1 mt-1 mr-1">
+                  <p class="text-[10px] text-em-700 font-mono">{{ msg.time }}</p>
+                  <i :class="['pi text-[9px]', msg.status === 'read' ? 'pi-check-circle text-em-400' : 'pi-check text-em-700']" />
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- Typing indicator -->
+          <div v-if="isTyping" class="flex items-end gap-2 animate-bubble-in">
+            <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-7 h-7 rounded-full flex-shrink-0" />
+            <div class="bg-white text-black border border-em-800/25 rounded-2xl rounded-bl-sm px-4 py-3">
+              <div class="flex items-center gap-1.5 text-black">
+                <span class="typing-dot text-black" /><span class="typing-dot text-black" /><span class="typing-dot text-black" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="border-t border-em-900/30 px-4 py-3 bg-[#0d1410]/10 backdrop-blur-sm flex-shrink-0">
+          <div class="flex items-end gap-2.5">
+            <button class="w-9 h-9 rounded-xl hover:bg-em-800/40 flex items-center justify-center transition-colors flex-shrink-0 mb-0.5">
+              <i class="pi pi-paperclip text-em-600 text-sm" />
+            </button>
+            <textarea
+              ref="textareaEl"
+              v-model="inputText"
+              rows="1"
+              placeholder="Type a message…"
+              class="msg-textarea flex-1 bg-em-950/60 border border-em-900/50 rounded-2xl px-4 py-2.5 text-[13px] text-em-100 placeholder-em-800 focus:border-em-600 transition-colors"
+              @keydown="handleKeydown"
+              @input="autoResize"
+            />
+            <button
+              :class="[
+                'w-9 h-9 rounded-xl flex items-center justify-center transition-all flex-shrink-0 mb-0.5 active:scale-95',
+                inputText.trim() ? 'bg-em-600 hover:bg-em-500 shadow-lg shadow-em-900/50' : 'bg-em-900/50 cursor-not-allowed opacity-20',
+              ]"
+              @click="handleSend"
+            >
+              <i class="pi pi-send text-slate-900 text-sm" style="margin-left:1px" />
+            </button>
+          </div>
+          <div class="flex items-center gap-3 mt-2 px-1">
+            <button class="text-em-800 hover:text-em-500 transition-colors"><i class="pi pi-face-smile text-sm" /></button>
+            <button class="text-em-800 hover:text-em-500 transition-colors"><i class="pi pi-image text-sm" /></button>
+            <button class="text-em-800 hover:text-em-500 transition-colors"><i class="pi pi-microphone text-sm" /></button>
+            <button class="text-em-800 hover:text-em-500 transition-colors"><i class="pi pi-map-marker text-sm" /></button>
+            <span class="ml-auto text-[10px] text-em-800 font-mono">
+              <kbd class="px-1 py-0.5 rounded bg-em-900/50 text-em-700">Enter</kbd> to send
+            </span>
+          </div>
+        </div>
+      </div>
+    </template>
+
+
+    <div v-else class="hidden md:flex flex-col flex-1 items-center justify-center gap-5 bg-white">
+      <div class="relative">
+        <div class="w-20 h-20 rounded-3xl bg-em-900/30 border border-em-800/20 flex items-center justify-center">
+          <i class="pi pi-comments text-em-700 text-3xl" />
+        </div>
+        <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-em-600 flex items-center justify-center">
+          <i class="pi pi-arrow-left text-black text-[9px]" />
+        </div>
+      </div>
+      <div class="text-center">
+        <p class="text-em-300 font-semibold text-sm">Select a conversation</p>
+        <p class="text-em-800 text-xs mt-1.5 max-w-[180px] leading-relaxed">Choose from your chats to start messaging</p>
+      </div>
+    </div>
+
+  </div>
+</template>
