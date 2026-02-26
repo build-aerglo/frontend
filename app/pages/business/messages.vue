@@ -33,8 +33,8 @@ function autoResize(e: Event) {
   el.style.height = `${Math.min(el.scrollHeight, 120)}px`
 }
 
-function avatarUrl(seed: string, bg: string) {
-  return `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}&backgroundColor=${bg}`
+function avatarUrl(seed: string) {
+  return `https://i.pravatar.cc/150?u=${seed}`
 }
 
 // Scroll to bottom whenever messages or typing state change
@@ -91,7 +91,7 @@ watchEffect(async () => {
         >
           <!-- Avatar -->
           <div class="relative flex-shrink-0">
-            <img :src="avatarUrl(chat.avatarSeed, chat.avatarBg)" class="w-10 h-10 rounded-full" />
+            <img :src="avatarUrl(chat.avatarSeed)" class="w-10 h-10 rounded-full" />
             <span v-if="chat.online" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-em-400 rounded-full online-dot" />
           </div>
           <!-- Meta -->
@@ -126,7 +126,7 @@ watchEffect(async () => {
       <div class="border-t border-em-900/30 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="relative">
-            <img :src="avatarUrl('me', '065f46')" class="w-7 h-7 rounded-full avatar-ring" />
+            <img :src="avatarUrl('Me')" class="w-7 h-7 rounded-full avatar-ring" />
             <span class="absolute bottom-0 right-0 w-2 h-2 bg-em-400 rounded-full online-dot" />
           </div>
           <div>
@@ -151,7 +151,7 @@ watchEffect(async () => {
             <i class="pi pi-arrow-left text-em-400 text-sm" />
           </button>
           <div class="relative flex-shrink-0">
-            <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-10 h-10 rounded-full" />
+            <img :src="avatarUrl(activeChat.avatarSeed)" class="w-10 h-10 rounded-full" />
             <span v-if="activeChat.online" class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-em-400 rounded-full online-dot" />
           </div>
           <div class="flex-1 min-w-0">
@@ -186,7 +186,7 @@ watchEffect(async () => {
           <template v-for="msg in activeChat.messages" :key="msg.id">
             <!-- Incoming -->
             <div v-if="msg.from === 'them'" class="flex items-end gap-2 animate-bubble-in">
-              <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-7 h-7 rounded-full flex-shrink-0" />
+              <img :src="avatarUrl(activeChat.avatarSeed)" class="w-7 h-7 rounded-full flex-shrink-0" />
               <div class="max-w-xs md:max-w-sm lg:max-w-md">
                 <div class="bg-[#0d1a14] border border-em-800/25 rounded-2xl rounded-bl-sm px-3.5 py-2.5">
                   <p class="text-[13px] text-white leading-relaxed break-words">{{ msg.text }}</p>
@@ -211,7 +211,7 @@ watchEffect(async () => {
 
           <!-- Typing indicator -->
           <div v-if="isTyping" class="flex items-end gap-2 animate-bubble-in">
-            <img :src="avatarUrl(activeChat.avatarSeed, activeChat.avatarBg)" class="w-7 h-7 rounded-full flex-shrink-0" />
+            <img :src="avatarUrl(activeChat.avatarSeed)" class="w-7 h-7 rounded-full flex-shrink-0" />
             <div class="bg-white text-black border border-em-800/25 rounded-2xl rounded-bl-sm px-4 py-3">
               <div class="flex items-center gap-1.5 text-black">
                 <span class="typing-dot text-black" /><span class="typing-dot text-black" /><span class="typing-dot text-black" />
