@@ -522,34 +522,30 @@
                     <i class="pi pi-star-fill text-gold text-xl"></i>
                     <h3 class="font-semibold text-lg text-gray-800">Earned Points</h3>
                   </div>
-                  <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                  <div>
+                  <div class="flex justify-between items-center border-b border-gray-100">
                     <div class="flex items-center gap-2">
                       <i class="pi pi-comment text-green-500"></i>
                       <span class="text-gray-700">Review Points</span>
                     </div>
                     <span class="font-semibold text-gray-800">{{ summary.points }}</span>
                   </div>
-                  <div class="flex justify-between items-center py-3 mt-2 bg-gold/10 rounded-lg px-3">
+                  <div class="flex justify-between items-center border-b border-gray-100">
                     <div class="flex items-center gap-2">
-                      <i class="pi pi-star-fill text-gold"></i>
-                      <span class="font-bold text-gray-800">Lifetime Points</span>
+                      <i class="pi pi-comment text-green-500"></i>
+                      <span class="text-gray-700">Referral Points</span>
                     </div>
-                    <span class="font-bold text-xl text-gold">{{ summary.lifetimePoints }}</span>
+                    <span class="font-semibold text-gray-800">0</span>
                   </div>
-                  <!-- Recent Activity -->
-                  <div v-if="summary.recentActivity.length" class="mt-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">Recent Activity</h4>
-                    <div
-                      v-for="(activity, idx) in summary.recentActivity"
-                      :key="idx"
-                      class="flex justify-between items-center py-2 border-b border-gray-50 text-sm"
-                    >
-                      <span class="text-gray-600">{{ activity.description }}</span>
-                      <span :class="['font-medium', activity.transactionType === 'earn' ? 'text-green-600' : 'text-red-500']">
-                        {{ activity.transactionType === 'earn' ? '+' : '-' }}{{ activity.points }}
-                      </span>
+                  <div class="flex justify-between items-center border-b border-gray-100">
+                    <div class="flex items-center gap-2">
+                      <i class="pi pi-comment text-green-500"></i>
+                      <span class="text-gray-700">Streak Reward</span>
                     </div>
+                    <span class="font-semibold text-gray-800">{{ summary.streak }}</span>
                   </div>
+                  </div>
+
                 </div>
 
                 <!-- Redeem Points -->
