@@ -23,7 +23,11 @@
       inputClass,
     ]"
   >
-    <i v-if="icon" :class="`pi pi-${icon}`" class="px-3"></i>
+    <i
+      v-if="icon || isLoading"
+      :class="`pi pi-${isLoading ? 'spin pi-spinner' : icon}`"
+      class="px-3"
+    ></i>
     {{ label }}
   </button>
 </template>

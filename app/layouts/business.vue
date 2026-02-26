@@ -1,5 +1,28 @@
 <template>
   <Toast />
+  <Drawer
+    v-model:visible="showNotifications"
+    header="Notifications"
+    class="!w-full md:!w-80 lg:!w-[30rem]"
+    position="right"
+  >
+    <div v-if="announcements.length > 0">
+      <div class="flex flex-col gap-[20px]">
+        <AnnouncementNotification
+          v-for="(i, idx) in announcements"
+          :key="idx"
+          :data="i"
+        />
+      </div>
+    </div>
+    <div v-else class="flex justify-center items-center">
+      <div class="min-h-[300px] flex flex-col justify-center items-center">
+        <i class="pi pi-bell text-[500%] mb-[20px]"></i>
+        <div class="font-bold text-[120%]">No new notification!</div>
+        <div>Check back later.</div>
+      </div>
+    </div>
+  </Drawer>
   <div
     class="layout-wrapper layout-content-navbar"
     :class="{ 'layout-menu-collapsed': isLayoutCollapsed }"
@@ -24,23 +47,22 @@
           </a>
 
           <div class="flex items-center justify-between w-full px-0">
-            <!-- <div
-              v-if="route.path === '/business/settings'"
-              class="hidden md:flex items-center space-x-4"
-            >
-              <ClientOnly>
-                <SettingTab />
-              </ClientOnly>
-            </div> -->
-
             <div class="flex items-center gap-4 ml-auto">
-              <i class="pi pi-bell text-xl text-contrast cursor-pointer"></i>
+              <OverlayBadge
+                :value="announcements.length > 0 ? announcements.length : null"
+                severity="danger"
+              >
+                <i
+                  class="pi pi-bell text-xl text-contrast cursor-pointer"
+                  :class="{ 'bell-pulse': announcements.length > 0 }"
+                  @click="showNotifications = !showNotifications"
+                />
+              </OverlayBadge>
               <div
                 class="relative w-10 h-10 rounded-full overflow-hidden group cursor-pointer"
-                @click="triggerFileInput"
               >
                 <img
-                  :src="previewUrl || defaultAvatar"
+                  :src="business?.logo ?? '/images/avatar_profile.png'"
                   alt="Profile"
                   class="w-full h-full object-cover rounded-full border border-gray-300"
                 />
@@ -127,7 +149,8 @@
 
 <script setup>
 import LogoutConfirm from "~/components/LogoutConfirm.vue";
-const route = useRoute();
+import useAnnouncementMethods from "~/composables/announcements/useAnnouncementMethods";
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
 const menuItems = [
   { name: "Dashboard", to: "/business/dashboard", icon: "pi pi-home" },
   {
@@ -151,10 +174,19 @@ const menuItems = [
     icon: "pi pi-question-circle",
   },
 ];
+
+const showNotifications = ref(false);
+const { getAnnouncements } = useAnnouncementMethods();
+const announcements = getAnnouncements().data;
+
 const isLayoutCollapsed = ref(true);
 const toggleLayout = () => {
   isLayoutCollapsed.value = !isLayoutCollapsed.value;
 };
+
+const { getBusinessUser } = useBusinessMethods();
+const business = getBusinessUser();
+
 watch(
   isLayoutCollapsed,
   (isCollapsed) => {
@@ -168,19 +200,6 @@ watch(
   },
   { immediate: true },
 );
-const defaultAvatar = "https://www.gravatar.com/avatar/?d=mp&s=100";
-const previewUrl = ref(null);
-const fileInput = ref(null);
-
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    previewUrl.value = URL.createObjectURL(file);
-  }
-};
 </script>
 
 <style scoped>
@@ -259,6 +278,24 @@ const handleFileChange = (event) => {
     top: 0;
     left: 0;
     height: 100vh;
+  }
+}
+
+/* // bell */
+
+bell-pulse {
+  animation: bellPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes bellPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 </style>

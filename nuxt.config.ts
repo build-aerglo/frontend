@@ -38,16 +38,9 @@ export default defineNuxtConfig({
       QR_SIZE: "400x400",
       encrypt_key: process.env.ENCODE_KEY!,
       app_url: process.env.APP_URL!,
+      local_encode_key: process.env.LOCAL_ENCODE_KEY!,
     },
   },
-  // routeRules: {
-  //   "/business/**": {
-  //     appMiddleware: ["businessauth"],
-  //   },
-  //   "/end-user/**": {
-  //     appMiddleware: ["userauth"],
-  //   },
-  // },
   // nitro: {
   //   devProxy : {
   //     '/api/' : {

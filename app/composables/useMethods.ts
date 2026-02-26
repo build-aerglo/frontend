@@ -1,3 +1,6 @@
+import { useBusinessProfileStore } from "~/store/business/businessProfile";
+import { useBusinessSubscription } from "~/store/business/businessSubscription";
+
 import useApi from "~/composables/useApi";
 import type { BusinessUser, BusinessUserResponse } from "~/types/business";
 import type { EndUser, LoginData } from "~/types";
@@ -5,6 +8,7 @@ import type { SupportUser } from "~/types/support";
 import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
+
 
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
@@ -15,6 +19,10 @@ export default function () {
   const supportStore = useSupportUser();
   const userStore = useUser();
   const api = useApi();
+
+  // misc business stores
+  const profileStore = useBusinessProfileStore();
+  const businessSubscription = useBusinessSubscription();
 
   // ===============================
   // 🔥 CENTRAL ERROR NORMALIZER
@@ -58,6 +66,9 @@ export default function () {
     store.clearUser();
     userStore.clearUser();
     supportStore.clearUser();
+    //
+    profileStore.clearProfile();
+    businessSubscription.clearPlan();
   };
 
   // ===============================

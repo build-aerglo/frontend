@@ -370,7 +370,7 @@ const getBusinessSubscriptionsAsync = async () => {
       return await getBusinessSubscriptions();
     }
 
-    return null;
+    return;
   } catch (error) {
     console.log(error);
   } finally {
@@ -392,13 +392,19 @@ const getBusinessSubscriptionSummaryAsync = async () => {
 
 const loadPage = async () => {
   try {
-    const [res, businessRes] = await Promise.all([
+    const [subscriptionsTask, businessRes] = await Promise.all([
       getBusinessSubscriptionsAsync(),
       getBusinessSubscriptionSummaryAsync(),
     ]);
 
-    if (res && res.statusCode === 200) {
-      subscriptions.value = res.data;
+    if (subscriptionsTask) {
+      const res = subscriptionsTask.data.value;
+
+      if (res && res.statusCode === 200) {
+        subscriptions.value = res.data;
+      }
+    } else {
+      subscriptions.value = [];
     }
 
     if (businessRes?.statusCode === 200) {

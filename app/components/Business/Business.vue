@@ -44,7 +44,7 @@
     header="Add FAQ"
     :style="{ width: '35rem' }"
   >
-    <form @submit.prevent="saveFaq(businessData?.faqs.length)">
+    <form @submit.prevent="saveFaq()">
       <div class="flex flex-col gap-[10px]">
         <InputText v-model="faq.question" placeholder="Question" fluid />
         <Textarea v-model="faq.answer" placeholder="Answer" rows="3" fluid />
@@ -97,8 +97,8 @@
   </Dialog>
 
   <Dialog
+    maximizable
     v-model:visible="editBusiness"
-    position="top"
     :draggable="false"
     modal
     header="Update Business Profile"
@@ -118,6 +118,7 @@
               class="flex-auto"
               autocomplete="off"
               v-model="businessData.name"
+              disabled
             />
           </div>
           <div>
@@ -146,7 +147,7 @@
           <div>
             <label class="flex justify-between gap-[10px] items-center">
               <span>Business Tags</span>
-              <span> {{ selected_tags.length }} / {{ MAX_TAGS }} </span>
+              <span> {{ selected_tags.length }} / {{ max.MAX_TAGS }} </span>
             </label>
 
             <div
@@ -162,7 +163,7 @@
                   'bg-gold text-white': isSelected(tag),
                   'bg-surface-200': !isSelected(tag),
                   'opacity-50 pointer-events-none':
-                    !isSelected(tag) && selected_tags.length >= MAX_TAGS,
+                    !isSelected(tag) && selected_tags.length >= max.MAX_TAGS,
                 }"
               >
                 <span @click="addTag(tag)">{{ tag }}</span>
@@ -212,12 +213,24 @@
         <div class="m-0 flex flex-col gap-[20px]">
           <div>
             <label>Business Location:</label>
-            <div>
+            <div
+              v-if="
+                businessData.businessStreet ||
+                businessData.businessCityTown ||
+                businessData.businessState
+              "
+            >
               {{ businessData.businessStreet }}
               {{ businessData.businessCityTown }}
-              <span v-if="businessData.businessState">, </span>
+              <span
+                v-if="
+                  businessData.businessState && businessData.businessCityTown
+                "
+                >,
+              </span>
               {{ businessData.businessState }}
             </div>
+            <div v-else>-</div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
             <div>
@@ -236,6 +249,7 @@
                 fluid
                 autocomplete="off"
                 v-model="businessData.businessEmail"
+                disabled
               />
             </div>
           </div>
@@ -509,6 +523,7 @@
             label="Update Logo"
             input-class="!w-max"
             @clicked="addLogo = true"
+            :no-zoom="true"
           />
           <ButtonCustom
             icon="plus"
@@ -516,6 +531,7 @@
             label="Add Media"
             primary="true"
             @clicked="initImage"
+            :no-zoom="true"
           />
         </div>
         <div class="m-0 grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
@@ -555,6 +571,7 @@
               label="Add Question"
               primary="true"
               @click="addFaq = true"
+              :no-zoom="true"
             />
           </div>
           <div
@@ -647,8 +664,9 @@
                 <Star :count="business?.avgRating || 0" :rounded="true"/>
               </div>
               <div class="text-center text-xs text-gray-500">
-                ({{ business?.reviewCount ?? 0 }}
-                Review{{ business?.reviewCount !== 1 ? "s" : "" }})
+                ({{ business?.reviewCount ?? 0 }} Review{{
+                  business?.reviewCount !== 1 ? "s" : ""
+                }})
               </div>
             </div>
           </div>
@@ -817,7 +835,7 @@
         :primary="currentPage === 'review' ? true : false"
         @clicked="setSection('review')"
       />
-      
+
       <ButtonCustom
         v-if="isBusiness && canEdit"
         label="Get Reviews"
@@ -841,7 +859,7 @@
       :business="business"
       :isBusiness="isBusiness"
     />
-    
+
     <BusinessQr
       v-if="isBusiness && currentPage === 'qr'"
       :business="business"
@@ -857,7 +875,7 @@ import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
 import useReviewMethods from "~/composables/method/useReviewMethods";
 
-const { getBusinessReviews } = useReviewMethods()
+const { getBusinessReviews } = useReviewMethods();
 const businessBadgeStatus = computed(() => {
   if (props.status === "trusted") return "trusted";
   if (props.status === "verified") return "verified";
@@ -884,8 +902,15 @@ const addImage = ref(false);
 const addLogo = ref(false);
 const isLoading = ref(false);
 
-const { saveBusinessProfile, getCategoryTags } = useBusinessMethods();
+const {
+  saveBusinessProfile,
+  getCategoryTags,
+  getBusinessUser,
+  getBusinessSubscriptionFromStore,
+} = useBusinessMethods();
 const toast = useToast();
+
+const savedBusinessUser = getBusinessUser();
 
 function isChecked(title: string): boolean {
   if (!businessData.value || !businessData.value.highlights) return false;
@@ -923,7 +948,6 @@ const insertImage = (url: string) => {
 const insertImageLogo = (url: string) => {
   if (!businessData.value) return;
   businessData.value.logo = url;
-
 };
 
 const removeImage = (url: string) => {
@@ -937,17 +961,24 @@ const removeImageLogo = (url: string) => {
   businessData.value.logo = null;
 };
 
-const MAX_TAGS = 5;
-const MAX_FAQS = 6;
-const MAX_MEDIA = 5;
+interface MAX {
+  MAX_TAGS: number;
+  MAX_FAQS: number;
+  MAX_MEDIA: number;
+}
+const max = ref<MAX>({
+  MAX_TAGS: 0,
+  MAX_FAQS: 0,
+  MAX_MEDIA: 0,
+});
 
 const initImage = () => {
   if (!businessData.value) return;
-  if (businessData.value.media.length >= MAX_MEDIA) {
+  if (businessData.value.media.length >= max.value.MAX_MEDIA) {
     return toast.add({
       severity: "info",
       summary: "INFO",
-      detail: "Maximum number of media uploaded!",
+      detail: `Maximum number of media (${max.value.MAX_MEDIA}) uploaded!`,
       life: 3000,
     });
   }
@@ -972,10 +1003,19 @@ const faq = ref({
 });
 
 const business_category = ref();
-const business_tags = ref();
+const business_tags = ref([]);
 const selected_tags = ref<string[]>([]);
 
 const fetchTags = async (id: string) => {
+  if (business_tags.value.length > 0) {
+    if (
+      savedBusinessUser &&
+      savedBusinessUser.id &&
+      business_category.value === savedBusinessUser.categories
+    ) {
+      return;
+    }
+  }
   const res = await getCategoryTags(id);
   if (res?.statusCode === 200) {
     business_tags.value = res.data ?? [];
@@ -1008,8 +1048,8 @@ const isSelected = (tag: string) => {
 const addTag = (tag: string) => {
   if (isSelected(tag)) return;
 
-  if (selected_tags.value.length >= MAX_TAGS) {
-    alert(`You can select up to ${MAX_TAGS} tags only`);
+  if (selected_tags.value.length >= max.value.MAX_TAGS) {
+    alert(`You can select up to ${max.value.MAX_TAGS} tags only`);
     return;
   }
 
@@ -1041,10 +1081,20 @@ function parseOpeningHours(raw: any) {
 onBeforeMount(async () => {
   currentPage.value = props.page ?? "review";
   if (props.business) {
+    // get and set max data
+    const savedBusinessSubscription = await getBusinessSubscriptionFromStore();
+    if (savedBusinessSubscription) {
+      const max_data = getMaxData(savedBusinessSubscription.tier);
+      max.value = max_data;
+    }
     businessData.value = props.business;
 
     if (businessData.value && !businessData.value.media) {
       businessData.value.media = [];
+    }
+
+    if (businessData.value?.faqs === null) {
+      businessData.value.faqs = [];
     }
 
     if (businessData.value?.socialMediaLinks) {
@@ -1101,13 +1151,13 @@ const resetAddSocial = () => {
   social.value.url = "";
 };
 
-const saveFaq = (count: number) => {
+const saveFaq = () => {
   if (businessData.value === null || businessData.value === undefined) return;
-  if (businessData.value.faqs.length >= MAX_FAQS) {
+  if (businessData.value.faqs.length >= max.value?.MAX_FAQS) {
     return toast.add({
       severity: "info",
       summary: "INFO",
-      detail: "Maximum number of questions reached!",
+      detail: `Maximum number of questions (${max.value?.MAX_FAQS}) reached!`,
       life: 3000,
     });
   }
@@ -1214,7 +1264,8 @@ const updateProfile = async () => {
       businessData.value.openingHours,
     );
 
-    businessDataToSubmit.tags = getTagNames(businessData.value.tags);
+    // console.log("tags", businessData.value.tags);
+    // businessDataToSubmit.tags = getTagNames(businessData.value.tags);
 
     const res = await saveBusinessProfile(
       businessData.value.id,
@@ -1239,7 +1290,7 @@ const updateProfile = async () => {
 const displayAvgRating = computed(() => {
   const rating = props.business?.avgRating ?? 0;
   const decimal = rating % 1;
-  
+
   let displayValue;
   if (decimal <= 0.4) {
     displayValue = Math.floor(rating);
@@ -1248,7 +1299,7 @@ const displayAvgRating = computed(() => {
   } else {
     displayValue = rating;
   }
-  
+
   // Format to 1 decimal place
   return displayValue.toFixed(1);
 });
