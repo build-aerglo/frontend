@@ -5,22 +5,22 @@ export default function () {
   const userProfileApi = useUserProfileApi();
   const userStore = useUser();
 
-
   const getUserId = () => {
     const user = userStore.getUser();
     return user ? user.id : null;
-  }
+  };
+
   /**
    * Fetch end user profile
    */
   const getUserProfile = async (userId: string) => {
     try {
       const res = await userProfileApi.get(`api/user/end-user/${userId}/profile`);
-      
+
       if (res.status === 200) {
         return { statusCode: 200, data: res.data };
       }
-      
+
       throw new Error("Error fetching user profile");
     } catch (error: any) {
       console.error("Error fetching user profile:", error);
@@ -37,12 +37,11 @@ export default function () {
         `api/user/end-user/${userId}/profile`,
         profileData
       );
-      
+
       if (res.status === 200 || res.status === 204) {
-        console.log("Profile updated successfully");
         return { statusCode: 200, data: res.data };
       }
-      
+
       throw new Error("Error updating user profile");
     } catch (error: any) {
       console.error("Error updating user profile:", error);
@@ -50,9 +49,32 @@ export default function () {
     }
   };
 
+  /**
+   * Redeem points for airtime
+   */
+  const redeemPoints = async (payload: {
+    userId: string;
+    points: number;
+    phoneNumber: string;
+  }) => {
+    try {
+      const res = await userProfileApi.post(`api/Points/redeem`, payload);
+
+      if (res.status === 200) {
+        return { statusCode: 200, data: res.data };
+      }
+
+      throw new Error("Error redeeming points");
+    } catch (error: any) {
+      console.error("Error redeeming points:", error);
+      throw error;
+    }
+  };
+
   return {
     getUserProfile,
     updateUserProfile,
-    getUserId
+    redeemPoints,
+    getUserId,
   };
 }
