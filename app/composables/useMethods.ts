@@ -9,7 +9,6 @@ import useBusinessUser from "./business/useBusinessUser";
 import useSupportUser from "./support/useSupportUser";
 import useUser from "./useUser";
 
-
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
 const logoutError = ref("");
@@ -31,13 +30,13 @@ export default function () {
     const data = err?.response?.data || err?.data || {};
     let message = "Something went wrong";
     let code = "unknown_error";
-    console.error("Error Response Data:", err.response)
+    console.error("Error Response Data:", err.response);
     // Handle ASP.NET validation errors (registration)
-    if (data.errors && typeof data.errors === 'object') {
+    if (data.errors && typeof data.errors === "object") {
       const errorMessages = Object.values(data.errors)
         .flat()
-        .filter((e: any) => typeof e === 'string');
-      
+        .filter((e: any) => typeof e === "string");
+
       if (errorMessages.length > 0) {
         message = String(errorMessages[0]); // Show first error
         code = "validation_error";
@@ -52,7 +51,7 @@ export default function () {
       code = data.error || "api_error";
     }
     // Fallback
-    else if (err?.message && !err.message.includes('status code')) {
+    else if (err?.message && !err.message.includes("status code")) {
       message = err.message;
       code = err.code || "unknown_error";
     }
@@ -69,6 +68,7 @@ export default function () {
     //
     profileStore.clearProfile();
     businessSubscription.clearPlan();
+    businessSubscription.clearVerification();
   };
 
   // ===============================
@@ -76,7 +76,7 @@ export default function () {
   // ===============================
   const loginUser = async (
     data: LoginData,
-    expectedRole?: "business_user" | "end_user" | "support_user"
+    expectedRole?: "business_user" | "end_user" | "support_user",
   ) => {
     try {
       clearAllStores();
@@ -224,7 +224,7 @@ export default function () {
   const updatePassword = async (
     email: string,
     oldPassword: string,
-    newPassword: string
+    newPassword: string,
   ) => {
     try {
       const res = await api.post("api/password/update-password", {

@@ -155,7 +155,7 @@ const menuItems = [
   { name: "Dashboard", to: "/business/dashboard", icon: "pi pi-home" },
   {
     name: "Reviews management",
-    to: "/business/reviews-management",
+    to: "/business/manage-reviews/",
     icon: "pi pi-comments",
   },
   { name: "Reports", to: "/business/reports", icon: "pi pi-chart-bar" },
