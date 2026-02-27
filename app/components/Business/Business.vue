@@ -1116,7 +1116,8 @@ onBeforeMount(async () => {
 
       if (
         !props.business.openingHours ||
-        props.business.openingHours === null
+        props.business.openingHours === null ||
+        typeof props.business.openingHours !== 'object'
       ) {
         businessData.value.openingHours = parseOpeningHours(
           rawToNormalized({
@@ -1130,9 +1131,25 @@ onBeforeMount(async () => {
           }),
         );
       } else {
-        businessData.value.openingHours = parseOpeningHours(
-          rawToNormalized(props.business.openingHours),
-        );
+        try {
+          businessData.value.openingHours = parseOpeningHours(
+            rawToNormalized(props.business.openingHours),
+          );
+        } catch (error) {
+          console.error('Error parsing opening hours:', error);
+          // Fallback to default hours if parsing fails
+          businessData.value.openingHours = parseOpeningHours(
+            rawToNormalized({
+              monday: "00:00 - 00:00",
+              tuesday: "00:00 - 00:00",
+              wednesday: "00:00 - 00:00",
+              thursday: "00:00 - 00:00",
+              friday: "00:00 - 00:00",
+              saturday: "00:00 - 00:00",
+              sunday: "00:00 - 00:00",
+            }),
+          );
+        }
       }
     }
 

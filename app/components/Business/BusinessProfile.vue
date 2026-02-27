@@ -238,6 +238,8 @@
 import type { BusinessProfileResponse } from "~/types/business";
 
 const props = defineProps(["business", "toEdit", "isBusiness"]);
+const emit = defineEmits(['edit']); // ✅ Declare the edit emit
+
 const businessData = ref<BusinessProfileResponse>();
 // const outsideImages = ref<string[]>([])
 // const insideImages = ref<string[]>([])
