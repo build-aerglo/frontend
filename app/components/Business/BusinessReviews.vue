@@ -1,5 +1,6 @@
 <template>
-  <div v-if="(reviews || []).length <= 0" class="flex flex-col items-center gap-2.5 py-[50px]">
+  <div v-if="reviews.length <= 0" class="flex flex-col items-center gap-2.5 py-[50px]">
+    No reviews yet
     <ButtonCustom
       v-if="!isBusiness"
       label="Be the first to review this business"
@@ -12,6 +13,7 @@
   </div>
 
   <div v-else class="flex flex-col-reverse md:flex-row gap-[30px] items-start">
+    
     <div class="flex flex-col gap-[20px] w-full md:w-[60%]">
       <Card class="sticky top-0 shadow-lg z-[10]">
         <template #content>
@@ -75,8 +77,8 @@
                   <Star :count="business?.avgRating || 0" :rounded="true" />
                 </div>
                 <p class="text-[10px] sm:text-xs text-slate-500 font-medium whitespace-nowrap">
-                  Based on {{ (reviews || []).length }}
-                  {{ (reviews || []).length === 1 ? "Review" : "Reviews" }}
+                  Based on {{ reviews.length }}
+                  {{ reviews.length === 1 ? "Review" : "Reviews" }}
                 </p>
               </div>
 
@@ -178,19 +180,7 @@ import ReviewForm from "~/components/Review/ReviewForm.vue";
 import useReviewMethods from "~/composables/method/useReviewMethods";
 const { getBusinessReviews } = useReviewMethods();
 
-// ✅ Define props with proper types and defaults
-const props = withDefaults(
-  defineProps<{
-    reviews?: any[];
-    business?: any;
-    isBusiness?: boolean;
-  }>(),
-  {
-    reviews: () => [],
-    isBusiness: false,
-  }
-);
-
+const props = defineProps(["reviews", "business", "isBusiness"]);
 const userStore = useUserStore();
 
 // UI State
@@ -233,10 +223,7 @@ const getStarColor = (star: number) => {
 };
 
 const processedReviews = computed(() => {
-  // ✅ Ensure reviews is always an array
-  const reviewsArray = Array.isArray(props.reviews) ? props.reviews : [];
-  let data = [...reviewsArray];
-  
+  let data = [...(props.reviews ?? [])];
   if (searchValue.value.trim()) {
     const q = searchValue.value.toLowerCase();
     data = data.filter((r) => r.reviewBody.toLowerCase().includes(q));
@@ -263,17 +250,12 @@ const onPageChange = (e: any) => {
 // Logic for Rating Distribution
 const distribution = computed(() => {
   const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-  // ✅ Ensure reviews is an array
-  const reviewsArray = Array.isArray(props.reviews) ? props.reviews : [];
-  const total = reviewsArray.length;
-  
+  const total = props.reviews.length;
   if (total === 0) return counts;
-  
-  reviewsArray.forEach((rev: any) => {
+  props.reviews.forEach((rev: any) => {
     const rating = Math.round(rev.starRating);
     if (counts[rating] !== undefined) counts[rating]++;
   });
-  
   return {
     5: ((counts[5] ?? 0) / total) * 100,
     4: ((counts[4] ?? 0) / total) * 100,
@@ -285,12 +267,8 @@ const distribution = computed(() => {
 
 // Logic for Text Summary
 const ratingDescription = computed(() => {
-  // ✅ Ensure reviews is an array
-  const reviewsArray = Array.isArray(props.reviews) ? props.reviews : [];
-  
-  if (reviewsArray.length === 0) return "No reviews yet. Be the first to share your experience!";
-  
-  const allText = reviewsArray.map((r: any) => r.reviewBody.toLowerCase()).join(" ");
+  if (props.reviews.length === 0) return "No reviews yet. Be the first to share your experience!";
+  const allText = props.reviews.map((r: any) => r.reviewBody.toLowerCase()).join(" ");
   
   const themes = {
     positive: ["great", "best", "excellent", "amazing", "good", "perfect", "honestly", "love", "satisfied"],
@@ -315,8 +293,8 @@ const ratingDescription = computed(() => {
     summary += "have shared varied feedback reflecting their recent visits. ";
   }
 
-  if (summary.length < 60 && reviewsArray[0]?.reviewBody) {
-    summary = `Summary: ${reviewsArray[0].reviewBody.substring(0, 150)}...`;
+  if (summary.length < 60 && props.reviews[0]?.reviewBody) {
+    summary = `Summary: ${props.reviews[0].reviewBody.substring(0, 150)}...`;
   }
   return summary;
 });
