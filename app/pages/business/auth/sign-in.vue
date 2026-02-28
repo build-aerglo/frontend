@@ -81,65 +81,77 @@
 </template>
 
 <script setup lang="ts">
-import useBusinessUser from '~/composables/business/useBusinessUser'
-import useMethods from '~/composables/useMethods'
-import type { LoginData } from "~/types"
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
+import useVerificationMethods from "~/composables/verification/useVerificationMethods";
+import useBusinessUser from "~/composables/business/useBusinessUser";
 
-const { loginUser } = useMethods()
-const store = useBusinessUser()
-const toast = useToast()
+const { getBusinessUser, getBusinessProfile, getBusinessSubscriptionSummary } =
+  useBusinessMethods();
+const { getBusinessVerification } = useVerificationMethods();
+
+import useMethods from "~/composables/useMethods";
+import type { LoginData } from "~/types";
+
+const { loginUser } = useMethods();
+const store = useBusinessUser();
+const toast = useToast();
 
 const loginData = ref<LoginData>({
-  email: '',
-  password: '',
-})
+  email: "",
+  password: "",
+});
 
-const isLoading = ref(false)
-const loginError = ref<string | null>(null)
+const isLoading = ref(false);
+const loginError = ref<string | null>(null);
 
 const HandleLogin = async () => {
-  loginError.value = null
+  loginError.value = null;
 
   if (!loginData.value.email || !loginData.value.password) {
-    loginError.value = 'Please enter both email and password.'
+    loginError.value = "Please enter both email and password.";
     toast.add({
-      severity: 'error',
-      summary: 'Validation Error',
+      severity: "error",
+      summary: "Validation Error",
       detail: loginError.value,
-      life: 3000
-    })
-    return
+      life: 3000,
+    });
+    return;
   }
 
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
-    await loginUser(loginData.value, 'business_user')
+    await loginUser(loginData.value, "business_user");
 
     toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Logged in successfully',
-      life: 3000
-    })
+      severity: "success",
+      summary: "Success",
+      detail: "Logged in successfully",
+      life: 3000,
+    });
 
-    navigateTo('/business/dashboard')
+    // do not delete
+    await Promise.all([
+      getBusinessProfile(store.id!),
+      getBusinessSubscriptionSummary(),
+      getBusinessVerification(store.id!),
+    ]);
 
+    navigateTo("/business/dashboard");
   } catch (err: any) {
-    loginError.value = err.message
+    loginError.value = err.message;
 
     toast.add({
-      severity: 'error',
-      summary: 'Login Error',
+      severity: "error",
+      summary: "Login Error",
       detail: err.message,
-      life: 4000
-    })
+      life: 4000,
+    });
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
 };
 </script>
-
 
 <style scoped>
 .authentication-wrapper.authentication-basic .authentication-inner::before,

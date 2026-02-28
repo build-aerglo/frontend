@@ -8,11 +8,14 @@
         >
           {{ initials }}
         </div>
-        <div class="flex flex-col flex-1">
-          <div class="text-[120%]">
+        <div
+          class="flex flex-col flex-1"
+          :class="isProfile ? 'justify-center' : ''"
+        >
+          <div class="text-[90%] mb-[2px]">
             {{ data.anonymous ? "Anonymous" : data.email }}
           </div>
-          <ReviewStatusPill :data="data.status" />
+          <ReviewStatusPill v-if="!isProfile" :status="data.status" />
         </div>
         <div class="w-[100px]">
           <Star :count="data.starRating" :rounded="false" />
@@ -44,7 +47,7 @@
           </div>
         </div>
       </div>
-      <Divider />
+      <Divider v-if="data.replyBody && showReply" />
 
       <!-- reply -->
       <div
@@ -74,10 +77,16 @@
 
 <script setup lang="ts">
 import type { ReviewDashboard } from "~/types/review";
-const props = defineProps<{
-  data: ReviewDashboard;
-  showReply: Boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    data: ReviewDashboard;
+    showReply: boolean;
+    isProfile?: boolean;
+  }>(),
+  {
+    isProfile: false,
+  },
+);
 
 const initials = getInitials(props.data.email);
 

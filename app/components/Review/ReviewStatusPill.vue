@@ -1,20 +1,20 @@
 <template>
   <div>
     <Chip
-      :value="data.status"
-      class="cursor-pointer transition-all !text-[90%] text-white !py-[5px] !lowercase"
+      :value="status"
+      class="cursor-pointer transition-all !py-[5px] !capitalize"
       :class="{
-        'bg-[#DCFCE7] text-[green]': data.status === 'APPROVED',
-        'bg-[#FFEDD4] text-[#C34411]': data.status === 'REJECTED',
-        'bg-[#FEF9C3] text-[gold]': data.status === 'PENDING',
-        'bg-[#FEE2E2] text-[red]': data.status === 'FLAGGED',
+        'bg-[#DCFCE7] !text-[green]': status === 'APPROVED',
+        'bg-[#FFEDD4] !text-[#C34411]': status === 'REJECTED',
+        'bg-[#FEF9C3] !text-[gold]': status === 'PENDING',
+        'bg-[#FEE2E2] !text-[red]': status === 'FLAGGED',
       }"
     >
-      <span>{{ data.status }}</span>
+      <span class="text-[80%]">{{ status }}</span>
     </Chip>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps(["data"]);
+defineProps(["status"]);
 </script>
