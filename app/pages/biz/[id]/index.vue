@@ -2,8 +2,8 @@
   <Toast />
   <GeneralLoader v-if="isLoading" />
   <div v-else class="max-w-[1440px] mx-auto px-5 pt-1">
-    <button 
-      @click="goBack" 
+    <button
+      @click="goBack"
       class="flex items-center text-gray-500 hover:text-[#008253] transition-colors duration-200 group mb-4"
     >
       <div
@@ -70,20 +70,20 @@ const loadBusinessData = async () => {
   try {
     isLoading.value = true;
 
-    const [res, categoryRes, reviewRes] = await Promise.all([
+    const [res, categoryRes] = await Promise.all([
       getBusinessProfile(id, true),
       getCategories(),
-      getBusinessReviews(id),
+      // getBusinessReviews(id),  reviewRes
     ]);
 
     if (categoryRes) {
       categories.value = categoryRes;
     }
 
-    if (reviewRes?.statusCode === 200) {
-      // console.log(reviewRes);
-      reviews.value = reviewRes.data.reviews;
-    }
+    // if (reviewRes?.statusCode === 200) {
+    //   // console.log(reviewRes);
+    //   reviews.value = reviewRes.data.reviews;
+    // }
 
     if (res?.statusCode === 200) {
       if (businessUser.id && businessUser.id === id) {
