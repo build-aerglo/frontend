@@ -26,6 +26,8 @@ export interface EditFormData {
   username: string
   phoneNumber: string
   address: string
+  state: string;   // add
+  city: string;
 }
 
 export interface NotificationPreferences {
