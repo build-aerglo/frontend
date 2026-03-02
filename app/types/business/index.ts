@@ -258,6 +258,30 @@ export interface BusinessSubscription {
   updatedAt: string;
 }
 
+export interface BusinessVerification {
+  id: string;
+  businessId: string;
+  level: number;
+  levelName: string;
+  levelIcon: string;
+  cacVerified: boolean;
+  phoneVerified: boolean;
+  emailVerified: boolean;
+  addressVerified: boolean;
+  idVerified: boolean;
+  idVerificationStatus: string;
+  onlinePresenceVerified: boolean;
+  otherIdsVerified: boolean;
+  businessDomainEmailVerified: boolean;
+  requiresReverification: boolean;
+  reverificationReason: string;
+  completedRequirements: number;
+  totalRequirements: number;
+  verificationProgress: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DisputeCategory {
   id: string;
   code: string;
@@ -266,3 +290,11 @@ export interface DisputeCategory {
   requiresEvidence: boolean;
   priority: number;
 }
+
+export type RatingCounts = {
+  five: number;
+  four: number;
+  three: number;
+  two: number;
+  one: number;
+};

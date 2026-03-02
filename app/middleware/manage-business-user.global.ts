@@ -1,30 +1,34 @@
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
-import { useBusinessProfileStore } from "~/store/business/businessProfile";
-import { useBusinessSubscription } from "~/store/business/businessSubscription";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  if (to.path.includes("/business/dashboard")) return;
   if (!to.path.startsWith("/business")) return;
 
-  const { getBusinessUser, getBusinessSubscriptionFromStore } =
-    useBusinessMethods();
-  const profileStore = useBusinessProfileStore();
-  const businessSubscriptionStore = useBusinessSubscription();
+  const {
+    getBusinessUser,
+    getBusinessSubscriptionFromStore,
+    getBusinessVerificationFromStore,
+  } = useBusinessMethods();
+
+  const { logoutUser } = useMethods();
 
   const biz = getBusinessUser();
   const biz_subscription = await getBusinessSubscriptionFromStore();
-  if (!biz || !biz.id) {
-    // clear store and sign out
-    profileStore.clearProfile();
-    businessSubscriptionStore.clearPlan();
+  const biz_verification = await getBusinessVerificationFromStore();
 
-    navigateTo("/business/auth/sign-in");
-  }
+  if (
+    !biz ||
+    !biz.id ||
+    !biz_subscription ||
+    !biz_subscription.subscriptionPlanId ||
+    !biz_verification ||
+    !biz_verification.id
+  ) {
+    // // clear store and sign out
+    // profileStore.clearProfile();
+    // businessSubscriptionStore.clearPlan();
 
-  if (!biz_subscription || !biz_subscription.subscriptionPlanId) {
-    // clear store and sign out
-    profileStore.clearProfile();
-    businessSubscriptionStore.clearPlan();
-
-    navigateTo("/business/auth/sign-in");
+    // navigateTo("/business/auth/sign-in");
+    await logoutUser();
   }
 });

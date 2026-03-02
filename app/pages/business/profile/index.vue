@@ -49,19 +49,19 @@ const loadBusinessData = async () => {
   try {
     isLoading.value = true;
 
-    const [res, categoryRes, reviewRes] = await Promise.all([
+    const [res, categoryRes] = await Promise.all([
       getBusinessProfile(id),
       getCategories(),
-      getBusinessReviews(String(id)),
+      // getBusinessReviews(String(id)), - , reviewRes
     ]);
 
     if (categoryRes) {
       categories.value = categoryRes;
     }
 
-    if (reviewRes?.statusCode === 200) {
-      reviews.value = reviewRes.data;
-    }
+    // if (reviewRes?.statusCode === 200) {
+    //   reviews.value = reviewRes.data.reviews;
+    // }
 
     if (res?.statusCode === 200) {
       if (businessUser.id && businessUser.id === id) {
@@ -95,7 +95,7 @@ const pageTitle = computed(
   () =>
     `${business.value?.name ?? "Business Profile"} - ${
       business.value?.categories[0]?.name ?? ""
-    } | Clereview`
+    } | Clereview`,
 );
 useHead({
   title: pageTitle,

@@ -5,10 +5,11 @@ import { useBusinessSubscription } from "~/store/business/businessSubscription";
 import type {
   BusinessPreference,
   BusinessProfile,
+  BusinessProfileResponse,
   ClaimData,
 } from "~/types/business";
 import type { AxiosError } from "axios";
-import { encryptJSONNative } from "#imports";
+import { encryptJSONNative } from "~/utils/";
 import useAnnouncementMethods from "../announcements/useAnnouncementMethods";
 
 //temp caching
@@ -31,6 +32,10 @@ export default function () {
     return await businessSubscription.getPlan();
   };
 
+  const getBusinessVerificationFromStore = async () => {
+    return await businessSubscription.getVerification();
+  };
+
   const getCategories = async () => {
     if (categories.value) return categories.value;
     try {
@@ -43,7 +48,10 @@ export default function () {
     }
   };
 
-  const saveBusinessProfile = async (id: string, data: BusinessProfile) => {
+  const saveBusinessProfile = async (
+    id: string,
+    data: BusinessProfileResponse,
+  ) => {
     try {
       const res = await businessApi.patch(`api/Business/${id}`, data);
       // manage profile store
@@ -409,5 +417,6 @@ export default function () {
     updateBusinessAutoResponse,
     updateEmail,
     getBusinessSubscriptionFromStore,
+    getBusinessVerificationFromStore,
   };
 }

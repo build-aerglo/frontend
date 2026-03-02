@@ -1,14 +1,19 @@
 import { defineStore } from "pinia";
-import type { BusinessSubscription } from "~/types/business";
+import type {
+  BusinessSubscription,
+  BusinessVerification,
+} from "~/types/business";
 import { decryptJSONNative } from "#imports";
 
 export interface ProfileState {
   planData: string;
+  verificationData: string;
 }
 
 export const useBusinessSubscription = defineStore("businessSubscription", {
   state: (): ProfileState => ({
     planData: "" as string,
+    verificationData: "" as string,
   }),
 
   actions: {
@@ -25,6 +30,23 @@ export const useBusinessSubscription = defineStore("businessSubscription", {
 
     clearPlan() {
       this.planData = "" as string;
+    },
+
+    async getVerification() {
+      if (this.verificationData === "") {
+        return null;
+      }
+      return await decryptJSONNative<BusinessVerification>(
+        this.verificationData,
+      );
+    },
+
+    setVerificationData(profile: string) {
+      this.verificationData = profile;
+    },
+
+    clearVerification() {
+      this.verificationData = "" as string;
     },
   },
 

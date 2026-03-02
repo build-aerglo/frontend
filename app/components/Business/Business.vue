@@ -660,8 +660,10 @@
             <div
               class="flex flex-col gap-[1px] justify-center w-full px-[20px] sm:w-auto sm:px-0"
             >
-              <div class="flex justify-center items-center scale-75 sm:scale-90">
-                <Star :count="business?.avgRating || 0" :rounded="true"/>
+              <div
+                class="flex justify-center items-center scale-75 sm:scale-90"
+              >
+                <Star :count="business?.avgRating || 0" :rounded="true" />
               </div>
               <div class="text-center text-xs text-gray-500">
                 ({{ business?.reviewCount ?? 0 }} Review{{
@@ -846,25 +848,28 @@
     </div>
 
     <Divider class="mb-[20px]" />
-
-    <BusinessProfile
-      v-if="currentPage === 'profile'"
-      :isBusiness="isBusiness"
-      :business="business"
-      @edit="emit('edit')"
-    />
-    <BusinessReviews
-      v-if="currentPage === 'review'"
-      :reviews="reviews"
-      :business="business"
-      :isBusiness="isBusiness"
-    />
-
-    <BusinessQr
-      v-if="isBusiness && currentPage === 'qr'"
-      :business="business"
-    />
-
+    <KeepAlive>
+      <BusinessProfile
+        v-if="currentPage === 'profile'"
+        :isBusiness="isBusiness"
+        :business="business"
+        @edit="emit('edit')"
+      />
+    </KeepAlive>
+    <KeepAlive>
+      <BusinessReviews
+        v-if="currentPage === 'review'"
+        :reviews="reviews"
+        :business="business"
+        :isBusiness="isBusiness"
+      />
+    </KeepAlive>
+    <KeepAlive>
+      <BusinessQr
+        v-if="isBusiness && currentPage === 'qr'"
+        :business="business"
+      />
+    </KeepAlive>
     <!-- {{ business }} -->
   </section>
 </template>
@@ -930,15 +935,19 @@ function toggleHighlight(val: boolean, title: string): void {
   }
 }
 // ✅ If business is a prop/computed ref, use this approach instead
-const logoSrc = ref('/images/default-business-logo.png')
+const logoSrc = ref("/images/default-business-logo.png");
 
-watch(() => props.business?.logo, (newLogo) => {
-  logoSrc.value = newLogo || '/images/default-business-logo.png'
-}, { immediate: true })
+watch(
+  () => props.business?.logo,
+  (newLogo) => {
+    logoSrc.value = newLogo || "/images/default-business-logo.png";
+  },
+  { immediate: true },
+);
 
 const handleLogoError = () => {
-  logoSrc.value = '/images/default-business-logo.png'
-}
+  logoSrc.value = "/images/default-business-logo.png";
+};
 const insertImage = (url: string) => {
   if (!businessData.value) return;
   addImage.value = false;

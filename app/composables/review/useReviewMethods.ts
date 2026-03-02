@@ -88,6 +88,7 @@ export default function () {
     replyBody: string;
     businessId: string;
   }) => {
+    console.log(data);
     try {
       const res = await reviewApi.post(`api/business-reply`, data);
       return {
@@ -148,11 +149,32 @@ export default function () {
     },
     page = 1,
     pageSize = 10,
+    dashboard?: boolean,
   ) => {
+    let endpoint = `/api/review-management?businessId=${id}`;
+    if (data.branch) {
+      endpoint += `&branch=${data.branch}`;
+    }
+    if (data.startDate) {
+      endpoint += `&startDate=${data.startDate}`;
+    }
+    if (data.endDate) {
+      endpoint += `&endDate=${data.endDate}`;
+    }
+    if (data.status) {
+      endpoint += `&status=${data.status}`;
+    }
+    if (data.rating) {
+      endpoint += `&rating=${data.rating}`;
+    }
+
+    if (dashboard) {
+      endpoint += `&dashboard=true`;
+    }
+
+    endpoint += `&page=${page}&pageSize=${pageSize}`;
     try {
-      const res = await reviewApi.get(
-        `/api/review-management?businessId=${id}&branch=${data.branch}&startDate=${data.startDate}&endDate=${data.endDate}&page=${page}&pageSize=${pageSize}&status=${data.status ?? null}&rating=${data.rating ?? null}`,
-      );
+      const res = await reviewApi.get(endpoint);
       return {
         ok: true,
         statusCode: res.status,
@@ -170,6 +192,18 @@ export default function () {
     }
   };
 
+  const sendDispute = async (data: any) => {
+    try {
+      const res = await reviewApi.post(`api/Dispute`, data);
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     submitUserReview,
     getUserReviews,
@@ -180,5 +214,6 @@ export default function () {
     updateResponse,
     deleteResponse,
     getReviewManagement,
+    sendDispute,
   };
 }
