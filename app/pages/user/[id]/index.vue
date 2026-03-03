@@ -42,12 +42,29 @@
           </label>
           <input v-model="editForm.phoneNumber" type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent" />
         </div>
+
+        <!-- State dropdown -->
         <div>
           <label class="block text-sm font-medium text-gray-500 mb-2">
-            <i class="pi pi-home mr-2"></i>Address
+            <i class="pi pi-map mr-2"></i>State
           </label>
-          <input v-model="editForm.address" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent" />
+          <select v-model="editForm.state" @change="onStateChange" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent bg-white">
+            <option value="">Select a state...</option>
+            <option v-for="st in nigerianLocations" :key="st.state" :value="st.state">{{ st.state }}</option>
+          </select>
         </div>
+
+        <!-- City dropdown -->
+        <div>
+          <label class="block text-sm font-medium text-gray-500 mb-2">
+            <i class="pi pi-map-marker mr-2"></i>City / Area
+          </label>
+          <select v-model="editForm.city" :disabled="!editForm.state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#008253] focus:border-transparent bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+            <option value="">{{ editForm.state ? 'Select a city...' : 'Select a state first' }}</option>
+            <option v-for="city in availableCities" :key="city" :value="city">{{ city }}</option>
+          </select>
+        </div>
+
         <div class="pt-2 flex gap-3 justify-center items-center">
           <button @click="handleSaveProfile" :disabled="saving" class="flex-1 bg-[#008253] text-white px-6 py-3 rounded-lg hover:bg-[#006641] transition font-medium disabled:opacity-50 disabled:cursor-not-allowed">
             <i v-if="saving" class="pi pi-spin pi-spinner mr-2"></i>
@@ -145,21 +162,20 @@
           <!-- Left Column -->
           <div class="md:col-span-3 space-y-6">
 
-            <!-- Badges -->
+            <!-- Badges (achievement only — tier badge lives in Rewards hero) -->
             <div class="bg-white rounded-xl shadow-sm p-4 md:block">
               <h5 class="font-bold text-sm text-gray-800 mb-4 flex items-center gap-2">
                 <i class="pi pi-trophy text-gold"></i>
                 <span v-if="isUser" class="font-bold text-gray-800 text-sm">Your</span>
                 Badges
-                <span v-if="totalBadgeCount > 0" class="text-sm text-gray-500">({{ totalBadgeCount }})</span>
+                <span v-if="summary.achievementBadges.length > 0" class="text-sm text-gray-500">({{ summary.achievementBadges.length }})</span>
               </h5>
-              <div v-if="!summary.tierBadge && !summary.achievementBadges.length" class="text-center py-8 text-gray-500">
+              <div v-if="!summary.achievementBadges.length" class="text-center py-8 text-gray-500">
                 <i class="pi pi-trophy text-4xl mb-2 opacity-50"></i>
                 <p class="text-sm">{{ isUser ? "You haven't earned any badges yet" : "No badges earned yet" }}</p>
                 <p v-if="isUser" class="text-xs text-gray-400 mt-2">Keep reviewing to unlock badges!</p>
               </div>
               <div v-else class="space-y-3">
-                <BadgeToolTip v-if="summary.tierBadge" :name="summary.tierBadge.badgeType" :icon="summary.tierBadge.icon" :color="getTierColor(summary.tierBadge.badgeType)" :description="summary.tierBadge.description" />
                 <BadgeToolTip v-for="(badge, idx) in summary.achievementBadges" :key="idx" :name="badge.badgeType" :icon="badge.icon" :color="getAchievementColor(badge.badgeType)" :description="badge.description" />
               </div>
             </div>
@@ -259,9 +275,26 @@
 
               <!-- ── YOUR REVIEWS TAB ── -->
               <div v-if="activeTab === 'your-reviews'" class="space-y-6">
-                <h2 class="md:text-2xl text-xl font-bold text-[#008253]">
-                  <span v-if="isUser" class="md:text-2xl text-xl font-bold text-[#008253]">Your</span> Reviews
-                </h2>
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                  <h2 class="md:text-2xl text-xl font-bold text-[#008253]">
+                    <span v-if="isUser" class="md:text-2xl text-xl font-bold text-[#008253]">Your</span> Reviews
+                  </h2>
+
+                  <!-- Sort control — icon + compact dropdown -->
+                  <div v-if="mappedReviews.length > 0" class="relative flex items-center gap-1.5">
+                    <i class="pi pi-sort-alt text-gray-400 text-sm pointer-events-none"></i>
+                    <select
+                      v-model="reviewSortBy"
+                      class="text-xs font-medium border border-gray-200 rounded-lg pl-2 pr-7 py-1.5 bg-white text-gray-600 focus:ring-1 focus:ring-[#008253] focus:border-transparent cursor-pointer appearance-none"
+                    >
+                      <option value="date-desc">Latest</option>
+                      <option value="date-asc">Earliest</option>
+                      <option value="rating-desc">Highest Rated</option>
+                      <option value="rating-asc">Lowest Rated</option>
+                    </select>
+                    <i class="pi pi-chevron-down text-gray-400 text-xs absolute right-2 pointer-events-none"></i>
+                  </div>
+                </div>
 
                 <div v-if="isUser && mappedReviews.length === 0" class="text-center py-12">
                   <i class="pi pi-inbox text-6xl text-gray-300 mb-4"></i>
@@ -278,7 +311,7 @@
 
                 <div v-else class="space-y-4">
                   <div
-                    v-for="review in mappedReviews"
+                    v-for="review in sortedReviews"
                     :key="review.id"
                     :class="['border rounded-lg p-4 transition-all', review.isGrayedOut ? 'border-gray-200 bg-gray-50/50 opacity-75' : 'border-gray-200 bg-white hover:shadow-md']"
                   >
@@ -307,13 +340,45 @@
                         </div>
                       </div>
                     </div>
+
                     <div class="mt-4">
                       <p :class="['text-sm leading-relaxed', review.isGrayedOut ? 'text-gray-500' : 'text-gray-700']">{{ review.body }}</p>
                     </div>
+
                     <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
                       <div class="flex gap-2 flex-wrap">
                         <img v-for="(photo, idx) in review.photoUrls" :key="idx" :src="photo" alt="Review photo" :class="['w-20 h-20 object-cover rounded-lg border border-gray-200', review.isGrayedOut && 'opacity-50']" />
                       </div>
+                    </div>
+
+                    <!-- ── Business Reply Section ── -->
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+
+                      <!-- Existing reply -->
+                      <div v-if="businessReplies[review.id]" class="flex gap-3 bg-emerald-50 border border-emerald-100 rounded-lg p-3">
+                        <div class="w-7 h-7 rounded-full bg-[#008253] flex items-center justify-center flex-shrink-0">
+                          <i class="pi pi-shop text-white text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-semibold text-emerald-800">Business Response</span>
+                            <span class="text-xs text-gray-400">{{ formatDateShort(businessReplies[review.id]?.createdAt || '') }}</span>
+                          </div>
+                          <p class="text-sm text-gray-700 leading-relaxed" v-html="businessReplies[review.id]?.replyBody || ''"></p>
+                        </div>
+                      </div>
+
+                      <!-- Reply loading state -->
+                      <div v-else-if="loadingReplies[review.id]" class="flex items-center gap-2 text-xs text-gray-400 py-1">
+                        <i class="pi pi-spin pi-spinner text-xs"></i>
+                        <span>Loading response...</span>
+                      </div>
+
+                      <!-- No reply placeholder — visible to everyone when no reply exists and not loading -->
+                      <div v-else class="text-xs text-gray-400 italic py-1">
+                        No business response yet
+                      </div>
+
                     </div>
                   </div>
 
@@ -332,7 +397,7 @@
               <!-- ── REWARDS TAB ── -->
               <div v-if="activeTab === 'rewards'" class="rewards-tab">
 
-                <!-- Points Hero -->
+                <!-- Points Hero — tier badge shown here -->
                 <div class="points-hero">
                   <div class="hero-bg-circles">
                     <div class="circle c1"></div>
@@ -346,7 +411,11 @@
                       <span class="points-unit">pts</span>
                     </div>
                     <div class="hero-meta">
-                      <div class="meta-pill meta-pill--gold">
+                      <div v-if="summary.tierBadge" class="meta-pill meta-pill--tier">
+                        <span>{{ summary.tierBadge.icon }}</span>
+                        <span>{{ capitalize(summary.tierBadge.badgeType) }}</span>
+                      </div>
+                      <div v-else class="meta-pill meta-pill--gold">
                         <i class="pi pi-crown"></i>
                         <span>{{ capitalize(summary.pointTier) }} Tier</span>
                       </div>
@@ -369,7 +438,6 @@
                     How You've Earned
                   </h3>
                   <div class="breakdown-grid">
-
                     <div class="breakdown-card" @mouseenter="activeTip = 'review'" @mouseleave="activeTip = null">
                       <div class="bcard-icon" style="background:#dcfce7; color:#16a34a"><i class="pi pi-comment"></i></div>
                       <div class="bcard-body">
@@ -466,6 +534,38 @@
                           {{ codeCopied ? 'Copied!' : 'Copy Code' }}
                         </button>
                       </div>
+
+                      <!-- Enter a referral code — shown only within 24hrs of registration -->
+                      <div v-if="canEnterReferralCode" class="enter-referral-wrap">
+                        <div v-if="!referralCodeApplied">
+                          <p class="enter-ref-label">Have a friend's referral code?</p>
+                          <div class="enter-ref-row">
+                            <input
+                              v-model="incomingReferralCode"
+                              type="text"
+                              placeholder="e.g. JANE2026"
+                              maxlength="20"
+                              class="enter-ref-input"
+                              :disabled="applyingReferralCode"
+                              @input="incomingReferralCode = incomingReferralCode.toUpperCase()"
+                            />
+                            <button
+                              class="apply-ref-btn"
+                              :disabled="!incomingReferralCode.trim() || applyingReferralCode"
+                              @click="handleApplyReferralCode"
+                            >
+                              <i v-if="applyingReferralCode" class="pi pi-spin pi-spinner"></i>
+                              <span>{{ applyingReferralCode ? 'Applying...' : 'Apply' }}</span>
+                            </button>
+                          </div>
+                          <p v-if="referralCodeError" class="ref-apply-msg ref-apply-msg--error">
+                            <i class="pi pi-exclamation-triangle"></i> Referral code does not exist
+                          </p>
+                        </div>
+                        <div v-else class="ref-apply-msg ref-apply-msg--success">
+                          <i class="pi pi-check-circle"></i> Referral code applied successfully! You both earned points.
+                        </div>
+                      </div>
                     </div>
                     <div class="referral-stats">
                       <div class="ref-stat">
@@ -493,7 +593,6 @@
                     Redeem Points
                   </h3>
 
-                  <!-- Locked -->
                   <div v-if="summary.points < 500" class="redeem-locked">
                     <div class="lock-icon md-block hidden">🔒</div>
                     <div class="lock-text">
@@ -508,7 +607,6 @@
                     </div>
                   </div>
 
-                  <!-- Redeem Options -->
                   <div v-else class="redeem-options">
                     <div
                       v-for="option in redeemCards"
@@ -531,7 +629,6 @@
                       <p v-if="summary.points < option.cost" class="option-shortage">Need {{ option.cost - summary.points }} more points</p>
                     </div>
 
-                    <!-- Coupon coming soon -->
                     <div class="redeem-option-card coming-soon-card">
                       <div class="option-header">
                         <span class="option-emoji">🎟️</span>
@@ -545,46 +642,32 @@
                     </div>
                   </div>
 
-                  <!-- Redeem Form -->
                   <Transition name="form-slide">
                     <div v-if="selectedRedeemOption && summary.points >= 500" class="redeem-form-wrap">
                       <div class="redeem-form">
                         <p class="form-title">Redeem <strong>{{ selectedRedeemOption.cost }} points</strong> as airtime</p>
-
                         <div class="network-selector">
-                          <button
-                            v-for="net in networks"
-                            :key="net.name"
-                            class="net-btn"
-                            :class="{ active: selectedNetwork === net.name }"
-                            :style="{ '--net-color': net.color }"
-                            @click="selectedNetwork = net.name"
-                          >
+                          <button v-for="net in networks" :key="net.name" class="net-btn" :class="{ active: selectedNetwork === net.name }" :style="{ '--net-color': net.color }" @click="selectedNetwork = net.name">
                             <span class="net-icon">{{ net.emoji }}</span>
                             <span class="net-name">{{ net.name }}</span>
                           </button>
                         </div>
-
                         <div>
                           <label class="phone-label">Phone Number</label>
                           <input v-model="redeemPhone" type="tel" placeholder="e.g. 08012345678" class="phone-input" maxlength="11" />
                         </div>
-
                         <div class="redeem-summary-row">
                           <span>You'll receive:</span>
                           <strong>₦{{ selectedRedeemOption.naira }} airtime</strong>
                         </div>
-
                         <button class="redeem-submit-btn" :disabled="!canRedeem || redeeming" @click="handleRedeem">
                           <i v-if="redeeming" class="pi pi-spin pi-spinner"></i>
                           <i v-else class="pi pi-credit-card"></i>
                           {{ redeeming ? 'Processing...' : 'Confirm Redemption' }}
                         </button>
-
                         <button class="redeem-cancel-btn" @click="cancelRedeem" :disabled="redeeming">Cancel</button>
-
                         <div v-if="redeemError" class="redeem-msg error">
-                          <i class="pi pi-exclamation-triangle"></i> {{ redeemError = "Request Failed" }}
+                          <i class="pi pi-exclamation-triangle"></i> Request Failed
                         </div>
                         <div v-if="redeemSuccess" class="redeem-msg success">
                           <i class="pi pi-check-circle"></i> {{ redeemSuccess }}
@@ -593,24 +676,6 @@
                     </div>
                   </Transition>
                 </section>
-
-                <!-- Recent Activity -->
-                <!-- <section v-if="summary.recentActivity?.length" class="r-section">
-                  <h3 class="r-section-title">
-                    <i class="pi pi-clock" style="color:#0284c7"></i>
-                    Recent Activity
-                  </h3>
-                  <div class="activity-list">
-                    <div v-for="(act, i) in summary.recentActivity" :key="i" class="activity-row">
-                      <div class="act-icon"><i class="pi pi-plus-circle" style="color:#16a34a"></i></div>
-                      <div class="act-body">
-                        <p class="act-desc">{{ formatActivityDesc(act.description) }}</p>
-                        <p class="act-date">{{ formatDateShort(act.createdAt) }}</p>
-                      </div>
-                      <span class="act-points">+{{ act.points }} pts</span>
-                    </div>
-                  </div>
-                </section> -->
 
               </div>
 
@@ -732,14 +797,6 @@
                             <p class="text-sm text-gray-600">{{ notif.subtitle }}</p>
                           </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                          <!-- <span :class="['text-sm font-medium', summary.profile.notificationPreferences?.[notif.key] ? 'text-green-600' : 'text-gray-500']">
-                            {{ summary.profile.notificationPreferences?.[notif.key] ? 'On' : 'Off' }}
-                          </span> -->
-                          <!-- <div :class="['w-12 h-6 rounded-full transition-colors cursor-pointer', summary.profile.notificationPreferences?.[notif.key] ? 'bg-[#008253]' : 'bg-gray-300']" @click="toggleNotification(notif.key)">
-                            <div :class="['w-5 h-5 bg-white rounded-full shadow-md transform transition-transform mt-0.5', summary.profile.notificationPreferences?.[notif.key] ? 'translate-x-6' : 'translate-x-0.5']"></div>
-                          </div> -->
-                        </div>
                       </div>
                     </div>
                     <div v-if="notificationSettingsChanged" class="mt-6 flex gap-3">
@@ -748,14 +805,6 @@
                         {{ savingNotifications ? "Saving..." : "Save Notification Settings" }}
                       </button>
                       <button @click="cancelNotificationChanges" :disabled="savingNotifications" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium">Cancel</button>
-                    </div>
-                    <div v-if="notificationSaveSuccess" class="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                      <i class="pi pi-check-circle text-green-600 mr-2"></i>
-                      <span class="text-green-700">Notification settings saved successfully!</span>
-                    </div>
-                    <div v-if="notificationSaveError" class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                      <i class="pi pi-exclamation-triangle text-red-600 mr-2"></i>
-                      <span class="text-red-700">{{ notificationSaveError }}</span>
                     </div>
                   </div>
                 </div>
@@ -840,12 +889,15 @@ import UserAvatar from "~/components/UserAvatar.vue";
 import BadgeToolTip from "~/components/BadgeToolTip.vue";
 import useUserSummary from "~/composables/useUserSummary";
 import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
+import useReviewMethods from "~/composables/review/useReviewMethods";
+import { nigerianLocations } from "~/utils/nigerianLocations";
 import type { Ad, EditFormData, UserSummary } from "~/types/user";
 import type { PageState } from "primevue";
 
 // ── Setup ──────────────────────────────────────────────────────────────────
 const { getUserSummary } = useUserSummary();
 const { updateUserProfile, getUserId, redeemPoints } = useUserProfileMethods();
+const { getReviewReply } = useReviewMethods();
 
 const userId = getUserId();
 const route = useRoute();
@@ -860,12 +912,25 @@ const error = ref<string | null>(null);
 const isUser = ref(false);
 const activeTab = ref("your-reviews");
 
+// Review sort
+const reviewSortBy = ref<"date-desc" | "date-asc" | "rating-desc" | "rating-asc">("date-desc");
+
+// Business replies — keyed by reviewId
+const businessReplies = ref<Record<string, { replyBody: string; createdAt: string } | null>>({});
+const loadingReplies = ref<Record<string, boolean>>({});
+
 // Edit profile
 const isEditingProfile = ref(false);
 const saving = ref(false);
 const saveSuccess = ref(false);
 const saveError = ref<string | null>(null);
-const editForm = ref<EditFormData>({ username: "", phoneNumber: "", address: "" });
+const editForm = ref<EditFormData & { state: string; city: string }>({
+  username: "",
+  phoneNumber: "",
+  address: "",
+  state: "",
+  city: "",
+});
 
 // Notification settings
 const notificationSettingsChanged = ref(false);
@@ -887,6 +952,12 @@ const socialMediaAccounts = ref<Array<{ platform: string; handle: string }>>([{ 
 const savingSocialMedia = ref(false);
 const socialMediaSaveSuccess = ref(false);
 const socialMediaSaveError = ref<string | null>(null);
+
+// Referral code entry
+const incomingReferralCode = ref("");
+const applyingReferralCode = ref(false);
+const referralCodeError = ref<string | null>(null);
+const referralCodeApplied = ref(false);
 
 // Rewards tab
 const activeTip = ref<string | null>(null);
@@ -930,11 +1001,6 @@ const cleanUsername = computed(() =>
 const firstName = computed(() => cleanUsername.value.split(" ")[0] || "");
 const lastName  = computed(() => cleanUsername.value.split(" ").slice(1).join(" ") || "");
 
-const totalBadgeCount = computed(() => {
-  if (!summary.value) return 0;
-  return (summary.value.tierBadge ? 1 : 0) + summary.value.achievementBadges.length;
-});
-
 const mappedReviews = computed(() => {
   if (!summary.value) return [];
   return summary.value.reviews.items.map((r) => {
@@ -957,6 +1023,17 @@ const mappedReviews = computed(() => {
       validatedAt: r.validatedAt,
     };
   });
+});
+
+const sortedReviews = computed(() => {
+  const reviews = [...mappedReviews.value];
+  switch (reviewSortBy.value) {
+    case "date-asc":    return reviews.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    case "date-desc":   return reviews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    case "rating-desc": return reviews.sort((a, b) => b.rating - a.rating);
+    case "rating-asc":  return reviews.sort((a, b) => a.rating - b.rating);
+    default:            return reviews;
+  }
 });
 
 const topCategories = computed(() => {
@@ -988,6 +1065,53 @@ const canRedeem = computed(() =>
   !!selectedRedeemOption.value && !!selectedNetwork.value && redeemPhone.value.length >= 10
 );
 
+const availableCities = computed(() => {
+  if (!editForm.value.state) return [];
+  const found = nigerianLocations.find(l => l.state === editForm.value.state);
+  return found ? found.cities : [];
+});
+
+// Show referral entry only within 24hrs of registration
+const canEnterReferralCode = computed(() => {
+  if (!summary.value || !isUser.value) return false;
+  const regDate = (summary.value.profile as any).createdAt || (summary.value.profile as any).joinDate;
+  if (!regDate) return false;
+  const hoursSinceReg = (Date.now() - new Date(regDate).getTime()) / (1000 * 60 * 60);
+  return hoursSinceReg <= 24;
+});
+
+// ── Business reply fetching ────────────────────────────────────────────────
+/**
+ * Fetch the business reply for a single review.
+ * Called lazily when reviews are loaded.
+ * Uses GET /api/business-reply/review/{reviewId}
+ */
+const fetchReplyForReview = async (reviewId: string) => {
+  if (businessReplies.value[reviewId] !== undefined) return; // already fetched
+  loadingReplies.value[reviewId] = true;
+  try {
+    const result = await getReviewReply(reviewId);
+    // getReviewReply returns { statusCode, data }
+    // data may be null/empty if no reply exists
+    if (result?.statusCode === 200 && result.data?.replyBody) {
+      businessReplies.value[reviewId] = {
+        replyBody: result.data.replyBody,
+        createdAt: result.data.createdAt || new Date().toISOString(),
+      };
+    } else {
+      businessReplies.value[reviewId] = null; // no reply — mark as fetched
+    }
+  } catch {
+    businessReplies.value[reviewId] = null;
+  } finally {
+    loadingReplies.value[reviewId] = false;
+  }
+};
+
+const fetchRepliesForCurrentPage = () => {
+  mappedReviews.value.forEach((r) => fetchReplyForReview(r.id));
+};
+
 // ── Data fetch ─────────────────────────────────────────────────────────────
 const loadSummary = async (isInitial = false) => {
   if (!currentUserId.value) { error.value = "User ID is missing"; return; }
@@ -1004,6 +1128,8 @@ const loadSummary = async (isInitial = false) => {
           : null;
         originalDarkMode.value = summary.value.profile.darkMode ?? null;
       }
+      // Fetch replies for all loaded reviews
+      fetchRepliesForCurrentPage();
     } else {
       error.value = "Failed to load profile";
     }
@@ -1014,13 +1140,21 @@ const loadSummary = async (isInitial = false) => {
   }
 };
 
+// ── Address helpers ────────────────────────────────────────────────────────
+const onStateChange = () => { editForm.value.city = ""; };
+
 // ── Profile edit ───────────────────────────────────────────────────────────
 const startEdit = () => {
   if (summary.value) {
+    const parts = (summary.value.profile.address || "").split(",").map(p => p.trim());
+    const existingCity  = parts[0] || "";
+    const existingState = parts[1] || "";
     editForm.value = {
       username: summary.value.profile.username,
       phoneNumber: summary.value.profile.phone || "",
       address: summary.value.profile.address || "",
+      state: existingState,
+      city: existingCity,
     };
   }
   isEditingProfile.value = true;
@@ -1042,7 +1176,11 @@ const handleSaveProfile = async () => {
     const updates: any = {};
     if (editForm.value.username)    updates.username = editForm.value.username;
     if (editForm.value.phoneNumber) updates.phone    = editForm.value.phoneNumber;
-    if (editForm.value.address)     updates.address  = editForm.value.address;
+    if (editForm.value.city && editForm.value.state) {
+      updates.address = `${editForm.value.city}, ${editForm.value.state}`;
+    } else if (editForm.value.state) {
+      updates.address = editForm.value.state;
+    }
     const result = await updateUserProfile(currentUserId.value, updates);
     if (result?.statusCode === 200) {
       await loadSummary();
@@ -1067,8 +1205,7 @@ const toggleNotification = (key: string) => {
 
 const checkNotificationChanges = () => {
   if (!summary.value?.profile.notificationPreferences || !originalNotificationSettings.value) {
-    notificationSettingsChanged.value = false;
-    return;
+    notificationSettingsChanged.value = false; return;
   }
   const cur  = summary.value.profile.notificationPreferences as any;
   const orig = originalNotificationSettings.value;
@@ -1155,31 +1292,21 @@ const parseSocialMediaAccounts = (str: string) => {
 
 const getSocialMediaIcon = (platform: string): string => {
   const icons: Record<string, string> = {
-    WhatsApp:     "pi pi-whatsapp text-green-600",
-    Instagram:    "pi pi-instagram text-pink-600",
-    Snapchat:     "pi pi-snapchat text-yellow-500",
-    "X (Twitter)":"pi pi-twitter text-blue-400",
-    Facebook:     "pi pi-facebook text-blue-600",
-    LinkedIn:     "pi pi-linkedin text-blue-700",
-    TikTok:       "pi pi-tiktok text-gray-800",
-    YouTube:      "pi pi-youtube text-red-600",
-    Telegram:     "pi pi-telegram text-blue-500",
+    WhatsApp: "pi pi-whatsapp text-green-600", Instagram: "pi pi-instagram text-pink-600",
+    Snapchat: "pi pi-snapchat text-yellow-500", "X (Twitter)": "pi pi-twitter text-blue-400",
+    Facebook: "pi pi-facebook text-blue-600", LinkedIn: "pi pi-linkedin text-blue-700",
+    TikTok: "pi pi-tiktok text-gray-800", YouTube: "pi pi-youtube text-red-600",
+    Telegram: "pi pi-telegram text-blue-500",
   };
   return icons[platform] || "pi pi-link text-gray-600";
 };
 
 const getSocialMediaPlaceholder = (platform: string): string => {
   const placeholders: Record<string, string> = {
-    WhatsApp:     "+234 123 456 7890",
-    Instagram:    "@username",
-    Snapchat:     "@username",
-    "X (Twitter)":"@username",
-    Facebook:     "facebook.com/username",
-    LinkedIn:     "linkedin.com/in/username",
-    TikTok:       "@username",
-    YouTube:      "@channelname",
-    Telegram:     "@username",
-    Other:        "Username or link",
+    WhatsApp: "+234 123 456 7890", Instagram: "@username", Snapchat: "@username",
+    "X (Twitter)": "@username", Facebook: "facebook.com/username",
+    LinkedIn: "linkedin.com/in/username", TikTok: "@username",
+    YouTube: "@channelname", Telegram: "@username", Other: "Username or link",
   };
   return placeholders[platform] || "Enter username or link";
 };
@@ -1228,6 +1355,31 @@ const saveSocialMedia = async () => {
   }
 };
 
+// ── Referral code entry ────────────────────────────────────────────────────
+const handleApplyReferralCode = async () => {
+  if (!incomingReferralCode.value.trim() || !currentUserId.value) return;
+  applyingReferralCode.value = true;
+  referralCodeError.value = null;
+  try {
+    const res = await $fetch<{ success: boolean; message: string }>(
+      `/api/user/end-user/${currentUserId.value}/apply-referral`,
+      {
+        method: "POST",
+        body: { referralCode: incomingReferralCode.value.trim() },
+      }
+    );
+    if (res.success) {
+      referralCodeApplied.value = true;
+    } else {
+      referralCodeError.value = res.message || "Invalid or already used code.";
+    }
+  } catch (err: any) {
+    referralCodeError.value = err?.data?.message || "Failed to apply code. Please try again.";
+  } finally {
+    applyingReferralCode.value = false;
+  }
+};
+
 // ── Rewards helpers ────────────────────────────────────────────────────────
 const copyReferralCode = async () => {
   try {
@@ -1258,14 +1410,9 @@ const handleRedeem = async () => {
   redeemError.value = null;
   redeemSuccess.value = null;
   try {
-    const result = await redeemPoints({
-      userId: currentUserId.value,
-      points: selectedRedeemOption.value.cost,
-      phoneNumber: redeemPhone.value,
-    });
+    const result = await redeemPoints({ userId: currentUserId.value, points: selectedRedeemOption.value.cost, phoneNumber: redeemPhone.value });
     if (result?.statusCode === 200) {
       redeemSuccess.value = `Done! ₦${selectedRedeemOption.value.naira} airtime is on its way to ${redeemPhone.value}.`;
-      // Optimistically subtract from local summary
       if (summary.value) summary.value.points -= selectedRedeemOption.value.cost;
       setTimeout(cancelRedeem, 3500);
     } else {
@@ -1286,13 +1433,6 @@ const formatDateShort = (dateString: string): string => {
   return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getFullYear()).slice(-2)}`;
 };
 
-const formatActivityDesc = (desc: string): string => {
-  if (!desc) return desc;
-  const match = desc.match(/Body:\s*([\d.]+),\s*Images:\s*([\d.]+)/);
-  if (match) return `Review reward — body: ${match[1]} pts, images: ${match[2]} pts`;
-  return desc;
-};
-
 const getStatusIcon = (status: string) => {
   const map: Record<string, { icon: string; color: string; message: string }> = {
     APPROVED: { icon: "pi-check-circle", color: "text-green-600", message: "Your review is live and visible to everyone" },
@@ -1301,14 +1441,6 @@ const getStatusIcon = (status: string) => {
     FLAGGED:  { icon: "pi-flag",         color: "text-orange-600",message: "Under review for potential issues" },
   };
   return map[status] ?? map["PENDING"]!;
-};
-
-const getTierColor = (tier: string): string => {
-  const colors: Record<string, string> = {
-    newbie: "bg-green-100", bronze: "bg-orange-100", silver: "bg-gray-100",
-    expert: "bg-yellow-100", platinum: "bg-blue-100", pro: "bg-teal-100",
-  };
-  return colors[tier?.toLowerCase()] || "bg-gray-100";
 };
 
 const getAchievementColor = (badgeType: string): string => {
@@ -1346,11 +1478,7 @@ onBeforeMount(async () => { await loadSummary(true); });
 
 <style scoped>
 /* ── Rewards Tab ──────────────────────────────────────────────────────────── */
-.rewards-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
+.rewards-tab { display: flex; flex-direction: column; gap: 1.25rem; }
 
 .points-hero {
   position: relative;
@@ -1362,34 +1490,24 @@ onBeforeMount(async () => { await loadSummary(true); });
   color: white;
 }
 .hero-bg-circles { position: absolute; inset: 0; pointer-events: none; }
-.circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.circle { position: absolute; border-radius: 50%; }
 .c1 { width: 200px; height: 200px; top: -60px; right: -60px; background: rgba(251,191,36,0.08); }
-.c2 { width: 140px; height: 140px; bottom: -40px; left: -30px; background: rgba(245,158,11,0.06);}
+.c2 { width: 140px; height: 140px; bottom: -40px; left: -30px; background: rgba(245,158,11,0.06); }
 .c3 { width: 80px; height: 80px; top: 40%; left: 15%; background: rgba(255,255,255,0.04); }
 .hero-content { position: relative; z-index: 1; }
 .hero-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #6ee7b7; margin: 0 0 0.5rem; }
 .hero-points { display: flex; align-items: baseline; justify-content: center; gap: 0.3rem; margin-bottom: 1rem; }
-.points-number { font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1;
+.points-number {
+  font-size: 3.5rem; font-weight: 800; line-height: 1;
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 8px rgba(251,191,36,0.4));}
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; filter: drop-shadow(0 2px 8px rgba(251,191,36,0.4));
+}
 .points-unit { font-size: 1.2rem; font-weight: 600; color: #6ee7b7; }
 .hero-meta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
 .meta-pill { display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 0.3rem 0.75rem; font-size: 0.75rem; font-weight: 600; backdrop-filter: blur(4px); }
-/* .meta-pill--gold {
-  background: linear-gradient(135deg, rgba(251,191,36,0.25), rgba(245,158,11,0.2));
-  border-color: rgba(251,191,36,0.5);
-  color: #fef3c7;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-.meta-pill--gold i {
-  color: #fbbf24;
-  filter: drop-shadow(0 0 4px rgba(251,191,36,0.6));
-} */
+.meta-pill--tier { background: linear-gradient(135deg, rgba(251,191,36,0.3), rgba(245,158,11,0.25)); border-color: rgba(251,191,36,0.6); color: #fef3c7; font-size: 0.8rem; }
+.meta-pill--gold { background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(245,158,11,0.15)); border-color: rgba(251,191,36,0.4); color: #fef9e7; }
 
 .r-section { background: white; border-radius: 1rem; padding: 1.25rem; border: 1px solid #f1f5f9; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .r-section-title { font-size: 0.88rem; font-weight: 700; color: #374151; margin: 0 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -1403,8 +1521,7 @@ onBeforeMount(async () => { await loadSummary(true); });
 .bcard-label { font-size: 0.65rem; font-weight: 600; color: #64748b; margin: 0; white-space: nowrap; }
 .bcard-value { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0; line-height: 1.2; }
 .bcard-tip-icon { position: absolute; top: 7px; right: 7px; color: #94a3b8; font-size: 0.7rem; cursor: help; }
-.all-time-badge { position: absolute; top: 7px; right: 7px; background: #f1f5f9; color: #64748b; font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 5px; border-radius: 999px; }
-.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 0; right: 0; z-index: 50; background: #c5c7cb; color: rgb(6, 2, 39); border-radius: 10px; padding: 0.65rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; }
+.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 0; right: 0; z-index: 50; background: #c5c7cb; color: rgb(6,2,39); border-radius: 10px; padding: 0.65rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; }
 .tip-title { font-size: 0.75rem; font-weight: 700; margin: 0 0 0.25rem; }
 .tip-body  { font-size: 0.7rem; line-height: 1.5; margin: 0; color: #091c34; }
 .tip-fade-enter-active, .tip-fade-leave-active { transition: opacity 0.15s, transform 0.15s; }
@@ -1427,6 +1544,20 @@ onBeforeMount(async () => { await loadSummary(true); });
 .ref-stat-val { display: block; font-size: 1.3rem; font-weight: 800; color: #4c1d95; line-height: 1; }
 .ref-stat-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #8b5cf6; }
 .ref-stat-divider { width: 1px; height: 30px; background: #ede9fe; }
+
+/* Referral code entry */
+.enter-referral-wrap { margin-top: 1rem; padding-top: 0.85rem; border-top: 1px dashed #ddd6fe; }
+.enter-ref-label { font-size: 0.75rem; font-weight: 600; color: #6d28d9; margin: 0 0 0.45rem; }
+.enter-ref-row { display: flex; gap: 0.4rem; align-items: center; }
+.enter-ref-input { flex: 1; font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; color: #5b21b6; background: white; border: 2px solid #ddd6fe; border-radius: 8px; padding: 0.4rem 0.7rem; outline: none; transition: border-color 0.15s; }
+.enter-ref-input:focus { border-color: #7c3aed; }
+.enter-ref-input:disabled { opacity: 0.6; cursor: not-allowed; }
+.apply-ref-btn { display: flex; align-items: center; gap: 0.3rem; background: #7c3aed; color: white; border: none; border-radius: 8px; padding: 0.45rem 0.85rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+.apply-ref-btn:hover:not(:disabled) { background: #6d28d9; }
+.apply-ref-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ref-apply-msg { display: flex; align-items: center; gap: 0.4rem; font-size: 0.73rem; font-weight: 600; margin-top: 0.5rem; padding: 0.4rem 0.65rem; border-radius: 7px; }
+.ref-apply-msg--error   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.ref-apply-msg--success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 
 /* Redeem */
 .redeem-locked { display: flex; align-items: flex-start; gap: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 0.875rem; padding: 1.25rem; }
@@ -1481,51 +1612,26 @@ onBeforeMount(async () => { await loadSummary(true); });
 .form-slide-enter-active, .form-slide-leave-active { transition: opacity 0.25s, transform 0.25s; }
 .form-slide-enter-from, .form-slide-leave-to { opacity: 0; transform: translateY(-8px); }
 
-/* Activity */
-.activity-list { display: flex; flex-direction: column; gap: 0.45rem; }
-.activity-row { display: flex; align-items: center; gap: 0.65rem; padding: 0.6rem 0.7rem; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9; transition: background 0.15s; }
-.activity-row:hover { background: #f0fdf4; }
-.act-icon { font-size: 1rem; flex-shrink: 0; }
-.act-body { flex: 1; min-width: 0; }
-.act-desc { font-size: 0.75rem; color: #374151; font-weight: 500; margin: 0; }
-.act-date { font-size: 0.65rem; color: #94a3b8; margin: 0; }
-.act-points { font-size: 0.78rem; font-weight: 800; color: #16a34a; background: #dcfce7; padding: 2px 7px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
-
 @media (max-width: 480px) {
   .breakdown-grid { grid-template-columns: 1fr; }
-
-
   .referral-card  { flex-direction: column; }
   .redeem-options { grid-template-columns: 1fr; }
-
-
-  .r-section { background: white; border-radius: 0rem; padding: 0rem; border: 0px solid #f1f5f9; box-shadow: 0 0px 0px rgba(0,0,0,0.06); }
-  .r-section-title { font-size: 0.75rem; font-weight: 700; color: #374151; margin: 0 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
-
-
-  .referral-card { background: linear-gradient(135deg, #faf5ff, #ede9fe); border: 1px solid #ddd6fe; border-radius: 0.875rem; padding: 1rem; display: block; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
-  .referral-left { flex: 1; min-width: 0; }
-
-  .referral-stats { display: block; align-items: center; gap: 0.65rem; background: white; border-radius: 10px; padding: 0.75rem 0.9rem; border: 1px solid #ede9fe; margin-top: 10px; }
-  .ref-stat { text-align: center; }
-  .ref-stat-val { display: block; font-size: 1.3rem; font-weight: 800; color: #4c1d95; line-height: 1; }
-  .ref-stat-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #8b5cf6; }
-  .ref-stat-divider { width: 1px; height: 30px; background: #ede9fe; }
-
-  .redeem-locked { display: block; align-items: flex-start; gap: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 0.875rem; padding: 1.25rem; }
-  .lock-icon { font-size: 1rem; flex-shrink: 0; }
-  .lock-title { font-size: 0.75rem; font-weight: 700; color: #991b1b; margin: 0 0 0.2rem; }
-  .lock-sub   { font-size: 0.7rem; color: #b91c1c; margin: 0 0 0.65rem; }
-
-  .network-selector { display: flex; gap: 0.1rem; flex-wrap: wrap; }
+  .r-section { border-radius: 0; padding: 0; border: none; box-shadow: none; }
+  .referral-card { display: block; padding: 1rem; }
+  .referral-stats { display: block; margin-top: 10px; }
+  .ref-stat-divider { display: none; }
+  .redeem-locked { display: block; }
+  .lock-icon { font-size: 1rem; }
+  .lock-title { font-size: 0.75rem; }
+  .lock-sub   { font-size: 0.7rem; }
+  .network-selector { gap: 0.1rem; }
   .net-icon { font-size: 0.75rem; }
   .net-name { font-size: 0.70rem; }
-
+  .enter-ref-row { flex-direction: column; align-items: stretch; }
+  .apply-ref-btn { justify-content: center; }
 }
 
-@media ( max-width: 768px){
-
+@media (max-width: 768px) {
   .redeem-options { grid-template-columns: 1fr 1fr; }
-
 }
 </style>

@@ -18,11 +18,11 @@ export const categoryIconMap: Record<
   { icon: any; color: string }
 > = {
   'Education and Training': { icon: GraduationCap, color: 'text-yellow-500' },
-  'Hotels, BnB and vacation': { icon: Hotel, color: 'text-sky-400' },
+  'Hotels,BnB and vacation': { icon: Hotel, color: 'text-sky-400' },
   'Health and Wellness': { icon: HeartPlus, color: 'text-red-600' },
   'Food and Resturants': { icon: Utensils, color: 'text-orange-500' },
   'Finance': { icon: Wallet, color: 'text-emerald-600' },
-  'Fashion and Baauty': { icon: Sparkles, color: 'text-pink-400' },
+  'Fashion and Beauty': { icon: Sparkles, color: 'text-pink-400' },
   'Tourism': { icon: Palmtree, color: 'text-teal-500' },
   'Shopping': { icon: ShoppingCart, color: 'text-purple-500' },
   'Retail': { icon: Store, color: 'text-indigo-500' }

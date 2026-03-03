@@ -71,10 +71,32 @@ export default function () {
     }
   };
 
+  /**
+ * Apply a referral code for the current user
+ */
+const applyReferralCode = async (userId: string, referralCode: string) => {
+  try {
+    const res = await userProfileApi.post(
+      `api/user/end-user/${userId}/apply-referral`,
+      { referralCode }
+    );
+
+    if (res.status === 200) {
+      return { statusCode: 200, data: res.data };
+    }
+
+    throw new Error("Error applying referral code");
+  } catch (error: any) {
+    console.error("Error applying referral code:", error);
+    throw error;
+  }
+};
+
   return {
     getUserProfile,
     updateUserProfile,
     redeemPoints,
+    applyReferralCode,
     getUserId,
   };
 }
