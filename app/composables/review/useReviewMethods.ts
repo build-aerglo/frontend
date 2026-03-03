@@ -138,6 +138,20 @@ export default function () {
     }
   };
 
+  const getReviewReply = async (reviewId: string) => {
+  try {
+    const res = await reviewApi.get(`api/business-reply/review/${reviewId}`);
+    return { statusCode: res.status, data: res.data };
+  } catch (error: any) {
+    // 404 means no reply exists — treat as empty, not an error
+    if (error?.response?.status === 404) {
+      return { statusCode: 404, data: null };
+    }
+    console.error("Error fetching review reply:", error);
+    return { statusCode: 500, data: null };
+  }
+};
+
   const getReviewManagement = async (
     id: string,
     data: {
@@ -213,6 +227,7 @@ export default function () {
     postResponse,
     updateResponse,
     deleteResponse,
+    getReviewReply,
     getReviewManagement,
     sendDispute,
   };
