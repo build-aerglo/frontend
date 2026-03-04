@@ -355,10 +355,7 @@
                     <div class="mt-4 pt-4 border-t border-gray-100">
 
                       <!-- Existing reply -->
-                      <div v-if="businessReplies[review.id]" class="flex gap-3 bg-emerald-50 border border-emerald-100 rounded-lg p-3">
-                        <div class="w-7 h-7 rounded-full bg-[#008253] flex items-center justify-center flex-shrink-0">
-                          <i class="pi pi-shop text-white text-xs"></i>
-                        </div>
+                      <div v-if="businessReplies[review.id]" class=" bg-emerald-50 border border-emerald-100 rounded-lg p-3">
                         <div class="flex-1 min-w-0">
                           <div class="flex items-center gap-2 mb-1">
                             <span class="text-xs font-semibold text-emerald-800">Business Response</span>
