@@ -29,7 +29,7 @@
           <h3 class="font-semibold text-white dark:text-white mb-4">Support</h3>
           <ul class="space-y-2">
             <li><NuxtLink to="/" class="hover:text-[#008253] transition">FAQs</NuxtLink></li>
-            <li><NuxtLink to="/" class="hover:text-[#008253] transition">Help Center</NuxtLink></li>
+            <li><NuxtLink to="/help-center" class="hover:text-[#008253] transition">Help Center</NuxtLink></li>
             <li><NuxtLink to="/" class="hover:text-[#008253] transition">Terms of Service</NuxtLink></li>
             <li><NuxtLink to="/" class="hover:text-[#008253] transition">Privacy Policy</NuxtLink></li>
           </ul>
