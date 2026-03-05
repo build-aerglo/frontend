@@ -322,7 +322,7 @@
                         </div>
                         <div class="flex flex-col gap-2">
                           <h2 :class="['text-base font-semibold truncate whitespace-normal m-0 p-0', review.isGrayedOut ? 'text-gray-500' : 'text-gray-800']">{{ review.businessName }}</h2>
-                          <p :class="['text-xs truncate', review.isGrayedOut ? 'text-gray-400' : 'text-gray-500']">{{ review.businessAddress }}</p>
+                          <p :class="['text-xs truncate whitespace-normal', review.isGrayedOut ? 'text-gray-400' : 'text-gray-500']">{{ review.businessAddress }}</p>
                         </div>
                       </div>
                       <div class="flex md:flex-col items-end gap-2 flex-shrink-0">
@@ -352,13 +352,10 @@
                     </div>
 
                     <!-- ── Business Reply Section ── -->
-                    <div class="mt-4 pt-4 border-t border-gray-100">
+                    <div v-if="businessReplies[review.id]" class="mt-4 pt-4 border-t border-gray-100">
 
                       <!-- Existing reply -->
-                      <div v-if="businessReplies[review.id]" class="flex gap-3 bg-emerald-50 border border-emerald-100 rounded-lg p-3">
-                        <div class="w-7 h-7 rounded-full bg-[#008253] flex items-center justify-center flex-shrink-0">
-                          <i class="pi pi-shop text-white text-xs"></i>
-                        </div>
+                      <div v-if="businessReplies[review.id]" class=" bg-emerald-50 border border-emerald-100 rounded-lg p-3">
                         <div class="flex-1 min-w-0">
                           <div class="flex items-center gap-2 mb-1">
                             <span class="text-xs font-semibold text-emerald-800">Business Response</span>
@@ -372,11 +369,6 @@
                       <div v-else-if="loadingReplies[review.id]" class="flex items-center gap-2 text-xs text-gray-400 py-1">
                         <i class="pi pi-spin pi-spinner text-xs"></i>
                         <span>Loading response...</span>
-                      </div>
-
-                      <!-- No reply placeholder — visible to everyone when no reply exists and not loading -->
-                      <div v-else class="text-xs text-gray-400 italic py-1">
-                        No business response yet
                       </div>
 
                     </div>
@@ -559,7 +551,7 @@
                             </button>
                           </div>
                           <p v-if="referralCodeError" class="ref-apply-msg ref-apply-msg--error">
-                            <i class="pi pi-exclamation-triangle"></i> Referral code does not exist
+                            <i class="pi pi-exclamation-triangle"></i> {{referralCodeError}}
                           </p>
                         </div>
                         <div v-else class="ref-apply-msg ref-apply-msg--success">
@@ -893,6 +885,7 @@ import useReviewMethods from "~/composables/review/useReviewMethods";
 import { nigerianLocations } from "~/utils/nigerianLocations";
 import type { Ad, EditFormData, UserSummary } from "~/types/user";
 import type { PageState } from "primevue";
+import useUserProfileApi from "~/composables/user/useUserProfileApi";
 
 // ── Setup ──────────────────────────────────────────────────────────────────
 const { getUserSummary } = useUserSummary();
@@ -1361,20 +1354,21 @@ const handleApplyReferralCode = async () => {
   applyingReferralCode.value = true;
   referralCodeError.value = null;
   try {
-    const res = await $fetch<{ success: boolean; message: string }>(
-      `/api/user/end-user/${currentUserId.value}/apply-referral`,
+    const api = useUserProfileApi();
+    const res = await api.post<{ success: boolean; message: string; referrerId: string }>(
+      `api/referral/use`,
       {
-        method: "POST",
-        body: { referralCode: incomingReferralCode.value.trim() },
+        userId: currentUserId.value,
+        code: incomingReferralCode.value.trim(),
       }
     );
-    if (res.success) {
+    if (res.data.success) {
       referralCodeApplied.value = true;
     } else {
-      referralCodeError.value = res.message || "Invalid or already used code.";
+      referralCodeError.value = res.data.message || "Invalid or already used code.";
     }
   } catch (err: any) {
-    referralCodeError.value = err?.data?.message || "Failed to apply code. Please try again.";
+    referralCodeError.value = err?.response?.data?.message || "Failed to apply code. Please try again.";
   } finally {
     applyingReferralCode.value = false;
   }
@@ -1617,8 +1611,13 @@ onBeforeMount(async () => { await loadSummary(true); });
   .referral-card  { flex-direction: column; }
   .redeem-options { grid-template-columns: 1fr; }
   .r-section { border-radius: 0; padding: 0; border: none; box-shadow: none; }
+  .referral-code-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: nowrap; margin-bottom: 10px; }
+  .copy-btn { display: flex; align-items: center; gap: 0.35rem; background: #7c3aed; color: white; border: none; border-radius: 8px; padding: 0.55rem 0.5rem; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
   .referral-card { display: block; padding: 1rem; }
-  .referral-stats { display: block; margin-top: 10px; }
+  .referral-stats { display: flex; align-items: center; gap: 0.65rem; background: white; border-radius: 10px; padding: 0.75rem 0.9rem; border: 1px solid #ede9fe; width: full; justify-content: center; }
+  .ref-stat { text-align: center; width: full; justify-content: center; align-items: center; }
+  .ref-stat-val { display: block; font-size: .9rem; font-weight: 800; color: #4c1d95; line-height: 1; }
+  .ref-stat-label { font-size: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #8b5cf6; }
   .ref-stat-divider { display: none; }
   .redeem-locked { display: block; }
   .lock-icon { font-size: 1rem; }
@@ -1629,6 +1628,7 @@ onBeforeMount(async () => { await loadSummary(true); });
   .net-name { font-size: 0.70rem; }
   .enter-ref-row { flex-direction: column; align-items: stretch; }
   .apply-ref-btn { justify-content: center; }
+  
 }
 
 @media (max-width: 768px) {
