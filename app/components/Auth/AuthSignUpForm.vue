@@ -130,13 +130,15 @@
         </div>
       </div> -->
 
-      <button
-        type="submit"
-        :disabled="isLoading"
-        class="w-full btn btn-primary"
-      >
-        {{ isLoading ? "Creating Account..." : "Sign Up" }}
-      </button>
+     <ButtonCustom
+      type="submit"
+      :label="isLoading ? 'Signing In...' : 'Sign In'"
+      :loading="isLoading"
+      :disabled="isLoading"
+      primary="true"
+      size="lg"
+      input-class="w-full mt-4"
+    />
     </form>
 
     <div class="text-center space-y-4">
@@ -294,9 +296,6 @@ const handleEndUserRegistration = async () => {
 };
 </script>
 <style scoped>
-button:hover:not(:disabled) {
-  background-color: rgb(249 250 251) !important; /* gray-50 */
-  border-color: rgb(209 213 219) !important; /* gray-300 */
-}
+
 </style>
 

@@ -26,7 +26,6 @@
 </template>
 
 <script setup lang="ts">
-
 import useBusinessMethods from '~/composables/business/useBusinessMethods'
 import {
   GraduationCap,

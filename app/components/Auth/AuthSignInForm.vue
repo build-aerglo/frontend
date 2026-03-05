@@ -61,13 +61,15 @@
         </NuxtLink>
       </div>
 
-      <button 
-        type="submit" 
-        :disabled="isLoading" 
-        class="btn btn-primary w-full"
-      >
-        {{ isLoading ? 'Signing In...' : 'Sign In' }}
-      </button>
+      <ButtonCustom
+        type="submit"
+        :label="isLoading ? 'Signing In...' : 'Sign In'"
+        :loading="isLoading"
+        :disabled="isLoading"
+        primary="true"
+        size="lg"
+        input-class="w-full mt-4"
+      />
     </form>
 
     <p class="text-center text-[13px] pb-2">
@@ -185,10 +187,7 @@ onMounted(() => {
 });
 </script>
 <style scoped>
-button:hover:not(:disabled) {
-  background-color: rgb(249 250 251) !important; /* gray-50 */
-  border-color: rgb(209 213 219) !important; /* gray-300 */
-}
+
 </style>
 
 

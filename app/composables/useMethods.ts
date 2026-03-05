@@ -46,9 +46,9 @@ export default function () {
       }
     }
     // Handle custom API errors (login, etc)
-    else if (data.message) {
-      message = data.message;
-      code = data.error || "api_error";
+    else if (data.message || data.error) {
+        message = data.message || data.error; // Use whichever one exists
+        code = data.code || "api_error";
     }
     // Fallback
     else if (err?.message && !err.message.includes("status code")) {
