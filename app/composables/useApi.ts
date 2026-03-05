@@ -111,13 +111,7 @@ export default function () {
         userStore.clearUser();
         supportStore.clearUser();
 
-        const toast = useToast();
-        toast.add({
-          severity: 'error',
-          summary: 'Session Expired',
-          detail: 'Your session has expired. Please log in again.',
-          life: 4000
-        });
+        console.log('session expired')
 
         // Redirect to appropriate login page
         // You can enhance this to detect which login page based on current route
