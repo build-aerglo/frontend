@@ -111,7 +111,7 @@ export default function () {
         userStore.clearUser();
         supportStore.clearUser();
 
-        console.log('session expired')
+        console.error('session expired', error)
 
         // Redirect to appropriate login page
         // You can enhance this to detect which login page based on current route
