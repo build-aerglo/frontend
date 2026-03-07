@@ -18,12 +18,20 @@
   src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
 }
 
-@font-face {
+/* @font-face {
   font-family: "Poppins";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
   src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
+} */
+@font-face {
+  font-family: "QUICKSAND";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("~/assets/font/Quicksand/static/Quicksand-Regular.ttf")
+    format("truetype");
 }
 
 @font-face {
@@ -35,7 +43,7 @@
 }
 
 * {
-  font-family: "Poppins", Inter, system-ui, sans-serif;
+  font-family: "QUICKSAND", Inter, system-ui, sans-serif;
   font-size: 15px;
 }
 
@@ -54,15 +62,25 @@ html {
 .menu-icon {
   @apply flex items-center justify-center text-[18px] leading-none;
 }
-section.mg {
-  padding-left: 50px;
-  padding-right: 50px;
+div.section {
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+div.section-mg {
+  margin-left: 70px;
+  margin-right: 70px;
 }
 
 @media (max-width: 769px) {
-  section.mg {
+  div.section {
     padding-left: 30px;
     padding-right: 30px;
+  }
+
+  div.section-mg {
+    margin-left: 30px;
+    margin-right: 30px;
   }
 
   * {

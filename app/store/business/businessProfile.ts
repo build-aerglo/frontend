@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
-import type { BusinessProfileResponse } from "~/types/business";
+import type { BusinessProfileResponse, Tags } from "~/types/business";
 
 export interface ProfileState {
-  profileData: BusinessProfileResponse;
+  profileData: BusinessProfileResponse | null;
 }
 
 export const useBusinessProfileStore = defineStore("businessProfile", {
-  state: (): ProfileState => ({
-    profileData: {} as BusinessProfileResponse,
+  state: () => ({
+    profileData: null as BusinessProfileResponse | null,
   }),
 
   actions: {
@@ -16,15 +16,34 @@ export const useBusinessProfileStore = defineStore("businessProfile", {
     },
 
     setProfileData(profile: BusinessProfileResponse) {
-      this.profileData = profile;
+      this.$patch((state) => {
+        state.profileData = {
+          ...profile,
+          tags: [...(profile.tags || [])],
+          highlights: [...(profile.highlights || [])],
+          media: [...(profile.media || [])],
+          faqs: [...(profile.faqs || [])],
+        };
+      });
+      console.log("saved tags: ", this.profileData?.tags);
     },
 
     updateProfile(partial: Partial<BusinessProfileResponse>) {
-      this.profileData = { ...this.profileData, ...partial };
+      this.$patch((state) => {
+        if (!state.profileData) return;
+        Object.assign(state.profileData, partial);
+      });
+    },
+
+    updateProfileTags(data: Tags[]) {
+      this.$patch((state) => {
+        if (!state.profileData) return;
+        state.profileData.tags = data;
+      });
     },
 
     clearProfile() {
-      this.profileData = {} as BusinessProfileResponse;
+      this.profileData = null;
     },
   },
 

@@ -114,6 +114,7 @@
             v-for="(i, idx) in review"
             :key="idx"
             :data="i"
+            :is-business="isBusiness"
           />
         </div>
 

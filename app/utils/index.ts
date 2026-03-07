@@ -329,12 +329,84 @@ function isoToRange(
   return `${openStr.slice(11, 16)} - ${closeStr.slice(11, 16)}`;
 }
 
+// export function rawToNormalized(raw: RawHours): NormalizedHours {
+//   const out = {} as NormalizedHours;
+//   const weekdayRanges: string[] = [];
+
+//   for (const day of DAYS) {
+//     const parsed = parseRange(raw[day]);
+
+//     if (!parsed) {
+//       out[day] = { open: null, close: null, closed: true };
+//     } else {
+//       out[day] = {
+//         open: toISO(parsed.open),
+//         close: toISO(parsed.close),
+//         closed: false,
+//       };
+
+//       if (WEEKDAYS.includes(day)) {
+//         weekdayRanges.push(raw[day]);
+//       }
+//     }
+//   }
+
+//   const same =
+//     weekdayRanges.length === 5 &&
+//     weekdayRanges.every((r) => r === weekdayRanges[0]);
+
+//   if (same) {
+//     // @ts-ignore
+//     const parsed = parseRange(weekdayRanges[0]);
+//     if (!parsed) throw new Error("Invalid weekday range");
+
+//     out.same_time = {
+//       open: toISO(parsed.open),
+//       close: toISO(parsed.close),
+//       closed: false,
+//     };
+
+//     for (const d of WEEKDAYS) {
+//       out[d] = { open: null, close: null, closed: true };
+//     }
+//   } else {
+//     out.same_time = { open: null, close: null, closed: true };
+//   }
+
+//   out.same = same;
+//   return out;
+// }
+
 export function rawToNormalized(raw: RawHours): NormalizedHours {
   const out = {} as NormalizedHours;
   const weekdayRanges: string[] = [];
 
+  // Validate that raw is an object
+  if (!raw || typeof raw !== "object") {
+    console.error(
+      "rawToNormalized: Invalid input, expected object but got:",
+      raw,
+    );
+    // Return default hours for all days
+    for (const day of DAYS) {
+      out[day] = { open: null, close: null, closed: true };
+    }
+    out.same_time = { open: null, close: null, closed: true };
+    out.same = false;
+    return out;
+  }
+
   for (const day of DAYS) {
-    const parsed = parseRange(raw[day]);
+    // Check if raw[day] exists and is a string
+    const dayValue = raw[day];
+
+    if (typeof dayValue !== "string") {
+      console.warn(`rawToNormalized: ${day} is not a string:`, dayValue);
+      out[day] = { open: null, close: null, closed: true };
+      continue;
+    }
+
+    const parsed = parseRange(dayValue);
 
     if (!parsed) {
       out[day] = { open: null, close: null, closed: true };
@@ -346,34 +418,47 @@ export function rawToNormalized(raw: RawHours): NormalizedHours {
       };
 
       if (WEEKDAYS.includes(day)) {
-        weekdayRanges.push(raw[day]);
+        weekdayRanges.push(dayValue);
       }
     }
   }
 
+  // Only proceed if we have all 5 weekdays with valid ranges
   const same =
     weekdayRanges.length === 5 &&
     weekdayRanges.every((r) => r === weekdayRanges[0]);
 
   if (same) {
-    // @ts-ignore
-    const parsed = parseRange(weekdayRanges[0]);
-    if (!parsed) throw new Error("Invalid weekday range");
+    // Use type guard to ensure weekdayRanges[0] exists
+    const firstRange = weekdayRanges[0];
+    if (firstRange) {
+      const parsed = parseRange(firstRange);
+      if (!parsed) {
+        console.error(
+          "rawToNormalized: Invalid weekday range despite validation",
+        );
+        out.same_time = { open: null, close: null, closed: true };
+      } else {
+        out.same_time = {
+          open: toISO(parsed.open),
+          close: toISO(parsed.close),
+          closed: false,
+        };
 
-    out.same_time = {
-      open: toISO(parsed.open),
-      close: toISO(parsed.close),
-      closed: false,
-    };
-
-    for (const d of WEEKDAYS) {
-      out[d] = { open: null, close: null, closed: true };
+        for (const d of WEEKDAYS) {
+          out[d] = { open: null, close: null, closed: true };
+        }
+      }
+    } else {
+      out.same_time = { open: null, close: null, closed: true };
     }
   } else {
     out.same_time = { open: null, close: null, closed: true };
   }
 
   out.same = same;
+  console.log("out", out);
+
   return out;
 }
 
@@ -643,10 +728,14 @@ export function getDayWithSuffix(day: number) {
   }
 }
 
-export function dateFormat(dateString: string) {
+export function dateFormat(dateString: string, shortMonth: boolean = false) {
   const date = new Date(dateString);
   const day = getDayWithSuffix(date.getDate());
-  const month = date.toLocaleString("en-US", { month: "long" });
+
+  const month = date.toLocaleString("en-US", {
+    month: shortMonth ? "short" : "long",
+  });
+
   const year = date.getFullYear();
 
   return `${day} ${month}, ${year}`;
@@ -673,4 +762,27 @@ export function timeAgo(dateInput: Date | string | number): string {
   }
 
   return "just now";
+}
+
+export function sanitizeAndTruncate(
+  input: string,
+  maxLength: number = 200,
+): string {
+  if (!input) return "";
+
+  // Remove HTML tags
+  let cleanText = input.replace(/<[^>]*>/g, "");
+
+  // Remove HTML entities
+  cleanText = cleanText.replace(/&[^;\s]+;/g, "");
+
+  // Trim whitespace
+  cleanText = cleanText.trim();
+
+  // Truncate if longer than maxLength
+  if (cleanText.length > maxLength) {
+    return cleanText.slice(0, maxLength).trimEnd() + "...";
+  }
+
+  return cleanText;
 }

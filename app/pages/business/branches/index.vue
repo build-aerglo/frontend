@@ -33,8 +33,8 @@
 
         <div>
           <label>Branch State</label>
-          <select 
-            v-model="branch.branchState" 
+          <select
+            v-model="branch.branchState"
             required
             class="w-full border rounded-md px-3 py-2 text-sm outline-none h-[42px] border-gray-300 focus:border-[#008253]"
           >
@@ -45,14 +45,16 @@
 
         <div>
           <label>Branch City / Town</label>
-          <select 
-            v-model="branch.branchCityTown" 
+          <select
+            v-model="branch.branchCityTown"
             :disabled="!branch.branchState"
             required
             class="w-full border rounded-md px-3 py-2 text-sm outline-none h-[42px] border-gray-300 focus:border-[#008253] disabled:bg-gray-100 disabled:cursor-not-allowed"
           >
             <option value="">Select City *</option>
-            <option v-for="c in availableCities" :key="c" :value="c">{{ c }}</option>
+            <option v-for="c in availableCities" :key="c" :value="c">
+              {{ c }}
+            </option>
           </select>
         </div>
       </div>
@@ -241,7 +243,7 @@ const paginatedBranches = computed(() => {
 });
 
 const branch = ref({
-  businessId: businessId.id,
+  businessId: businessId?.id,
   id: "null",
   branchName: "",
   branchStreet: "",
@@ -251,19 +253,24 @@ const branch = ref({
 
 // Cities filtered by the state selected in the form
 const availableCities = computed(() => {
-  return branch.value.branchState ? getCitiesByState(branch.value.branchState) : [];
+  return branch.value.branchState
+    ? getCitiesByState(branch.value.branchState)
+    : [];
 });
 
 // Reset city when state changes
-watch(() => branch.value.branchState, (newState, oldState) => {
-  if (oldState && newState !== oldState) {
-    branch.value.branchCityTown = "";
-  }
-});
+watch(
+  () => branch.value.branchState,
+  (newState, oldState) => {
+    if (oldState && newState !== oldState) {
+      branch.value.branchCityTown = "";
+    }
+  },
+);
 
 const resetBranch = () => {
   branch.value = {
-    businessId: businessId.id,
+    businessId: businessId?.id,
     id: "null",
     branchName: "",
     branchStreet: "",
@@ -297,9 +304,9 @@ const validate = (data: any, field: string) => {
 };
 
 const loadBranches = async () => {
-  if (!businessId.id) return;
+  if (!businessId?.id) return;
   try {
-    const res = await getBusinessBranches(businessId.id);
+    const res = await getBusinessBranches(businessId?.id);
     if (res && res.statusCode === 200) {
       businessBranches.value = res.data;
     }

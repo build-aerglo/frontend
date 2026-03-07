@@ -59,7 +59,11 @@
     header="Review:"
     :style="{ width: '35rem' }"
   >
-    <ReviewForDashboard :show-reply="true" :data="selectedReview!" />
+    <ReviewForDashboard
+      :is-business="true"
+      :show-reply="true"
+      :data="selectedReview!"
+    />
   </Dialog>
 
   <Dialog
@@ -69,7 +73,11 @@
     header="Respond to review:"
     :style="{ width: '35rem' }"
   >
-    <ReviewForDashboard :show-reply="false" :data="selectedReview!" />
+    <ReviewForDashboard
+      :is-business="true"
+      :show-reply="false"
+      :data="selectedReview!"
+    />
     <Editor
       v-model="editReplyText"
       editorStyle="height: 150px"
@@ -80,9 +88,9 @@
       </template>
     </Editor>
     <template #footer>
-      <div class="flex w-full justify-between" v-if="selectedReview">
+      <div class="flex gap-2.5 w-full justify-between" v-if="selectedReview">
         <div class="">
-          <ButtonCustom
+          <!-- <ButtonCustom
             v-if="isEdit"
             :no-zoom="true"
             input-class="!bg-[red]"
@@ -91,7 +99,7 @@
             size="lg"
             @click="deleteResponseAsync(selectedReview)"
             :is-loading="isDeletingResponse"
-          />
+          /> -->
         </div>
         <div class="flex gap-2.5">
           <ButtonCustom
@@ -126,7 +134,11 @@
     header="Report review:"
     :style="{ width: '45rem' }"
   >
-    <ReviewForDashboard :show-reply="false" :data="selectedReview!" />
+    <ReviewForDashboard
+      :is-business="true"
+      :show-reply="false"
+      :data="selectedReview!"
+    />
     <div class="mt-[20px] flex flex-col gap-2.5">
       <div>
         <label>Offense Category:</label>
@@ -145,6 +157,10 @@
       <div>
         <label>Reason for flagging:</label>
         <Textarea v-model="selectedReason" :rows="4" fluid />
+        <div class="flex justify-between">
+          <div></div>
+          <div class="text-[90%]">{{ selectedReason.length }} / 2000</div>
+        </div>
       </div>
       <div>
         <ImageUploader
@@ -216,11 +232,16 @@
         >
           <div class="flex justify-between items-center mb-4">
             <span class="text-[120%] font-semibold">{{ i.name }}</span>
-            <i
-              :class="`pi-${i.icon}`"
-              class="pi !text-[120%]"
-              :style="{ color: i.color }"
-            ></i>
+            <div
+              :style="{ backgroundColor: i.bg }"
+              class="w-12 h-12 rounded-full flex items-center justify-center"
+            >
+              <i
+                :class="`pi-${i.icon}`"
+                class="pi !text-[120%]"
+                :style="{ color: i.color }"
+              ></i>
+            </div>
           </div>
           <div class="text-4xl font-bold text-center my-[10px]">
             {{ i.count }}
@@ -275,7 +296,7 @@
                 <template #body="slotProps">
                   <Skeleton v-if="isLoadingTable" fluid />
                   <span v-else>
-                    {{ slotProps.data.reviewBody }}
+                    {{ sanitizeAndTruncate(slotProps.data.reviewBody, 50) }}
                   </span>
                 </template>
               </Column>
@@ -289,7 +310,7 @@
                 <template #body="slotProps">
                   <Skeleton v-if="isLoadingTable" fluid />
                   <span v-else>
-                    {{ dateFormat(slotProps.data.uploadedDate) }}
+                    {{ dateFormat(slotProps.data.uploadedDate, true) }}
                   </span>
                 </template>
               </Column>
@@ -304,19 +325,25 @@
               <Column header="..." class="w-[10%]">
                 <template #body="slotProps">
                   <Skeleton v-if="isLoadingTable" fluid />
-                  <div class="flex gap-2.5 items-center" v-else>
-                    <i
-                      class="pi pi-eye action-btn"
+                  <div class="flex gap-[10px] items-center" v-else>
+                    <div
                       @click="selectReview('view', slotProps.data)"
-                    ></i>
-                    <i
-                      class="pi pi-send action-btn"
+                      class="w-10 h-10 flex justify-center items-center cursor-pointer hover:bg-[#ecfdf5] rounded-full"
+                    >
+                      <i class="pi pi-eye ..action-btn text-[green]"></i>
+                    </div>
+                    <div
                       @click="selectReview('edit', slotProps.data)"
-                    ></i>
-                    <i
-                      class="pi pi-flag action-btn"
+                      class="w-10 h-10 flex justify-center items-center cursor-pointer hover:bg-[#eff6ff] rounded-full"
+                    >
+                      <i class="pi pi-send ..action-btn text-[blue]"></i>
+                    </div>
+                    <div
                       @click="showDispute(slotProps.data)"
-                    ></i>
+                      class="w-10 h-10 flex justify-center items-center cursor-pointer hover:bg-[#fef2f2] rounded-full"
+                    >
+                      <i class="pi pi-flag ..action-btn text-[red]"></i>
+                    </div>
                   </div>
                 </template>
               </Column>
@@ -325,7 +352,7 @@
               class="mt-[20px]"
               :rows="limit"
               :totalRecords="total"
-              :rowsPerPageOptions="[2, 10, 20, 30]"
+              :rowsPerPageOptions="[10, 20, 30]"
               @page="onPageChange"
               :first="first"
             />
@@ -385,7 +412,7 @@ interface SelectResponse {
 }
 
 // pagination setup - do not touch
-const limit = ref(2);
+const limit = ref(10);
 const total = ref(0);
 const currentPage = ref(1);
 const first = ref(0);
@@ -418,35 +445,42 @@ const stats = ref({
   totalReviews: {
     name: "Total Reviews",
     count: 0,
-    color: "gold",
+    color: "green",
+    bg: "#ECFDF5",
     icon: "star-fill",
     description: "Number of reviews between selected timeframe.",
   },
-  awaitingReplies: {
-    name: "Awaiting Replies",
+  flaggedUsers: {
+    name: "Flagged Reviews (users)",
     count: 0,
     color: "blue",
+    bg: "#EFF6FF",
     icon: "comment",
     description: "New reviews requiring attention.",
   },
-  totalLiked: {
-    name: "Total Liked",
+  flaggedBusiness: {
+    name: "Flagged Reviews (business)",
     count: 0,
-    color: "green",
+    color: "gold",
+    bg: "#FFF8E1",
     icon: "thumbs-up",
     description: "Total replies appreciated by users.",
   },
   totalFlagged: {
-    name: "Total Flagged",
+    name: "Total Flagged Reviews",
     count: 0,
     color: "red",
+    bg: "#FEF2F2",
     icon: "flag",
     description: "Reviews under moderation for policy violation.",
   },
 });
 const statList = computed(() => Object.values(stats.value));
 
-const selectedTimeSpan = ref({ name: "All Time", code: "all_time" });
+const selectedTimeSpan = ref<any | undefined>({
+  name: "All Time",
+  code: "all_time",
+});
 const timeSpan = ref([
   { name: "Last 7 days", code: "7_days" },
   { name: "Last 14 days", code: "14_days" },
@@ -466,9 +500,7 @@ const ratings = [
 
 const statuses = [
   { name: "Status: Approved", code: "approved" },
-  // { name: "Pending", code: "pending" },
   { name: "Status: Flagged", code: "flagged" },
-  // { name: "Rejected", code: "rejected" },
   { name: "All Status", code: null },
 ];
 
@@ -529,7 +561,7 @@ const deleteResponseAsync = async (data: ReviewDashboard) => {
     isDeletingResponse.value = true;
     const res = await deleteResponse({
       reviewId: data.id,
-      responderId: business.userId,
+      responderId: business?.userId!,
     });
 
     if (res?.statusCode === 200) {
@@ -565,12 +597,12 @@ const postResponseAsync = async (data: ReviewDashboard) => {
     isUpdatingResponse.value = true;
     const res = await postResponse({
       reviewId: data.id,
-      responderId: business.userId,
+      responderId: business?.userId!,
       replyBody: data.replyBody,
-      businessId: business.id,
+      businessId: business?.id!,
     });
 
-    if (res?.statusCode === 200) {
+    if (res?.statusCode === 201) {
       toast.add({
         severity: "success",
         summary: "SUCCESS",
@@ -602,8 +634,8 @@ const updateResponseAsync = async (data: ReviewDashboard) => {
   try {
     isUpdatingResponse.value = true;
     const res = await updateResponse({
-      reviewId: data.id,
-      responderId: business.userId,
+      reviewId: data.replyId!,
+      responderId: business?.userId!,
       replyBody: data.replyBody,
     });
 
@@ -698,7 +730,7 @@ const loadReviews = async (reloadPage: boolean) => {
   try {
     reloadPage ? (isLoadingPage.value = true) : (isLoadingTable.value = true);
     const res = await getReviewManagement(
-      business.id,
+      business?.id!,
       {
         branch: _branch,
         startDate: _startDate,
@@ -721,7 +753,9 @@ const loadReviews = async (reloadPage: boolean) => {
 
       // set statistics
       stats.value.totalReviews.count = res.data.statistics.totalReviewCount;
-      stats.value.totalFlagged.count = res.data.statistics.flaggedCount;
+      stats.value.totalFlagged.count = res.data.statistics.totalFlaggedCount;
+      stats.value.flaggedUsers.count = res.data.statistics.flaggedByUser;
+      stats.value.flaggedBusiness.count = res.data.statistics.flaggedByBusiness;
     }
   } catch (error) {
     console.log(error);
@@ -747,14 +781,41 @@ const showDispute = (data: ReviewDashboard) => {
 const isSendingDispute = ref(false);
 
 const selectedCategory = ref();
-const selectedReason = ref();
+const selectedReason = ref("");
 const uploadedImages = ref([]);
 const openDisputeAsync = async (data: ReviewDashboard) => {
+  if (selectedReason.value.length < 50) {
+    return toast.add({
+      severity: "info",
+      summary: "INFO",
+      detail: "Dispute description must be more than 50 characters.",
+      life: 3000,
+    });
+  }
+
+  if (selectedReason.value.length >= 2000) {
+    return toast.add({
+      severity: "info",
+      summary: "INFO",
+      detail: "Dispute description must not be more than 2000 characters.",
+      life: 3000,
+    });
+  }
+
+  if (!selectedCategory.value) {
+    return toast.add({
+      severity: "info",
+      summary: "INFO",
+      detail: "Please select a dispute category.",
+      life: 3000,
+    });
+  }
+
   const payload = {
     reviewId: data.id,
-    businessId: business.id,
+    businessId: business?.id!,
     categoryCode: selectedCategory.value,
-    filedByUserId: business.userId,
+    filedByUserId: business?.userId!,
     explanation: selectedReason.value,
     evidenceUrls: uploadedImages.value,
     businessPlan: businessSubscription.value?.id,
@@ -763,7 +824,9 @@ const openDisputeAsync = async (data: ReviewDashboard) => {
   try {
     isSendingDispute.value = true;
     const res = await sendDispute(payload);
-    if (res?.statusCode === 200) {
+    if (res?.statusCode === 201) {
+      await loadReviews(true);
+
       return toast.add({
         severity: "success",
         summary: "SUCCESS",
@@ -777,6 +840,14 @@ const openDisputeAsync = async (data: ReviewDashboard) => {
     isSendingDispute.value = false;
   }
 };
+
+// const flagReview = (id: string) => {
+//   const review = reviews.value.find((r) => r.id === id);
+
+//   if (review) {
+//     review.status = "AWAITING_MODERATION";
+//   }
+// };
 
 const isMobile = ref(false);
 
@@ -897,18 +968,24 @@ watch(editReview, (newValue) => {
     resetResponse();
   }
 });
+
+// default custom timespan to null after close
+watch(showDateSelector, (newValue) => {
+  if (newValue === false) {
+    selectedTimeSpan.value = undefined;
+  }
+});
 </script>
 
 <style scoped>
 .action-btn {
   cursor: pointer;
   padding: 5px;
-  border-radius: 100%;
-  border: 1px solid gray;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 label {
   font-weight: 400;
   color: gray;
