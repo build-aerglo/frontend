@@ -470,7 +470,7 @@ const saveBusinessAddress = async () => {
   await saveBusinessAsync();
 };
 
-export const getTagNames = (tags: Tags[] | null | undefined): string[] => {
+const getTagNames = (tags: Tags[] | null | undefined): string[] => {
   if (!tags || tags.length === 0) return [];
   return tags.map((tag) => tag.name);
 };
