@@ -10,14 +10,6 @@
   --primary: theme("colors.primary") !important;
 }
 
-@font-face {
-  font-family: "Satoshi";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("~/assets/font/Poppins/Poppins-Regular.ttf") format("truetype");
-}
-
 /* @font-face {
   font-family: "Poppins";
   font-style: normal;
@@ -31,6 +23,15 @@
   font-weight: 500;
   font-display: swap;
   src: url("~/assets/font/Quicksand/static/Quicksand-Regular.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "QUICKSAND-BOLD";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("~/assets/font/Quicksand/static/Quicksand-Bold.ttf")
     format("truetype");
 }
 
@@ -49,7 +50,7 @@
 
 .font-bold,
 .font-bolder {
-  font-family: "Popping-Bold" !important;
+  font-family: "QUICKSAND-BOLD" !important;
 }
 
 html {
