@@ -86,7 +86,7 @@ const loadBusinessData = async () => {
     // }
 
     if (res?.statusCode === 200) {
-      if (businessUser.id && businessUser.id === id) {
+      if (businessUser?.id && businessUser?.id === id) {
         // is business
         isBusiness.value = true;
         toEdit.value = true;
