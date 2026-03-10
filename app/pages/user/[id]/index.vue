@@ -327,7 +327,7 @@
                       </div>
                       <div class="flex md:flex-col items-end gap-2 flex-shrink-0">
                         <div class="flex items-center">
-                          <Stars v-for="n in 5" :key="n" :filled="n <= review.rating" :colorLevel="n <= review.rating ? Math.round(review.rating) : 0" :class="['w-4 h-4', review.isGrayedOut && 'opacity-50']" />
+                         <Stars v-for="n in 5" :key="n" :value="getStarValue(review.rating, n)" :colorLevel="Math.round(review.rating)" :class="['w-4 h-4', review.isGrayedOut && 'opacity-50']" />
                         </div>
                         <span :class="['text-xs', review.isGrayedOut ? 'text-gray-400' : 'text-gray-600']">{{ formatDateShort(review.date) }}</span>
                       </div>
@@ -345,10 +345,27 @@
                       <p :class="['text-sm leading-relaxed', review.isGrayedOut ? 'text-gray-500' : 'text-gray-700']">{{ review.body }}</p>
                     </div>
 
-                    <div v-if="review.photoUrls && review.photoUrls.length > 0" class="mt-4">
-                      <div class="flex gap-2 flex-wrap">
-                        <img v-for="(photo, idx) in review.photoUrls" :key="idx" :src="photo" alt="Review photo" :class="['w-20 h-20 object-cover rounded-lg border border-gray-200', review.isGrayedOut && 'opacity-50']" />
-                      </div>
+                    <!-- ── Vote & Flag Action Row ── -->
+                    <div class="review-actions mt-3 pt-3 border-t border-gray-100">
+                      <button
+                        :class="['action-btn action-btn--vote', voteState[review.id]?.hasVoted && 'action-btn--voted', votingInProgress[review.id] && 'action-btn--loading']"
+                        @click="handleHelpfulVote(review.id)"
+                        :disabled="votingInProgress[review.id]"
+                        :title="voteState[review.id]?.hasVoted ? 'Remove helpful vote' : 'Mark as helpful'"
+                      >
+                        <i :class="['pi', votingInProgress[review.id] ? 'pi-spin pi-spinner' : 'pi-thumbs-up']"></i>
+                        <span>Helpful</span>
+                        <span v-if="voteState[review.id]?.count ?? 0 > 0" class="vote-count">{{ voteState[review.id]?.count }}</span>
+                      </button>
+
+                      <button
+                        class="action-btn action-btn--flag"
+                        @click="openDisputeModal(review.id, review.businessId)"
+                        title="Report this review"
+                      >
+                        <i class="pi pi-flag"></i>
+                        <span>Report</span>
+                      </button>
                     </div>
 
                     <!-- ── Business Reply Section ── -->
@@ -407,10 +424,6 @@
                         <span>{{ summary.tierBadge.icon }}</span>
                         <span>{{ capitalize(summary.tierBadge.badgeType) }}</span>
                       </div>
-                      <div v-else class="meta-pill meta-pill--gold">
-                        <i class="pi pi-crown"></i>
-                        <span>{{ capitalize(summary.pointTier) }} Tier</span>
-                      </div>
                       <div class="meta-pill meta-pill--gold">
                         <i class="pi pi-chart-line"></i>
                         <span>Rank #{{ summary.rank }}</span>
@@ -468,9 +481,12 @@
                       </div>
                       <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
                       <Transition name="tip-fade">
-                        <div v-if="activeTip === 'referral'" class="tooltip-bubble">
-                          <p class="tip-title">👥 Referral Rewards</p>
-                          <p class="tip-body">Earn <em>50 points</em> for every friend who signs up and leaves their first review using your code.</p>
+                        <div v-if="activeTip === 'referral'" class="tooltip-bubble tooltip-bubble--referral">
+                          <p class="tip-title">✨ Referral Rewards</p>
+                          <p class="tip-body">
+                            Earn <em>50 pts</em> when a friend you referred completes their 3rd approved review.
+                            They also receive <em>25 pts</em> as a welcome bonus — you both win.
+                          </p>
                         </div>
                       </Transition>
                     </div>
@@ -516,7 +532,7 @@
                   <div class="referral-card">
                     <div class="referral-left">
                       <p class="referral-headline">Share your code, earn together</p>
-                      <p class="referral-sub">Get <em>50 points</em> for every friend who signs up and writes their first review.</p>
+                      <p class="referral-sub">Earn <em>50 pts</em> once your friend completes 3 approved reviews. They get <em>25 pts</em> too.</p>
                       <div class="referral-code-row">
                         <div class="code-badge">
                           <span class="code-text">{{ summary.referral.code }}</span>
@@ -872,6 +888,88 @@
       </div>
     </div>
   </div>
+  <Teleport to="body">
+  <!-- Dispute Modal -->
+  <div v-if="disputeModal.open" class="fixed inset-0 z-[1200] flex items-center justify-center p-4">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="closeDisputeModal"></div>
+    <div class="dispute-modal relative z-10">
+      <button @click="closeDisputeModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <i class="pi pi-times"></i>
+      </button>
+
+      <div v-if="!disputeSuccess">
+        <div class="dispute-modal__header">
+          <div class="dispute-icon"><i class="pi pi-flag"></i></div>
+          <h3 class="dispute-title">Report Review</h3>
+          <p class="dispute-subtitle">Help us keep CleReview trustworthy</p>
+        </div>
+
+        <div class="dispute-modal__body">
+          <div class="field-group">
+            <label class="field-label">Reason <span class="text-red-500">*</span></label>
+            <select v-model="disputeForm.categoryCode" class="field-select">
+              <option value="">Select a reason...</option>
+              <option v-for="cat in disputeCategories" :key="cat.code" :value="cat.code">{{ cat.name }}</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Explanation <span class="text-red-500">*</span></label>
+            <textarea
+              v-model="disputeForm.explanation"
+              class="field-textarea"
+              placeholder="Describe why you're reporting this review..."
+              rows="4"
+              maxlength="1000"
+            ></textarea>
+            <span class="field-hint">{{ disputeForm.explanation.length }}/1000</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Evidence URL <span class="field-optional">(optional)</span></label>
+            <input
+              v-model="disputeForm.evidenceUrl"
+              type="url"
+              class="field-input"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div v-if="disputeError" class="dispute-error">
+            <i class="pi pi-exclamation-triangle"></i> {{ disputeError }}
+          </div>
+
+          <div class="dispute-modal__actions">
+            <button @click="closeDisputeModal" class="dispute-cancel-btn">Cancel</button>
+            <button
+              @click="handleSubmitDispute"
+              :disabled="!disputeForm.categoryCode || !disputeForm.explanation.trim() || disputeSubmitting"
+              class="dispute-submit-btn"
+            >
+              <i v-if="disputeSubmitting" class="pi pi-spin pi-spinner"></i>
+              <i v-else class="pi pi-send"></i>
+              {{ disputeSubmitting ? 'Submitting...' : 'Submit Report' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="dispute-success">
+        <div class="success-icon"><i class="pi pi-check-circle"></i></div>
+        <h3>Report Submitted</h3>
+        <p>Thanks for helping keep CleReview trustworthy. Our team will review this shortly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guest auth prompt -->
+  <AuthUnifiedModal
+    v-if="showGuestAuthModal"
+    :hide-back-to-review="true"
+    @close="showGuestAuthModal = false"
+    @authenticated="showGuestAuthModal = false"
+  />
+</Teleport>
 </template>
 
 <script setup lang="ts">
@@ -890,7 +988,7 @@ import useUserProfileApi from "~/composables/user/useUserProfileApi";
 // ── Setup ──────────────────────────────────────────────────────────────────
 const { getUserSummary } = useUserSummary();
 const { updateUserProfile, getUserId, redeemPoints } = useUserProfileMethods();
-const { getReviewReply } = useReviewMethods();
+const { getReviewReply, getHelpfulVoteStatus, getHelpfulVoteCount, castHelpfulVote, getDisputeCategories, sendDispute } = useReviewMethods();
 
 const userId = getUserId();
 const route = useRoute();
@@ -911,6 +1009,20 @@ const reviewSortBy = ref<"date-desc" | "date-asc" | "rating-desc" | "rating-asc"
 // Business replies — keyed by reviewId
 const businessReplies = ref<Record<string, { replyBody: string; createdAt: string } | null>>({});
 const loadingReplies = ref<Record<string, boolean>>({});
+// Helpful votes — keyed by reviewId
+const voteState = ref<Record<string, { hasVoted: boolean; count: number }>>({});
+const votingInProgress = ref<Record<string, boolean>>({});
+
+// Dispute / flag
+const disputeModal = ref<{ open: boolean; reviewId: string; businessId: string }>({ open: false, reviewId: '', businessId: '' });
+const disputeCategories = ref<Array<{ code: string; name: string }>>([]);
+const disputeForm = ref({ categoryCode: '', explanation: '', evidenceUrl: '' });
+const disputeSubmitting = ref(false);
+const disputeSuccess = ref(false);
+const disputeError = ref<string | null>(null);
+
+// Auth modal for guests triggering vote/dispute
+const showGuestAuthModal = ref(false);
 
 // Edit profile
 const isEditingProfile = ref(false);
@@ -1105,6 +1217,92 @@ const fetchRepliesForCurrentPage = () => {
   mappedReviews.value.forEach((r) => fetchReplyForReview(r.id));
 };
 
+// ── Helpful votes ──────────────────────────────────────────────────────────
+const fetchVoteDataForReview = async (reviewId: string) => {
+  if (voteState.value[reviewId] !== undefined) return;
+
+  const [countRes, statusRes] = await Promise.all([
+    getHelpfulVoteCount(reviewId),
+    userId ? getHelpfulVoteStatus(reviewId, userId) : Promise.resolve({ statusCode: 200, data: { hasVoted: false } }),
+  ]);
+
+  voteState.value[reviewId] = {
+    count: countRes.data?.helpfulVoteCount ?? countRes.data?.count ?? 0,
+    hasVoted: statusRes.data?.hasVoted ?? false,
+  };
+};
+
+const fetchVotesForCurrentPage = () => {
+  mappedReviews.value.forEach((r) => fetchVoteDataForReview(r.id));
+};
+
+const handleHelpfulVote = async (reviewId: string) => {
+  if (!userId) { showGuestAuthModal.value = true; return; }
+  if (votingInProgress.value[reviewId]) return;
+
+  votingInProgress.value[reviewId] = true;
+  try {
+    const res = await castHelpfulVote(reviewId, userId);
+    if (res.statusCode === 200 && res.data) {
+      voteState.value[reviewId] = {
+        hasVoted: res.data.userHasVoted,
+        count: res.data.helpfulCount,
+      };
+    }
+  } catch { /* silent */ }
+  finally {
+    votingInProgress.value[reviewId] = false;
+  }
+};
+
+// ── Dispute / flag ─────────────────────────────────────────────────────────
+const openDisputeModal = async (reviewId: string, businessId: string) => {
+  if (!userId) { showGuestAuthModal.value = true; return; }
+  disputeModal.value = { open: true, reviewId, businessId };
+  disputeForm.value = { categoryCode: '', explanation: '', evidenceUrl: '' };
+  disputeSuccess.value = false;
+  disputeError.value = null;
+
+  if (!disputeCategories.value.length) {
+    const res = await getDisputeCategories();
+    if (res?.statusCode === 200 && Array.isArray(res.data)) {
+      disputeCategories.value = res.data;
+    }
+  }
+};
+
+const closeDisputeModal = () => {
+  disputeModal.value = { open: false, reviewId: '', businessId: '' };
+};
+
+const handleSubmitDispute = async () => {
+  if (!disputeForm.value.categoryCode || !disputeForm.value.explanation.trim()) return;
+  disputeSubmitting.value = true;
+  disputeError.value = null;
+  try {
+    const payload = {
+      reviewId: disputeModal.value.reviewId,
+      businessId: disputeModal.value.businessId,
+      categoryCode: disputeForm.value.categoryCode,
+      filedByUserId: userId,
+      explanation: disputeForm.value.explanation.trim(),
+      evidenceUrls: disputeForm.value.evidenceUrl.trim() ? [disputeForm.value.evidenceUrl.trim()] : [],
+      businessPlan: '',
+    };
+    const res = await sendDispute(payload);
+    if (res?.statusCode === 200 || res?.statusCode === 201) {
+      disputeSuccess.value = true;
+      setTimeout(closeDisputeModal, 2500);
+    } else {
+      disputeError.value = res?.data?.error || res?.data?.message || 'Failed to submit report. Please try again.';
+    }
+  } catch (err: any) {
+    disputeError.value = err?.response?.data ? (err.response.data.error || err.response.data.message) : 'Something went wrong.';
+  } finally {
+    disputeSubmitting.value = false;
+  }
+};
+
 // ── Data fetch ─────────────────────────────────────────────────────────────
 const loadSummary = async (isInitial = false) => {
   if (!currentUserId.value) { error.value = "User ID is missing"; return; }
@@ -1123,6 +1321,7 @@ const loadSummary = async (isInitial = false) => {
       }
       // Fetch replies for all loaded reviews
       fetchRepliesForCurrentPage();
+      fetchVotesForCurrentPage(); // ← add this line
     } else {
       error.value = "Failed to load profile";
     }
@@ -1460,6 +1659,12 @@ const formatBusinessAddress = (city: string, state: string, address?: string): s
 
 const s = (n: number | null | undefined) => (n === 1 ? "" : "s");
 
+const getStarValue = (rating: number, position: number): number => {
+  if (rating >= position) return 1;           // full star
+  if (rating >= position - 1) return rating - (position - 1); // partial e.g. 0.5
+  return 0;                                   // empty star
+};
+
 // ── Lifecycle ──────────────────────────────────────────────────────────────
 const onReviewPageChange = async (event: PageState) => {
   reviewPage.value = event.page + 1;
@@ -1515,9 +1720,12 @@ onBeforeMount(async () => { await loadSummary(true); });
 .bcard-label { font-size: 0.65rem; font-weight: 600; color: #64748b; margin: 0; white-space: nowrap; }
 .bcard-value { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0; line-height: 1.2; }
 .bcard-tip-icon { position: absolute; top: 7px; right: 7px; color: #94a3b8; font-size: 0.7rem; cursor: help; }
-.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 0; right: 0; z-index: 50; background: #c5c7cb; color: rgb(6,2,39); border-radius: 10px; padding: 0.65rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; }
-.tip-title { font-size: 0.75rem; font-weight: 700; margin: 0 0 0.25rem; }
-.tip-body  { font-size: 0.7rem; line-height: 1.5; margin: 0; color: #091c34; }
+.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 0; right: 0; z-index: 50; background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: #e0e7ff;
+  border: 1px solid rgba(165,180,252,0.2);
+  box-shadow: 0 12px 32px rgba(49,46,129,0.35); border-radius: 0.7rem; padding: 0.65rem; pointer-events: none; }
+.tip-title { font-size: 0.75rem; font-weight: 700; margin: 0 0 0.25rem; color: #c7d2fe; }
+.tip-body  { font-size: 0.7rem; line-height: 1.5; margin: 0; color: #a5b4fc; }
 .tip-fade-enter-active, .tip-fade-leave-active { transition: opacity 0.15s, transform 0.15s; }
 .tip-fade-enter-from, .tip-fade-leave-to { opacity: 0; transform: translateY(4px); }
 
@@ -1605,6 +1813,276 @@ onBeforeMount(async () => { await loadSummary(true); });
 .redeem-msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 .form-slide-enter-active, .form-slide-leave-active { transition: opacity 0.25s, transform 0.25s; }
 .form-slide-enter-from, .form-slide-leave-to { opacity: 0; transform: translateY(-8px); }
+/* ── Review Action Row ───────────────────────────────────────────────────── */
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.action-btn:hover:not(:disabled) {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #374151;
+}
+
+.action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.action-btn--vote.action-btn--voted {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.action-btn--vote:hover:not(:disabled):not(.action-btn--voted) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.action-btn--flag:hover:not(:disabled) {
+  border-color: #f97316;
+  color: #ea580c;
+  background: #fff7ed;
+}
+
+.vote-count {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.4;
+  min-width: 1.2rem;
+  text-align: center;
+}
+
+.action-btn--voted .vote-count {
+  background: #2563eb;
+  color: white;
+}
+
+/* ── Dispute Modal ───────────────────────────────────────────────────────── */
+.dispute-modal {
+  background: white;
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+}
+
+.dispute-modal__header {
+  background: linear-gradient(135deg, #fff7ed, #fed7aa);
+  border-radius: 1.25rem 1.25rem 0 0;
+  padding: 1.5rem 1.5rem 1.25rem;
+  text-align: center;
+  border-bottom: 1px solid #fed7aa;
+}
+
+.dispute-icon {
+  width: 48px;
+  height: 48px;
+  background: #ea580c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.dispute-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #7c2d12;
+  margin: 0 0 0.25rem;
+}
+
+.dispute-subtitle {
+  font-size: 0.78rem;
+  color: #9a3412;
+  margin: 0;
+}
+
+.dispute-modal__body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.field-optional {
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.field-select,
+.field-input {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #1f2937;
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.field-select:focus,
+.field-input:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234,88,12,0.1);
+}
+
+.field-textarea {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #1f2937;
+  background: white;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.field-textarea:focus {
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234,88,12,0.1);
+}
+
+.field-hint {
+  font-size: 0.68rem;
+  color: #9ca3af;
+  text-align: right;
+}
+
+.dispute-error {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.dispute-modal__actions {
+  display: flex;
+  gap: 0.6rem;
+  padding-top: 0.25rem;
+}
+
+.dispute-cancel-btn {
+  flex: 1;
+  padding: 0.65rem;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dispute-cancel-btn:hover { background: #e5e7eb; }
+
+.dispute-submit-btn {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem;
+  background: #ea580c;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dispute-submit-btn:hover:not(:disabled) { background: #c2410c; }
+.dispute-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.dispute-success {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  background: #dcfce7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: #16a34a;
+  font-size: 1.5rem;
+}
+
+.dispute-success h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #166534;
+  margin: 0 0 0.5rem;
+}
+
+.dispute-success p {
+  font-size: 0.82rem;
+  color: #4b7c5c;
+  line-height: 1.5;
+  margin: 0;
+}
 
 @media (max-width: 480px) {
   .breakdown-grid { grid-template-columns: 1fr; }

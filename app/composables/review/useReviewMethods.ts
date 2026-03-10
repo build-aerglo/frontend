@@ -214,9 +214,38 @@ export default function () {
         data: res.data,
       };
     } catch (error) {
+      throw(error);
       console.log(error);
     }
   };
+
+  const getHelpfulVoteStatus = async (reviewId: string, userId: string) => {
+  try {
+    const res = await reviewApi.get(`api/HelpfulVote/review/${reviewId}/user/${userId}`);
+    return { statusCode: res.status, data: res.data };
+  } catch (error: any) {
+    if (error?.response?.status === 404) return { statusCode: 404, data: null };
+    return { statusCode: 500, data: null };
+  }
+};
+
+const getHelpfulVoteCount = async (reviewId: string) => {
+  try {
+    const res = await reviewApi.get(`api/HelpfulVote/review/${reviewId}/count`);
+    return { statusCode: res.status, data: res.data };
+  } catch (error: any) {
+    return { statusCode: 500, data: null };
+  }
+};
+
+const castHelpfulVote = async (reviewId: string, userId: string) => {
+  try {
+    const res = await reviewApi.post(`api/HelpfulVote/review/${reviewId}?userId=${userId}`);
+    return { statusCode: res.status, data: res.data };
+  } catch (error: any) {
+    return { statusCode: 500, data: null };
+  }
+};
 
   const toggleUpvoteReview = async (reviewId: string, userId: string) => {
     try {
@@ -243,5 +272,6 @@ export default function () {
     getReviewManagement,
     sendDispute,
     toggleUpvoteReview,
+    getHelpfulVoteStatus, getHelpfulVoteCount, castHelpfulVote,
   };
 }
