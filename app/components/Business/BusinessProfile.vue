@@ -102,14 +102,28 @@
       <Card>
         <template #content>
           <div class="grid grid-cols-1 sm:grid-cols-3 sm:gap-[40px] gap-[60px]">
-            <div class="sm:col-span-1 col-span-2">
+            <div
+              class="col-span-2"
+              :class="
+                !!businessData?.faqs ||
+                (businessData?.faqs && businessData?.faqs.length < 0)
+                  ? 'sm:col-span-2'
+                  : 'sm:col-span-1'
+              "
+            >
               <div class="header">Opening Hours</div>
               <div v-if="businessData?.openingHours">
-                <BusinessOpeningHours :business="business" :to-edit="toEdit" />
+                <BusinessOpeningHours
+                  :opening-hours="openingHours"
+                  :to-edit="toEdit"
+                />
               </div>
               <div v-else>Opening hours not set yet.</div>
             </div>
-            <div class="col-span-2">
+            <div
+              v-if="businessData?.faqs && businessData?.faqs.length > 0"
+              class="col-span-2"
+            >
               <div class="header">Questions you might have:</div>
               <Accordion
                 v-if="businessData?.faqs"
@@ -211,25 +225,6 @@
           </div>
         </template>
       </Card>
-      <!-- <Card>
-                <template #content>
-                    <div>
-                        <div class="text-center header">Business Review Summary</div>
-                        <div class="flex flex-col gap-[10px]">
-
-                            <div class="flex gap-[10px]">
-                                <div>5 <i class="pi pi-star"></i></div>
-                                <ProgressBar :value="50" class="bg-five_star"></ProgressBar>
-                            </div>
-
-                            <ProgressBar :value="30" class="bg-four_star"></ProgressBar>
-                            <ProgressBar :value="15" class="bg-three_star"></ProgressBar>
-                            <ProgressBar :value="10" class="bg-two_star"></ProgressBar>
-                            <ProgressBar :value="5" class="bg-one_star"></ProgressBar>
-                        </div>
-                    </div>
-                </template>
-            </Card> -->
     </div>
   </div>
 </template>
@@ -237,19 +232,14 @@
 <script setup lang="ts">
 import type { BusinessProfileResponse } from "~/types/business";
 
-const props = defineProps(["business", "toEdit", "isBusiness"]);
+const props = defineProps(["business", "toEdit", "isBusiness", "openingHours"]);
 const businessData = ref<BusinessProfileResponse>();
-// const outsideImages = ref<string[]>([])
-// const insideImages = ref<string[]>([])
 const images = ref();
 
 onBeforeMount(() => {
   if (props.business) {
     businessData.value = props.business;
     if (businessData.value?.media && businessData.value?.media.length > 0) {
-      // const { outside, inside } = splitBusinessImages(businessData.value?.media);
-      // outsideImages.value = outside;
-      // insideImages.value = inside;
       images.value = businessData.value?.media;
     }
   }
@@ -257,9 +247,13 @@ onBeforeMount(() => {
 
 const displayedImages = computed(() => businessData.value?.media.slice(0, 4));
 
-const remainingImages = computed(() => businessData.value?.media.length - 4);
+const remainingImages = computed(() => {
+  return (businessData.value?.media?.length ?? 0) - 4;
+});
 
-const showOverlay = computed(() => businessData.value?.media.length > 4);
+const showOverlay = computed(() => {
+  return (businessData.value?.media?.length ?? 0) > 4;
+});
 
 const displayBasic = ref(false);
 

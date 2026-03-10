@@ -247,6 +247,18 @@ const castHelpfulVote = async (reviewId: string, userId: string) => {
   }
 };
 
+  const toggleUpvoteReview = async (reviewId: string, userId: string) => {
+    try {
+      const res = await reviewApi.post(
+        `/api/HelpfulVote/review/${reviewId}/toggle?userId=${userId}`,
+      );
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      console.error("Error upvoting reviews:", error);
+      throw error;
+    }
+  };
+
   return {
     submitUserReview,
     getUserReviews,
@@ -259,6 +271,7 @@ const castHelpfulVote = async (reviewId: string, userId: string) => {
     getReviewReply,
     getReviewManagement,
     sendDispute,
+    toggleUpvoteReview,
     getHelpfulVoteStatus, getHelpfulVoteCount, castHelpfulVote,
   };
 }

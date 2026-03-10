@@ -848,14 +848,13 @@
     </div>
 
     <Divider class="mb-[20px]" />
-    <KeepAlive>
-      <BusinessProfile
-        v-if="currentPage === 'profile'"
-        :isBusiness="isBusiness"
-        :business="business"
-        @edit="emit('edit')"
-      />
-    </KeepAlive>
+    <BusinessProfile
+      v-if="currentPage === 'profile'"
+      :isBusiness="isBusiness"
+      :business="business"
+      :opening-hours="openingHours"
+      @edit="emit('edit')"
+    />
     <KeepAlive>
       <BusinessReviews
         v-if="currentPage === 'review'"
@@ -864,23 +863,22 @@
         :isBusiness="isBusiness"
       />
     </KeepAlive>
-    <KeepAlive>
-      <BusinessQr
-        v-if="isBusiness && currentPage === 'qr'"
-        :business="business"
-      />
-    </KeepAlive>
-    <!-- {{ business }} -->
+    <BusinessQr
+      v-if="isBusiness && currentPage === 'qr'"
+      :business="business"
+    />
   </section>
 </template>
 
 <script setup lang="ts">
-import type { BusinessProfileResponse } from "~/types/business";
+import type {
+  BusinessProfileRequest,
+  BusinessProfileResponse,
+  Tags,
+} from "~/types/business";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import BusinessStatusFrame from "~/components/Business/BusinessStatusFrame.vue";
-import useReviewMethods from "~/composables/method/useReviewMethods";
 
-const { getBusinessReviews } = useReviewMethods();
 const businessBadgeStatus = computed(() => {
   if (props.status === "trusted") return "trusted";
   if (props.status === "verified") return "verified";
@@ -1087,6 +1085,12 @@ function parseOpeningHours(raw: any) {
   return h;
 }
 
+const getTagNames = (tags: Tags[] | null | undefined): string[] => {
+  if (!tags || tags.length === 0) return [];
+  return tags.map((tag) => tag.name);
+};
+
+const openingHours = ref();
 onBeforeMount(async () => {
   currentPage.value = props.page ?? "review";
   if (props.business) {
@@ -1096,7 +1100,8 @@ onBeforeMount(async () => {
       const max_data = getMaxData(savedBusinessSubscription.tier);
       max.value = max_data;
     }
-    businessData.value = props.business;
+
+    businessData.value = JSON.parse(JSON.stringify(props.business));
 
     if (businessData.value && !businessData.value.media) {
       businessData.value.media = [];
@@ -1113,21 +1118,29 @@ onBeforeMount(async () => {
     } else {
       availableSocials.value = SOCIAL_HANDLES;
     }
+
     social.value.name = availableSocials.value[0] ?? "";
     business_category.value = businessData.value?.categories[0];
-    selected_tags.value = businessData.value?.tags ?? [];
 
     await fetchTags(businessData.value?.categories[0]?.id!);
+
     if (businessData.value) {
       if (props.business.highlights === null) {
         businessData.value.highlights = [];
       }
 
+      badge.value = getBadge(props.status);
+    }
+
+    // DO OPENING HOURS TRANSFORMATION AT THE VERY END
+    if (businessData.value) {
+      let openingHrs;
+
       if (
         !props.business.openingHours ||
         props.business.openingHours === null
       ) {
-        businessData.value.openingHours = parseOpeningHours(
+        openingHrs = parseOpeningHours(
           rawToNormalized({
             monday: "00:00 - 00:00",
             tuesday: "00:00 - 00:00",
@@ -1139,13 +1152,21 @@ onBeforeMount(async () => {
           }),
         );
       } else {
-        businessData.value.openingHours = parseOpeningHours(
-          rawToNormalized(props.business.openingHours),
-        );
+        // Pass a copy of openingHours to rawToNormalized
+        const openingHoursCopy = { ...businessData.value.openingHours };
+        openingHrs = parseOpeningHours(rawToNormalized(openingHoursCopy));
       }
-    }
 
-    badge.value = getBadge(props.status);
+      // Assign back to businessData.value
+      businessData.value.openingHours = openingHrs;
+      openingHours.value = openingHrs;
+
+      // CRITICAL FIX: Restore tags from props.business (which still has them)
+      businessData.value.tags = JSON.parse(JSON.stringify(props.business.tags));
+
+      // set selected tags
+      selected_tags.value = getTagNames(businessData.value.tags);
+    }
   }
 });
 
@@ -1218,17 +1239,6 @@ const allDays = [
 const weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday"];
 const weekends = ["saturday", "sunday"];
 
-type Item = {
-  id: string;
-  categoryId: string;
-  name: string;
-};
-
-function getTagNames(items: Item[]): string[] {
-  if (items.length <= 0) return [];
-  return items.map((item) => item.name);
-}
-
 const updateProfile = async () => {
   try {
     if (!businessData.value?.id!) {
@@ -1240,30 +1250,10 @@ const updateProfile = async () => {
       });
     }
 
-    // if (selected_tags.value.length <= 0) {
-    //   return toast.add({
-    //     severity: "info",
-    //     summary: "INFO",
-    //     detail: "Business must select at least one tag!",
-    //     life: 3000,
-    //   });
-    // }
-
-    businessData.value.tags = selected_tags.value;
-
-    // if (businessData.value.logo === null) {
-    //   return toast.add({
-    //     severity: "info",
-    //     summary: "INFO",
-    //     detail: "Business logo must be selected!",
-    //     life: 3000,
-    //   });
-    // }
-
     isLoading.value = true;
     const category = [];
     category.push(business_category.value.id);
-    const businessDataToSubmit = {
+    const businessDataToSubmit: any = {
       ...businessData.value,
       logo: businessData.value.logo || "",
       categoryIds: category,
@@ -1273,14 +1263,16 @@ const updateProfile = async () => {
       businessData.value.openingHours,
     );
 
-    // console.log("tags", businessData.value.tags);
+    businessDataToSubmit.tags = selected_tags.value;
+
+    console.log("tags submitted", businessDataToSubmit.tags);
     // businessDataToSubmit.tags = getTagNames(businessData.value.tags);
 
     const res = await saveBusinessProfile(
       businessData.value.id,
       businessDataToSubmit,
     );
-    if (res) {
+    if (res.statusCode === 200) {
       emit("edit", res);
       return toast.add({
         severity: "success",
@@ -1295,23 +1287,6 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
-
-const displayAvgRating = computed(() => {
-  const rating = props.business?.avgRating ?? 0;
-  const decimal = rating % 1;
-
-  let displayValue;
-  if (decimal <= 0.4) {
-    displayValue = Math.floor(rating);
-  } else if (decimal >= 0.6) {
-    displayValue = Math.ceil(rating);
-  } else {
-    displayValue = rating;
-  }
-
-  // Format to 1 decimal place
-  return displayValue.toFixed(1);
-});
 </script>
 
 <style scoped>

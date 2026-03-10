@@ -574,8 +574,6 @@ const {
 
 definePageMeta({ layout: "business" });
 
-// const business = getBusinessUser();
-
 // Local state
 const wordCloudView = ref<"positive" | "negative">("positive");
 const competitorWordCloudView = ref<"positive" | "negative">("positive");

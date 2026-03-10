@@ -19,12 +19,10 @@
 definePageMeta({ layout: "business" });
 import { onBeforeMount } from "vue";
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
-import useReviewMethods from "~/composables/method/useReviewMethods";
 import type { BusinessProfileResponse } from "~/types/business";
 
 const { getBusinessProfile, getBusinessUser, getCategories } =
   useBusinessMethods();
-const { getBusinessReviews } = useReviewMethods();
 const businessUser = getBusinessUser();
 
 const page = ref("profile");
@@ -34,7 +32,7 @@ const isBusiness = ref(false);
 const categories = ref([]);
 const reviews = ref<any[]>([]);
 
-const id = businessUser.id;
+const id = businessUser?.id;
 
 const business = ref<BusinessProfileResponse>();
 const loadBusinessData = async () => {
@@ -52,16 +50,11 @@ const loadBusinessData = async () => {
     const [res, categoryRes] = await Promise.all([
       getBusinessProfile(id),
       getCategories(),
-      // getBusinessReviews(String(id)), - , reviewRes
     ]);
 
     if (categoryRes) {
       categories.value = categoryRes;
     }
-
-    // if (reviewRes?.statusCode === 200) {
-    //   reviews.value = reviewRes.data.reviews;
-    // }
 
     if (res?.statusCode === 200) {
       if (businessUser.id && businessUser.id === id) {
@@ -70,6 +63,7 @@ const loadBusinessData = async () => {
         toEdit.value = true;
         page.value = "profile";
       }
+      console.log("passed business: ", res.data);
 
       business.value = res.data;
       return;

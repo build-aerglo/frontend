@@ -357,8 +357,10 @@
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import useVerificationMethods from "~/composables/verification/useVerificationMethods";
 import type {
+  BusinessProfileRequest,
   BusinessSubscription,
   BusinessVerification,
+  Tags,
 } from "~/types/business";
 
 const {
@@ -389,11 +391,11 @@ const address = ref({
 
 const hasAddress = computed(() => {
   if (
-    (business.value.businessCityTown &&
-      business.value.businessCityTown?.length > 0) ||
-    (business.value.businessStreet &&
-      business.value.businessStreet?.length > 0) ||
-    (business.value.businessState && business.value.businessState?.length > 0)
+    (business.value?.businessCityTown &&
+      business.value?.businessCityTown?.length > 0) ||
+    (business.value?.businessStreet &&
+      business.value?.businessStreet?.length > 0) ||
+    (business.value?.businessState && business.value?.businessState?.length > 0)
   ) {
     return true;
   }
@@ -401,6 +403,14 @@ const hasAddress = computed(() => {
 });
 
 const business = computed(() => {
+  if (!businessData) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Page Not Found",
+      fatal: true,
+    });
+  }
+
   return businessData;
 });
 
@@ -460,9 +470,22 @@ const saveBusinessAddress = async () => {
   await saveBusinessAsync();
 };
 
+const getTagNames = (tags: Tags[] | null | undefined): string[] => {
+  if (!tags || tags.length === 0) return [];
+  return tags.map((tag) => tag.name);
+};
+
 const saveBusinessAsync = async () => {
+  const businessDataToSubmit: BusinessProfileRequest = {
+    ...business.value,
+    tags: getTagNames(business.value.tags),
+  };
+
   try {
-    const res = await saveBusinessProfile(business.value.id, business.value);
+    const res = await saveBusinessProfile(
+      business.value?.id!,
+      businessDataToSubmit,
+    );
     if (res) {
       return toast.add({
         severity: "success",
