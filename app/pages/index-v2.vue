@@ -17,9 +17,7 @@
         >
           Let real experiences guide you.
         </div>
-        <div
-          class="text-white sm:text-left text-center sm:w-full max-w-[300px]"
-        >
+        <div class="text-white sm:text-left text-center sm:!w-full !w-[300px]">
           Find verified businesses, read authentic reviews, and connect with the
           services you need.
         </div>
@@ -125,7 +123,7 @@
       class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 px-[30px] sm:px-[50px] py-[50px] my-[30px] rounded-[10px]"
     >
       <div class="grid sm:grid-cols-2 grid-cols-1 sm:gap-[20px] gap-[30px]">
-        <div class="sm:order-1 order-2 flex flex-col justify-center">
+        <div class="order-2 sm:!order-1 flex flex-col justify-center">
           <div class="text-2xl font-bold">More than just reviews</div>
           <div class="mt-[20px]">
             <p>
@@ -148,7 +146,7 @@
             </NuxtLink>
           </div>
         </div>
-        <div class="sm:order-2 order-1">
+        <div class="order-1 sm:!order-2">
           <div class="flex gap-4 w-full mx-auto">
             <div
               v-for="(img, index) in images"
