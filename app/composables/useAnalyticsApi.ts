@@ -2,6 +2,8 @@
 
 import useApi from '~/composables/useApi'
 import useBusinessUser from '~/composables/business/useBusinessUser'
+import useBusinessApi from '~/composables/business/useBusinessApi'
+
 
 // ─────────────────────────────────────────────────────────
 // Types that mirror BusinessAnalyticsDashboard.cs exactly
@@ -106,7 +108,7 @@ export interface TriggerResponse {
 // ─────────────────────────────────────────────────────────
 
 export function useAnalyticsApi() {
-    const api = useApi()
+    const api = useBusinessApi()
     const config = useRuntimeConfig()
     const businessStore = useBusinessUser()
 
