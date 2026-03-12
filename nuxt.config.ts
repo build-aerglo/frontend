@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-qrcode",
-    "@vueuse/nuxt"
   ],
   primevue: {
     options: {
@@ -40,6 +39,7 @@ export default defineNuxtConfig({
       encrypt_key: process.env.ENCODE_KEY!,
       app_url: process.env.APP_URL!,
       local_encode_key: process.env.LOCAL_ENCODE_KEY!,
+analyticsFunctionUrl: process.env.ANALYTICS_FUNCTION_URL ?? "https://analyticsservice-func-cc.azurewebsites.net/api"
     },
   },
   // nitro: {
