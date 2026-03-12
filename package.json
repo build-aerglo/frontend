@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^5.0.1",
+    "@microsoft/signalr": "^10.0.0",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.2",
     "@primeuix/themes": "^1.2.3",
+    "@vueuse/nuxt": "^14.2.1",
     "axios": "^1.12.2",
     "html-to-image": "^1.11.13",
     "imagekit": "^6.0.0",
