@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-qrcode",
+    "@vueuse/nuxt"
   ],
   primevue: {
     options: {
