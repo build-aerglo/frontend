@@ -53,6 +53,18 @@ export interface ReviewDashboard {
   uploadedDate: string;
   errors: string[] | null;
   warnings: string[] | null;
+  replyId?: string;
+  helpfulCount: number;
+}
+
+export interface ReviewSummary {
+  email: string;
+  starRating: number;
+  uploadedDate: string;
+  reviewBody: string;
+  businessName: string;
+  businessId: string;
+  anonymous: boolean;
 }
 
 // ===================================================================

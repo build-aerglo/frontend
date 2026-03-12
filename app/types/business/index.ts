@@ -69,6 +69,12 @@ export interface Category {
   parentCategoryId: string | null;
 }
 
+export interface Tags {
+  id: string;
+  categoryId: string;
+  name: string;
+}
+
 export interface BusinessProfileResponse {
   id: string;
   name: string;
@@ -88,12 +94,12 @@ export interface BusinessProfileResponse {
   accessNumber: string;
   socialMediaLinks: any;
   businessDescription: string;
-  media: any;
+  media: string[];
   isVerified: boolean;
   reviewLink: string;
   preferredContactMethod: string;
-  highlights: any;
-  tags: any;
+  highlights: string[];
+  tags: Tags[];
   averageResponseTime: any;
   profileClicks: number;
   faqs: any;
@@ -106,6 +112,47 @@ export interface BusinessProfileResponse {
   idVerificationType: string;
   bayesianAverage: number;
   userId: string;
+  businessStatus: string;
+}
+
+export interface BusinessProfileRequest {
+  id: string;
+  name: string;
+  website: string;
+  isBranch: boolean;
+  avgRating: number;
+  reviewCount: number;
+  parentBusinessId: string;
+  categories: Category[];
+  businessAddress: string;
+  logo: string | null;
+  openingHours: any;
+  businessEmail: string;
+  businessPhoneNumber: string;
+  cacNumber: string;
+  accessUsername: string;
+  accessNumber: string;
+  socialMediaLinks: any;
+  businessDescription: string;
+  media: string[];
+  isVerified: boolean;
+  reviewLink: string;
+  preferredContactMethod: string;
+  highlights: string[];
+  tags: string[];
+  averageResponseTime: any;
+  profileClicks: number;
+  faqs: any;
+  qrCodeBase64: string;
+  businessState?: string;
+  businessStreet?: string;
+  businessCityTown?: string;
+  reviewSummary: string;
+  idVerified: boolean;
+  idVerificationType: string;
+  bayesianAverage: number;
+  userId: string;
+  businessStatus: string;
 }
 
 export interface BusinessPreference {
@@ -298,3 +345,24 @@ export type RatingCounts = {
   two: number;
   one: number;
 };
+
+export interface BusinessSummary {
+  id: string;
+  name: string;
+  avgRating: number;
+  reviewCount: number;
+  isBranch: boolean;
+  categories: Category[];
+  businessAddress: string;
+  logo: string | null;
+  businessPhoneNumber: string;
+  tags: string | null;
+  reviewSummary: string;
+  isVerified: boolean;
+  businessStreet: string;
+  businessCityTown: string;
+  businessState: string;
+  idVerified: boolean;
+  idVerificationType: string;
+  description: string;
+}

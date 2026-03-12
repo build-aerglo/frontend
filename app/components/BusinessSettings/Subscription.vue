@@ -228,7 +228,7 @@ const paymentSetup = ref({
   plan: "",
   amount: 0,
   method: "paystack",
-  email: business.businessEmail,
+  email: business?.businessEmail,
   reference: "",
 });
 
@@ -245,7 +245,7 @@ const setPaymentPlan = async (plan: Subscription) => {
     try {
       isLoadingPaymentButton.value = true;
       const newPlan = {
-        businessId: business.id,
+        businessId: business?.id!,
         newPlanId: plan.id,
         isAnnual: isAnnually.value,
         paymentReference: "basic_plan_subscription",
@@ -308,7 +308,7 @@ const checkoutAsync = async () => {
   try {
     const res = await checkoutPayment({
       email: paymentSetup.value.email,
-      businessId: business.id!,
+      businessId: business?.id!,
       subscriptionId: paymentSetup.value.plan,
       isAnnual: isAnnually.value,
       platform: paymentSetup.value.method,
@@ -357,7 +357,7 @@ useHead({
 const handleCustomPlanContact = () => {
   // open a modal, navigate to contact page, etc.
   // e.g. navigateTo('/contact?inquiry=custom-plan')
-}
+};
 
 const businessSubscription = ref<BusinessSubscription>();
 const subscriptions = ref<Subscription[]>([]);

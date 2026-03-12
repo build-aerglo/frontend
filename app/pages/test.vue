@@ -12,7 +12,7 @@
   </div>
 
   <Button @click="createAnn">Create</Button> -->
-  <div class="w-full flex justify-center items-center bg-[#F0FDF4] py-[20px]">
+  <!-- <div class="w-full flex justify-center items-center bg-[#F0FDF4] py-[20px]">
     <div
       class="w-[70%] rounded-[10px] flex flex-col gap-2.5 bg-[white] p-[30px]"
     >
@@ -65,13 +65,17 @@
   </div>
 
   old: {{ password }}<br />
-  new: {{ password_2 }}
+  new: {{ password_2 }} -->
+
+  {{ b }}
 </template>
 
 <script setup>
 import useAnnouncementMethods from "~/composables/announcements/useAnnouncementMethods";
 
 const { createAnnouncement } = useAnnouncementMethods();
+const { getBusinessUser, getBusinessProfile } = useBusinessMethods();
+const b = getBusinessUser();
 
 const password = computed(async () => {
   const res = await encryptPasswordNative("Test2000$");
@@ -97,6 +101,7 @@ const createAnn = () => {
   });
 };
 import { ref } from "vue";
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
 
 const path = ref("tests");
 const imageUrl = ref("");
@@ -128,4 +133,9 @@ const deleteUrl = async () => {
 
   console.log(res);
 };
+
+onMounted(async () => {
+  const res = await getBusinessProfile(b?.id);
+  console.log(res);
+});
 </script>

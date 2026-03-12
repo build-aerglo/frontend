@@ -11,16 +11,23 @@
       <form @submit.prevent="updateEmailAsync">
         <div class="flex flex-col gap-2.5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">New email address:</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >New email address:</label
+            >
             <InputText v-model="updatedEmail.email" fluid required />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Reason for change:</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Reason for change:</label
+            >
             <Textarea v-model="updatedEmail.reason" rows="3" fluid />
           </div>
-          <div class="text-sm bg-blue-50 border border-blue-200 rounded-lg p-3 text-blue-800">
+          <div
+            class="text-sm bg-blue-50 border border-blue-200 rounded-lg p-3 text-blue-800"
+          >
             <i class="pi pi-info-circle mr-2"></i>
-            Changes to your email address require approval. Once approved, the updated email address will take effect.
+            Changes to your email address require approval. Once approved, the
+            updated email address will take effect.
           </div>
         </div>
         <div class="flex justify-end gap-2 mt-6">
@@ -31,8 +38,8 @@
             @click="resetEmail"
             class="custom-cancel-btn"
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             label="Submit Request"
             :loading="isUpdatingEmail"
             class="custom-primary-btn"
@@ -53,38 +60,42 @@
         <div class="flex flex-col gap-4">
           <!-- Current Password with Toggle -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Current Password</label
+            >
             <div class="relative">
-              <InputText 
-                v-model="currentPassword" 
+              <InputText
+                v-model="currentPassword"
                 :type="showCurrentPassword ? 'text' : 'password'"
                 placeholder="Enter current password"
-                fluid 
-                required 
+                fluid
+                required
                 class="pr-10"
               />
-              <i 
-                :class="showCurrentPassword ? 'pi pi-eye' : 'pi pi-eye-slash'" 
+              <i
+                :class="showCurrentPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
                 class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                 @click="showCurrentPassword = !showCurrentPassword"
               ></i>
             </div>
           </div>
-          
+
           <!-- New Password with Toggle -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >New Password</label
+            >
             <div class="relative">
-              <InputText 
-                v-model="newPassword" 
+              <InputText
+                v-model="newPassword"
                 :type="showNewPassword ? 'text' : 'password'"
                 placeholder="Enter new password"
-                fluid 
-                required 
+                fluid
+                required
                 class="pr-10"
               />
-              <i 
-                :class="showNewPassword ? 'pi pi-eye' : 'pi pi-eye-slash'" 
+              <i
+                :class="showNewPassword ? 'pi pi-eye' : 'pi pi-eye-slash'"
                 class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                 @click="showNewPassword = !showNewPassword"
               ></i>
@@ -92,12 +103,21 @@
           </div>
 
           <!-- Password Requirements -->
-          <div v-if="newPassword && !allValid" class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-            <p class="text-xs font-semibold text-gray-700 mb-2">Password Requirements:</p>
+          <div
+            v-if="newPassword && !allValid"
+            class="bg-gray-50 border border-gray-200 rounded-lg p-3"
+          >
+            <p class="text-xs font-semibold text-gray-700 mb-2">
+              Password Requirements:
+            </p>
             <div class="flex flex-col gap-1.5">
               <div class="flex items-center gap-2 text-xs">
                 <i
-                  :class="validLength ? 'pi pi-check-circle text-green-500' : 'pi pi-times-circle text-red-500'"
+                  :class="
+                    validLength
+                      ? 'pi pi-check-circle text-green-500'
+                      : 'pi pi-times-circle text-red-500'
+                  "
                 ></i>
                 <span :class="validLength ? 'text-green-700' : 'text-gray-600'">
                   At least 8 characters
@@ -105,24 +125,39 @@
               </div>
               <div class="flex items-center gap-2 text-xs">
                 <i
-                  :class="validNumeric ? 'pi pi-check-circle text-green-500' : 'pi pi-times-circle text-red-500'"
+                  :class="
+                    validNumeric
+                      ? 'pi pi-check-circle text-green-500'
+                      : 'pi pi-times-circle text-red-500'
+                  "
                 ></i>
-                <span :class="validNumeric ? 'text-green-700' : 'text-gray-600'">
+                <span
+                  :class="validNumeric ? 'text-green-700' : 'text-gray-600'"
+                >
                   Contains a number
                 </span>
               </div>
               <div class="flex items-center gap-2 text-xs">
                 <i
-                  :class="validComplexity ? 'pi pi-check-circle text-green-500' : 'pi pi-times-circle text-red-500'"
+                  :class="
+                    validComplexity
+                      ? 'pi pi-check-circle text-green-500'
+                      : 'pi pi-times-circle text-red-500'
+                  "
                 ></i>
-                <span :class="validComplexity ? 'text-green-700' : 'text-gray-600'">
+                <span
+                  :class="validComplexity ? 'text-green-700' : 'text-gray-600'"
+                >
                   Contains a special character (@#&$_?)
                 </span>
               </div>
             </div>
           </div>
 
-          <div v-if="allValid && newPassword" class="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800 text-sm flex items-center gap-2">
+          <div
+            v-if="allValid && newPassword"
+            class="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800 text-sm flex items-center gap-2"
+          >
             <i class="pi pi-check-circle"></i>
             Password meets all requirements
           </div>
@@ -136,8 +171,8 @@
             @click="resetPassword"
             class="custom-cancel-btn"
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             label="Update Password"
             :disabled="!allValid || isUpdatingPassword"
             :loading="isUpdatingPassword"
@@ -182,13 +217,13 @@
                   ></i>
 
                   {{ item.label }}
-                  
+
                   <!-- Tooltip -->
                   <div v-if="item.showHelp" class="relative inline-block">
                     <i
                       class="pi pi-question-circle mt-[1px] cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                     ></i>
-                    
+
                     <div class="tooltip-container">
                       <div class="tooltip-content">
                         {{ item.help }}
@@ -196,7 +231,7 @@
                     </div>
                   </div>
                 </label>
-                
+
                 <ToggleSwitch
                   v-if="item.id === 'dnd'"
                   v-model="item.model"
@@ -251,21 +286,29 @@
           <h1 class="text-[150%] text-contrast mb-4 font-bold">
             Account Security
           </h1>
-          
+
           <p class="text-gray-600 text-sm mb-6">
             Manage your email address and password to keep your account secure.
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Update Email Card -->
-            <div class="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors bg-white">
+            <div
+              class="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors bg-white"
+            >
               <div class="flex items-start gap-3 mb-3">
-                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0"
+                >
                   <i class="pi pi-envelope text-blue-600"></i>
                 </div>
                 <div class="flex-1">
-                  <h3 class="font-semibold text-gray-900 mb-1">Email Address</h3>
-                  <p class="text-sm text-gray-600 mb-3">Update your account email address</p>
+                  <h3 class="font-semibold text-gray-900 mb-1">
+                    Email Address
+                  </h3>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Update your account email address
+                  </p>
                   <Button
                     label="Update Email"
                     size="small"
@@ -278,14 +321,20 @@
             </div>
 
             <!-- Update Password Card -->
-            <div class="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors bg-white">
+            <div
+              class="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors bg-white"
+            >
               <div class="flex items-start gap-3 mb-3">
-                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0"
+                >
                   <i class="pi pi-lock text-purple-600"></i>
                 </div>
                 <div class="flex-1">
                   <h3 class="font-semibold text-gray-900 mb-1">Password</h3>
-                  <p class="text-sm text-gray-600 mb-3">Change your account password</p>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Change your account password
+                  </p>
                   <Button
                     label="Update Password"
                     size="small"
@@ -481,8 +530,8 @@ const business = getBusinessUser();
 const savePreferences = async () => {
   try {
     const res = await updateBusinessSettings(
-      business.id!,
-      business.id!,
+      business?.id!,
+      business?.id!,
       businessSettings.value,
     );
     if (res?.statusCode === 200) {
@@ -536,11 +585,11 @@ const updatePasswordAsync = async () => {
     }
 
     const res = await updatePassword(
-      business.businessEmail!,
+      business?.businessEmail!,
       encryptedOldPassword,
       encryptedNewPassword,
     );
-    
+
     if (res.ok) {
       resetPassword();
       return toast.add({
@@ -603,7 +652,7 @@ const resetPassword = () => {
   updatePasswordToggle.value = false;
   currentPassword.value = "";
   newPassword.value = "";
-  showCurrentPassword.value = false; 
+  showCurrentPassword.value = false;
   showNewPassword.value = false;
 };
 
@@ -666,7 +715,7 @@ onBeforeMount(async () => {
 }
 
 .tooltip-content::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;

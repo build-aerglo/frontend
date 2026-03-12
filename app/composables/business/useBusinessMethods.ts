@@ -4,8 +4,7 @@ import { useBusinessProfileStore } from "~/store/business/businessProfile";
 import { useBusinessSubscription } from "~/store/business/businessSubscription";
 import type {
   BusinessPreference,
-  BusinessProfile,
-  BusinessProfileResponse,
+  BusinessProfileRequest,
   ClaimData,
 } from "~/types/business";
 import type { AxiosError } from "axios";
@@ -20,13 +19,12 @@ export default function () {
   const store = useBusinessUser();
   const businessApi = useBusinessApi();
   const profileStore = useBusinessProfileStore();
+
   const businessSubscription = useBusinessSubscription();
   const { reverifyPhoneAnnnouncement, createAnnouncement } =
     useAnnouncementMethods();
 
-  const getBusinessUser = () => {
-    return profileStore.getProfile()!;
-  };
+  const getBusinessUser = () => profileStore.profileData;
 
   const getBusinessSubscriptionFromStore = async () => {
     return await businessSubscription.getPlan();
@@ -50,20 +48,20 @@ export default function () {
 
   const saveBusinessProfile = async (
     id: string,
-    data: BusinessProfileResponse,
+    data: BusinessProfileRequest | any,
   ) => {
     try {
       const res = await businessApi.patch(`api/Business/${id}`, data);
       // manage profile store
       if (
-        res.data?.businessPhoneNumber !== getBusinessUser().businessPhoneNumber
+        res.data?.businessPhoneNumber !== getBusinessUser()?.businessPhoneNumber
       ) {
         createAnnouncement(reverifyPhoneAnnnouncement);
       }
 
       // set store
       profileStore.setProfileData(res.data);
-      return res.data;
+      return { statusCode: res.status, data: res.data };
     } catch (error: any) {
       console.error("Error saving business profile:", error);
       throw error;
@@ -88,53 +86,24 @@ export default function () {
     }
   };
 
-  // const getBusinessProfile = async (id: string) => {
-  //   const biz = getBusinessUser();
-  //   if (id === biz.id) {
-  //     if (biz !== null && biz.id) {
-  //       return {
-  //         statusCode: 200,
-  //         data: biz,
-  //       };
-  //     }
-  //   }
-
-  //   try {
-  //     const res = await businessApi.get(`api/business/${store.id}`);
-  //     if (res.status === 200) {
-  //       // update store
-  //       if (biz !== null && biz.id && id === biz.id) {
-  //         profileStore.setProfileData(res.data);
-  //       }
-
-  //       return { statusCode: 200, data: res.data };
-  //     }
-
-  //     throw new Error("Error fetching profile data: ");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const getBusinessProfile = async (id: string, resave?: boolean) => {
-    const biz = getBusinessUser();
+    // const biz = getBusinessUser();
 
-    if (biz?.id === id) {
-      return { statusCode: 200, data: biz };
-    }
+    // if (biz?.id === id) {
+    //   return { statusCode: 200, data: biz };
+    // }
 
     try {
-      const { data, status } = await businessApi.get(`api/business/${id}`);
+      const res = await businessApi.get(`api/business/${id}`);
 
-      if (status !== 200) {
-        throw new Error("Failed to fetch profile");
-      }
+      console.log("data from method: ", res.data);
 
       if (!resave) {
-        profileStore.setProfileData(data);
+        console.log("saved again");
+        profileStore.setProfileData(res.data);
       }
 
-      return { statusCode: 200, data };
+      return { statusCode: res.status, data: res.data };
     } catch (error) {
       console.error(error);
       return { statusCode: 500, data: null };
@@ -194,7 +163,7 @@ export default function () {
   const getBusinessBranches = async (id: string) => {
     try {
       const res = await businessApi.get(
-        `api/business-branch/${getBusinessUser().id}`,
+        `api/business-branch/${getBusinessUser()?.id}`,
       );
       return { statusCode: res.status, data: res.data };
     } catch (error) {
