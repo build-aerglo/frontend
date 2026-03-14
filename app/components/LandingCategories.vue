@@ -1,6 +1,15 @@
 <template>
-  <div class="w-full py-4 px-4 rounded-2xl border border-slate-300 bg-gradient-to-r from-fuchsia-50 to-fuchsia-100">
-    <div class="max-w-5xl mx-auto">
+  <div class="w-full py-4 px-2 rounded-2xl">
+    <div class="mx-auto">
+      <div class="relative mb-2">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
+          Looking for something specific?
+        </h2>
+        <a href="/end-user/landing/categories"
+          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
+          ...
+        </a>
+      </div>
       <div class="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6">
         <div
           v-for="(category, index) in categories"

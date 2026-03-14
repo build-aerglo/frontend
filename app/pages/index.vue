@@ -43,24 +43,41 @@
     </div>
   </section>
   <!--First Section Ends-->
-
-  <!--Second Section begins-->
-  <section class="bg-white pb-10 pt-5">
-    <div class="container mx-auto px-4">
-      <!-- Header -->
-      <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-demibold text-left text-gray-700 dark:text-white">
-          Categories
-        </h2>
-        <a href="/end-user/landing/categories"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
-          ...
-        </a>
-      </div>
+  
+  <!-- statistics -->
+  <LandingStatistics :statistics="statistics" />
+ 
+  <!--categories-->
+  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-100 pb-10 pt-5">
+    <div class="container mx-auto px-3">
       <LandingCategories />
+      <!-- Header -->
     </div>
   </section>
-  <!--Second Section ends-->
+
+  <!-- featured business -->
+  <div class="section sm:my-[50px] my-[30px]">
+    <div class="flex justify-between items-center mb-[20px]">
+      
+      <div class="header font-bold flex-1 text-3xl">Featured Businesses</div>
+      <div>
+        <button
+          class="rounded-full !bg-primary px-[15px] py-[5px] text-white"
+        >
+          See More
+          <i class="pi pi-angle-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-[20px]">
+      <BusinessSingle
+        v-for="(i, idx) in featuredBusiness"
+        :key="idx"
+        :data="i"
+      />
+    </div>
+  </div>
+
 
   <!--Third Section Starts-->
   <section >
@@ -155,7 +172,12 @@ onMounted((): void => {
   }
 });
 const isReviewModalOpen = ref(false)
-
+const statistics = [
+  { title: "Registered Businesses", count: "200+" },
+  { title: "Reviewing Users", count: "100k+" },
+  { title: "Uploaded Reviews", count: "10M+" },
+];
+const featuredBusiness = getTopBusinesses(8);
 // Watch for the login event
 watch(() => userStore.isAuthenticated, (isLoggedIn) => {
   if (isLoggedIn) {

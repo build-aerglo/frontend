@@ -12,11 +12,11 @@
       <div
         class="flex-1 w-full flex justify-center items-center flex-col gap-2.5"
       >
-        <div class="font-bold text-white text-5xl drop-shadow-lg">
+        <div class="font-bold text-white text-2xl sm:text-4xl drop-shadow-lg">
           Let real experiences guide you.
         </div>
-        <div class="text-white">
-          Find verified businesses, read authentic reviews, and connect with the
+        <div class="text-white text-sm sm:text-[110%]">
+          Find verified businesses, read <span class="hidden sm:inline-block">authentic</span> reviews, and connect with the
           services you need.
         </div>
         <div ref="heroSearchRef" class="mt-[20px] sm:w-[50%] w-full">
@@ -24,32 +24,10 @@
         </div>
       </div>
 
-      <!-- statistics -->
-      <div class="section">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-[20px] text-white">
-          <div class="flex flex-col justify-center">
-            <div class="font-bold text-[130%] mb-[5px] drop-shadow-lg">
-              Growing Community
-            </div>
-            <div>
-              Clereview contains authentic reviews from real people to help you
-              make better decisions.
-            </div>
-          </div>
-          <div
-            v-for="(i, idx) in statistics"
-            :key="idx"
-            class="flex flex-col justify-center items-center p-[20px]"
-          >
-            <div class="font-bold text-[300%] drop-shadow-lg">
-              {{ i.count }}
-            </div>
-            <div>{{ i.title }}</div>
-          </div>
-        </div>
-      </div>
+      
     </div>
-
+    <!-- statistics -->
+    <LandingStatistics :statistics="statistics" />
     <!-- categories -->
     <div class="..border ..rounded-[10px] !bg-[#FDF3FF] p-[30px]">
       <div class="flex justify-between items-center mb-[20px]">
