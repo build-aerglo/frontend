@@ -5,7 +5,7 @@
     @click="navigateToCategory(data)"
   >
     <i class="pi pi-home"></i>
-    <div class="text-[90%]">{{ data.name }}</div>
+    <div class="text-[90%] text-center">{{ data.name }}</div>
   </div>
 </template>
 

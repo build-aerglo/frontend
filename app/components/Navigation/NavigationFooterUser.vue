@@ -1,5 +1,7 @@
 <template>
-  <Card class="px-[30px] py-[50px] !bg-[#1B1A1B] !rounded-none !text-white">
+  <Card
+    class="px-[15px] sm:px-[30px] py-[50px] !bg-[#1B1A1B] !rounded-none !text-white"
+  >
     <template #content>
       <div>
         <div class="flex sm:flex-row flex-col gap-[30px]">

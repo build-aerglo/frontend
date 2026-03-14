@@ -1,5 +1,5 @@
 <template>
-  <NavigationHeaderUser />
+  <!-- <NavigationHeaderUser /> -->
   <div class="flex flex-col">
     <div
       class="min-h-[90dvh] border border-primary flex flex-col justify-center items-center bg-cover bg-center py-[30px]"
@@ -10,13 +10,15 @@
       "
     >
       <div
-        class="flex-1 w-full flex justify-center items-center flex-col gap-2.5"
+        class="sm:flex-1 w-full flex justify-center items-center flex-col gap-2.5 sm:p-0 pb-[50px]"
       >
-        <div class="font-bold text-white text-2xl sm:text-4xl drop-shadow-lg">
+        <div
+          class="font-bold text-white sm:text-5xl text-[30px] drop-shadow-lg sm:text-left text-center sm:p-0 px-[20px]"
+        >
           Let real experiences guide you.
         </div>
-        <div class="text-white text-sm sm:text-[110%]">
-          Find verified businesses, read <span class="hidden sm:inline-block">authentic</span> reviews, and connect with the
+        <div class="text-white sm:text-left text-center sm:!w-full !w-[300px]">
+          Find verified businesses, read authentic reviews, and connect with the
           services you need.
         </div>
         <div ref="heroSearchRef" class="mt-[20px] sm:w-[50%] w-full">
@@ -24,14 +26,48 @@
         </div>
       </div>
 
-      
+      <!-- statistics -->
+      <div class="section">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-4 sm:gap-[20px] gap-[10px] text-white"
+        >
+          <div class="hidden flex-col justify-center sm:flex">
+            <div
+              class="font-bold sm:text-2xl text-[170%] mb-[5px] drop-shadow-lg"
+            >
+              Growing Community
+            </div>
+            <div>
+              Clereview contains authentic reviews from real people to help you
+              make better decisions.
+            </div>
+          </div>
+          <div
+            v-for="(i, idx) in statistics"
+            :key="idx"
+            class="flex flex-col justify-center items-center sm:p-[20px] p-[10px]"
+          >
+            <div class="font-bold text-[300%] drop-shadow-lg">
+              {{ i.count }}
+            </div>
+            <div class="text-center">{{ i.title }}</div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- statistics -->
     <LandingStatistics :statistics="statistics" />
     <!-- categories -->
-    <div class="..border ..rounded-[10px] !bg-[#FDF3FF] p-[30px]">
+    <div class="!bg-[#FDF3FF] sm:px-[30px] px-[20px] py-[30px]">
       <div class="flex justify-between items-center mb-[20px]">
-        <div class="text-2xl font-bold">Looking for something specific?</div>
+        <div>
+          <span class="text-2xl sm:block hidden font-bold"
+            >Looking for something specific?</span
+          >
+          <span class="sm:hidden block text-[170%] font-bold"
+            >Something specific?
+          </span>
+        </div>
         <div class="flex gap-2">
           <i
             @click="prev"
@@ -49,6 +85,7 @@
         :value="categories"
         :numVisible="10"
         :numScroll="5"
+        :responsiveOptions="responsiveOptions"
         :showNavigators="false"
         :showIndicators="false"
       >
@@ -61,17 +98,19 @@
     <!-- featured business -->
     <div class="section sm:my-[50px] my-[30px]">
       <div class="flex justify-between items-center mb-[20px]">
-        <div class="header font-bold flex-1 text-3xl">Featured Businesses</div>
+        <div class="header font-bold flex-1 sm:text-3xl text-[170%]">
+          Featured Businesses
+        </div>
         <div>
           <button
-            class="rounded-full !bg-primary px-[15px] py-[5px] text-white"
+            class="rounded-full !bg-primary sm:px-[15px] px-[10px] py-[5px] flex justify-center items-center text-white"
           >
-            See More
+            <span class="sm:block hidden">See More</span>
             <i class="pi pi-angle-right"></i>
           </button>
         </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-[20px]">
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-[20px]">
         <BusinessSingle
           v-for="(i, idx) in featuredBusiness"
           :key="idx"
@@ -82,10 +121,10 @@
 
     <!-- cta - business -->
     <div
-      class="..section-mg bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 p-[50px] my-[30px] rounded-[10px]"
+      class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 px-[30px] sm:px-[50px] py-[50px] my-[30px] rounded-[10px]"
     >
-      <div class="grid sm:grid-cols-2 grid-cols-1 gap-[20px]">
-        <div class="flex flex-col justify-center">
+      <div class="grid sm:grid-cols-2 grid-cols-1 sm:gap-[20px] gap-[30px]">
+        <div class="order-2 sm:!order-1 flex flex-col justify-center">
           <div class="text-2xl font-bold">More than just reviews</div>
           <div class="mt-[20px]">
             <p>
@@ -98,7 +137,7 @@
             </p>
             <p>With onboarding in mere minutes, what are you waiting for?.</p>
           </div>
-          <div class="mt-[20px]">
+          <div class="sm:mt-[20px] mt-[0px]">
             <NuxtLink>
               <button
                 class="rounded-full !bg-light text-white px-[25px] py-[15px]"
@@ -108,7 +147,7 @@
             </NuxtLink>
           </div>
         </div>
-        <div>
+        <div class="order-1 sm:!order-2">
           <div class="flex gap-4 w-full mx-auto">
             <div
               v-for="(img, index) in images"
@@ -160,6 +199,8 @@
             :numVisible="1"
             :numScroll="1"
             :showNavigators="false"
+            :autoplayInterval="4000"
+            circular
             :showIndicators="false"
           >
             <template #item="slotProps">
@@ -180,7 +221,7 @@
 
     <!-- cta - user -->
     <div
-      class="..section-mg ..rounded-[10px] p-[25px] flex items-center justify-end bg-gradient-to-r from-[#deae29] to-[#fbd85b] mt-[30px]"
+      class="p-[25px] flex sm:flex-row flex-col sm:items-center justify-end bg-gradient-to-r from-[#deae29] to-[#fbd85b] mt-[30px]"
     >
       <div class="flex-1">
         <div class="font-bold text-[130%] text-white">
@@ -191,17 +232,22 @@
           thousands of others discover who they can trust.
         </div>
       </div>
-      <div>
-        <button class="rounded-full !bg-black text-white px-[25px] py-[15px]">
+      <div class="sm:mt-0 mt-[20px] text-right">
+        <button
+          class="rounded-full !bg-[#1B1A1B] text-white px-[25px] py-[15px]"
+        >
           Write a review
         </button>
       </div>
     </div>
   </div>
-  <NavigationFooterUser />
+  <!-- <NavigationFooterUser /> -->
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: "user-landing",
+});
 import type { ReviewSummary } from "~/types/review";
 
 const heroSearchRef = ref<HTMLElement | null>(null);
@@ -215,6 +261,18 @@ const statistics = [
 
 // categories
 const page = ref(0);
+const responsiveOptions = ref([
+  {
+    breakpoint: "1400px",
+    numVisible: 10,
+    numScroll: 5,
+  },
+  {
+    breakpoint: "767px",
+    numVisible: 3,
+    numScroll: 3,
+  },
+]);
 
 const next = () => {
   page.value++;
@@ -458,6 +516,14 @@ button:disabled {
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: 1fr; /* 1 item per row on mobile */
+  }
+
+  .header {
+    border: none;
+    padding-left: 0px;
+    font-weight: bolder;
+    margin-bottom: 0px;
+    padding-block: 0px;
   }
 }
 </style>

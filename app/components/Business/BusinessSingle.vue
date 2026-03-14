@@ -1,6 +1,6 @@
 <template>
   <Card
-    class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition-shadow duration-300"
+    class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
   >
     <template #content>
       <div class="flex flex-col gap-4">
