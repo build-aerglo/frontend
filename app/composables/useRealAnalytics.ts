@@ -156,7 +156,7 @@ export function useRealAnalytics() {
     // ── Fetch ─────────────────────────────────────────────
 
     async function load() {
-        const businessId = businessStore.businessId as string | undefined
+        const businessId = businessStore.id as string | undefined
         if (!businessId) {
             error.value = 'No business ID found. Please make sure you are logged in.'
             return
@@ -185,7 +185,7 @@ export function useRealAnalytics() {
      * Shows a success/error banner for 4 seconds.
      */
     async function triggerAndRefresh() {
-        const businessId = businessStore.businessId as string | undefined
+        const businessId = businessStore.id as string | undefined
         if (!businessId || triggering.value) return
 
         triggering.value = true
