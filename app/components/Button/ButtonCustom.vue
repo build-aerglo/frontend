@@ -17,7 +17,7 @@
       size === 'lg' ? 'py-[10px] px-[15px]' : 'py-[6px] px-[7px]',
 
       // Shape
-      rounded ? 'rounded-full' : 'rounded-[5px]',
+      rounded ? 'rounded-full' : 'rounded-[10px]',
 
       // External custom styles (overrides)
       inputClass,

@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full py-4 px-2 rounded-2xl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
     <div class="mx-auto">
       <div class="relative mb-2">
         <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
-          Looking for something specific?
+          <span class="hidden md:inline-block text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">Looking for</span> something specific?
         </h2>
         <a href="/end-user/landing/categories"
           class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">

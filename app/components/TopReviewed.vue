@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="relative mb-6">
         <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
-          Top Reviewed
+          Top Businesses
         </h2>
         <NuxtLink
           to="/end-user/landing/explore"

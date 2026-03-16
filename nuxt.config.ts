@@ -42,6 +42,18 @@ export default defineNuxtConfig({
 analyticsFunctionUrl: process.env.ANALYTICS_FUNCTION_URL ?? "https://analyticsservice-func-cc.azurewebsites.net/api"
     },
   },
+  app: {
+    head: {
+      title: 'Clereview',
+      link: [
+        // Add this line
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ],
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ]
+    }
+  },
   // nitro: {
   //   devProxy : {
   //     '/api/' : {
