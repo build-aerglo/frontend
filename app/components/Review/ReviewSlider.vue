@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-purple-50 py-7">
-    <div class="container mx-auto px-4">
+  <section class="bg-purple-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="relative mb-6">
-        <h2 class="text-2xl md:text-3xl font-demibold text-left text-gray-700 dark:text-white">
+      <div class="relative mb-8">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
           Recent Reviews
         </h2>
         <div class="absolute right-0 top-1/2 -translate-y-1/2">

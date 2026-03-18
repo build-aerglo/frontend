@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const routeRules = [
     {
       pattern: /^\/business(?!\/auth)/,  // /business/* but NOT /business/auth/*
-      allowedRoles: ['business_user'],
+      blockedRoles: ['end_user'],
       redirect: '/business/auth/sign-in'
     },
     {

@@ -1,6 +1,6 @@
 <template>
   <Toast />
-   <NavBar />
+   <Nav />
   <div class="container-xxl relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
     <div class="absolute inset-0 bg-black/50"></div>
     <div class="authentication-wrapper authentication-basic container-py">
@@ -223,6 +223,7 @@
 </template>
 
 <script setup lang="ts">
+import Nav from '~/components/BusinessLanding/Nav.vue';
 import useMethods from '~/composables/useMethods';
 import useBusinessMethods from '~/composables/business/useBusinessMethods';
 import useSearch from '~/composables/search/useSearch';

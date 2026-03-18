@@ -55,7 +55,8 @@
         </div>
       </div>
     </div>
-
+    <!-- statistics -->
+    <LandingStatistics :statistics="statistics" />
     <!-- categories -->
     <div class="!bg-[#FDF3FF] sm:px-[30px] px-[20px] py-[30px]">
       <div class="flex justify-between items-center mb-[20px]">

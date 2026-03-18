@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <NavBar />
+  <Nav />
   <div
     class="h-[calc(100vh-4rem)] overflow-hidden relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center"
   >
@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import Nav from '~/components/BusinessLanding/Nav.vue';
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import useVerificationMethods from "~/composables/verification/useVerificationMethods";
 import useBusinessUser from "~/composables/business/useBusinessUser";
