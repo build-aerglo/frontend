@@ -43,8 +43,13 @@
   <LandingStatistics :statistics="statistics" />
  
   <!--categories-->
-  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-100 pb-10 pt-5 px-12">
+  <section class="pb-10 pt-5">
     <LandingCategories />
+  </section>
+
+  <!--Top reviewed-->
+  <section>
+    <TopReviewed />
   </section>
 
   <!-- featured business -->
@@ -72,58 +77,50 @@
     </div>
   </div>
 
-
-  <!--Top reviewed-->
-  <section >
-    <TopReviewed />
-  </section>
-
-
   <!--Business CTA Section-->
   <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8 overflow-hidden">
-    <div class="container mx-auto">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-12">
-        
-        <div class="text-center md:text-left md:w-1/2 space-y-5">
-          <h2 class="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
-            Ready to expand your brand?
-          </h2>
-          <p class="text-slate-600 text-lg max-w-md mx-auto md:mx-0">
-            Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
-          </p>
-          <div class="pt-2">
-            <NuxtLink to="/business/landing">
-              <button class="group px-8 py-3.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center mx-auto md:mx-0 gap-3 shadow-lg hover:shadow-xl">
-                Get Started
-                <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
-              </button>
-            </NuxtLink>
-          </div>
+  <div class="container mx-auto">
+    <div class="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+      
+      <div class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5">
+        <h2 class="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
+          Ready to expand your brand?
+        </h2>
+        <p class="text-slate-600 text-lg max-w-md md:text-left">
+          Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
+        </p>
+        <div class="pt-2 w-full flex justify-center md:justify-start">
+          <NuxtLink to="/business/landing" class="w-auto">
+            <button class="group px-8 py-3.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
+              Get Started
+              <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </NuxtLink>
         </div>
-
-        <div class="relative md:w-1/2 w-full flex justify-center items-center">
-          <div class="absolute w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
-          
-          <div class="relative z-10 animate-float drop-shadow-2xl">
-            <img 
-              src="/images/img/front-pages/landing-page/cta-dashboard.png" 
-              alt="Business Dashboard" 
-              class="max-w-full h-auto rounded-lg"
-            />
-          </div>
-
-          <div class="absolute -bottom-4 -right-4 md:right-0 bg-white p-3 rounded-lg shadow-xl animate-float-delayed z-20 hidden sm:flex items-center gap-2 border border-slate-100">
-            <div class="w-2 h-2 rounded-full bg-green-500"></div>
-            <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Real-time Analytics</span>
-          </div>
-        </div>
-
       </div>
-    </div>
-  </section>
 
+      <div class="relative md:w-1/2 w-full flex justify-center items-center">
+        <div class="absolute w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        
+        <div class="relative z-10 animate-float drop-shadow-2xl">
+          <img 
+            src="/images/img/front-pages/landing-page/cta-dashboard.png" 
+            alt="Business Dashboard" 
+            class="max-w-full h-auto rounded-lg"
+          />
+        </div>
+
+        <div class="absolute -bottom-4 -right-4 md:right-0 bg-white p-3 rounded-lg shadow-xl animate-float-delayed z-20 hidden sm:flex items-center gap-2 border border-slate-100">
+          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+          <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Real-time Analytics</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
   <!--Fourth Section Begins-->
-  <section class="my-0">
+  <section>
     <ReviewSlider />
   </section>
   <!--Fourth Section Ends-->

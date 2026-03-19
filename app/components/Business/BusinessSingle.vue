@@ -17,12 +17,12 @@
             <div class="font-semibold text-[120%] mb-1 text-gray-800">
               {{ data.name }}
             </div>
-            <Chip
+            <!-- <Chip
               :label="data.categories[0]?.name"
               class="cursor-pointer !py-[4px] !bg-primary text-white"
             >
               <span class="!text-[80%]">{{ data.categories[0]?.name }}</span>
-            </Chip>            
+            </Chip>             -->
           </div>
         </div>
       </template>

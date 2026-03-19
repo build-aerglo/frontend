@@ -1,8 +1,8 @@
 <template>
-  <section class="bg-purple-50 py-7">
-    <div class="container mx-auto px-4">
+  <section class="bg-purple-50 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="relative mb-6">
+      <div class="relative mb-8">
         <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
           Recent Reviews
         </h2>

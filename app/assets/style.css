@@ -88,3 +88,36 @@ div.section-mg {
     font-size: 13px;
   }
 }
+/* 1. Standard properties for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #deae29 #fff9e6; /* thumb color | track color */
+}
+
+/* 2. Webkit Browsers (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  width: 10px;               /* Width of the vertical scrollbar */
+  height: 10px;              /* Height of the horizontal scrollbar */
+}
+
+/* The "Track" (the background area) */
+::-webkit-scrollbar-track {
+  background: #fff9e6;       /* Very light amber/cream background */
+}
+
+/* The "Thumb" (the part you drag) */
+::-webkit-scrollbar-thumb {
+  background-color: #deae29; /* Your brand amber #deae29 */
+  border-radius: 20px;       /* Makes it pill-shaped */
+  border: 2px solid #fff9e6; /* Creates a "floating" padding effect */
+}
+
+/* Thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #c49a24; /* A slightly darker shade for interaction */
+}
+
+/* Optional: Scrollbar Corner (where horizontal and vertical meet) */
+::-webkit-scrollbar-corner {
+  background: #fff9e6;
+}
