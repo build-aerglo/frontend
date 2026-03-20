@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-purple-50 py-16">
+  <section class="bg-[#e4faeb] py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="relative mb-8">
@@ -35,11 +35,10 @@
             v-for="(review, index) in reviews"
             :key="index"
             :class="slideWidthClass"
-            class="p-2"
+            class="px-3"
           >
             <div
-              class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md p-6 h-full flex flex-col justify-between hover:shadow-lg transition-all"
-            >
+              class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-md p-7 h-full flex flex-col justify-between hover:shadow-lg transition-all">
               <div>
                 <p class="text-lg text-slate-800 dark:text-gray-100 font-semibold">
                   {{ review.business }}
@@ -53,7 +52,7 @@
                     class="w-5 h-5"
                   />
                 </div>
-                <p class="text-gray-500 dark:text-gray-200 italic">
+                <p class="text-gray-500 dark:text-gray-200 italic line-clamp-4">
                   “{{ review.text }}”
                 </p>
               </div>
@@ -109,15 +108,15 @@ const baseReviews: Review[] = [
   { business: 'IronFit Gym', rating: 5.0, text: "All the motivation and equipment required? It's all at IFG!", avatar: img4, name: 'Faiza Musa', time: '15 minutes ago' },
 ]
 
-const visibleCount = ref(5)
+const visibleCount = ref(4)
 const currentIndex = ref(visibleCount.value) // start after prepended clones
 const isTransitioning = ref(true)
 let interval: NodeJS.Timeout
 
 const updateVisibleCount = () => {
   if (window.innerWidth < 640) visibleCount.value = 1
-  else if (window.innerWidth < 1006) visibleCount.value = 3
-  else visibleCount.value = 5
+  else if (window.innerWidth < 1024) visibleCount.value = 2
+  else visibleCount.value = 4
 }
 
 // Clone slides for infinite looping
@@ -131,8 +130,8 @@ const reviews = computed(() => {
 
 const slideWidthClass = computed(() => {
   if (visibleCount.value === 1) return 'min-w-full'
-  if (visibleCount.value === 3) return 'min-w-1/3'
-  return 'min-w-[20%]'
+  if (visibleCount.value === 2) return 'min-w-[50%]'
+  return 'min-w-[25%]'
 })
 
 const nextSlide = async () => {

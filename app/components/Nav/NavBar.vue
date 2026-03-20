@@ -92,81 +92,96 @@
     </div>
 
     <!-- MOBILE MENU -->
-    <div :class="['fixed top-0 left-0 h-full w-[220px] bg-white dark:bg-gray-900 shadow-md transform transition-transform duration-300 md:hidden z-50', isOpen ? 'translate-x-0' : '-translate-x-full']">
-      <ul class="flex flex-col bg-white dark:bg-gray-900 text-gray-800 dark:text-white font-medium p-6 space-y-4">
+    <Drawer 
+      v-model:visible="isOpen" 
+      header=" "
+      class="!w-[280px] dark:bg-gray-900"
+      :pt="{
+        header: 'hidden', /* We'll build our own header for better branding */
+        content: 'p-0'
+      }"
+    >
+      <div class="flex flex-col h-full bg-white dark:bg-gray-900">
         
-        <!-- Mobile Header -->
-        <li>
-          <div class="flex items-center justify-between border-b border-gray-200 mx-[-1.5rem] px-[1.5rem] py-1 dark:border-gray-700">
-            <!-- Show User Avatar if authenticated -->
-            <div v-if="userStore.isAuthenticated">
-              <NuxtLink :to="`/user/${userStore.id}`" @click="isOpen = false">
-                <UserAvatar 
-                  v-if="userProfile"
-                  :first-name="userProfile?.username"
-                  :size="38"
-                />
-              </NuxtLink>
+        <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <div v-if="userStore.isAuthenticated" class="flex items-center gap-3">
+            <NuxtLink :to="`/user/${userStore.id}`" @click="isOpen = false">
+              <UserAvatar 
+                v-if="userProfile"
+                :first-name="userProfile?.username"
+                :size="42"
+              />
+            </NuxtLink>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">
+                {{ userProfile?.username || 'User' }}
+              </span>
+              <span class="text-[11px] text-[#008253]">View Profile</span>
             </div>
-            
-            <!-- Show Logo if not authenticated -->
-            <div v-else>
-              <NuxtLink to="/" @click="isOpen = false">
-                <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+          </div>
+          
+          <div v-else>
+            <NuxtLink to="/" @click="isOpen = false">
+              <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+            </NuxtLink>
+          </div>
+          
+          <button @click="isOpen = false" class="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500">
+            <i class="pi pi-times text-xs"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-4">
+          <ul class="space-y-1 px-3">
+            <li>
+              <NuxtLink to="/" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-home text-[#008253]"></i>
+                <span>Home</span>
               </NuxtLink>
-            </div>
-            
-            <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
-              <i class="pi pi-times text-sm"></i>
+            </li>
+            <li>
+              <button @click="handleWriteReviewClick(); isOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-pencil text-[#008253]"></i>
+                <span>Write a Review</span>
+              </button>
+            </li>
+            <li>
+              <NuxtLink to="/end-user/landing/categories" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-th-large text-[#008253]"></i>
+                <span>Categories</span>
+              </NuxtLink>
+            </li>
+            <li v-if="!userStore.isAuthenticated">
+              <NuxtLink to="/business/landing" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-briefcase text-[#008253]"></i>
+                <span>For Business</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div v-if="userStore.isAuthenticated">
+            <button 
+              @click="triggerLogout(); isOpen = false" 
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-100 text-red-600 font-medium hover:bg-red-50 transition-colors"
+            >
+              <i class="pi pi-sign-out"></i>
+              Logout
             </button>
           </div>
-        </li>
 
-        <!-- Write a Review (Mobile) -->
-        <li>
-          <button @click="handleWriteReviewClick; isOpen = false" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            Write a Review
-          </button>
-        </li>
-
-        <!-- Categories (Mobile) -->
-        <li>
-          <NuxtLink to="/end-user/landing/categories" @click="isOpen = false" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            Categories
-          </NuxtLink>
-        </li>
-
-        <!-- For Business (Mobile) -->
-        <li v-if="!userStore.isAuthenticated">
-          <NuxtLink to="/business/landing" @click="isOpen = false" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            For Business
-          </NuxtLink>
-        </li>
-
-        <!-- Auth Section (Mobile) -->
-        <li class="pt-4 border-t">
-          <!-- Logout (if authenticated) -->
-          <button 
-            v-if="userStore.isAuthenticated"
-            @click="triggerLogout(); isOpen = false" 
-            class="text-red-600 hover:text-red-700"
-          >
-            <i class="pi pi-sign-out mr-2"></i> Logout
-          </button>
-
-          <!-- Login/Register (if not authenticated) -->
-          <ButtonCustom
-            v-else
-            @click="showGeneralAuth = true; isOpen = false" 
-            primary="true"
-            label="Login/Register"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <!-- Mobile Menu Backdrop -->
-    <div v-if="isOpen" class="fixed inset-0 z-30 md:hidden bg-black/20 backdrop-blur-md transition-all duration-300" @click="isOpen = false"></div>
+          <div v-else class="space-y-3">
+            <ButtonCustom
+              @click="showGeneralAuth = true; isOpen = false" 
+              primary="true"
+              label="Login/Register"
+              inputClass="!py-3"
+            />
+          </div>
+        </div>
+      </div>
+    </Drawer>
 
     <!-- Modals (Teleport) -->
     <Teleport to="body">

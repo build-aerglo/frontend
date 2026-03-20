@@ -2,15 +2,19 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
     <div class="mx-auto">
       <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
-          <span class="hidden md:inline-block text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">Looking for</span> something specific?
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white mb-0">
+          Explore categories
         </h2>
-        <a href="/end-user/landing/categories"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
-          ...
-        </a>
+        <span class="text-xs text-gray-500 font-semibold">Ranked best on reviews, recency, and customer trust.</span>
+        <NuxtLink 
+          to="/end-user/landing/categories"
+          class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
+        >
+          See more
+          <i class="pi pi-arrow-right text-xs group-hover:translate-x-1.5 transition-transform duration-300"></i>
+        </NuxtLink>
       </div>
-      <div class="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6">
+      <div class="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6 border border-gray-200 shadow-md p-4 rounded-xl mt-5">
         <div
           v-for="(category, index) in categories"
           :key="index"
