@@ -1,6 +1,5 @@
 <template>
   <NavBar />
-
   <section id="hero"
     class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6">
     <!-- Background image div with loading state -->
@@ -53,7 +52,7 @@
   </section>
 
   <!-- featured business -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="flex justify-between items-center mb-[20px]">
       <div class="flex gap-[10px] items-center">
         <div class="!bg-primary px-[3px] py-6"></div>
@@ -75,15 +74,15 @@
         :data="i"
       />
     </div>
-  </div>
+  </div> -->
 
   <!--Business CTA Section-->
-  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8 overflow-hidden">
+  <section class="py-10 px-6 md:px-8 overflow-hidden">
   <div class="container mx-auto">
     <div class="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
       
       <div class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5">
-        <h2 class="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">
+        <h2 class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight">
           Ready to expand your brand?
         </h2>
         <p class="text-slate-600 text-lg max-w-md md:text-left">
@@ -91,7 +90,7 @@
         </p>
         <div class="pt-2 w-full flex justify-center md:justify-start">
           <NuxtLink to="/business/landing" class="w-auto">
-            <button class="group px-8 py-3.5 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
+            <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
               Get Started
               <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
             </button>
@@ -126,7 +125,7 @@
   <!--Fourth Section Ends-->
 
   <!--Fifth Section begins-->
-  <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
+  <!-- <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
     <div class="container mx-auto px-6 text-center">
       <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
         Add Your Voice
@@ -154,11 +153,30 @@
         />
       </Teleport>
     </div>
-  </section>
+  </section> -->
   <!--Fifth Section Ends-->
-
+  <div
+      class="p-[25px] flex sm:flex-row flex-col sm:items-center justify-end bg-gradient-to-r from-[#deae29] to-[#fbd85b] "
+    >
+      <div class="flex-1">
+        <div class="font-bold text-[130%] text-white">
+          Share Your Experience
+        </div>
+        <div class="text-white">
+          Had an experience? Share your review with businesses and help
+          thousands of others discover who they can trust.
+        </div>
+      </div>
+      <div class="sm:mt-0 mt-[20px] md:text-right">
+        <button
+          class="rounded-full !bg-[#1B1A1B] text-white px-[25px] py-[15px]"
+        >
+          Write a review
+        </button>
+      </div>
+    </div>
   <!--Footer-->
-  <NavFooter />
+  <NavigationFooterUser />
   <!--Footer-->
 
 </template>

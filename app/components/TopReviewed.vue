@@ -1,16 +1,17 @@
 <template>
-  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-12">
+  <section class="bg-[#e4faeb] py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="relative mb-8">
         <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
           Top Businesses
         </h2>
-        <NuxtLink
+        <NuxtLink 
           to="/end-user/landing/explore"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline dark:text-gray-300"
+          class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
         >
           See more
+          <i class="pi pi-arrow-right text-xs group-hover:translate-x-1.5 transition-transform duration-300"></i>
         </NuxtLink>
       </div>
 
