@@ -11,7 +11,7 @@
       // Base style (depends on primary)
       primary
         ? '!bg-primary text-white'
-        : '!border-primary border !text-primary bg-white',
+        : '!border-primary border-1 !text-primary bg-white',
 
       // Size
       size === 'lg' ? 'py-[10px] px-[15px]' : 'py-[6px] px-[7px]',

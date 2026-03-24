@@ -39,7 +39,7 @@
 
   
   <!-- statistics -->
-  <LandingStatistics :statistics="statistics" />
+  <LandingStatistics :statistics="statistics" bgClass="bg-[#e4faeb]" />
  
   <!--categories-->
   <section class="pb-10 pt-5">
@@ -176,7 +176,7 @@
       </div>
     </div>
   <!--Footer-->
-  <NavigationFooterUser />
+  <NavigationFooter />
   <!--Footer-->
 
 </template>
