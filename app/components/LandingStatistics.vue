@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-[#e4faeb] py-4">
+    <div :class="[bgClass, 'py-4']">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 ">
           <!-- Growing Community - Hidden on mobile, visible on large screens -->
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["statistics"])
+const props = defineProps(["statistics", "bgClass"])
 </script>
 
 <style scoped>
