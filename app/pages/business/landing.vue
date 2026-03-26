@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Nav />
+
     <main>
       <Hero />
       <SocialProof />
@@ -10,10 +10,13 @@
       <CTA />
     </main>
   </div>
-  <NavFooter/>
+
 </template>
 
 <script setup>
+definePageMeta({
+  layout: "for-business",
+});
 import Nav from '~/components/BusinessLanding/Nav.vue';
 import Hero from '~/components/BusinessLanding/Hero.vue';
 import SocialProof from '~/components/BusinessLanding/SocialProof.vue';

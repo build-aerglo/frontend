@@ -41,40 +41,13 @@
   <!-- statistics -->
   <LandingStatistics :statistics="statistics" bgClass="bg-[#e4faeb]" />
  
-  <!--categories-->
   <section class="pb-10 pt-5">
     <LandingCategories />
   </section>
 
-  <!--Top reviewed-->
   <section>
     <TopReviewed />
   </section>
-
-  <!-- featured business -->
-  <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="flex justify-between items-center mb-[20px]">
-      <div class="flex gap-[10px] items-center">
-        <div class="!bg-primary px-[3px] py-6"></div>
-        <div class="header text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">Featured Businesses</div>
-      </div>
-      <div>
-        <button
-          class="rounded-full !bg-primary px-[15px] py-[5px] text-white"
-        >
-          See More
-          <i class="pi pi-angle-right"></i>
-        </button>
-      </div>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-[20px]">
-      <BusinessSingle
-        v-for="(i, idx) in featuredBusiness"
-        :key="idx"
-        :data="i"
-      />
-    </div>
-  </div> -->
 
   <!--Business CTA Section-->
   <section class="py-10 px-6 md:px-8 overflow-hidden">
@@ -89,7 +62,7 @@
           Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
         </p>
         <div class="pt-2 w-full flex justify-center md:justify-start">
-          <NuxtLink to="/business/landing" class="w-auto">
+          <NuxtLink to="/for-business/index-v2" class="w-auto">
             <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
               Get Started
               <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -118,43 +91,29 @@
     </div>
   </div>
 </section>
-  <!--Fourth Section Begins-->
+
   <section>
     <ReviewSlider />
   </section>
-  <!--Fourth Section Ends-->
+  
+  <Teleport to="body">
+    <AuthUnifiedModal
+      v-if="showAuth"
+      :hide-back-to-review="true"
+      @close="showAuth = false"
+      @authenticated="handleGeneralAuthSuccess"
+    />
 
-  <!--Fifth Section begins-->
-  <!-- <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
-        Add Your Voice
-      </h2>
-      <p class="text-gray-800 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-        Become part of a growing network of individuals who value transparency and trust. By joining our platform, you
-        contribute to shaping authentic conversations, helping others make informed choices while discovering new and
-        better experiences every day.
-      </p>
-      <div class="flex justify-center space-x-4">
-        <button 
-          @click="showGeneralAuth = true"
-          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300"
-        >
-          <span>Login/Register</span>
+    <div v-if="showReviewModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showReviewModal = false"></div>
+      <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+        <button @click="showReviewModal = false" class="absolute top-5 right-5 text-gray-400">
+          <i class="pi pi-times text-xl"></i>
         </button>
+        <ReviewForm @close="showReviewModal = false" @open-auth="showAuth = true" @success="showReviewModal = false" />
       </div>
-
-      <Teleport to="body">
-        <AuthUnifiedModal 
-          v-if="showGeneralAuth" 
-          :hide-back-to-review="true"
-          @close="showGeneralAuth = false" 
-          @authenticated="handleGeneralAuthSuccess"
-        />
-      </Teleport>
     </div>
-  </section> -->
-  <!--Fifth Section Ends-->
+  </Teleport>
   <div
       class="p-[25px] flex sm:flex-row flex-col sm:items-center justify-end bg-gradient-to-r from-[#deae29] to-[#fbd85b] "
     >
@@ -169,6 +128,7 @@
       </div>
       <div class="sm:mt-0 mt-[20px] md:text-right">
         <button
+          @click="handleWriteReviewClick"
           class="rounded-full !bg-[#1B1A1B] text-white px-[25px] py-[15px]"
         >
           Write a review
@@ -176,7 +136,7 @@
       </div>
     </div>
   <!--Footer-->
-  <NavigationFooter />
+  <NavigationFooter @modal-link="handleFooterModal" />
   <!--Footer-->
 
 </template>
@@ -201,6 +161,31 @@ onMounted((): void => {
     imageLoaded.value = true;
   }
 });
+
+const showAuth = ref(false)
+const showReviewModal = ref(false)
+
+const handleFooterModal = (modal: string) => {
+  if (modal === 'auth') {
+    showAuth.value = true
+  }
+
+  if (modal === 'write-review') {
+    if (userStore.isAuthenticated) {
+      router.push('/review/write-review')
+    } else {
+      showReviewModal.value = true
+    }
+  }
+}
+const handleWriteReviewClick = () => {
+  if (userStore.isAuthenticated) {
+    router.push('/review/write-review')
+  } else {
+    showReviewModal.value = true
+  }
+}
+
 const isReviewModalOpen = ref(false)
 const statistics = [
   { title: "Registered Businesses", count: "200+" },
@@ -208,18 +193,14 @@ const statistics = [
   { title: "Uploaded Reviews", count: "10M+" },
 ];
 const featuredBusiness = getTopBusinesses(8);
-// Watch for the login event
+
 watch(() => userStore.isAuthenticated, (isLoggedIn) => {
   if (isLoggedIn) {
-    // Check if there is a pending draft in localStorage or your store
     const hasDraft = localStorage.getItem('review_draft')
     
     if (hasDraft) {
       // Automatically open the modal
       isReviewModalOpen.value = true;
-      
-      // Optional: Small toast notification
-      // toast.success("Welcome back! You can now finish your review.")
     }
   }
 })

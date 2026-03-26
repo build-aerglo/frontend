@@ -68,7 +68,7 @@
     <LandingStatistics :statistics="statistics" bg-class="bg-white" />
   </section>
 
-  <section class="py-14 px-6">
+  <section class="py-14 px-2">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3 mb-8">
         <div class="w-1 h-8 rounded-full !bg-primary"></div>
@@ -96,7 +96,7 @@
     </div>
   </section>
 
-  <section class="py-14 bg-white overflow-hidden px-6">
+  <section class="py-14 bg-white overflow-hidden px-2">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row items-center gap-12">
 
@@ -215,7 +215,7 @@
     </div>
   </section>
 
-  <section class="py-14 px-6">
+  <section class="py-14 px-2">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3 mb-8">
         <div class="w-1 h-8 rounded-full bg-gold"></div>
@@ -248,7 +248,7 @@
     </div>
   </section>
 
-  <section class="py-14 px-6 bg-white">
+  <section class="py-14 px-2 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3 mb-2">
         <div class="w-1 h-8 rounded-full !bg-primary"></div>
@@ -292,7 +292,7 @@
       </div>
     </div>
     <div class="sm:mt-0 mt-[20px] md:text-right">
-      <NuxtLink to="/business/register">
+      <NuxtLink to="/business/auth/sign-in">
         <button class="rounded-full !bg-[#1B1A1B] text-white px-[25px] py-[15px]">
           Get Started Free
         </button>

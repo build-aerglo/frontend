@@ -36,13 +36,20 @@
                 {{ section.title }}
               </div>
               <div class="flex flex-col gap-2.5">
-                <NuxtLink
-                  v-for="(link, link_idx) in section.items"
-                  :key="link_idx"
-                  :to="link.url"
-                >
-                  {{ link.name }}
-                </NuxtLink>
+                <template v-for="(link, link_idx) in section.items" :key="link_idx">
+                  <!-- Modal trigger: renders as a styled button, emits event upward -->
+                  <button
+                    v-if="link.modal"
+                    class="text-left"
+                    @click="emit('modal-link', link.modal)"
+                  >
+                    {{ link.name }}
+                  </button>
+                  <!-- Regular navigation link -->
+                  <NuxtLink v-else :to="link.url ?? '/'">
+                    {{ link.name }}
+                  </NuxtLink>
+                </template>
               </div>
             </div>
           </div>
@@ -60,7 +67,8 @@
 <script setup lang="ts">
 interface FooterLink {
   name: string
-  url: string
+  url?: string
+  modal?: string
 }
 
 interface FooterSection {
@@ -74,6 +82,8 @@ interface FooterSectionOverride {
   items: FooterLink[]
 }
 
+const emit = defineEmits<{ 'modal-link': [modal: string] }>()
+
 const props = withDefaults(
   defineProps<{
     tagline?: string
@@ -86,23 +96,24 @@ const props = withDefaults(
   }
 )
 
-
+// ── Default sections (end-user baseline) ─────────────────────
 const defaultLinks: FooterSection[] = [
   {
     title: 'Quick Links',
     items: [
       { name: 'Home',            url: '/' },
       { name: 'About CleReview', url: '/about' },
+      { name: 'Help Center', url: '/help-center' },
       { name: 'Contact Us',      url: '/contact' },
     ],
   },
   {
     title: 'For Users',
     items: [
-      { name: 'Browse Businesses', url: '/businesses' },
-      { name: 'Write a Review',    url: '/review' },
-      { name: 'Sign In',           url: '/login' },
-      { name: 'Create Account',    url: '/register' },
+      { name: 'Browse Businesses', url: '/end-user/landing/explore' },
+      { name: 'Write a Review', modal: 'write-review' },
+      { name: 'Sign In',          modal: 'auth' },
+      { name: 'Create Account',   modal: 'auth' },
     ],
   },
   {
@@ -110,11 +121,12 @@ const defaultLinks: FooterSection[] = [
     items: [
       { name: 'Terms of Service', url: '/terms' },
       { name: 'Privacy Policy',   url: '/privacy' },
-      { name: 'FAQs',             url: '/faqs' },
+      { name: 'FAQs',             url: '/help-center#faqs' },
     ],
   },
 ]
 
+// ── Merge: match by matchTitle, display override title + items ─
 const mergedLinks = computed<FooterSection[]>(() =>
   defaultLinks.map((section) => {
     const override = props.linkOverrides.find((o) => o.matchTitle === section.title)
@@ -125,13 +137,16 @@ const mergedLinks = computed<FooterSection[]>(() =>
 </script>
 
 <style scoped>
-a {
+a, button {
   color: white;
   padding-bottom: 1px;
   width: max-content;
+  background: none;
+  font-size: inherit;
+  cursor: pointer;
 }
 
-a:hover {
+a:hover, button:hover {
   border-bottom: 1px solid white;
 }
 </style>

@@ -166,7 +166,7 @@
     </div>
 
     <!-- FAQ Section -->
-    <div class="bg-white py-16 border-t border-gray-200">
+    <div id="faqs" class="bg-white py-16 border-t border-gray-200 scroll-mt-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>

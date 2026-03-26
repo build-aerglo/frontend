@@ -3,9 +3,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="relative mb-8">
-        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white mb-0">
           Top Businesses
         </h2>
+        <span class="hidden md:inline-block text-xs text-gray-500 font-semibold">Ranked best on reviews, recency, and customer trust.</span>
+        <span class="md:hidden text-xs text-gray-500 font-semibold">Ranked by trust and recency.</span>
         <NuxtLink 
           to="/end-user/landing/explore"
           class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
