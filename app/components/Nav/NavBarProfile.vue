@@ -41,11 +41,12 @@
     <Drawer
       v-model:visible="isOpen"
       position="left"
+      :show-close-icon="false"
+      :header="undefined"
       class="!w-[280px] dark:bg-gray-900"
       :pt="{
         header: 'hidden',
-        closeButton: 'hidden',
-        content: 'p-0',
+        content: 'p-0'
       }"
     >
       <div class="flex flex-col h-full bg-white dark:bg-gray-900">

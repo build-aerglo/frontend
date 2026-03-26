@@ -77,8 +77,13 @@
   <Drawer
     v-model:visible="isDrawerOpen"
     position="left"
-    class="!w-[280px]"
-    :pt="{ header: 'hidden', content: 'p-0' }"
+    :show-close-icon="false"
+    :header="undefined"
+    class="!w-[280px] dark:bg-gray-900"
+    :pt="{
+      header: 'hidden',
+      content: 'p-0'
+    }"
   >
     <div class="flex flex-col h-full bg-white">
       <!-- Drawer header -->

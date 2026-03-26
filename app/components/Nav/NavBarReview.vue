@@ -59,8 +59,13 @@
     <Drawer 
       v-model:visible="isOpen" 
       position="left"
+      :show-close-icon="false"
+      :header="undefined"
       class="!w-[280px] dark:bg-gray-900"
-      :pt="{ header: 'hidden', content: 'p-0' }"
+      :pt="{
+        header: 'hidden',
+        content: 'p-0'
+      }"
     >
       <div class="flex flex-col h-full bg-white dark:bg-gray-900">
         <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">

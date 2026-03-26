@@ -1,4 +1,5 @@
 <template>
+  <NavBar />
   <div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
     <!-- Hero Section -->
     <div class="bg-gradient-to-r from-[#08bb79] to-[#109e68] text-white py-16">
