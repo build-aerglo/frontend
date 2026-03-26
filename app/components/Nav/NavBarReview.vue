@@ -12,14 +12,6 @@
 
       <div class="flex items-center space-x-8">
         <ul class="hidden md:flex items-center space-x-8 dark:text-gray-200 font-medium">
-          <li>
-            <NuxtLink 
-              to="/business/landing" 
-              class="relative hover:text-[#008253] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full"
-            >
-              For Business
-            </NuxtLink>
-          </li>
           
           <li>
             <NuxtLink 
@@ -99,11 +91,6 @@
             <li>
               <NuxtLink to="/end-user/landing/categories" @click="isOpen = false" class="mobile-link">
                 <i class="pi pi-th-large"></i> Categories
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/business/landing" @click="isOpen = false" class="mobile-link">
-                <i class="pi pi-briefcase"></i> For Business
               </NuxtLink>
             </li>
           </ul>

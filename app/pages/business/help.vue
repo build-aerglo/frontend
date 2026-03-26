@@ -54,7 +54,7 @@
       </div>
 
       <!-- FAQ Section -->
-      <div>
+      <div id="faqs" class="scroll-mt-20">
         <h2 class="text-2xl font-semibold text-gray-900 my-6">Frequently Asked Questions</h2>
         <div class="space-y-4">
           <details

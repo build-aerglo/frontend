@@ -2,10 +2,9 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
     <div class="mx-auto">
       <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white mb-0">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
           Explore categories
         </h2>
-        <span class="text-xs text-gray-500 font-semibold">Ranked best on reviews, recency, and customer trust.</span>
         <NuxtLink 
           to="/end-user/landing/categories"
           class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
