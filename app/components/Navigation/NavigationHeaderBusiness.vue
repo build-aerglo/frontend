@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between items-center gap-2.5 w-full px-5 py-2.5 shadow-md bg-white">
-    <NuxtLink to="/for-business/index-v2" class="flex flex-col items-center">
+    <NuxtLink to="/for-business/" class="flex flex-col items-center">
       <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-10 w-auto" />
       <div class="text-[80%] text-center text-slate-500">For Business</div>
     </NuxtLink>
@@ -81,7 +81,7 @@
     :header="undefined"
     class="!w-[280px] dark:bg-gray-900"
     :pt="{
-      header: 'hidden',
+      header: '!hidden !p-0 !m-0 !h-0 !min-h-0 !overflow-hidden',
       content: 'p-0'
     }"
   >

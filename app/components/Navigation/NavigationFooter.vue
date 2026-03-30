@@ -104,7 +104,7 @@ const defaultLinks: FooterSection[] = [
       { name: 'Home',            url: '/' },
       { name: 'About CleReview', url: '/about' },
       { name: 'Help Center', url: '/help-center' },
-      { name: 'Contact Us',      url: '/contact' },
+      { name: 'Contact Us',      url: '/about#contact-us' },
     ],
   },
   {
@@ -119,8 +119,8 @@ const defaultLinks: FooterSection[] = [
   {
     title: 'Support',
     items: [
-      { name: 'Terms of Service', url: '/terms' },
-      { name: 'Privacy Policy',   url: '/privacy' },
+      { name: 'Terms of Service', url: '/terms-and-conditions' },
+      { name: 'Privacy Policy',   url: '/privacy-policy' },
       { name: 'FAQs',             url: '/help-center#faqs' },
     ],
   },

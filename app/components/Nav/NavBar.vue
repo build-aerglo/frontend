@@ -78,7 +78,7 @@
         <!-- For Business Link -->
         <NuxtLink
           v-if="!userStore.isAuthenticated" 
-          to="/for-business/index-v2" 
+          to="/for-business/" 
           class="hidden md:block relative font-medium text-gray-800 dark:text-gray-200 hover:text-[#008253] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full"
         >
           For Business
@@ -98,7 +98,7 @@
         :header="undefined"
         class="!w-[280px] dark:bg-gray-900"
         :pt="{
-          header: 'hidden',
+          header: '!hidden !p-0 !m-0 !h-0 !min-h-0 !overflow-hidden',
           content: 'p-0'
         }"
       >
@@ -153,7 +153,7 @@
               </NuxtLink>
             </li>
             <li v-if="!userStore.isAuthenticated">
-              <NuxtLink to="/for-business/index-v2" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <NuxtLink to="/for-business/" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                 <i class="pi pi-briefcase text-[#008253]"></i>
                 <span>For Business</span>
               </NuxtLink>
