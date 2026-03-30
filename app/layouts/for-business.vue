@@ -28,15 +28,15 @@
               { name: 'Home', url: '/for-business/index-v2' },
               { name: 'About CleReview', url: '/about' },
               { name: 'Help Center', url: '/business/help' }, // <-- Business specific
-              { name: 'Contact Sales', url: '/contact' },
+              { name: 'Contact Us', url: '/about#contact' },
             ]
           },
           {
             matchTitle: 'Support',
             title: 'Support',
             items: [
-              { name: 'Terms of Service', url: '/terms' },
-              { name: 'Privacy Policy',   url: '/privacy' },
+              { name: 'Terms of Service', url: '/terms-and-conditions' },
+              { name: 'Privacy Policy',   url: '/privacy-policy' },
               { name: 'FAQs',             url: '/business/help#faqs' },
             ]
           }

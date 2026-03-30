@@ -63,7 +63,7 @@
       :header="undefined"
       class="!w-[280px] dark:bg-gray-900"
       :pt="{
-        header: 'hidden',
+        header: '!hidden !p-0 !m-0 !h-0 !min-h-0 !overflow-hidden',
         content: 'p-0'
       }"
     >
