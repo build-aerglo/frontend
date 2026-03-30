@@ -848,6 +848,7 @@
     </div>
 
     <Divider class="mb-[20px]" />
+
     <BusinessProfile
       v-if="currentPage === 'profile'"
       :isBusiness="isBusiness"

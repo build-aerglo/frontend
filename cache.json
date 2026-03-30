@@ -1,1 +1,305 @@
-{}
+{
+  "top-business": [
+    {
+      "id": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "logo": "https://ik.imagekit.io/clerreview/images/profile/medal-icon_eCsEoQscnZ.svg",
+      "categories": [
+        {
+          "id": "8edd049c-6505-4086-9bf1-4f8b058a4fcf",
+          "name": "Health and Wellness",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 11,
+      "avgRating": 3.24
+    },
+    {
+      "id": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "logo": "https://ik.imagekit.io/clerreview/images/profile/92011_OyXk_BIWe.jpg",
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 23,
+      "avgRating": 3.68
+    },
+    {
+      "id": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "logo": "",
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 13,
+      "avgRating": 3.63
+    },
+    {
+      "id": "cd932015-925c-4949-9ed0-36150fe10be1",
+      "businessName": "Mhuniz Delicacies",
+      "logo": null,
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 4,
+      "avgRating": 3.61
+    },
+    {
+      "id": "aab47bff-c717-4bdd-9256-e00adcf29136",
+      "businessName": "Aerglo Tech Business",
+      "logo": "",
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 6,
+      "avgRating": 3.5
+    },
+    {
+      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
+      "businessName": "Hub Luxe",
+      "logo": null,
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 1,
+      "avgRating": 3.6
+    },
+    {
+      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
+      "businessName": "picture frames",
+      "logo": null,
+      "categories": [
+        {
+          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+          "name": "Others",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 1,
+      "avgRating": 3.6
+    },
+    {
+      "id": "a39f75dc-dd72-419f-b8c8-c6a857239745",
+      "businessName": "foodmart",
+      "logo": null,
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 2,
+      "avgRating": 3.5
+    },
+    {
+      "id": "3f630f55-7bb9-42e1-aea3-38d9a5d1c09c",
+      "businessName": "Business_Basic2",
+      "logo": "",
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 4,
+      "avgRating": 3.36
+    },
+    {
+      "id": "803e06fc-5695-47c9-a333-b3b673fd9d83",
+      "businessName": "BusinessPrem",
+      "logo": "",
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 7,
+      "avgRating": 3.21
+    }
+  ],
+  "recentReviews": [
+    {
+      "id": "0b9233bf-f843-4f30-bd9e-9777efa481d0",
+      "email": "t**t@test.com",
+      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "starRating": 3,
+      "uploadedDate": "2026-03-19T21:53:18.387439",
+      "reviewBody": "Decent food and atmosphere, but the service is slow and the prices feel a bit too high for the overall experience",
+      "anonymous": true
+    },
+    {
+      "id": "5a929ca7-6dc3-4654-9d24-25d309356c70",
+      "email": "o***************h@gmail.com",
+      "businessId": "3f630f55-7bb9-42e1-aea3-38d9a5d1c09c",
+      "businessName": "Business_Basic2",
+      "starRating": 5,
+      "uploadedDate": "2026-03-18T23:33:28.193661",
+      "reviewBody": "man i am trying to test elastic search so i am giving myself 5 star cause i too good mehn",
+      "anonymous": true
+    },
+    {
+      "id": "fd96b93b-a3ae-4d17-9972-68cb454818f1",
+      "email": "o***************h@gmail.com",
+      "businessId": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "starRating": 5,
+      "uploadedDate": "2026-03-18T22:52:42.917981",
+      "reviewBody": "i went there again today and surpirsinlgy their staff outfit has changed i guess they do listen",
+      "anonymous": true
+    },
+    {
+      "id": "3f046ea5-3b7e-44ef-bb6b-857a321b5333",
+      "email": "t**t@test.com",
+      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "starRating": 3.5,
+      "uploadedDate": "2026-03-18T21:44:03.983524",
+      "reviewBody": "I enjoyed myself, but the waiter was not very nice. The food came early, but i don't like being disrespected by waiters.",
+      "anonymous": true
+    },
+    {
+      "id": "2f3719ef-766a-4adc-a54a-1607d7dc95eb",
+      "email": "r*******c@mailinator.com",
+      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "starRating": 5,
+      "uploadedDate": "2026-03-18T20:41:45.579348",
+      "reviewBody": "yeah the food is great really great i actually enjoyed it honestly and i am really hard to please",
+      "anonymous": true
+    },
+    {
+      "id": "e6bd1850-b343-4282-afd8-bd3c2d217880",
+      "email": "j******e@gmail.com",
+      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "starRating": 1,
+      "uploadedDate": "2026-03-17T21:30:24.896218",
+      "reviewBody": "Very poor food! The rice was spoilt! Then beans was undone and the stew was too oily",
+      "anonymous": true
+    },
+    {
+      "id": "ce3f9d46-674f-48b0-8ff8-d394da12726a",
+      "email": "j******e@gmail.com",
+      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "starRating": 4.5,
+      "uploadedDate": "2026-03-17T21:28:02.207465",
+      "reviewBody": "I had a really great time here. The manager was very helpful",
+      "anonymous": true
+    },
+    {
+      "id": "bf802b82-0f3c-47c3-80cb-fe90b7d91b59",
+      "email": "o***************h@gmail.com",
+      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "starRating": 3.5,
+      "uploadedDate": "2026-03-16T11:01:47.812724",
+      "reviewBody": "the place is great honestly i really love it mehn ",
+      "anonymous": true
+    },
+    {
+      "id": "61e3d3e4-7b86-4a08-a966-5447d597faa4",
+      "email": "t**t@test.com",
+      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "starRating": 4.5,
+      "uploadedDate": "2026-03-13T16:30:23.217671",
+      "reviewBody": "i had a nice time, the food was prepared a bit late, but the background music kept me company, and i really enjoyed the service.",
+      "anonymous": true
+    },
+    {
+      "id": "b052ed43-d500-40b5-9362-ee74104b0c26",
+      "email": "j******e@gmail.com",
+      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "starRating": 2,
+      "uploadedDate": "2026-03-11T21:12:19.607582",
+      "reviewBody": "Testing pagination on enduser profile",
+      "anonymous": false
+    }
+  ],
+  "statistics": {
+    "registeredBusinesses": 18,
+    "registeredUsers": 16,
+    "uploadedReviews": 77
+  },
+  "categories": [
+    {
+      "id": "147e754e-5e57-4291-b878-9f246aeed0e4",
+      "name": "Education and Training",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+      "name": "Fashion and Beauty",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+      "name": "Food and Resturants",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "8edd049c-6505-4086-9bf1-4f8b058a4fcf",
+      "name": "Health and Wellness",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "c65281fa-eabd-4c73-917b-92fdd6025660",
+      "name": "Hotels,BnB and vacation",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+      "name": "Others",
+      "description": null,
+      "parentCategoryId": null
+    },
+    {
+      "id": "14ce3615-ac66-4302-856b-133c3827b35d",
+      "name": "Shopping",
+      "description": null,
+      "parentCategoryId": null
+    }
+  ]
+}

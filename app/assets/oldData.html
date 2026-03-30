@@ -1,0 +1,299 @@
+<!-- statistics -->
+<template>
+  <div v-if="statistics.length > 0">
+    <div
+      v-for="(i, idx) in statistics"
+      :key="idx"
+      class="flex flex-col justify-center items-center p-[20px]"
+    >
+      <div class="font-bold text-[300%] drop-shadow-lg">{{ i.count }}</div>
+      <div>{{ i.title }}</div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref, onMounted, onUnmounted, watch } from "vue";
+  import useSocketInstances from "~/composables/websocket/useSocketInstances";
+
+  const props = defineProps<{
+    stats?: { title: string; count: number };
+  }>();
+
+  interface Stat {
+    title: string;
+    count: number;
+  }
+
+  const statistics = ref<Stat[]>([
+    { title: "Registered Business", count: 0 },
+    { title: "Reviewing Users", count: 0 },
+    { title: "Uploaded Reviews", count: 0 },
+  ]);
+
+  const key = "statistics";
+
+  const { useStatisticsSocket } = useSocketInstances();
+  const connection = useStatisticsSocket();
+
+  const setCoreStats = (data: any) => {
+    statistics.value[0]!.count = data.registeredBusinesses ?? 0;
+    statistics.value[1]!.count = data.registeredUsers ?? 0;
+    statistics.value[2]!.count = data.uploadedReviews ?? 0;
+  };
+
+  const ensureExtraStat = () => {
+    if (props.stats && statistics.value.length === 3) {
+      statistics.value.push(props.stats);
+    }
+  };
+
+  connection.on("ReceiveStatistics", async (stat) => {
+    console.log("fetched statistics");
+
+    setCoreStats(stat);
+    ensureExtraStat();
+
+    await $fetch("/api/page", {
+      method: "POST",
+      body: {
+        key,
+        data: stat,
+      },
+    });
+  });
+
+  connection.onclose(() => console.log("WebSocket disconnected"));
+  connection.onreconnected(() => console.log("WebSocket reconnected"));
+
+  onMounted(async () => {
+    try {
+      const res = await $fetch<any>(`/api/page?key=${key}`);
+
+      if (res) {
+        setCoreStats(res);
+      }
+
+      ensureExtraStat();
+
+      await connection.start();
+    } catch (err) {
+      console.error("Connection failed:", err);
+    }
+  });
+
+  onUnmounted(async () => {
+    await connection.stop();
+  });
+
+  watch(
+    () => props.stats,
+    () => {
+      ensureExtraStat();
+    },
+    { immediate: true },
+  );
+</script>
+<!-- statistics -->
+
+<!-- top reviews -->
+<template>
+  <Card class="section-mg p-[20px]" v-if="reviews.length > 0">
+    <template #content>
+      <div class="mb-[20px] flex justify-between">
+        <div class="text-3xl font-bold">Recent Reviews</div>
+        <div class="flex gap-2">
+          <button
+            class="pi pi-chevron-left rounded-full p-[10px] hover:bg-primary cursor-pointer bg-light"
+            :disabled="isPrevDisabled"
+            @click="review_prev"
+          >
+            <i></i>
+          </button>
+          <button
+            class="pi pi-chevron-right rounded-full p-[10px] hover:bg-primary cursor-pointer bg-light"
+            :disabled="isNextDisabled"
+            @click="review_next"
+          >
+            <i></i>
+          </button>
+        </div>
+      </div>
+      <div class="mx-[-10px]">
+        <Carousel
+          v-model:page="review_page"
+          :value="groupedCategories"
+          :numVisible="1"
+          :numScroll="1"
+          :showNavigators="false"
+          :autoplayInterval="4000"
+          circular
+          :showIndicators="false"
+        >
+          <template #item="slotProps">
+            <div class="grid-container">
+              <div
+                v-for="item in slotProps.data"
+                :key="item.id"
+                class="grid-item"
+              >
+                <ReviewForLandingPage :data="item" />
+              </div>
+            </div>
+          </template>
+        </Carousel>
+      </div>
+    </template>
+  </Card>
+  {{ reviews }}
+</template>
+
+<script setup lang="ts">
+  import type { ReviewSummary } from "~/types/review";
+  import useSocketInstances from "~/composables/websocket/useSocketInstances";
+
+  const { useRecentReviewsSocket } = useSocketInstances();
+  const connection = useRecentReviewsSocket();
+
+  const reviews = ref<ReviewSummary[] | any>([]);
+  const key = "recentReviews";
+
+  const review_page = ref(0);
+  const numPages = computed(() => {
+    return Math.ceil(reviews.value.length / 2); // 2 = numVisible
+  });
+
+  const isPrevDisabled = computed(() => review_page.value <= 0);
+  const isNextDisabled = computed(
+    () => review_page.value >= numPages.value - 1,
+  );
+
+  const review_next = () => {
+    if (review_page.value < numPages.value - 1) review_page.value++;
+  };
+
+  const review_prev = () => {
+    if (review_page.value > 0) review_page.value--;
+  };
+
+  const groupedCategories = computed(() => {
+    const groups = [];
+    for (let i = 0; i < reviews.value.length; i += 4) {
+      groups.push(reviews.value.slice(i, i + 4));
+    }
+    return groups;
+  });
+
+  connection.on("ReceiveTopReviews", async (rev) => {
+    console.log("fetched reviews");
+
+    // push reviews
+    reviews.value = rev;
+
+    await $fetch("/api/page", {
+      method: "POST",
+      body: {
+        key: key,
+        data: rev,
+      },
+    });
+  });
+
+  connection.onclose(() => console.log("WebSocket disconnected"));
+  connection.onreconnected(() => console.log("WebSocket reconnected"));
+
+  onMounted(async () => {
+    try {
+      console.log("WebSocket connected");
+      const res = await $fetch(`/api/page?key=${key}`, {
+        method: "GET",
+      });
+
+      if (res) {
+        reviews.value = res;
+      }
+
+      // start
+      await connection.start();
+    } catch (err) {
+      console.error("Connection failed:", err);
+    }
+  });
+
+  onUnmounted(async () => {
+    await connection.stop();
+  });
+</script>
+
+<style scoped>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 items per row on desktop */
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr; /* 1 item per row on mobile */
+    }
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+</style>
+<!-- top reviews -->
+
+<!-- top butiness -->
+<template>
+  <div v-if="topBusinesses.length > 0">{{ topBusinesses }}</div>
+  <hr />
+  <div>{{ topBusinesses }}</div>
+</template>
+
+<script setup lang="ts">
+  import useSocketInstances from "~/composables/websocket/useSocketInstances";
+
+  const { useTopBusinessSocket } = useSocketInstances();
+  const connection = useTopBusinessSocket();
+
+  const topBusinesses = ref<any[]>([]);
+  const key = "top-business";
+
+  connection.on("ReceiveTopBusinesses", async (stat) => {
+    console.log("fetched top businesses");
+
+    // set top business
+    topBusinesses.value = stat;
+
+    await $fetch("/api/page", {
+      method: "POST",
+      body: {
+        key: key,
+        data: stat,
+      },
+    });
+  });
+
+  connection.onclose(() => console.log("WebSocket disconnected"));
+  connection.onreconnected(() => console.log("WebSocket reconnected"));
+
+  onMounted(async () => {
+    try {
+      const res = await $fetch<any>(`/api/page?key=${key}`, {
+        method: "GET",
+      });
+
+      topBusinesses.value = res;
+
+      // start connection
+      await connection.start();
+    } catch (err) {
+      console.error("Connection failed:", err);
+    }
+  });
+
+  onUnmounted(async () => {
+    await connection.stop();
+  });
+</script>
+<!-- top business -->

@@ -29,6 +29,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // businessSubscriptionStore.clearPlan();
 
     // navigateTo("/business/auth/sign-in");
+    console.log("logged out from manage business middleware");
+    console.log("data: ", {
+      biz,
+      biz_subscription,
+      biz_verification,
+    });
     await logoutUser();
   }
 });
