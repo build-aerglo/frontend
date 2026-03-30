@@ -346,28 +346,33 @@
                     </div>
 
                     <!-- ── Vote & Flag Action Row ── -->
-                    <div class="review-actions mt-3 pt-3 border-t border-gray-100">
-                      <button
-                        :class="['action-btn action-btn--vote', voteState[review.id]?.hasVoted && 'action-btn--voted', votingInProgress[review.id] && 'action-btn--loading']"
-                        @click="handleHelpfulVote(review.id)"
-                        :disabled="votingInProgress[review.id]"
-                        :title="voteState[review.id]?.hasVoted ? 'Remove helpful vote' : 'Mark as helpful'"
-                      >
-                        <i :class="['pi', votingInProgress[review.id] ? 'pi-spin pi-spinner' : 'pi-thumbs-up']"></i>
-                        <span>Helpful</span>
-                        <span v-if="voteState[review.id]?.count ?? 0 > 0" class="vote-count">{{ voteState[review.id]?.count }}</span>
-                      </button>
-
-                      <button
-                        class="action-btn action-btn--flag"
-                        @click="openDisputeModal(review.id, review.businessId)"
-                        title="Report this review"
-                      >
-                        <i class="pi pi-flag"></i>
-                        <span>Report</span>
-                      </button>
-                    </div>
-
+                    <!-- ── Vote & Flag Action Row ── -->
+<div class="review-actions mt-3 pt-3 border-t border-gray-100">
+  <template v-if="isUser">
+    <span class="own-vote-count">
+      <i class="pi pi-thumbs-up"></i>
+      <span class="own-vote-badge">{{ voteState[review.id]?.count ?? 0 }}</span>
+    </span>
+  </template>
+  <template v-else>
+    <button
+      :class="['action-btn action-btn--vote', voteState[review.id]?.hasVoted && 'action-btn--voted', votingInProgress[review.id] && 'action-btn--loading']"
+      @click="handleHelpfulVote(review.id)"
+      :disabled="votingInProgress[review.id]"
+      :title="voteState[review.id]?.hasVoted ? 'Remove helpful vote' : 'Mark as helpful'"
+    >
+      <i :class="['pi', votingInProgress[review.id] ? 'pi-spin pi-spinner' : 'pi-thumbs-up']"></i>
+      <span v-if="(voteState[review.id]?.count ?? 0) > 0" class="vote-count">{{ voteState[review.id]?.count }}</span>
+    </button>
+    <button
+      class="action-btn action-btn--flag"
+      @click="openDisputeModal(review.id, review.businessId)"
+      title="Report this review"
+    >
+      <i class="pi pi-flag"></i>
+    </button>
+  </template>
+</div>
                     <!-- ── Business Reply Section ── -->
                     <div v-if="businessReplies[review.id]" class="mt-4 pt-4 border-t border-gray-100">
 
@@ -443,83 +448,80 @@
                     How You've Earned
                   </h3>
                   <div class="breakdown-grid">
-                    <div class="breakdown-card" @mouseenter="activeTip = 'review'" @mouseleave="activeTip = null">
-                      <div class="bcard-icon" style="background:#dcfce7; color:#16a34a"><i class="pi pi-comment"></i></div>
-                      <div class="bcard-body">
-                        <p class="bcard-label">Review Points</p>
-                        <p class="bcard-value">{{ summary.reviewPoints }}</p>
-                      </div>
-                      <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
-                      <Transition name="tip-fade">
-                        <div v-if="activeTip === 'review'" class="tooltip-bubble">
-                          <p class="tip-title">📝 Review Rewards</p>
-                          <p class="tip-body">Earn <em>2–15 points</em> per review based on quality, length, and photos added.</p>
-                        </div>
-                      </Transition>
-                    </div>
+<div class="breakdown-card" style="--tip-border:#bbf7d0; --tip-accent:#16a34a" @mouseenter="activeTip = 'review'" @mouseleave="activeTip = null">
+  <div class="bcard-icon" style="background:#dcfce7; color:#16a34a"><i class="pi pi-comment"></i></div>
+  <div class="bcard-body">
+    <p class="bcard-label">Review Points</p>
+    <p class="bcard-value">{{ summary.reviewPoints }}</p>
+  </div>
+  <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
+  <Transition name="tip-fade">
+    <div v-if="activeTip === 'review'" class="tooltip-bubble">
+      <p class="tip-title">📝 Review Rewards</p>
+      <p class="tip-body">Earn <em>2–15 points</em> per review based on quality, length, and photos added.</p>
+    </div>
+  </Transition>
+</div>
 
-                    <div class="breakdown-card" @mouseenter="activeTip = 'streak'" @mouseleave="activeTip = null">
-                      <div class="bcard-icon" style="background:#fef3c7; color:#d97706"><i class="pi pi-bolt"></i></div>
-                      <div class="bcard-body">
-                        <p class="bcard-label">Streak Reward</p>
-                        <p class="bcard-value">{{ summary.streakPoints }}</p>
-                      </div>
-                      <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
-                      <Transition name="tip-fade">
-                        <div v-if="activeTip === 'streak'" class="tooltip-bubble">
-                          <p class="tip-title">🔥 Streak Reward</p>
-                          <p class="tip-body">Reach a <em>100-day streak</em> and get verified to unlock <em>150 bonus points</em>. Current streak: {{ summary.streak }} day{{ summary.streak !== 1 ? 's' : '' }}. Longest: {{ summary.longestStreak }}.</p>
-                        </div>
-                      </Transition>
-                    </div>
+<div class="breakdown-card" style="--tip-border:#fde68a; --tip-accent:#d97706" @mouseenter="activeTip = 'streak'" @mouseleave="activeTip = null">
+  <div class="bcard-icon" style="background:#fef3c7; color:#d97706"><i class="pi pi-bolt"></i></div>
+  <div class="bcard-body">
+    <p class="bcard-label">Streak Reward</p>
+    <p class="bcard-value">{{ summary.streakPoints }}</p>
+  </div>
+  <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
+  <Transition name="tip-fade">
+    <div v-if="activeTip === 'streak'" class="tooltip-bubble">
+      <p class="tip-title">🔥 Streak Reward</p>
+      <p class="tip-body">Reach a <em>100-day streak</em> and get verified to unlock <em>150 bonus points</em>. Current streak: {{ summary.streak }} day{{ summary.streak !== 1 ? 's' : '' }}. Longest: {{ summary.longestStreak }}.</p>
+    </div>
+  </Transition>
+</div>
 
-                    <div class="breakdown-card" @mouseenter="activeTip = 'referral'" @mouseleave="activeTip = null">
-                      <div class="bcard-icon" style="background:#ede9fe; color:#7c3aed"><i class="pi pi-users"></i></div>
-                      <div class="bcard-body">
-                        <p class="bcard-label">Referral Points</p>
-                        <p class="bcard-value">{{ summary.referralPoints }}</p>
-                      </div>
-                      <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
-                      <Transition name="tip-fade">
-                        <div v-if="activeTip === 'referral'" class="tooltip-bubble tooltip-bubble--referral">
-                          <p class="tip-title">✨ Referral Rewards</p>
-                          <p class="tip-body">
-                            Earn <em>50 pts</em> when a friend you referred completes their 3rd approved review.
-                            They also receive <em>25 pts</em> as a welcome bonus — you both win.
-                          </p>
-                        </div>
-                      </Transition>
-                    </div>
+<div class="breakdown-card" style="--tip-border:#ddd6fe; --tip-accent:#7c3aed" @mouseenter="activeTip = 'referral'" @mouseleave="activeTip = null">
+  <div class="bcard-icon" style="background:#ede9fe; color:#7c3aed"><i class="pi pi-users"></i></div>
+  <div class="bcard-body">
+    <p class="bcard-label">Referral Points</p>
+    <p class="bcard-value">{{ summary.referralPoints }}</p>
+  </div>
+  <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
+  <Transition name="tip-fade">
+    <div v-if="activeTip === 'referral'" class="tooltip-bubble tooltip-bubble--referral">
+      <p class="tip-title">✨ Referral Rewards</p>
+      <p class="tip-body">Earn <em>50 pts</em> when a friend you referred completes their 3rd approved review. They also receive <em>25 pts</em> as a welcome bonus.</p>
+    </div>
+  </Transition>
+</div>
 
-                    <div class="breakdown-card" @mouseenter="activeTip = 'bonus'" @mouseleave="activeTip = null">
-                      <div class="bcard-icon" style="background:#fce7f3; color:#db2777"><i class="pi pi-gift"></i></div>
-                      <div class="bcard-body">
-                        <p class="bcard-label">Bonus Points</p>
-                        <p class="bcard-value">{{ summary.bonusPoints }}</p>
-                      </div>
-                      <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
-                      <Transition name="tip-fade">
-                        <div v-if="activeTip === 'bonus'" class="tooltip-bubble">
-                          <p class="tip-title">🎁 Bonus Points</p>
-                          <p class="tip-body">Special rewards from promotions, platform events, and milestone achievements. Keep an eye out!</p>
-                        </div>
-                      </Transition>
-                    </div>
+<div class="breakdown-card" style="--tip-border:#fbcfe8; --tip-accent:#db2777" @mouseenter="activeTip = 'bonus'" @mouseleave="activeTip = null">
+  <div class="bcard-icon" style="background:#fce7f3; color:#db2777"><i class="pi pi-gift"></i></div>
+  <div class="bcard-body">
+    <p class="bcard-label">Bonus Points</p>
+    <p class="bcard-value">{{ summary.bonusPoints }}</p>
+  </div>
+  <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
+  <Transition name="tip-fade">
+    <div v-if="activeTip === 'bonus'" class="tooltip-bubble">
+      <p class="tip-title">🎁 Bonus Points</p>
+      <p class="tip-body">Special rewards from promotions, platform events, and milestone achievements.</p>
+    </div>
+  </Transition>
+</div>
 
-                    <div class="breakdown-card" @mouseenter="activeTip = 'other'" @mouseleave="activeTip = null">
-                      <div class="bcard-icon" style="background:#e0f2fe; color:#0284c7"><i class="pi pi-thumbs-up"></i></div>
-                      <div class="bcard-body">
-                        <p class="bcard-label">Extra Points</p>
-                        <p class="bcard-value">{{ summary.otherPoints }}</p>
-                      </div>
-                      <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
-                      <Transition name="tip-fade">
-                        <div v-if="activeTip === 'other'" class="tooltip-bubble">
-                          <p class="tip-title">🤝 Community Points</p>
-                          <p class="tip-body">Earned through helpful actions like voting on reviews, completing your profile, and other community contributions.</p>
-                        </div>
-                      </Transition>
-                    </div>
+<div class="breakdown-card" style="--tip-border:#bae6fd; --tip-accent:#0284c7" @mouseenter="activeTip = 'other'" @mouseleave="activeTip = null">
+  <div class="bcard-icon" style="background:#e0f2fe; color:#0284c7"><i class="pi pi-thumbs-up"></i></div>
+  <div class="bcard-body">
+    <p class="bcard-label">Extra Points</p>
+    <p class="bcard-value">{{ summary.otherPoints }}</p>
+  </div>
+  <div class="bcard-tip-icon"><i class="pi pi-info-circle"></i></div>
+  <Transition name="tip-fade">
+    <div v-if="activeTip === 'other'" class="tooltip-bubble">
+      <p class="tip-title">🤝 Community Points</p>
+      <p class="tip-body">Earned through helpful votes, completing your profile, and community contributions.</p>
+    </div>
+  </Transition>
+</div>
                   </div>
                 </section>
 
@@ -988,7 +990,7 @@ import useUserProfileApi from "~/composables/user/useUserProfileApi";
 // ── Setup ──────────────────────────────────────────────────────────────────
 const { getUserSummary } = useUserSummary();
 const { updateUserProfile, getUserId, redeemPoints } = useUserProfileMethods();
-const { getReviewReply, getHelpfulVoteStatus, getHelpfulVoteCount, castHelpfulVote, getDisputeCategories, sendDispute } = useReviewMethods();
+const { getReviewReply, getHelpfulVoteStatus, getHelpfulVoteCount, castHelpfulVote, getDisputeCategories, sendDispute, toggleUpvoteReview } = useReviewMethods();
 
 const userId = getUserId();
 const route = useRoute();
@@ -1227,8 +1229,8 @@ const fetchVoteDataForReview = async (reviewId: string) => {
   ]);
 
   voteState.value[reviewId] = {
-    count: countRes.data?.helpfulVoteCount ?? countRes.data?.count ?? 0,
-    hasVoted: statusRes.data?.hasVoted ?? false,
+  count: countRes.data?.helpfulCount ?? 0,
+  hasVoted: statusRes.data?.hasVoted ?? false,
   };
 };
 
@@ -1242,7 +1244,7 @@ const handleHelpfulVote = async (reviewId: string) => {
 
   votingInProgress.value[reviewId] = true;
   try {
-    const res = await castHelpfulVote(reviewId, userId);
+    const res = await toggleUpvoteReview(reviewId, userId);
     if (res.statusCode === 200 && res.data) {
       voteState.value[reviewId] = {
         hasVoted: res.data.userHasVoted,
@@ -1720,12 +1722,49 @@ onBeforeMount(async () => { await loadSummary(true); });
 .bcard-label { font-size: 0.65rem; font-weight: 600; color: #64748b; margin: 0; white-space: nowrap; }
 .bcard-value { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0; line-height: 1.2; }
 .bcard-tip-icon { position: absolute; top: 7px; right: 7px; color: #94a3b8; font-size: 0.7rem; cursor: help; }
-.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 0; right: 0; z-index: 50; background: linear-gradient(135deg, #1e1b4b, #312e81);
-  color: #e0e7ff;
-  border: 1px solid rgba(165,180,252,0.2);
-  box-shadow: 0 12px 32px rgba(49,46,129,0.35); border-radius: 0.7rem; padding: 0.65rem; pointer-events: none; }
-.tip-title { font-size: 0.75rem; font-weight: 700; margin: 0 0 0.25rem; color: #c7d2fe; }
-.tip-body  { font-size: 0.7rem; line-height: 1.5; margin: 0; color: #a5b4fc; }
+.tooltip-bubble {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: white;
+  border: 1.5px solid var(--tip-border, #e2e8f0);
+  border-top: 3px solid var(--tip-accent, #e2e8f0);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  pointer-events: none;
+}
+
+.tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 1.25rem;
+  border: 6px solid transparent;
+  border-top-color: var(--tip-border, #e2e8f0);
+}
+
+.tip-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+  color: var(--tip-accent, #1e293b);
+}
+
+.tip-body {
+  font-size: 0.69rem;
+  line-height: 1.6;
+  margin: 0;
+  color: #64748b;
+}
+
+.tip-body em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--tip-accent, #1e293b);
+}
 .tip-fade-enter-active, .tip-fade-leave-active { transition: opacity 0.15s, transform 0.15s; }
 .tip-fade-enter-from, .tip-fade-leave-to { opacity: 0; transform: translateY(4px); }
 
@@ -2082,6 +2121,30 @@ onBeforeMount(async () => { await loadSummary(true); });
   color: #4b7c5c;
   line-height: 1.5;
   margin: 0;
+}
+
+.own-vote-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #cbd5e1;
+  font-size: 0.73rem;
+}
+
+.own-vote-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  padding: 0 0.4rem;
+  height: 1.3rem;
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 @media (max-width: 480px) {

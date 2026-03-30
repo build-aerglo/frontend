@@ -627,34 +627,25 @@
             class="relative p-[2px] rounded-[10px] border h-auto sm:w-[210px] w-full flex flex-col gap-[2px] items-center"
           >
             <!-- BADGE / LOGO WRAPPER -->
+           <div class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]">
             <div
-              class="relative w-full flex items-center justify-center p-[10px] sm:p-[15px]"
+              class="relative w-full max-w-[180px] sm:max-w-[160px] aspect-square overflow-hidden rounded-lg bg-gray-100"
             >
-              <!-- Badge Container - fixed max width on mobile -->
-              <div
-                class="relative w-full h-full max-w-[180px] sm:max-w-[160px] aspect-square"
-              >
-                <!-- LOGO - sits behind badge, centered -->
-                <div
-                  class="absolute inset-0 flex items-center justify-center py-[0] px-[5%] z-0"
-                >
-                  <img
-                    :src="logoSrc"
-                    class="w-full h-full object-contain"
-                    :alt="business?.name"
-                    @error="handleLogoError"
-                  />
-                </div>
+              <img
+                :src="logoSrc"
+                class="w-full h-full object-cover"
+                :alt="business?.name"
+                @error="handleLogoError"
+              />
 
-                <!-- STATUS BADGE/FRAME with Claim Status -->
-                <BusinessStatusFrame
-                  v-if="businessBadgeStatus"
-                  :status="businessBadgeStatus"
-                  :claimStatus="business?.businessStatus"
-                  class="absolute inset-2 z-20"
-                />
-              </div>
+              <BusinessStatusFrame
+                v-if="businessBadgeStatus"
+                :status="businessBadgeStatus"
+                :claimStatus="business?.businessStatus"
+                class="absolute inset-0 z-20 pointer-events-none"
+              />
             </div>
+          </div>
 
             <!-- Star ratings and reviews -->
             <div

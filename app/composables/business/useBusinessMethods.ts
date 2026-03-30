@@ -162,7 +162,7 @@ export default function () {
         return { statusCode: 200, data: res.data };
       }
     } catch (error) {
-      console.error("Error fetching businesses by category:", error);
+      console.error("Error fetching businesses by tags:", error);
       throw error;
     }
   };

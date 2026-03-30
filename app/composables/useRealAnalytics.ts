@@ -1,5 +1,3 @@
-
-
 import { ref, computed, watch } from 'vue'
 import { useAnalyticsApi } from '~/composables/useAnalyticsApi'
 import useBusinessUser from '~/composables/business/useBusinessUser'
@@ -71,14 +69,23 @@ function formatTrend(pct: number): number {
 
 /**
  * Convert a TimeSeriesPoint array into chart-ready PerformancePoint[].
- * The date field from the API can be "2026-03-10" (daily), "2026-11" (weekly
- * ISO week), or "2026-03" (monthly). We derive a short label for the axis.
+ * Backend returns data DESC (newest first). We reverse to chronological order.
+ *
+ * Daily:   "2026-03-10" → "Mar 10"
+ * Weekly:  positional labels → "Week 1" (oldest) … "Week N" (newest)
+ *          ISO week strings like "2026-12" are not meaningful to owners.
+ * Monthly: "2026-03" → "Mar"
  */
-function toPerformancePoints(points: TimeSeriesPoint[]): PerformancePoint[] {
-    return [...points].reverse().map((p) => {
-        // Derive a short axis label
+function toPerformancePoints(
+    points: TimeSeriesPoint[],
+    periodType?: 'daily' | 'weekly' | 'monthly'
+): PerformancePoint[] {
+    return [...points].reverse().map((p, i) => {
         let label = p.date
-        if (p.date.length === 10) {
+
+        if (periodType === 'weekly') {
+            label = `Week ${i + 1}`
+        } else if (p.date.length === 10) {
             // daily: "2026-03-10" → "Mar 10"
             const d = new Date(p.date)
             label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -86,10 +93,6 @@ function toPerformancePoints(points: TimeSeriesPoint[]): PerformancePoint[] {
             // monthly: "2026-03" → "Mar"
             const d = new Date(`${p.date}-01`)
             label = d.toLocaleDateString('en-US', { month: 'short' })
-        } else if (p.date.match(/^\d{4}-\d{2}$/)) {
-            // weekly: "2026-11" → "Wk 11"
-            const parts = p.date.split('-')
-            label = `Wk ${parts[1]}`
         }
 
         return {
@@ -100,18 +103,31 @@ function toPerformancePoints(points: TimeSeriesPoint[]): PerformancePoint[] {
     })
 }
 
-/** Build SVG path + points from a value array, normalized into a 40–360 x, 40–210 y box. */
-function buildChartGeometry(values: number[], maxOverride?: number) {
+export interface YTick { y: number; label: string }
+
+/**
+ * Build SVG path + points normalised into a 40-360 x, 40-210 y box.
+ * minOverride / maxOverride pin the scale so the axis is stable across periods:
+ *   ratings -> min=1, max=5   volume -> min=0, max=dataMax
+ * isRating controls whether ticks show 1dp decimals or whole numbers.
+ */
+function buildChartGeometry(
+    values: number[],
+    minOverride?: number,
+    maxOverride?: number,
+    isRating?: boolean,
+) {
     if (values.length < 2) {
-        return { points: [] as ChartPoint[], path: '' }
+        return { points: [] as ChartPoint[], path: '', yTicks: [] as YTick[] }
     }
-    const max = maxOverride ?? Math.max(...values)
-    const min = Math.min(...values)
-    const range = max === min ? 1 : max - min
+
+    const scaleMin = minOverride !== undefined ? minOverride : 0
+    const scaleMax = maxOverride !== undefined ? maxOverride : Math.max(...values)
+    const range = scaleMax === scaleMin ? 1 : scaleMax - scaleMin
 
     const points: ChartPoint[] = values.map((v, i) => ({
-        x: 40 + (i * 320) / (values.length - 1),
-        y: 210 - ((v - min) / range) * 170,
+        x: 55 + (i * 335) / (values.length - 1),
+        y: 215 - ((v - scaleMin) / range) * 180,
     }))
 
     let path = `M ${points[0]!.x} ${points[0]!.y}`
@@ -119,7 +135,20 @@ function buildChartGeometry(values: number[], maxOverride?: number) {
         path += ` L ${points[i]!.x} ${points[i]!.y}`
     }
 
-    return { points, path }
+    // 5 evenly-spaced Y ticks from scaleMin to scaleMax
+    // Y range in SVG: 215 (bottom) to 35 (top) = 180px
+    const tickCount = 4
+    const yTicks: YTick[] = []
+    for (let i = 0; i <= tickCount; i++) {
+        const value = scaleMin + (range * i / tickCount)
+        const y = 215 - (i / tickCount) * 180
+        const label = isRating
+            ? value.toFixed(1)
+            : Math.round(value).toString()
+        yTicks.push({ y, label })
+    }
+
+    return { points, path, yTicks }
 }
 
 // Source name → PrimeIcons icon + color mapping
@@ -156,7 +185,7 @@ export function useRealAnalytics() {
     // ── Fetch ─────────────────────────────────────────────
 
     async function load() {
-        const businessId = businessStore.businessId as string | undefined
+        const businessId = businessStore.id as string | undefined
         if (!businessId) {
             error.value = 'No business ID found. Please make sure you are logged in.'
             return
@@ -185,7 +214,7 @@ export function useRealAnalytics() {
      * Shows a success/error banner for 4 seconds.
      */
     async function triggerAndRefresh() {
-        const businessId = businessStore.businessId as string | undefined
+        const businessId = businessStore.id as string | undefined
         if (!businessId || triggering.value) return
 
         triggering.value = true
@@ -233,16 +262,13 @@ export function useRealAnalytics() {
         const responseRate = Number(response.value?.responseRate ?? 0)
         const views = engagement.value?.profileViews ?? 0
 
-        // Use bayesian for the displayed rating — it's the honest number.
-        // Show plain average as a subtitle so the owner can see both.
-        const bayesian = Number(r.bayesianAverageRating).toFixed(1)
         const plain = Number(r.averageRating).toFixed(1)
 
         return [
             {
-                title: 'Rating (Bayesian)',
-                value: bayesian,
-                subtitle: `Plain avg: ${plain}`,
+                title: 'Average Rating',
+                value: plain,
+                subtitle: null,
                 trend: ratingTrend,
                 icon: 'pi pi-star-fill',
                 iconColor: 'text-yellow-500',
@@ -268,7 +294,7 @@ export function useRealAnalytics() {
             },
             {
                 title: 'Response Rate',
-                value: `${Math.round(responseRate * 100)}%`,
+                value: `${Math.round(responseRate)}%`,
                 subtitle: null,
                 trend: 0,
                 icon: 'pi pi-reply',
@@ -307,17 +333,22 @@ export function useRealAnalytics() {
     })
 
     // Time-series performance data for chart (keyed by period)
+    // Sliced before reversing: backend returns DESC, so .slice(0, N) = most recent N points.
     const performanceDataByPeriod = computed(() => ({
-        daily: toPerformancePoints(timeSeries.value?.daily ?? []),
-        weekly: toPerformancePoints(timeSeries.value?.weekly ?? []),
-        monthly: toPerformancePoints(timeSeries.value?.monthly ?? []),
+        daily: toPerformancePoints((timeSeries.value?.daily ?? []).slice(0, 7), 'daily'),
+        weekly: toPerformancePoints((timeSeries.value?.weekly ?? []).slice(0, 4), 'weekly'),
+        monthly: toPerformancePoints((timeSeries.value?.monthly ?? []).slice(0, 6), 'monthly'),
     }))
 
     // Review sources array for the sources grid
     const reviewSources = computed((): ReviewSource[] => {
+        const SOURCE_NAME_OVERRIDE: Record<string, string> = {
+            direct: 'CleReview',
+        }
         return Object.entries(sources.value).map(([key, count]) => {
             const { icon, color } = sourceIcon(key)
-            const name = key.charAt(0).toUpperCase() + key.slice(1)
+            const name = SOURCE_NAME_OVERRIDE[key.toLowerCase()]
+                ?? (key.charAt(0).toUpperCase() + key.slice(1))
             return { name, count, icon, color }
         })
     })
@@ -346,10 +377,16 @@ export function useRealAnalytics() {
     ) {
         const data = performanceDataByPeriod.value[period]
         const values = data.map((d) => (type === 'ratings' ? d.rating : d.reviews))
-        const maxOverride = type === 'ratings' ? 5 : undefined
+
+        // Ratings: always pin to 1-5 so the axis never jumps between periods.
+        // Volume:  always start at 0; let max float to the data ceiling.
+        const minOverride = type === 'ratings' ? 1 : 0
+        const maxOverride = type === 'ratings' ? 5 : Math.max(...values, 1)
+        const isRating = type === 'ratings'
+
         return {
             data,
-            ...buildChartGeometry(values, maxOverride),
+            ...buildChartGeometry(values, minOverride, maxOverride, isRating),
         }
     }
 

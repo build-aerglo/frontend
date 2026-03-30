@@ -1,10 +1,10 @@
 <template>
-<nav
+  <nav
     class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300"
   >
     <div class="mx-auto px-8 flex items-center justify-between h-16">
       <!-- Logo -->
-      <NuxtLink to="/" class="flex items-center space-x-2">
+      <NuxtLink to="/" class="flex items-center">
         <img
           src="~/assets/images/e-user-logo.png"
           alt="Welcome"
@@ -12,113 +12,95 @@
         />
       </NuxtLink>
 
-      <!-- Desktop Nav Links -->
-       <!-- Right buttons -->
-      <div class="flex items-right space-x-8">
-        <ul class="hidden md:flex items-center space-x-6">
-          <li>
-            <NuxtLink to="/review/write-review">
-              <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition font-medium">
-                Write a review
-              </button>
-            </NuxtLink>
-          </li>
-          <li>
-            <button 
-              @click="triggerLogout" 
-              class="flex items-center text-red-600 dark:text-gray-200 hover:text-red-700 transition font-medium"
-            >
-              <i class="pi pi-sign-out mr-2"></i>
-              Logout
-            </button>
-          </li>
-        </ul>
-
-        <!-- Mobile toggle -->
+      <!-- Desktop right side -->
+      <div class="hidden md:flex items-center gap-4">
+        <NuxtLink to="/review/write-review">
+          <button class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition font-medium">
+            Write a review
+          </button>
+        </NuxtLink>
         <button
-          class="md:hidden text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none"
-          @click="isOpen = !isOpen"
+          @click="triggerLogout"
+          class="flex items-center gap-2 text-red-600 hover:text-red-700 transition font-medium"
         >
-          <i :class="isOpen ? 'pi pi-bars text-sm' : 'pi pi-bars text-sm'"></i>
+          <i class="pi pi-sign-out"></i>
+          Logout
         </button>
       </div>
+
+      <!-- Mobile hamburger -->
+      <button
+        class="md:hidden flex items-center text-gray-700 dark:text-gray-300 focus:outline-none"
+        @click="isOpen = true"
+      >
+        <i class="pi pi-bars text-xl"></i>
+      </button>
     </div>
 
-    <!-- Sidebar for small screens -->
-    <div
-      :class="[
-        'fixed top-0 left-0 h-full bg-white dark:bg-gray-900 shadow-md transform transition-transform duration-300 md:hidden z-50',
-        isOpen ? 'translate-y-0' : '-translate-x-full',
-      ]"
+    <!-- Mobile Drawer -->
+    <Drawer
+      v-model:visible="isOpen"
+      position="left"
+      :show-close-icon="false"
+      :header="undefined"
+      class="!w-[280px] dark:bg-gray-900"
+      :pt="{
+        header: 'hidden',
+        content: 'p-0'
+      }"
     >
-      <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <NuxtLink to="/"><img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" /></NuxtLink>
-        <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
-          <i class="pi pi-times text-sm"></i>
-        </button>
+      <div class="flex flex-col h-full bg-white dark:bg-gray-900">
+        <!-- Drawer header -->
+        <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <NuxtLink to="/" @click="isOpen = false">
+            <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
+          </NuxtLink>
+          <button
+            @click="isOpen = false"
+            class="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500"
+          >
+            <i class="pi pi-times text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Drawer nav links -->
+        <div class="flex-1 overflow-y-auto py-4">
+          <ul class="space-y-1 px-3">
+            <li>
+              <NuxtLink
+                to="/review/write-review"
+                @click="isOpen = false"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                <i class="pi pi-pencil text-[#008253]"></i>
+                <span>Write a Review</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Drawer footer: logout -->
+        <div class="p-5 border-t border-gray-100 dark:border-gray-800">
+          <button
+            @click="triggerLogout(); isOpen = false"
+            class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-100 text-red-600 font-medium hover:bg-red-50 transition-colors"
+          >
+            <i class="pi pi-sign-out"></i>
+            Logout
+          </button>
+        </div>
       </div>
+    </Drawer>
 
-      <ul class="flex flex-col bg-white border-b border-gray-200 text-gray-800 dark:text-white font-medium p-8 space-y-4">
-        <li><NuxtLink to="/review/write-review" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 
-             after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 
-             hover:after:w-full"
-            >Write a Review</NuxtLink></li>
-        <li>
-          <button 
-              @click="triggerLogout" 
-              class="flex items-center text-red-600 dark:text-gray-200 hover:text-red-700 transition font-medium"
-            >
-              <i class="pi pi-sign-out mr-2"></i>
-              Logout
-            </button>
-        </li>
-      </ul>
-    </div>
-    <!-- Overlay when sidebar is open -->
-    <div
-    v-if="isOpen"
-    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
-    @click="isOpen = false"
-    ></div>
+    <LogoutConfirm />
   </nav>
-  <!-- Overlay when sidebar is open -->
-    <div
-    v-if="isOpen"
-    class="fixed inset-0 z-30 md:hidden bg-black/5 backdrop-blur-sm transition-all duration-300"
-    @click="isOpen = false"
-    ></div>
-</template> 
-
+</template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '~/store/user'
-import useMethods from '~/composables/useMethods';
+import useMethods from '~/composables/useMethods'
+
 const { triggerLogout } = useMethods()
-const isOpen = ref(false)
-const showBusinessDropdown = ref(false)
 const userStore = useUserStore()
-
-onMounted(() => {
-  // userStore.initTheme()
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
-
-const toggleBusinessDropdown = (event: MouseEvent) => {
-  event.stopPropagation()
-  showBusinessDropdown.value = !showBusinessDropdown.value
-}
-
-const handleClickOutside = () => {
-  showBusinessDropdown.value = false
-}
+const isOpen = ref(false)
 </script>
-
-
-
-
-

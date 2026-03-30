@@ -2,13 +2,14 @@
   <nav class="w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-300">
     <div class="mx-auto px-8 flex items-center justify-between h-16">
       
-
+      <!-- Logo -->
       <div class="flex items-center w-40 flex-shrink-0">
         <NuxtLink to="/">
           <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-10 w-auto" />
         </NuxtLink>
       </div>
 
+      <!-- Search Bar (Desktop) -->
       <div class="flex-1 flex justify-center px-4">
         <Transition name="fade">
           <div v-if="showNavbarSearch" class="w-full max-w-sm">
@@ -27,86 +28,61 @@
         </Transition>
       </div>
 
+      <!-- Desktop Menu -->
       <div class="flex items-center space-x-6 flex-shrink-0">
-      <div class="flex items-center space-x-6"> 
-        <!-- FOR BUSINESS DROPDOWN (Desktop) - Only show when NOT authenticated as business user -->
-        <div class="hidden md:block relative" v-if="!isEndUser && !businessStore.isAuthenticated">
-          <button @click.stop="toggleBusinessDropdown" class="flex items-center dark:text-gray-200 font-medium hover:text-primary focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            For Business
-            <i class="pi pi-chevron-down ml-1 text-sm"></i>
-          </button>
-
-          <div v-if="showBusinessDropdown" class="absolute right-0 mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg py-2 w-56 z-50">
-            <NuxtLink to="/business/auth/sign-up" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="pi pi-briefcase mr-2 text-primary"></i> Add a Business
-            </NuxtLink>
-            <NuxtLink to="/business/auth/sign-in" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="pi pi-sign-in mr-2 text-primary"></i> Log in to Business
-            </NuxtLink>
-            <button @click="showClaimModal = true" class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="pi pi-id-card mr-2 text-primary"></i> 
-              <span>Claim a Business</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- BUSINESS USER DASHBOARD BUTTON (Desktop) -->
-        <div class="hidden md:block" v-if="businessStore.isAuthenticated && isBusinessUser">
-          <NuxtLink to="/business/dashboard" class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition whitespace-nowrap font-medium">
-            Dashboard
-          </NuxtLink>
-        </div>
-
-        <!-- BUSINESS USER LOGOUT BUTTON (Desktop) -->
-        <div class="hidden md:block" v-if="businessStore.isAuthenticated && isBusinessUser">
-          <button @click="triggerLogout()" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:hover:bg-red-900/20 transition-colors">
-            <i class="pi pi-sign-out mr-2"></i> Logout
-          </button>
-        </div>
         
-        <!-- WRITE A REVIEW BUTTON (Desktop) - Only for end users -->
-        <div class="hidden md:block" v-if="!isBusinessUser">
-          <button @click="handleWriteReviewClick" class="px-6 py-2 bg-[#008253] text-white rounded-lg shadow hover:bg-[#008260] transition whitespace-nowrap font-medium">
-            Write a review
-          </button>
-        </div>
-
-        <!-- END USER PROFILE & AUTH (Desktop) -->
-        <div class="hidden md:flex items-center h-full" v-if="!isBusinessUser">
-          <!-- End User Profile Dropdown -->
-          <div v-if="userStore.isAuthenticated && isEndUser" class="relative group flex items-center">
-            <button 
-              @click.stop="showUserDropdown = !showUserDropdown"
-              class="flex items-center focus:outline-none transition-transform hover:scale-105"
-            >
-              <UserAvatar 
-                v-if="userProfile"
-                :first-name="userProfile?.username"
-                :size="40"
-              />
-              <div v-else class="h-10 w-10 rounded-full bg-gray-200 animate-pulse border border-gray-100"></div>
-              <i class="pi pi-chevron-down ml-1 text-xs text-gray-400"></i>
-            </button>
-            
-            <div v-if="showUserDropdown" class="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 z-[100] origin-top-right">
-              <NuxtLink :to="`/user/${userStore.id}`" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700" @click="showUserDropdown = false">
-                <i class="pi pi-user mr-2 text-[#008253]"></i> My Profile
-              </NuxtLink>
-              <button @click="triggerLogout(); showUserDropdown = false" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:hover:bg-red-900/20 transition-colors">
-                <i class="pi pi-sign-out mr-2"></i> Logout
-              </button>
-            </div>
-          </div>
-
-          <!-- Login/Register Button - Only show when NO user is authenticated -->
+        <!-- Write a Review Button -->
+        <div class="hidden md:block">
           <ButtonCustom
-            v-if="!userStore.isAuthenticated && !businessStore.isAuthenticated"
-            @click="showGeneralAuth = true" 
-            secondary="true"
-            label="login/register"
-            class="!py-2"
+            @click="handleWriteReviewClick" 
+            primary="true"
+            label="Write a review"
+            size="lg"
           />
         </div>
+
+        <!-- User Profile Dropdown (if authenticated) -->
+        <div v-if="userStore.isAuthenticated" class="hidden md:flex items-center relative">
+          <button 
+            @click.stop="showUserDropdown = !showUserDropdown"
+            class="flex items-center focus:outline-none transition-transform hover:scale-105"
+          >
+            <UserAvatar 
+              v-if="userProfile"
+              :first-name="userProfile?.username"
+              :size="40"
+            />
+            <div v-else class="h-10 w-10 rounded-full bg-gray-200 animate-pulse border border-gray-100"></div>
+            <i class="pi pi-chevron-down ml-1 text-xs text-gray-400"></i>
+          </button>
+          
+          <div v-if="showUserDropdown" class="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 py-2 z-[100]">
+            <NuxtLink :to="`/user/${userStore.id}`" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700" @click="showUserDropdown = false">
+              <i class="pi pi-user mr-2 text-[#008253]"></i> My Profile
+            </NuxtLink>
+            <button @click="triggerLogout(); showUserDropdown = false" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:text-red-700 dark:hover:bg-red-900/20 transition-colors">
+              <i class="pi pi-sign-out mr-2"></i> Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Login/Register Button (if not authenticated) -->
+        <button
+          v-if="!userStore.isAuthenticated"
+          @click="showGeneralAuth = true" 
+          class="hidden md:block px-4 py-2 border-1 border-[#008253] text-[#008253] rounded-lg hover:scale-105  transition-all whitespace-nowrap font-medium"
+        >
+          Login/Register
+        </button>
+
+        <!-- For Business Link -->
+        <NuxtLink
+          v-if="!userStore.isAuthenticated" 
+          to="/for-business/index-v2" 
+          class="hidden md:block relative font-medium text-gray-800 dark:text-gray-200 hover:text-[#008253] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full"
+        >
+          For Business
+        </NuxtLink>
 
         <!-- Mobile Menu Toggle -->
         <button class="md:hidden flex items-center text-gray-700 dark:text-gray-300 hover:text-primary focus:outline-none" @click="isOpen = !isOpen">
@@ -114,114 +90,99 @@
         </button>
       </div>
     </div>
-    </div>
 
     <!-- MOBILE MENU -->
-    <div :class="['fixed top-0 left-0 h-full w-[220px] bg-white dark:bg-gray-900 shadow-md transform transition-transform duration-300 md:hidden z-50', isOpen ? 'translate-x-0' : '-translate-x-full']">
-      <ul class="flex flex-col bg-white dark:bg-gray-900 text-gray-800 dark:text-white font-medium p-6 space-y-4">
+    <Drawer 
+        v-model:visible="isOpen"
+        :show-close-icon="false"
+        :header="undefined"
+        class="!w-[280px] dark:bg-gray-900"
+        :pt="{
+          header: 'hidden',
+          content: 'p-0'
+        }"
+      >
+      <div class="flex flex-col h-full bg-white dark:bg-gray-900">
         
-        <!-- Mobile Header -->
-        <li>
-          <div class="flex items-center justify-between border-b border-gray-200 mx-[-1.5rem] px-[1.5rem] py-1 dark:border-gray-700">
-            <!-- Show End User Avatar if authenticated as end user -->
-            <div v-if="userStore.isAuthenticated && isEndUser">
-              <NuxtLink :to="`/user/${userStore.id}`" @click="isOpen = false">
-                <UserAvatar 
-                  v-if="userProfile"
-                  :first-name="userProfile?.username"
-                  :size="38"
-                />
-              </NuxtLink>
+        <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <div v-if="userStore.isAuthenticated" class="flex items-center gap-3">
+            <NuxtLink :to="`/user/${userStore.id}`" @click="isOpen = false">
+              <UserAvatar 
+                v-if="userProfile"
+                :first-name="userProfile?.username"
+                :size="42"
+              />
+            </NuxtLink>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">
+                {{ userProfile?.username || 'User' }}
+              </span>
+              <span class="text-[11px] text-[#008253]">View Profile</span>
             </div>
-            
-            <!-- Show Logo if not authenticated or if business user -->
-            <div v-else>
-              <NuxtLink to="/" @click="isOpen = false">
-                <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
-              </NuxtLink>
-            </div>
-            
-            <button @click="isOpen = false" class="text-gray-600 dark:text-gray-200">
-              <i class="pi pi-times text-sm"></i>
-            </button>
           </div>
-        </li>
-
-        <!-- Business Dashboard (Mobile) - Standalone, not in dropdown -->
-        <li v-if="businessStore.isAuthenticated && isBusinessUser">
-          <NuxtLink to="/business/dashboard" @click="isOpen = false" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            Dashboard
-          </NuxtLink>
-        </li>
-
-        <!-- Write a Review (Mobile) - Only for end users -->
-        <li v-if="!isBusinessUser">
-          <button @click="handleWriteReviewClick" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            Write a Review
-          </button>
-        </li>
-
-        <!-- Categories (Mobile) -->
-        <li>
-          <NuxtLink to="/end-user/landing/categories" @click="isOpen = false" class="relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#008253] after:transition-all after:duration-300 hover:after:w-full">
-            Categories
-          </NuxtLink>
-        </li>
-
-        <!-- For Business Dropdown (Mobile) - Only show when NOT authenticated as business user -->
-        <li v-if="!isEndUser && !businessStore.isAuthenticated">
-          <button @click.stop="toggleBusinessDropdown" class="flex items-center justify-between w-full hover:text-primary focus:outline-none">
-            <span>For Business</span>
-            <i class="pi pi-chevron-down text-sm"></i>
-          </button>
           
-          <div v-if="showBusinessDropdown" class="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <NuxtLink to="/business/auth/sign-up" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" @click="isOpen = false">
-              <i class="pi pi-briefcase mr-2 text-primary"></i> Add a Business
+          <div v-else>
+            <NuxtLink to="/" @click="isOpen = false">
+              <img src="/assets/images/e-user-logo.png" alt="Logo" class="h-8 w-auto" />
             </NuxtLink>
-            <NuxtLink to="/business/auth/sign-in" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" @click="isOpen = false">
-              <i class="pi pi-sign-in mr-2 text-primary"></i> Log in to Business
-            </NuxtLink>
-            <button @click="showClaimModal = true; isOpen = false" class="w-full flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i class="pi pi-id-card mr-2 text-primary"></i> 
-              <span class="text-left">Claim a Business</span>
+          </div>
+          
+          <button @click="isOpen = false" class="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500">
+            <i class="pi pi-times text-xs"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-4">
+          <ul class="space-y-1 px-3">
+            <li>
+              <NuxtLink to="/" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-home text-[#008253]"></i>
+                <span>Home</span>
+              </NuxtLink>
+            </li>
+            <li>
+              <button @click="handleWriteReviewClick(); isOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-pencil text-[#008253]"></i>
+                <span>Write a Review</span>
+              </button>
+            </li>
+            <li>
+              <NuxtLink to="/end-user/landing/categories" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-th-large text-[#008253]"></i>
+                <span>Categories</span>
+              </NuxtLink>
+            </li>
+            <li v-if="!userStore.isAuthenticated">
+              <NuxtLink to="/for-business/index-v2" @click="isOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <i class="pi pi-briefcase text-[#008253]"></i>
+                <span>For Business</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div v-if="userStore.isAuthenticated">
+            <button 
+              @click="triggerLogout(); isOpen = false" 
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-100 text-red-600 font-medium hover:bg-red-50 transition-colors"
+            >
+              <i class="pi pi-sign-out"></i>
+              Logout
             </button>
           </div>
-        </li>
 
-        <!-- Auth Section (Mobile) -->
-        <li class="pt-4 border-t">
-          <!-- Business User Logout -->
-          <button 
-            v-if="businessStore.isAuthenticated && isBusinessUser"
-            @click="triggerLogout(); isOpen = false" 
-            class="text-red-600 hover:text-red-700"
-          >
-            <i class="pi pi-sign-out mr-2"></i> Logout
-          </button>
-
-          <!-- End User Logout -->
-          <button 
-            v-else-if="userStore.isAuthenticated && isEndUser"
-            @click="triggerLogout(); isOpen = false" 
-            class="text-red-600 hover:text-red-700"
-          >
-            <i class="pi pi-sign-out mr-2"></i> Logout
-          </button>
-
-          <!-- Login/Register - Show only when NO user is authenticated -->
-          <ButtonCustom
-            v-else-if="!userStore.isAuthenticated && !businessStore.isAuthenticated"
-            @click="showGeneralAuth = true; isOpen = false" 
-            primary=true
-            label="Login/Register"
-          />
-        </li>
-      </ul>
-    </div>
-
-    <!-- Mobile Menu Backdrop -->
-    <div v-if="isOpen" class="fixed inset-0 z-30 md:hidden bg-black/20 backdrop-blur-md transition-all duration-300" @click="isOpen = false"></div>
+          <div v-else class="space-y-3">
+            <ButtonCustom
+              @click="showGeneralAuth = true; isOpen = false" 
+              primary="true"
+              label="Login/Register"
+              inputClass="!py-3"
+            />
+          </div>
+        </div>
+      </div>
+    </Drawer>
 
     <!-- Modals (Teleport) -->
     <Teleport to="body">
@@ -233,7 +194,6 @@
         </div>
       </div>
       <AuthUnifiedModal v-if="showAuthModal" @close="showAuthModal = false" @authenticated="onUserAuthenticated" @back-to-review="handleBackToReview" />
-      <SearchBusinessClaim v-if="showClaimModal" @close="showClaimModal = false" @search="navigateToClaimPage" />
       <AuthUnifiedModal v-if="showGeneralAuth" :hide-back-to-review="true" @close="showGeneralAuth = false" @authenticated="handleGeneralAuthSuccess" />
     </Teleport>
   </nav>
@@ -244,11 +204,7 @@ import { useUserStore } from '~/store/user'
 import ReviewForm from '~/components/Review/ReviewForm.vue'
 import useUserProfileMethods from "~/composables/user/useUserProfileMethods";
 import useMethods from '~/composables/useMethods';
-import useBusinessUser from '~/composables/business/useBusinessUser';
-import useRoleAccess from '~/composables/useRoleAccess';
-
 import { useNavbarSearch } from '~/composables/useNavbarSearch';
-
 import useSearch from '~/composables/search/useSearch'
 
 const { search } = useSearch()
@@ -308,28 +264,18 @@ const handleNavbarSearch = () => {
   navbarSearchQuery.value = ''
 }
 
-const selectNavbarSuggestion = (item: { id: string; name: string }) => {
-  navbarSearchQuery.value = ''
-  showNavbarSuggestions.value = false
-  router.push(`/biz/${item.id}`)
-}
-
-const { isGuest, isBusinessUser, isEndUser, isAuthenticated } = useRoleAccess();
 const { triggerLogout } = useMethods()
-const businessStore = useBusinessUser()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 const { getUserProfile } = useUserProfileMethods();
 
 // --- UI State ---
-const isOpen = ref(false)               
-const showBusinessDropdown = ref(false)  
+const isOpen = ref(false)
 const showReviewModal = ref(false)       
 const showAuthModal = ref(false)  
 const showGeneralAuth = ref(false)       
-const reviewDraft = ref<any>(null)       
-const showClaimModal = ref(false);
+const reviewDraft = ref<any>(null)
 const userProfile = ref<any>(null);
 const showUserDropdown = ref(false);
 
@@ -342,8 +288,6 @@ const fetchProfileData = async () => {
     
     if (response && response.data) {
       userProfile.value = response.data;
-    } else {
-      console.warn("Profile data structure unexpected:", response);
     }
   } catch (error) {
     console.error("NavBar Profile Fetch Error:", error);
@@ -383,12 +327,11 @@ const closeReviewAndClearDraft = () => {
   localStorage.removeItem('review_draft')
 }
 
-const toggleBusinessDropdown = (event: MouseEvent) => {
-  event.stopPropagation()
-  showBusinessDropdown.value = !showBusinessDropdown.value
+const handleGeneralAuthSuccess = () => {
+  showGeneralAuth.value = false
 }
 
-// Watcher: Runs when userStore.isAuthenticated changes
+// Watchers and Lifecycle
 watch(() => userStore.isAuthenticated, (isLoggedIn) => {
   if (isLoggedIn) {
     fetchProfileData();
@@ -409,7 +352,6 @@ onMounted(() => {
   }
   
   document.addEventListener('click', () => {
-    showBusinessDropdown.value = false
     showUserDropdown.value = false;
   })
 
@@ -425,15 +367,6 @@ onMounted(() => {
     router.replace({ query: { ...route.query, auth: undefined } })
   }
 })
-
-const navigateToClaimPage = (businessName: string) => {
-  showClaimModal.value = false;
-  router.push(`/biz/${encodeURIComponent(businessName)}/claim-business`);
-};
-
-const handleGeneralAuthSuccess = () => {
-  showGeneralAuth.value = false
-}
 </script>
 
 <style scoped>

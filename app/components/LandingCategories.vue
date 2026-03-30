@@ -1,7 +1,19 @@
 <template>
-  <div class="w-full py-4 px-4 rounded-2xl border border-slate-300 bg-gradient-to-r from-fuchsia-50 to-fuchsia-100">
-    <div class="max-w-5xl mx-auto">
-      <div class="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div class="mx-auto">
+      <div class="relative mb-2">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white">
+          Explore categories
+        </h2>
+        <NuxtLink 
+          to="/end-user/landing/categories"
+          class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
+        >
+          See more
+          <i class="pi pi-arrow-right text-xs group-hover:translate-x-1.5 transition-transform duration-300"></i>
+        </NuxtLink>
+      </div>
+      <div class="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6 border border-gray-200 shadow-md p-4 rounded-xl mt-5">
         <div
           v-for="(category, index) in categories"
           :key="index"

@@ -1,17 +1,20 @@
 <template>
-  <section class="bg-purple-50 pb-8 pt-6">
-    <div class="container mx-auto px-4">
+  <section class="bg-[#e4faeb] py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="relative mb-6">
-        <h2 class="text-2xl md:text-3xl font-demibold text-left text-gray-800 dark:text-white">
-          Top Reviewed
+      <div class="relative mb-8">
+        <h2 class="text-xl md:text-2xl font-semibold text-left text-gray-700 dark:text-white mb-0">
+          Top Businesses
         </h2>
-        <NuxtLink
+        <span class="hidden md:inline-block text-xs text-gray-500 font-semibold">Ranked best on reviews, recency, and customer trust.</span>
+        <span class="md:hidden text-xs text-gray-500 font-semibold">Ranked by trust and recency.</span>
+        <NuxtLink 
           to="/end-user/landing/explore"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline dark:text-gray-300"
+          class="group absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-bold text-[#008253] hover:text-slate-900 transition-colors"
         >
           See more
-      </NuxtLink>
+          <i class="pi pi-arrow-right text-xs group-hover:translate-x-1.5 transition-transform duration-300"></i>
+        </NuxtLink>
       </div>
 
       <!-- Card Grid -->

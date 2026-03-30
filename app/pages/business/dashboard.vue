@@ -161,69 +161,6 @@
           </div>
 
           <!-- ══════════════════════════════════════════
-               ASPECT / OPINION MINING
-               New section — powered by OpinionMiningService
-               Shows what customers actually say about specific aspects
-          ══════════════════════════════════════════ -->
-          <div v-if="aspects.length" class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-2xl font-bold text-blue-900 flex items-center gap-2">
-                <i class="pi pi-tags text-gray-600"></i>
-                What Customers Say About
-              </h2>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div v-for="aspect in aspects" :key="aspect.aspect"
-                class="rounded-lg border border-gray-100 p-4 hover:shadow-sm transition-shadow">
-                <!-- Aspect name + score bar -->
-                <div class="flex items-center justify-between mb-3">
-                  <h4 class="font-semibold text-gray-900 capitalize text-sm">{{ aspect.aspect }}</h4>
-                  <span class="text-xs font-medium px-2 py-0.5 rounded-full"
-                    :class="aspect.sentimentScore >= 0.6 ? 'bg-green-100 text-green-700' : aspect.sentimentScore >= 0.4 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'">
-                    {{ aspect.sentimentScore >= 0.6 ? 'Positive' : aspect.sentimentScore >= 0.4 ? 'Mixed' : 'Negative'
-                    }}
-                  </span>
-                </div>
-
-                <!-- Score bar -->
-                <div class="w-full bg-gray-100 rounded-full h-2 mb-3">
-                  <div class="h-2 rounded-full transition-all duration-500" :style="{
-                    width: (aspect.sentimentScore * 100) + '%',
-                    backgroundColor: aspect.sentimentScore >= 0.6 ? '#10b981' : aspect.sentimentScore >= 0.4 ? '#f59e0b' : '#ef4444'
-                  }"></div>
-                </div>
-
-                <!-- Counts -->
-                <div class="flex gap-3 text-xs text-gray-600 mb-3">
-                  <span class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-up text-green-500"></i>
-                    {{ aspect.positiveCount }} positive
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <i class="pi pi-thumbs-down text-red-500"></i>
-                    {{ aspect.negativeCount }} negative
-                  </span>
-                </div>
-
-                <!-- Opinion words -->
-                <div v-if="aspect.positiveOpinions?.length" class="flex flex-wrap gap-1 mb-1">
-                  <span v-for="opinion in aspect.positiveOpinions.slice(0, 3)" :key="opinion"
-                    class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full">
-                    {{ opinion }}
-                  </span>
-                </div>
-                <div v-if="aspect.negativeOpinions?.length" class="flex flex-wrap gap-1">
-                  <span v-for="opinion in aspect.negativeOpinions.slice(0, 3)" :key="opinion"
-                    class="text-xs bg-red-50 text-red-700 px-2 py-0.5 rounded-full">
-                    {{ opinion }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ══════════════════════════════════════════
                PERFORMANCE INSIGHTS — chart + sources
           ══════════════════════════════════════════ -->
           <div id="charts" class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -261,19 +198,43 @@
                     class="flex items-center justify-center h-full text-sm text-gray-400">
                     Not enough data for this period yet
                   </div>
-                  <svg v-else class="w-full h-full" viewBox="0 0 400 250">
-                    <line x1="40" y1="210" x2="360" y2="210" stroke="#e5e7eb" stroke-width="2" />
-                    <line x1="40" y1="40" x2="40" y2="210" stroke="#e5e7eb" stroke-width="2" />
+                  <!-- viewBox: 0 0 420 260
+                       Left margin 55px = room for Y labels + axis title
+                       Bottom margin 40px = room for rotated X labels -->
+                  <svg v-else class="w-full h-full" viewBox="0 0 420 260">
+                    <!-- Y axis line -->
+                    <line x1="55" y1="35" x2="55" y2="215" stroke="#e5e7eb" stroke-width="2" />
+                    <!-- X axis line -->
+                    <line x1="55" y1="215" x2="390" y2="215" stroke="#e5e7eb" stroke-width="2" />
 
+                    <!-- Y axis title (rotated, left side) -->
+                    <text x="12" y="125" text-anchor="middle" fill="#6b7280" font-size="9"
+                      transform="rotate(-90, 12, 125)">
+                      {{ selectedChartType === 'ratings' ? 'Rating' : 'Reviews' }}
+                    </text>
+
+                    <!-- Y axis ticks + dashed grid lines + value labels -->
+                    <g v-for="tick in currentChart.yTicks" :key="tick.y">
+                      <line :x1="51" :y1="tick.y" :x2="55" :y2="tick.y" stroke="#9ca3af" stroke-width="1" />
+                      <line :x1="55" :y1="tick.y" :x2="390" :y2="tick.y" stroke="#e5e7eb" stroke-width="1"
+                        stroke-dasharray="4,3" />
+                      <text :x="49" :y="tick.y + 4" text-anchor="end" fill="#9ca3af" font-size="9">
+                        {{ tick.label }}
+                      </text>
+                    </g>
+
+                    <!-- Data line -->
                     <path :d="currentChart.path" fill="none" stroke="#008253" stroke-width="2.5"
                       class="transition-all duration-500" />
 
+                    <!-- Data points -->
                     <circle v-for="(point, i) in currentChart.points" :key="i" :cx="point.x" :cy="point.y" r="4"
                       fill="#008253" class="transition-all cursor-pointer" />
 
+                    <!-- X axis labels — rotated -40deg so they never overlap -->
                     <text v-for="(label, i) in currentChart.data" :key="i"
-                      :x="40 + (i * 320) / (currentChart.data.length - 1)" y="230" text-anchor="middle"
-                      class="text-xs fill-gray-600" font-size="10">
+                      :x="55 + (i * 335) / (currentChart.data.length - 1)" y="220" text-anchor="end" fill="#6b7280"
+                      font-size="9" :transform="`rotate(-40, ${55 + (i * 335) / (currentChart.data.length - 1)}, 220)`">
                       {{ label.period }}
                     </text>
                   </svg>
@@ -405,8 +366,8 @@
                   <div>
                     <h4 class="text-base font-semibold text-green-900 capitalize">{{ a.aspect }}</h4>
                     <p class="text-sm text-green-800 mt-1">
-                      {{ a.positiveCount }} positive mentions
-                      <span v-if="a.positiveOpinions?.length"> — {{ a.positiveOpinions.slice(0, 2).join(', ') }}</span>
+                      {{ uniqueOpinions(a.positiveOpinions).length }} positive opinions
+                      <span v-if="a.positiveOpinions?.length"> — {{ uniqueOpinionsPreview(a.positiveOpinions) }}</span>
                     </p>
                     <span class="inline-block mt-2 text-xs font-medium text-green-700 bg-green-200 px-2 py-1 rounded">
                       {{ Math.round(a.sentimentScore * 100) }}% positive sentiment
@@ -434,8 +395,8 @@
                   <div>
                     <h4 class="text-base font-semibold text-orange-900 capitalize">{{ a.aspect }}</h4>
                     <p class="text-sm text-orange-800 mt-1">
-                      {{ a.negativeCount }} negative mentions
-                      <span v-if="a.negativeOpinions?.length"> — {{ a.negativeOpinions.slice(0, 2).join(', ') }}</span>
+                      {{ uniqueOpinions(a.negativeOpinions).length }} negative opinions
+                      <span v-if="a.negativeOpinions?.length"> — {{ uniqueOpinionsPreview(a.negativeOpinions) }}</span>
                     </p>
                     <span class="inline-block mt-2 text-xs font-medium text-orange-700 bg-orange-200 px-2 py-1 rounded">
                       {{ Math.round((1 - a.sentimentScore) * 100) }}% negative sentiment
@@ -501,20 +462,23 @@ const currentChart = computed(() =>
 
 // ── Aspect-derived suggestions ──────────────────────────
 // Top 2 highest-scoring aspects → "Strongest Areas"
+// Only include aspects where positive is dominant (sentimentScore > 0.5)
 const topAspects = computed(() =>
   [...aspects.value]
-    .filter(a => a.positiveCount > 0)
+    .filter(a => a.positiveCount > 0 && a.sentimentScore > 0.5)
     .sort((a, b) => b.sentimentScore - a.sentimentScore)
     .slice(0, 2)
 )
 
 // Bottom 2 lowest-scoring aspects → "Needs Attention"
-const bottomAspects = computed(() =>
-  [...aspects.value]
-    .filter(a => a.negativeCount > 0)
+// Exclude any aspect already shown in Strongest Areas to avoid duplication
+const bottomAspects = computed(() => {
+  const topNames = new Set(topAspects.value.map(a => a.aspect.toLowerCase()))
+  return [...aspects.value]
+    .filter(a => a.negativeCount > 0 && !topNames.has(a.aspect.toLowerCase()))
     .sort((a, b) => a.sentimentScore - b.sentimentScore)
     .slice(0, 2)
-)
+})
 
 // ── Competitor section (sample — future task) ───────────
 const selectedCompetitor = ref('competitor1')
@@ -542,6 +506,17 @@ const currentCompetitorWords = computed(() => {
     : currentCompetitor.value.negativeWords
 })
 const currentCompetitorMonthlyTrend = computed(() => currentCompetitor.value?.monthlyTrend ?? [])
+
+// ── Opinion helpers ─────────────────────────────────────
+/** Deduplicate an opinion list (Azure AI can return the same phrase twice). */
+function uniqueOpinions(opinions: string[]): string[] {
+  return [...new Set(opinions)]
+}
+
+/** First 2 unique opinions joined for display. */
+function uniqueOpinionsPreview(opinions: string[]): string {
+  return uniqueOpinions(opinions).slice(0, 2).join(', ')
+}
 
 // ── Misc ────────────────────────────────────────────────
 const handleMetricClick = (title: string) => {

@@ -1,9 +1,5 @@
 <template>
-  <!--Header-->
   <NavBar />
-  <!--Header-->
-
-  <!--First Section Start-->
   <section id="hero"
     class="relative flex flex-col items-center justify-center text-center min-h-[80vh] py-6">
     <!-- Background image div with loading state -->
@@ -20,8 +16,6 @@
     ></div>
     
     <div class="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-    
-    <!-- Beginning content -->
     <div class="relative z-10 max-w-3xl font-sans">
       <h1 class="font-bold text-white drop-shadow-lg mb-0
                 text-2xl
@@ -42,94 +36,107 @@
       <SearchBarHome />
     </div>
   </section>
-  <!--First Section Ends-->
 
-  <!--Second Section begins-->
-  <section class="bg-white pb-10 pt-5">
-    <div class="container mx-auto px-4">
-      <!-- Header -->
-      <div class="relative mb-2">
-        <h2 class="text-xl md:text-2xl font-demibold text-left text-gray-700 dark:text-white">
-          Categories
-        </h2>
-        <a href="/end-user/landing/categories"
-          class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl text-blue-600 hover:text-gray-900 dark:text-gray-300">
-          ...
-        </a>
-      </div>
-      <LandingCategories />
-    </div>
+  
+  <!-- statistics -->
+  <LandingStatistics :statistics="statistics" bgClass="bg-[#e4faeb]" />
+ 
+  <section class="pb-10 pt-5">
+    <LandingCategories />
   </section>
-  <!--Second Section ends-->
 
-  <!--Third Section Starts-->
-  <section >
+  <section>
     <TopReviewed />
   </section>
-  <!--Third Section Ends-->
 
-  <!--Call to Action Section-->
-  <section class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 px-6 md:px-8">
-      <div class="container mx-auto px-6 text-center">
-          <h2 class="text-lg md:text-xl font-semibold text-slate-900">
-            Ready to expand your brand?
-          </h2>
-          <p class="text-slate-600 mt-2">
-            Boost credibility with authentic reviews.
-          </p>
-          <div class="flex justify-center space-x-4">
-          <NuxtLink to="/business/landing">
-          <button
-          class="px-6 py-3 rounded-xl bg-slate-900 text-white font-medium
-                hover:opacity-90 transition"
-          >
-            Get Started
-          </button>
-        </NuxtLink>
+  <!--Business CTA Section-->
+  <section class="py-10 px-6 md:px-8 overflow-hidden">
+  <div class="container mx-auto">
+    <div class="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+      
+      <div class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5">
+        <h2 class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight">
+          Ready to expand your brand?
+        </h2>
+        <p class="text-slate-600 text-lg max-w-md md:text-left">
+          Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
+        </p>
+        <div class="pt-2 w-full flex justify-center md:justify-start">
+          <NuxtLink to="/for-business/index-v2" class="w-auto">
+            <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
+              Get Started
+              <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </NuxtLink>
         </div>
       </div>
-  </section>
 
-  <!--Fourth Section Begins-->
-  <section class="my-0">
-    <ReviewSlider />
-  </section>
-  <!--Fourth Section Ends-->
+      <div class="relative md:w-1/2 w-full flex justify-center items-center">
+        <div class="absolute w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        
+        <div class="relative z-10 animate-float drop-shadow-2xl">
+          <img 
+            src="/images/img/front-pages/landing-page/cta-dashboard.png" 
+            alt="Business Dashboard" 
+            class="max-w-full h-auto rounded-lg"
+          />
+        </div>
 
-  <!--Fifth Section begins-->
-  <section id="add-voice" class="bg-gradient-to-r from-fuchsia-50 to-fuchsia-200 py-10 mb-0">
-    <div class="container mx-auto px-6 text-center">
-      <h2 class="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-6">
-        Add Your Voice
-      </h2>
-      <p class="text-gray-800 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-        Become part of a growing network of individuals who value transparency and trust. By joining our platform, you
-        contribute to shaping authentic conversations, helping others make informed choices while discovering new and
-        better experiences every day.
-      </p>
-      <div class="flex justify-center space-x-4">
-        <button 
-          @click="showGeneralAuth = true"
-          class="flex items-center space-x-2 bg-slate-900 hover:opacity-90 text-white px-6 py-3 rounded-xl transition-all duration-300"
-        >
-          <span>Login/Register</span>
-        </button>
+        <div class="absolute -bottom-4 -right-4 md:right-0 bg-white p-3 rounded-lg shadow-xl animate-float-delayed z-20 hidden sm:flex items-center gap-2 border border-slate-100">
+          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+          <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Real-time Analytics</span>
+        </div>
       </div>
 
-      <Teleport to="body">
-        <AuthUnifiedModal 
-          v-if="showGeneralAuth" 
-          :hide-back-to-review="true"
-          @close="showGeneralAuth = false" 
-          @authenticated="handleGeneralAuthSuccess"
-        />
-      </Teleport>
     </div>
-  </section>
-  <!--Fifth Section Ends-->
+  </div>
+</section>
 
+  <section>
+    <ReviewSlider />
+  </section>
+  
+  <Teleport to="body">
+    <AuthUnifiedModal
+      v-if="showAuth"
+      :hide-back-to-review="true"
+      @close="showAuth = false"
+      @authenticated="handleGeneralAuthSuccess"
+    />
+
+    <div v-if="showReviewModal" class="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="showReviewModal = false"></div>
+      <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 md:p-10 shadow-[rgba(0,130,83,0.35)_0px_0px_50px_5px]">
+        <button @click="showReviewModal = false" class="absolute top-5 right-5 text-gray-400">
+          <i class="pi pi-times text-xl"></i>
+        </button>
+        <ReviewForm @close="showReviewModal = false" @open-auth="showAuth = true" @success="showReviewModal = false" />
+      </div>
+    </div>
+  </Teleport>
+  <div
+      class="p-[25px] flex sm:flex-row flex-col sm:items-center justify-end bg-gradient-to-r from-[#deae29] to-[#fbd85b] "
+    >
+      <div class="flex-1">
+        <div class="font-bold text-[130%] text-white">
+          Share Your Experience
+        </div>
+        <div class="text-white">
+          Had an experience? Share your review with businesses and help
+          thousands of others discover who they can trust.
+        </div>
+      </div>
+      <div class="sm:mt-0 mt-[20px] md:text-right">
+        <button
+          @click="handleWriteReviewClick"
+          class="rounded-full !bg-[#1B1A1B] text-white px-[25px] py-[15px]"
+        >
+          Write a review
+        </button>
+      </div>
+    </div>
   <!--Footer-->
-  <NavFooter />
+  <NavigationFooter @modal-link="handleFooterModal" />
   <!--Footer-->
 
 </template>
@@ -154,20 +161,46 @@ onMounted((): void => {
     imageLoaded.value = true;
   }
 });
-const isReviewModalOpen = ref(false)
 
-// Watch for the login event
+const showAuth = ref(false)
+const showReviewModal = ref(false)
+
+const handleFooterModal = (modal: string) => {
+  if (modal === 'auth') {
+    showAuth.value = true
+  }
+
+  if (modal === 'write-review') {
+    if (userStore.isAuthenticated) {
+      router.push('/review/write-review')
+    } else {
+      showReviewModal.value = true
+    }
+  }
+}
+const handleWriteReviewClick = () => {
+  if (userStore.isAuthenticated) {
+    router.push('/review/write-review')
+  } else {
+    showReviewModal.value = true
+  }
+}
+
+const isReviewModalOpen = ref(false)
+const statistics = [
+  { title: "Registered Businesses", count: "200+" },
+  { title: "Reviewing Users", count: "100k+" },
+  { title: "Uploaded Reviews", count: "10M+" },
+];
+const featuredBusiness = getTopBusinesses(8);
+
 watch(() => userStore.isAuthenticated, (isLoggedIn) => {
   if (isLoggedIn) {
-    // Check if there is a pending draft in localStorage or your store
     const hasDraft = localStorage.getItem('review_draft')
     
     if (hasDraft) {
       // Automatically open the modal
       isReviewModalOpen.value = true;
-      
-      // Optional: Small toast notification
-      // toast.success("Welcome back! You can now finish your review.")
     }
   }
 })
@@ -181,3 +214,24 @@ const handleGeneralAuthSuccess = () => {
 const heroSearchRef = ref<HTMLElement | null>(null)
 useHeroSearchObserver(heroSearchRef)
 </script>
+<style scoped>
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-delayed {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(15px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 7s ease-in-out infinite;
+}
+</style>

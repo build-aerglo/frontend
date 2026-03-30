@@ -1,13 +1,13 @@
 <template>
   <!--Header-->
-  <NavBarCategories/>
+  <NavBar/>
   <!--Header-->
 
   <!--Section begins-->
   <Categories @category-selected="handleCategorySelection" />
     
   <!--Footer-->
-  <NavFooter/>
+  <NavigationFooter/>
   <!--Footer-->
 </template>
 
