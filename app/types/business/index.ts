@@ -219,10 +219,13 @@ export interface ClaimData {
   phoneNumber: string;
   email: string;
   role: string;
+
+  idType: string;
   idDocumentUrl: string | null;
-  cacDocumentUrl: string | null;
+  idNumber: string;
+
+  personalIdDocumentUrl: string | null;
   proofOfOwnerShipUrl: string | null;
-  cacNumber: string;
   categoryId: string;
 }
 
@@ -365,4 +368,25 @@ export interface BusinessSummary {
   idVerified: boolean;
   idVerificationType: string;
   description: string;
+}
+
+export interface BusinessClaimResponse {
+  id: string;
+  businessId: string;
+  businessName: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  role: string;
+  status: number;
+  statusName: string;
+  requiresReverification: boolean;
+  reverificationReason: string | null;
+  idType: string;
+  idNumber: string;
+  idDocumentUrl: string;
+  proofOfOwnershipUrl: string;
+  createdAt: string;
+  personalIdDocumentUrl: string;
+  categoryId: string;
 }

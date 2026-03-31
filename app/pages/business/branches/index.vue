@@ -136,7 +136,7 @@
       </div>
       <div class="mt-[40px]">
         <GeneralLoader v-if="isLoading" height="500px" />
-        <div v-else>
+        <div v-else data-test="business-branches">
           <div v-if="filteredBranches.length" class="flex flex-col gap-5">
             <div
               v-for="(branch, idx) in paginatedBranches"

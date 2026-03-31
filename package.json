@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.31.0",
     "@fingerprintjs/fingerprintjs": "^5.0.1",
     "@microsoft/signalr": "^10.0.0",
     "@nuxt/image": "^1.11.0",
@@ -33,6 +34,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@primevue/nuxt-module": "^4.3.9",
     "@types/node": "^24.7.2"
   }

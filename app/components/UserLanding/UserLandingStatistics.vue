@@ -14,22 +14,51 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["stats"]);
-
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import useSocketInstances from "~/composables/websocket/useSocketInstances";
+
+const props = defineProps<{
+  stats?: { title: string; count: number };
+}>();
+
+interface Stat {
+  title: string;
+  count: number;
+}
+
+const statistics = ref<Stat[]>([
+  { title: "Registered Business", count: 0 },
+  { title: "Reviewing Users", count: 0 },
+  { title: "Uploaded Reviews", count: 0 },
+]);
+
+const key = "statistics";
 
 const { useStatisticsSocket } = useSocketInstances();
 const connection = useStatisticsSocket();
 
-const statistics = ref<any[]>([]);
-const key = "statistics";
+const setCoreStats = (data: any) => {
+  statistics.value[0]!.count = data.registeredBusinesses ?? 0;
+  statistics.value[1]!.count = data.registeredUsers ?? 0;
+  statistics.value[2]!.count = data.uploadedReviews ?? 0;
+};
+
+const ensureExtraStat = () => {
+  if (props.stats && statistics.value.length === 3) {
+    statistics.value.push(props.stats);
+  }
+};
 
 connection.on("ReceiveStatistics", async (stat) => {
   console.log("fetched statistics");
+
+  setCoreStats(stat);
+  ensureExtraStat();
+
   await $fetch("/api/page", {
     method: "POST",
     body: {
-      key: key,
+      key,
       data: stat,
     },
   });
@@ -40,25 +69,14 @@ connection.onreconnected(() => console.log("WebSocket reconnected"));
 
 onMounted(async () => {
   try {
-    const res = await $fetch<any>(`/api/page?key=${key}`, {
-      method: "GET",
-    });
-    if (res.statistics) {
-      statistics.value.push({
-        title: "Registered Business",
-        count: res.statistics.registeredBusinesses,
-      });
-      statistics.value.push({
-        title: "Reviewing Users",
-        count: res.statistics.registeredUsers,
-      });
-      statistics.value.push({
-        title: "Uploaded Reviews",
-        count: res.statistics.uploadedReviews,
-      });
+    const res = await $fetch<any>(`/api/page?key=${key}`);
+
+    if (res) {
+      setCoreStats(res);
     }
 
-    // start connection
+    ensureExtraStat();
+
     await connection.start();
   } catch (err) {
     console.error("Connection failed:", err);
@@ -69,9 +87,11 @@ onUnmounted(async () => {
   await connection.stop();
 });
 
-onBeforeMount(() => {
-  if (props.stats) {
-    statistics.value.push(props.stats);
-  }
-});
+watch(
+  () => props.stats,
+  () => {
+    ensureExtraStat();
+  },
+  { immediate: true },
+);
 </script>

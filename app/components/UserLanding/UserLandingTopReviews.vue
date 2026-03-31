@@ -46,6 +46,7 @@
       </div>
     </template>
   </Card>
+  {{ reviews }}
 </template>
 
 <script setup lang="ts">
@@ -55,7 +56,8 @@ import useSocketInstances from "~/composables/websocket/useSocketInstances";
 const { useRecentReviewsSocket } = useSocketInstances();
 const connection = useRecentReviewsSocket();
 
-const reviews = ref<ReviewSummary[]>([]);
+const reviews = ref<ReviewSummary[] | any>([]);
+const key = "recentReviews";
 
 const review_page = ref(0);
 const numPages = computed(() => {
@@ -81,13 +83,17 @@ const groupedCategories = computed(() => {
   return groups;
 });
 
-connection.on("ReceiveTopReviews", async (reviews) => {
+connection.on("ReceiveTopReviews", async (rev) => {
   console.log("fetched reviews");
+
+  // push reviews
+  reviews.value = rev;
+
   await $fetch("/api/page", {
     method: "POST",
     body: {
-      key: "recentReviews",
-      data: reviews,
+      key: key,
+      data: rev,
     },
   });
 });
@@ -98,11 +104,12 @@ connection.onreconnected(() => console.log("WebSocket reconnected"));
 onMounted(async () => {
   try {
     console.log("WebSocket connected");
-    const res = await $fetch("/api/page?key=recentReviews", {
+    const res = await $fetch(`/api/page?key=${key}`, {
       method: "GET",
     });
-    if (res.recentReviews) {
-      reviews.value = res.recentReviews;
+
+    if (res) {
+      reviews.value = res;
     }
 
     // start
