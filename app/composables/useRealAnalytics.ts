@@ -1,7 +1,13 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useAnalyticsApi } from '~/composables/useAnalyticsApi'
 import useBusinessUser from '~/composables/business/useBusinessUser'
-import type { AnalyticsDashboard, AspectSentimentData, TimeSeriesPoint } from '~/composables/useAnalyticsApi'
+import type {
+    AnalyticsDashboard,
+    AspectSentimentData,
+    TimeSeriesPoint,
+    CompetitiveBenchmark,
+    BenchmarkRow,
+} from '~/composables/useAnalyticsApi'
 
 // ─────────────────────────────────────────────────────────
 // Dashboard-specific shapes (what the template consumes)
@@ -56,26 +62,15 @@ export interface MonthlyTrendRow {
 // Helpers
 // ─────────────────────────────────────────────────────────
 
-/** Map a keyword count to a display font size (clamped 14–44px). */
 function keywordSize(count: number, maxCount: number): number {
     if (maxCount === 0) return 18
     return Math.round(14 + ((count / maxCount) * 30))
 }
 
-/** Format a decimal trend percentage as a rounded number for display. */
 function formatTrend(pct: number): number {
     return Math.round(pct * 10) / 10
 }
 
-/**
- * Convert a TimeSeriesPoint array into chart-ready PerformancePoint[].
- * Backend returns data DESC (newest first). We reverse to chronological order.
- *
- * Daily:   "2026-03-10" → "Mar 10"
- * Weekly:  positional labels → "Week 1" (oldest) … "Week N" (newest)
- *          ISO week strings like "2026-12" are not meaningful to owners.
- * Monthly: "2026-03" → "Mar"
- */
 function toPerformancePoints(
     points: TimeSeriesPoint[],
     periodType?: 'daily' | 'weekly' | 'monthly'
@@ -86,11 +81,9 @@ function toPerformancePoints(
         if (periodType === 'weekly') {
             label = `Week ${i + 1}`
         } else if (p.date.length === 10) {
-            // daily: "2026-03-10" → "Mar 10"
             const d = new Date(p.date)
             label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
         } else if (p.date.match(/^\d{4}-\d{2}$/)) {
-            // monthly: "2026-03" → "Mar"
             const d = new Date(`${p.date}-01`)
             label = d.toLocaleDateString('en-US', { month: 'short' })
         }
@@ -105,12 +98,6 @@ function toPerformancePoints(
 
 export interface YTick { y: number; label: string }
 
-/**
- * Build SVG path + points normalised into a 40-360 x, 40-210 y box.
- * minOverride / maxOverride pin the scale so the axis is stable across periods:
- *   ratings -> min=1, max=5   volume -> min=0, max=dataMax
- * isRating controls whether ticks show 1dp decimals or whole numbers.
- */
 function buildChartGeometry(
     values: number[],
     minOverride?: number,
@@ -135,23 +122,18 @@ function buildChartGeometry(
         path += ` L ${points[i]!.x} ${points[i]!.y}`
     }
 
-    // 5 evenly-spaced Y ticks from scaleMin to scaleMax
-    // Y range in SVG: 215 (bottom) to 35 (top) = 180px
     const tickCount = 4
     const yTicks: YTick[] = []
     for (let i = 0; i <= tickCount; i++) {
         const value = scaleMin + (range * i / tickCount)
         const y = 215 - (i / tickCount) * 180
-        const label = isRating
-            ? value.toFixed(1)
-            : Math.round(value).toString()
+        const label = isRating ? value.toFixed(1) : Math.round(value).toString()
         yTicks.push({ y, label })
     }
 
     return { points, path, yTicks }
 }
 
-// Source name → PrimeIcons icon + color mapping
 const SOURCE_ICON_MAP: Record<string, { icon: string; color: string }> = {
     direct: { icon: 'pi pi-star', color: 'text-green-600' },
     google: { icon: 'pi pi-google', color: 'text-red-600' },
@@ -173,7 +155,6 @@ export function useRealAnalytics() {
     const { fetchDashboard, fetchLatest, triggerRecalculation } = useAnalyticsApi()
     const businessStore = useBusinessUser()
 
-    // ── State ─────────────────────────────────────────────
     const raw = ref<AnalyticsDashboard | null>(null)
     const loading = ref(false)
     const error = ref<string | null>(null)
@@ -181,8 +162,6 @@ export function useRealAnalytics() {
     const triggerError = ref<string | null>(null)
     const triggerSuccess = ref(false)
     const lastTriggeredAt = ref<string | null>(null)
-
-    // ── Fetch ─────────────────────────────────────────────
 
     async function load() {
         const businessId = businessStore.id as string | undefined
@@ -209,10 +188,6 @@ export function useRealAnalytics() {
         }
     }
 
-    /**
-     * Trigger the AnalyticsFunction to recalculate, then fetch fresh data.
-     * Shows a success/error banner for 4 seconds.
-     */
     async function triggerAndRefresh() {
         const businessId = businessStore.id as string | undefined
         if (!businessId || triggering.value) return
@@ -222,10 +197,7 @@ export function useRealAnalytics() {
         triggerSuccess.value = false
 
         try {
-            // The function awaits the full pipeline before responding,
-            // so the response arriving means writing is done — fetch immediately.
             const result = await triggerRecalculation(businessId)
-
             raw.value = await fetchLatest(businessId)
 
             triggerSuccess.value = true
@@ -242,7 +214,7 @@ export function useRealAnalytics() {
         }
     }
 
-    // ── Derived data (computed) ───────────────────────────
+    // ── Derived data ───────────────────────────────────────────────────────
 
     const metrics = computed(() => raw.value?.metrics ?? null)
     const sentiment = computed(() => metrics.value?.sentiment ?? null)
@@ -252,7 +224,14 @@ export function useRealAnalytics() {
     const response = computed(() => metrics.value?.responseMetrics ?? null)
     const sources = computed(() => metrics.value?.sources ?? {})
 
-    // Key metrics cards
+    // ── Competitive benchmark ──────────────────────────────────────────────
+    // Benchmark lives at the top level of the dashboard response — NOT inside metrics.
+    // It reflects the category_benchmark table (shared across all businesses in the category).
+    const competitiveBenchmark = computed(
+        (): CompetitiveBenchmark | null => raw.value?.competitiveBenchmark ?? null
+    )
+
+    // ── Key metrics cards ──────────────────────────────────────────────────
     const keyMetrics = computed((): Metric[] => {
         const r = raw.value
         if (!r) return []
@@ -261,50 +240,32 @@ export function useRealAnalytics() {
         const reviewTrend = formatTrend(Number(trends.value?.reviewTrendPct ?? 0))
         const responseRate = Number(response.value?.responseRate ?? 0)
         const views = engagement.value?.profileViews ?? 0
-
         const plain = Number(r.averageRating).toFixed(1)
 
         return [
             {
-                title: 'Average Rating',
-                value: plain,
-                subtitle: null,
-                trend: ratingTrend,
-                icon: 'pi pi-star-fill',
-                iconColor: 'text-yellow-500',
-                bgColor: 'bg-yellow-100',
+                title: 'Average Rating', value: plain, subtitle: null,
+                trend: ratingTrend, icon: 'pi pi-star-fill',
+                iconColor: 'text-yellow-500', bgColor: 'bg-yellow-100',
             },
             {
-                title: 'Total Reviews',
-                value: r.totalReviews.toLocaleString(),
-                subtitle: null,
-                trend: reviewTrend,
-                icon: 'pi pi-comments',
-                iconColor: 'text-purple-600',
-                bgColor: 'bg-purple-100',
+                title: 'Total Reviews', value: r.totalReviews.toLocaleString(), subtitle: null,
+                trend: reviewTrend, icon: 'pi pi-comments',
+                iconColor: 'text-purple-600', bgColor: 'bg-purple-100',
             },
             {
-                title: 'Profile Views',
-                value: views.toLocaleString(),
-                subtitle: null,
-                trend: 0,
-                icon: 'pi pi-eye',
-                iconColor: 'text-blue-600',
-                bgColor: 'bg-blue-100',
+                title: 'Profile Views', value: views.toLocaleString(), subtitle: null,
+                trend: 0, icon: 'pi pi-eye',
+                iconColor: 'text-blue-600', bgColor: 'bg-blue-100',
             },
             {
-                title: 'Response Rate',
-                value: `${Math.round(responseRate)}%`,
-                subtitle: null,
-                trend: 0,
-                icon: 'pi pi-reply',
-                iconColor: 'text-green-600',
-                bgColor: 'bg-green-100',
+                title: 'Response Rate', value: `${Math.round(responseRate)}%`, subtitle: null,
+                trend: 0, icon: 'pi pi-reply',
+                iconColor: 'text-green-600', bgColor: 'bg-green-100',
             },
         ]
     })
 
-    // Sentiment bars
     const sentimentData = computed((): SentimentBar[] => {
         if (!sentiment.value) return []
         return [
@@ -314,37 +275,28 @@ export function useRealAnalytics() {
         ]
     })
 
-    // Keyword clouds — sized relative to the most frequent keyword
     const positiveWords = computed((): WordItem[] => {
         const kws = sentiment.value?.keywords?.positive ?? []
-        const max = Math.max(...kws.map((k) => k.count), 1)
-        return kws.map((k) => ({ text: k.text, size: keywordSize(k.count, max) }))
+        const max = Math.max(...kws.map(k => k.count), 1)
+        return kws.map(k => ({ text: k.text, size: keywordSize(k.count, max) }))
     })
 
     const negativeWords = computed((): WordItem[] => {
         const kws = sentiment.value?.keywords?.negative ?? []
-        const max = Math.max(...kws.map((k) => k.count), 1)
-        return kws.map((k) => ({ text: k.text, size: keywordSize(k.count, max) }))
+        const max = Math.max(...kws.map(k => k.count), 1)
+        return kws.map(k => ({ text: k.text, size: keywordSize(k.count, max) }))
     })
 
-    // Aspect opinion mining results
-    const aspects = computed((): AspectSentimentData[] => {
-        return sentiment.value?.aspects ?? []
-    })
+    const aspects = computed((): AspectSentimentData[] => sentiment.value?.aspects ?? [])
 
-    // Time-series performance data for chart (keyed by period)
-    // Sliced before reversing: backend returns DESC, so .slice(0, N) = most recent N points.
     const performanceDataByPeriod = computed(() => ({
         daily: toPerformancePoints((timeSeries.value?.daily ?? []).slice(0, 7), 'daily'),
         weekly: toPerformancePoints((timeSeries.value?.weekly ?? []).slice(0, 4), 'weekly'),
         monthly: toPerformancePoints((timeSeries.value?.monthly ?? []).slice(0, 6), 'monthly'),
     }))
 
-    // Review sources array for the sources grid
     const reviewSources = computed((): ReviewSource[] => {
-        const SOURCE_NAME_OVERRIDE: Record<string, string> = {
-            direct: 'CleReview',
-        }
+        const SOURCE_NAME_OVERRIDE: Record<string, string> = { direct: 'CleReview' }
         return Object.entries(sources.value).map(([key, count]) => {
             const { icon, color } = sourceIcon(key)
             const name = SOURCE_NAME_OVERRIDE[key.toLowerCase()]
@@ -353,7 +305,6 @@ export function useRealAnalytics() {
         })
     })
 
-    // Monthly trend (last 3 months) for the comparison table
     const monthlyTrend = computed((): MonthlyTrendRow[] => {
         const monthly = timeSeries.value?.monthly ?? []
         return [...monthly]
@@ -370,61 +321,36 @@ export function useRealAnalytics() {
             })
     })
 
-    // Chart geometry builders (called by the template with selectedPeriod + selectedChartType)
-    function buildChart(
-        period: 'daily' | 'weekly' | 'monthly',
-        type: 'ratings' | 'volume'
-    ) {
+    function buildChart(period: 'daily' | 'weekly' | 'monthly', type: 'ratings' | 'volume') {
         const data = performanceDataByPeriod.value[period]
-        const values = data.map((d) => (type === 'ratings' ? d.rating : d.reviews))
-
-        // Ratings: always pin to 1-5 so the axis never jumps between periods.
-        // Volume:  always start at 0; let max float to the data ceiling.
+        const values = data.map(d => type === 'ratings' ? d.rating : d.reviews)
         const minOverride = type === 'ratings' ? 1 : 0
         const maxOverride = type === 'ratings' ? 5 : Math.max(...values, 1)
-        const isRating = type === 'ratings'
-
-        return {
-            data,
-            ...buildChartGeometry(values, minOverride, maxOverride, isRating),
-        }
+        return { data, ...buildChartGeometry(values, minOverride, maxOverride, type === 'ratings') }
     }
 
-    // Last calculated time (formatted)
     const lastCalculatedAt = computed(() => {
         if (!raw.value?.lastCalculatedAt) return null
         return new Date(raw.value.lastCalculatedAt).toLocaleString()
     })
 
-    // Whether we have any data at all
     const hasData = computed(() => raw.value !== null && raw.value.metrics !== null)
 
     return {
         // State
-        loading,
-        error,
-        hasData,
-        lastCalculatedAt,
+        loading, error, hasData, lastCalculatedAt,
 
         // Trigger
-        triggering,
-        triggerError,
-        triggerSuccess,
-        lastTriggeredAt,
-        triggerAndRefresh,
+        triggering, triggerError, triggerSuccess, lastTriggeredAt, triggerAndRefresh,
 
         // Actions
         load,
 
         // Dashboard-ready data
-        keyMetrics,
-        sentimentData,
-        positiveWords,
-        negativeWords,
-        aspects,
-        reviewSources,
-        monthlyTrend,
-        performanceDataByPeriod,
-        buildChart,
+        keyMetrics, sentimentData, positiveWords, negativeWords,
+        aspects, reviewSources, monthlyTrend, performanceDataByPeriod, buildChart,
+
+        // Competitive benchmark (new)
+        competitiveBenchmark,
     }
 }

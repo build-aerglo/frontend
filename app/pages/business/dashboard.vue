@@ -5,9 +5,7 @@
 
       <div class="max-w-7xl mx-auto space-y-6">
 
-        <!-- ═══════════════════════════════════════════════════
-             HEADER — last calculated + manual trigger
-        ═══════════════════════════════════════════════════ -->
+        <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <p v-if="lastCalculatedAt" class="text-xs text-gray-500">
@@ -15,9 +13,7 @@
               Last updated: {{ lastCalculatedAt }}
             </p>
           </div>
-
           <div class="flex items-center gap-3">
-            <!-- Success banner -->
             <transition name="fade">
               <span v-if="triggerSuccess"
                 class="text-xs text-green-700 bg-green-100 px-3 py-1.5 rounded-full flex items-center gap-1">
@@ -25,8 +21,6 @@
                 Analytics refreshed at {{ lastTriggeredAt }}
               </span>
             </transition>
-
-            <!-- Error banner -->
             <transition name="fade">
               <span v-if="triggerError"
                 class="text-xs text-red-700 bg-red-100 px-3 py-1.5 rounded-full flex items-center gap-1">
@@ -34,8 +28,6 @@
                 {{ triggerError }}
               </span>
             </transition>
-
-            <!-- Trigger button -->
             <button @click="triggerAndRefresh" :disabled="triggering || loading"
               class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-[#008253] hover:text-[#008253] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
               <i class="pi text-sm" :class="triggering ? 'pi-spin pi-spinner' : 'pi-refresh'"></i>
@@ -44,17 +36,13 @@
           </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════
-             LOADING STATE
-        ═══════════════════════════════════════════════════ -->
+        <!-- Loading -->
         <div v-if="loading" class="flex flex-col items-center justify-center py-24 gap-4">
           <i class="pi pi-spin pi-spinner text-4xl text-[#008253]"></i>
           <p class="text-gray-600 text-sm">Loading analytics…</p>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════
-             ERROR STATE
-        ═══════════════════════════════════════════════════ -->
+        <!-- Error -->
         <div v-else-if="error" class="bg-white rounded-lg border border-orange-200 p-8 text-center space-y-3">
           <i class="pi pi-chart-bar text-4xl text-orange-400"></i>
           <p class="text-gray-700 font-medium">{{ error }}</p>
@@ -65,12 +53,10 @@
           </button>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════
-             MAIN DASHBOARD CONTENT
-        ═══════════════════════════════════════════════════ -->
+        <!-- Main dashboard -->
         <template v-else-if="hasData">
 
-          <!-- Key Metrics Cards -->
+          <!-- Key Metrics -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <button v-for="metric in keyMetrics" :key="metric.title" @click="handleMetricClick(metric.title)"
               class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all hover:scale-105 text-left cursor-pointer border border-gray-200">
@@ -78,11 +64,8 @@
                 <div>
                   <p class="text-gray-600 text-sm font-medium">{{ metric.title }}</p>
                   <p class="text-3xl font-bold text-gray-900 mt-2">{{ metric.value }}</p>
-                  <p v-if="metric.subtitle" class="text-xs text-gray-400 mt-0.5">{{ metric.subtitle }}</p>
-                  <p v-if="metric.trend !== 0" :class="[
-                    'text-sm mt-2 flex items-center gap-1',
-                    metric.trend > 0 ? 'text-green-600' : 'text-red-600',
-                  ]">
+                  <p v-if="metric.trend !== 0"
+                    :class="['text-sm mt-2 flex items-center gap-1', metric.trend > 0 ? 'text-green-600' : 'text-red-600']">
                     <i :class="metric.trend > 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
                     {{ Math.abs(metric.trend) }}% vs last period
                   </p>
@@ -95,9 +78,7 @@
             </button>
           </div>
 
-          <!-- ══════════════════════════════════════════
-               SENTIMENT HIGHLIGHTS
-          ══════════════════════════════════════════ -->
+          <!-- Sentiment Highlights -->
           <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-2xl font-bold text-blue-900 flex items-center gap-2">
@@ -109,9 +90,7 @@
                 <i class="pi pi-file-export text-sm"></i>
               </button>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <!-- Sentiment Distribution bars -->
               <div class="space-y-4">
                 <h3 class="text-base font-semibold text-blue-900">Sentiment Distribution</h3>
                 <div class="space-y-3">
@@ -127,8 +106,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Keyword cloud with toggle -->
               <div class="space-y-2">
                 <div class="flex items-center justify-between mb-1">
                   <h3 class="text-base font-semibold text-blue-900">Keywords</h3>
@@ -143,7 +120,6 @@
                     </button>
                   </div>
                 </div>
-
                 <div
                   :class="['rounded-lg p-3 min-h-[120px]', wordCloudView === 'positive' ? 'bg-green-50' : 'bg-red-50']">
                   <div v-if="(wordCloudView === 'positive' ? positiveWords : negativeWords).length"
@@ -160,9 +136,7 @@
             </div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-               PERFORMANCE INSIGHTS — chart + sources
-          ══════════════════════════════════════════ -->
+          <!-- Performance Insights -->
           <div id="charts" class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-2xl font-bold text-green-900 flex items-center gap-2">
@@ -174,9 +148,7 @@
                 <i class="pi pi-file-export text-sm"></i>
               </button>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <!-- Chart -->
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
                   <select v-model="selectedChartType"
@@ -185,53 +157,35 @@
                     <option value="volume">Review Volume Over Time</option>
                   </select>
                 </div>
-
                 <div class="flex gap-2">
                   <button v-for="period in timePeriods" :key="period.value" @click="selectedPeriod = period.value"
                     :class="['px-3 py-1.5 rounded-lg text-xs font-medium transition-all', selectedPeriod === period.value ? 'bg-[#008253] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
                     {{ period.label }}
                   </button>
                 </div>
-
                 <div class="h-64 bg-gray-50 rounded-lg p-2">
                   <div v-if="currentChart.data.length < 2"
                     class="flex items-center justify-center h-full text-sm text-gray-400">
                     Not enough data for this period yet
                   </div>
-                  <!-- viewBox: 0 0 420 260
-                       Left margin 55px = room for Y labels + axis title
-                       Bottom margin 40px = room for rotated X labels -->
                   <svg v-else class="w-full h-full" viewBox="0 0 420 260">
-                    <!-- Y axis line -->
                     <line x1="55" y1="35" x2="55" y2="215" stroke="#e5e7eb" stroke-width="2" />
-                    <!-- X axis line -->
                     <line x1="55" y1="215" x2="390" y2="215" stroke="#e5e7eb" stroke-width="2" />
-
-                    <!-- Y axis title (rotated, left side) -->
                     <text x="12" y="125" text-anchor="middle" fill="#6b7280" font-size="9"
-                      transform="rotate(-90, 12, 125)">
+                      :transform="`rotate(-90, 12, 125)`">
                       {{ selectedChartType === 'ratings' ? 'Rating' : 'Reviews' }}
                     </text>
-
-                    <!-- Y axis ticks + dashed grid lines + value labels -->
                     <g v-for="tick in currentChart.yTicks" :key="tick.y">
                       <line :x1="51" :y1="tick.y" :x2="55" :y2="tick.y" stroke="#9ca3af" stroke-width="1" />
                       <line :x1="55" :y1="tick.y" :x2="390" :y2="tick.y" stroke="#e5e7eb" stroke-width="1"
                         stroke-dasharray="4,3" />
-                      <text :x="49" :y="tick.y + 4" text-anchor="end" fill="#9ca3af" font-size="9">
-                        {{ tick.label }}
-                      </text>
+                      <text :x="49" :y="tick.y + 4" text-anchor="end" fill="#9ca3af" font-size="9">{{ tick.label
+                        }}</text>
                     </g>
-
-                    <!-- Data line -->
                     <path :d="currentChart.path" fill="none" stroke="#008253" stroke-width="2.5"
                       class="transition-all duration-500" />
-
-                    <!-- Data points -->
                     <circle v-for="(point, i) in currentChart.points" :key="i" :cx="point.x" :cy="point.y" r="4"
                       fill="#008253" class="transition-all cursor-pointer" />
-
-                    <!-- X axis labels — rotated -40deg so they never overlap -->
                     <text v-for="(label, i) in currentChart.data" :key="i"
                       :x="55 + (i * 335) / (currentChart.data.length - 1)" y="220" text-anchor="end" fill="#6b7280"
                       font-size="9" :transform="`rotate(-40, ${55 + (i * 335) / (currentChart.data.length - 1)}, 220)`">
@@ -240,8 +194,6 @@
                   </svg>
                 </div>
               </div>
-
-              <!-- Review Sources -->
               <div>
                 <h2 class="text-base font-bold text-center text-green-900 mb-6">Review Sources</h2>
                 <div v-if="reviewSources.length" class="grid grid-cols-2 gap-4">
@@ -257,99 +209,123 @@
             </div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-               COMPETITIVE BENCHMARKING (unchanged, still sample data
-               until competitor comparison is wired up in a future task)
-          ══════════════════════════════════════════ -->
+          <!-- ══════════════════════════════════════════════════════════════
+               COMPETITIVE BENCHMARKING — real data from category analytics
+          ══════════════════════════════════════════════════════════════ -->
           <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <h2 class="text-2xl font-bold text-purple-900 flex items-center gap-2 mb-2">
-                <i class="pi pi-chart-pie text-gray-600"></i>
-                Competitive Benchmarking
-              </h2>
-              <div class="flex items-center mb-10 gap-2">
-                <label class="text-sm font-medium text-gray-700">Compare with:</label>
-                <select v-model="selectedCompetitor"
-                  class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-[#008253] focus:outline-none focus:ring-2 focus:ring-[#008253] focus:border-transparent transition-all">
-                  <option v-for="competitor in competitors" :key="competitor.id" :value="competitor.id">
-                    {{ competitor.name }} ({{ competitor.rating }}★)
-                  </option>
-                </select>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-6">
+              <div>
+                <h2 class="text-2xl font-bold text-purple-900 flex items-center gap-2">
+                  <i class="pi pi-chart-pie text-gray-600"></i>
+                  Competitive Benchmarking
+                </h2>
+                <p class="text-xs text-gray-500 mt-1">
+                  How your business compares within its category
+                  <span v-if="competitiveBenchmark">
+                    · Ranked #{{ competitiveBenchmark.yourRank }} of {{ competitiveBenchmark.totalBusinessesInCategory
+                    }}
+                  </span>
+                </p>
               </div>
+              <span v-if="competitiveBenchmark" class="text-xs text-gray-400">
+                Updated {{ formatBenchmarkDate(competitiveBenchmark.calculatedAt) }}
+              </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-14 mb-10">
-              <!-- Rating Comparison Table — real data for "Your Business" -->
-              <div>
-                <h4 class="text-base font-semibold text-purple-900 mb-4">Average Rating (Past 3 Months)</h4>
-                <div class="overflow-x-auto">
-                  <table class="w-full border-collapse">
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <th class="text-left text-sm font-semibold text-gray-700 p-3 border border-gray-200">Month</th>
-                        <th class="text-center text-sm font-semibold text-gray-700 p-3 border border-gray-200">Your
-                          Business</th>
-                        <th class="text-center text-sm font-semibold text-gray-700 p-3 border border-gray-200">{{
-                          currentCompetitor?.name || 'Competitor' }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(month, index) in monthlyTrend" :key="month.month">
-                        <td class="text-sm font-medium text-gray-700 p-3 border border-gray-200">{{ month.month }}</td>
-                        <td class="text-center p-3 border border-gray-200">
-                          <div class="flex items-center justify-center gap-2">
-                            <span class="text-lg font-bold text-[#008253]">{{ month.rating }}</span>
-                            <i
-                              :class="['pi text-xs', month.change > 0 ? 'pi-arrow-up text-green-600' : month.change < 0 ? 'pi-arrow-down text-red-600' : 'pi-minus text-gray-400']"></i>
-                          </div>
-                        </td>
-                        <td class="text-center p-3 border border-gray-200">
-                          <div class="flex items-center justify-center gap-2">
-                            <span class="text-lg font-bold text-gray-700">{{
-                              currentCompetitorMonthlyTrend[index]?.rating || 'N/A' }}</span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <!-- No benchmark data yet -->
+            <div v-if="!competitiveBenchmark" class="py-10 text-center space-y-2">
+              <i class="pi pi-chart-pie text-3xl text-gray-300"></i>
+              <p class="text-sm text-gray-500">
+                Benchmarking data will appear after your business receives reviews
+                and the analytics function has run.
+              </p>
+              <button @click="triggerAndRefresh" :disabled="triggering"
+                class="mt-2 px-4 py-1.5 border border-gray-300 rounded-lg text-xs text-gray-600 hover:border-[#008253] hover:text-[#008253] transition-all disabled:opacity-50">
+                <i class="pi pi-refresh mr-1" :class="{ 'pi-spin': triggering }"></i>
+                Refresh Now
+              </button>
+            </div>
+
+            <!-- Benchmark table -->
+            <div v-else class="space-y-6">
+
+              <!-- Rank badge -->
+              <div class="flex items-center gap-3 p-4 rounded-xl" :class="rankBadgeClass">
+                <i class="pi pi-trophy text-2xl" :class="rankBadgeIconClass"></i>
+                <div>
+                  <p class="font-bold text-lg" :class="rankBadgeTextClass">
+                    Ranked #{{ competitiveBenchmark.yourRank }}
+                    of {{ competitiveBenchmark.totalBusinessesInCategory }} businesses
+                  </p>
+                  <p class="text-sm" :class="rankBadgeSubClass">{{ rankMessage }}</p>
                 </div>
               </div>
 
-              <!-- Competitor keyword cloud -->
-              <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                  <h4 class="text-base font-semibold text-purple-900">Competitor Keywords</h4>
-                  <div class="inline-flex rounded-lg border border-gray-200 p-1">
-                    <button @click="competitorWordCloudView = 'positive'"
-                      :class="['px-3 py-1.5 rounded-md text-xs font-medium transition-all', competitorWordCloudView === 'positive' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:text-gray-900']">
-                      <i class="pi pi-thumbs-up mr-1"></i>Positive
-                    </button>
-                    <button @click="competitorWordCloudView = 'negative'"
-                      :class="['px-3 py-1.5 rounded-md text-xs font-medium transition-all', competitorWordCloudView === 'negative' ? 'bg-orange-100 text-orange-700' : 'text-gray-600 hover:text-gray-900']">
-                      <i class="pi pi-thumbs-down mr-1"></i>Negative
-                    </button>
-                  </div>
-                </div>
-                <div
-                  :class="['rounded-lg p-3 min-h-[120px]', competitorWordCloudView === 'positive' ? 'bg-blue-50' : 'bg-orange-50']">
-                  <div class="flex flex-wrap gap-2">
-                    <span v-for="word in currentCompetitorWords" :key="word.text"
-                      :style="{ fontSize: word.size / 2.5 + 'px' }"
-                      :class="['font-semibold hover:opacity-70 cursor-pointer', competitorWordCloudView === 'positive' ? 'text-blue-700' : 'text-orange-700']">
-                      {{ word.text }}
-                    </span>
-                  </div>
-                </div>
+              <!-- Comparison table -->
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-sm">
+                  <thead>
+                    <tr class="bg-gray-50">
+                      <th class="text-left p-3 border border-gray-200 font-semibold text-gray-700 w-40">Metric</th>
+                      <th class="text-center p-3 border border-gray-200 font-semibold text-[#008253]">Your Business</th>
+                      <th class="text-center p-3 border border-gray-200 font-semibold text-purple-700">Top 10% in
+                        Category</th>
+                      <th class="text-center p-3 border border-gray-200 font-semibold text-gray-600">Category Average
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in benchmarkTableRows" :key="row.label" class="hover:bg-gray-50 transition-colors">
+                      <td class="p-3 border border-gray-200 font-medium text-gray-700">
+                        {{ row.label }}
+                        <span class="block text-xs text-gray-400 font-normal">{{ row.hint }}</span>
+                      </td>
+                      <!-- Your value -->
+                      <td class="p-3 border border-gray-200 text-center">
+                        <div class="flex flex-col items-center gap-1">
+                          <span class="font-bold text-base text-gray-900">{{ row.yours }}</span>
+                          <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', row.vsTop10Class]">
+                            {{ row.vsTop10Label }}
+                          </span>
+                        </div>
+                      </td>
+                      <!-- Top 10% -->
+                      <td class="p-3 border border-gray-200 text-center">
+                        <span class="font-semibold text-purple-700">{{ row.top10 }}</span>
+                      </td>
+                      <!-- Category avg -->
+                      <td class="p-3 border border-gray-200 text-center">
+                        <span class="font-medium text-gray-600">{{ row.catAvg }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Benchmark legend -->
+              <div class="flex flex-wrap gap-4 text-xs text-gray-500 pt-1">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+                  Above top 10%
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block"></span>
+                  Within 10% of top 10%
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 inline-block"></span>
+                  Above category average
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span>
+                  Below category average
+                </span>
               </div>
             </div>
           </div>
 
-          <!-- ══════════════════════════════════════════
-               SUGGESTIONS (What Improved / Needs Improvement)
-               Derived from real aspect data
-          ══════════════════════════════════════════ -->
+          <!-- Strongest Areas / Needs Attention -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- What Improved: top-scored aspects -->
             <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-green-900 flex items-center gap-2">
@@ -378,7 +354,6 @@
               </div>
             </div>
 
-            <!-- Needs Improvement: lowest-scored aspects -->
             <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div class="flex items-center justify-between mb-6">
                 <h3 class="text-2xl font-bold text-orange-900 flex items-center gap-2">
@@ -415,38 +390,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRealAnalytics } from '~/composables/useRealAnalytics'
+import type { BenchmarkRow } from '~/composables/useAnalyticsApi'
 
 definePageMeta({ layout: 'business' })
 
-// ── Real analytics ──────────────────────────────────────
 const {
-  loading,
-  error,
-  hasData,
-  lastCalculatedAt,
-  triggering,
-  triggerError,
-  triggerSuccess,
-  lastTriggeredAt,
-  triggerAndRefresh,
-  load,
-  keyMetrics,
-  sentimentData,
-  positiveWords,
-  negativeWords,
-  aspects,
-  reviewSources,
-  monthlyTrend,
-  buildChart,
+  loading, error, hasData, lastCalculatedAt,
+  triggering, triggerError, triggerSuccess, lastTriggeredAt,
+  triggerAndRefresh, load,
+  keyMetrics, sentimentData, positiveWords, negativeWords,
+  aspects, reviewSources, monthlyTrend, buildChart,
+  competitiveBenchmark,
 } = useRealAnalytics()
 
 onMounted(() => load())
 
-// ── Chart controls ──────────────────────────────────────
+// ── Chart controls ───────────────────────────────────────────────────────────
 const wordCloudView = ref<'positive' | 'negative'>('positive')
-const competitorWordCloudView = ref<'positive' | 'negative'>('positive')
 const selectedChartType = ref<'ratings' | 'volume'>('ratings')
 const selectedPeriod = ref<'daily' | 'weekly' | 'monthly'>('daily')
 
@@ -457,12 +419,10 @@ const timePeriods: { value: 'daily' | 'weekly' | 'monthly'; label: string }[] = 
 ]
 
 const currentChart = computed(() =>
-  buildChart(selectedPeriod.value as 'daily' | 'weekly' | 'monthly', selectedChartType.value)
+  buildChart(selectedPeriod.value, selectedChartType.value)
 )
 
-// ── Aspect-derived suggestions ──────────────────────────
-// Top 2 highest-scoring aspects → "Strongest Areas"
-// Only include aspects where positive is dominant (sentimentScore > 0.5)
+// ── Aspect suggestions ───────────────────────────────────────────────────────
 const topAspects = computed(() =>
   [...aspects.value]
     .filter(a => a.positiveCount > 0 && a.sentimentScore > 0.5)
@@ -470,8 +430,6 @@ const topAspects = computed(() =>
     .slice(0, 2)
 )
 
-// Bottom 2 lowest-scoring aspects → "Needs Attention"
-// Exclude any aspect already shown in Strongest Areas to avoid duplication
 const bottomAspects = computed(() => {
   const topNames = new Set(topAspects.value.map(a => a.aspect.toLowerCase()))
   return [...aspects.value]
@@ -480,45 +438,138 @@ const bottomAspects = computed(() => {
     .slice(0, 2)
 })
 
-// ── Competitor section (sample — future task) ───────────
-const selectedCompetitor = ref('competitor1')
+// ── Competitive benchmarking helpers ────────────────────────────────────────
 
-const competitors = ref([
-  {
-    id: 'competitor1', name: 'The Garden Bistro', rating: 4.2,
-    positiveWords: [{ text: 'cozy', size: 48 }, { text: 'peaceful', size: 40 }, { text: 'charming', size: 32 }],
-    negativeWords: [{ text: 'slow', size: 48 }, { text: 'pricey', size: 44 }],
-    monthlyTrend: [{ month: 'September', rating: 4.1, change: -0.1 }, { month: 'October', rating: 4.2, change: 0.1 }, { month: 'November', rating: 4.2, change: 0 }],
-  },
-  {
-    id: 'competitor2', name: 'Sunset Grill', rating: 4.4,
-    positiveWords: [{ text: 'scenic', size: 48 }, { text: 'romantic', size: 40 }],
-    negativeWords: [{ text: 'crowded', size: 48 }, { text: 'noisy', size: 36 }],
-    monthlyTrend: [{ month: 'September', rating: 4.3, change: -0.1 }, { month: 'October', rating: 4.4, change: 0.1 }, { month: 'November', rating: 4.5, change: 0.1 }],
-  },
-])
+/** Returns a CSS class indicating how 'yours' compares to the top-10% value. */
+function vsClass(yours: number, top10: number, catAvg: number, higherIsBetter = true): string {
+  const above = higherIsBetter
+  if (above ? yours >= top10 : yours <= top10) return 'bg-green-100 text-green-700'
+  if (above ? yours >= top10 * 0.9 : yours <= top10 * 1.1) return 'bg-blue-100 text-blue-600'
+  if (above ? yours >= catAvg : yours <= catAvg) return 'bg-yellow-100 text-yellow-700'
+  return 'bg-red-100 text-red-600'
+}
 
-const currentCompetitor = computed(() => competitors.value.find(c => c.id === selectedCompetitor.value))
-const currentCompetitorWords = computed(() => {
-  if (!currentCompetitor.value) return []
-  return competitorWordCloudView.value === 'positive'
-    ? currentCompetitor.value.positiveWords
-    : currentCompetitor.value.negativeWords
+function vsLabel(yours: number, top10: number, catAvg: number, higherIsBetter = true): string {
+  if (higherIsBetter ? yours >= top10 : yours <= top10) return '▲ Top 10%'
+  if (higherIsBetter ? yours >= top10 * 0.9 : yours <= top10 * 1.1) return '≈ Near top'
+  if (higherIsBetter ? yours >= catAvg : yours <= catAvg) return '↑ Above avg'
+  return '↓ Below avg'
+}
+
+/** Build rows for the comparison table from the benchmark data. */
+const benchmarkTableRows = computed(() => {
+  const b = competitiveBenchmark.value
+  if (!b) return []
+
+  const fmt = (v: number, decimals = 1) => v.toFixed(decimals)
+
+  return [
+    {
+      label: 'Avg Rating',
+      hint: 'Bayesian weighted average',
+      yours: fmt(b.yourBusiness.avgRating),
+      top10: fmt(b.top10Percent.avgRating),
+      catAvg: fmt(b.categoryAverage.avgRating),
+      vsTop10Class: vsClass(b.yourBusiness.avgRating, b.top10Percent.avgRating, b.categoryAverage.avgRating),
+      vsTop10Label: vsLabel(b.yourBusiness.avgRating, b.top10Percent.avgRating, b.categoryAverage.avgRating),
+    },
+    {
+      label: 'Response Rate',
+      hint: 'Weighted response rate (%)',
+      yours: fmt(b.yourBusiness.wrr) + '%',
+      top10: fmt(b.top10Percent.wrr) + '%',
+      catAvg: fmt(b.categoryAverage.wrr) + '%',
+      vsTop10Class: vsClass(b.yourBusiness.wrr, b.top10Percent.wrr, b.categoryAverage.wrr),
+      vsTop10Label: vsLabel(b.yourBusiness.wrr, b.top10Percent.wrr, b.categoryAverage.wrr),
+    },
+    {
+      label: 'Recency Score',
+      hint: 'Reviews in last 6 months ÷ total',
+      yours: fmt(b.yourBusiness.recencyScore * 100) + '%',
+      top10: fmt(b.top10Percent.recencyScore * 100) + '%',
+      catAvg: fmt(b.categoryAverage.recencyScore * 100) + '%',
+      vsTop10Class: vsClass(b.yourBusiness.recencyScore, b.top10Percent.recencyScore, b.categoryAverage.recencyScore),
+      vsTop10Label: vsLabel(b.yourBusiness.recencyScore, b.top10Percent.recencyScore, b.categoryAverage.recencyScore),
+    },
+    {
+      label: 'Positive Reviews',
+      hint: 'Percentage rated ≥ 4 stars',
+      yours: fmt(b.yourBusiness.positivePct) + '%',
+      top10: fmt(b.top10Percent.positivePct) + '%',
+      catAvg: fmt(b.categoryAverage.positivePct) + '%',
+      vsTop10Class: vsClass(b.yourBusiness.positivePct, b.top10Percent.positivePct, b.categoryAverage.positivePct),
+      vsTop10Label: vsLabel(b.yourBusiness.positivePct, b.top10Percent.positivePct, b.categoryAverage.positivePct),
+    },
+    {
+      label: 'Negative Reviews',
+      hint: 'Percentage rated < 3 stars',
+      yours: fmt(b.yourBusiness.negativePct) + '%',
+      top10: fmt(b.top10Percent.negativePct) + '%',
+      catAvg: fmt(b.categoryAverage.negativePct) + '%',
+      // Lower is better for negative reviews
+      vsTop10Class: vsClass(b.yourBusiness.negativePct, b.top10Percent.negativePct, b.categoryAverage.negativePct, false),
+      vsTop10Label: vsLabel(b.yourBusiness.negativePct, b.top10Percent.negativePct, b.categoryAverage.negativePct, false),
+    },
+  ]
 })
-const currentCompetitorMonthlyTrend = computed(() => currentCompetitor.value?.monthlyTrend ?? [])
 
-// ── Opinion helpers ─────────────────────────────────────
-/** Deduplicate an opinion list (Azure AI can return the same phrase twice). */
+/** Rank badge colour/message based on percentile position */
+const rankPercentile = computed(() => {
+  const b = competitiveBenchmark.value
+  if (!b || b.totalBusinessesInCategory === 0) return 100
+  return Math.round((b.yourRank / b.totalBusinessesInCategory) * 100)
+})
+
+const rankBadgeClass = computed(() => {
+  const p = rankPercentile.value
+  if (p <= 10) return 'bg-green-50 border border-green-200'
+  if (p <= 25) return 'bg-blue-50 border border-blue-200'
+  if (p <= 50) return 'bg-yellow-50 border border-yellow-200'
+  return 'bg-gray-50 border border-gray-200'
+})
+const rankBadgeIconClass = computed(() => {
+  const p = rankPercentile.value
+  if (p <= 10) return 'text-green-600'
+  if (p <= 25) return 'text-blue-500'
+  if (p <= 50) return 'text-yellow-500'
+  return 'text-gray-400'
+})
+const rankBadgeTextClass = computed(() => {
+  const p = rankPercentile.value
+  if (p <= 10) return 'text-green-800'
+  if (p <= 25) return 'text-blue-800'
+  if (p <= 50) return 'text-yellow-800'
+  return 'text-gray-700'
+})
+const rankBadgeSubClass = computed(() => {
+  const p = rankPercentile.value
+  if (p <= 10) return 'text-green-600'
+  if (p <= 25) return 'text-blue-600'
+  if (p <= 50) return 'text-yellow-600'
+  return 'text-gray-500'
+})
+const rankMessage = computed(() => {
+  const p = rankPercentile.value
+  if (p <= 10) return 'You are in the top 10% of your category — excellent work!'
+  if (p <= 25) return 'You are in the top 25% of your category — keep it up!'
+  if (p <= 50) return 'You are above the category average — room to grow.'
+  return 'There is an opportunity to improve your standing in this category.'
+})
+
+function formatBenchmarkDate(iso: string): string {
+  try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) }
+  catch { return '' }
+}
+
+// ── Opinion helpers ──────────────────────────────────────────────────────────
 function uniqueOpinions(opinions: string[]): string[] {
   return [...new Set(opinions)]
 }
-
-/** First 2 unique opinions joined for display. */
 function uniqueOpinionsPreview(opinions: string[]): string {
   return uniqueOpinions(opinions).slice(0, 2).join(', ')
 }
 
-// ── Misc ────────────────────────────────────────────────
+// ── Misc ─────────────────────────────────────────────────────────────────────
 const handleMetricClick = (title: string) => {
   const router = useRouter()
   if (title === 'Total Reviews' || title === 'Average Rating') router.push('#charts')

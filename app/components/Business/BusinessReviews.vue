@@ -137,7 +137,7 @@
                   <h3
                     class="text-4xl sm:text-6xl font-black text-slate-800 leading-none mb-2"
                   >
-                    {{ displayAvgRating }}
+                    {{ business?.avgRating }}
                   </h3>
                   <div class="mb-1 scale-75 sm:scale-100 origin-left">
                     <Star :count="business?.avgRating || 0" :rounded="true" />
@@ -474,20 +474,20 @@ const closeReviewAndClearDraft = () => {
 };
 
 // rating display
-const displayAvgRating = computed(() => {
-  const rating = props.business?.avgRating ?? 0;
+// const displayAvgRating = computed(() => {
+//   const rating = props.business?.avgRating ?? 0;
 
-  const integerPart = Math.floor(rating);
-  const decimal = rating - integerPart;
+//   // const integerPart = Math.floor(rating);
+//   const decimal = rating - integerPart;
 
-  let displayValue;
+//   let displayValue;
 
-  if (decimal <= 0.35) displayValue = integerPart;
-  else if (decimal <= 0.65) displayValue = integerPart + 0.5;
-  else displayValue = integerPart + 1;
+//   if (decimal <= 0.35) displayValue = integerPart;
+//   else if (decimal <= 0.65) displayValue = integerPart + 0.5;
+//   else displayValue = integerPart + 1;
 
-  return displayValue.toFixed(1);
-});
+//   return displayValue.toFixed(1);
+// });
 
 const formatReviewSummary = (text: string | null | undefined) => {
   if (!text) return "";

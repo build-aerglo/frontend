@@ -1,9 +1,5 @@
-
-
-import useApi from '~/composables/useApi'
-import useBusinessUser from '~/composables/business/useBusinessUser'
 import useBusinessApi from '~/composables/business/useBusinessApi'
-
+import useBusinessUser from '~/composables/business/useBusinessUser'
 
 // ─────────────────────────────────────────────────────────
 // Types that mirror BusinessAnalyticsDashboard.cs exactly
@@ -33,7 +29,7 @@ export interface SentimentMetrics {
     neutralPct: number
     negativePct: number
     keywords: KeywordData | null
-    aspects: AspectSentimentData[]   // opinion-mined aspect data
+    aspects: AspectSentimentData[]
 }
 
 export interface ResponseMetrics {
@@ -74,6 +70,42 @@ export interface TrendMetrics {
     ratingTrendPct: number
 }
 
+// ─── Competitive Benchmarking types ──────────────────────────────────────────
+
+/**
+ * A single row of benchmarking metrics.
+ * Used for yourBusiness, top10Percent, and categoryAverage.
+ */
+export interface BenchmarkRow {
+    /** Bayesian average rating (0–5) */
+    avgRating: number
+    /** Weighted Response Rate as a percentage (0–100) */
+    wrr: number
+    /** Recency score (0–1): reviews in last 6 months / total reviews */
+    recencyScore: number
+    /** Percentage of reviews rated ≥ 4 stars */
+    positivePct: number
+    /** Percentage of reviews rated < 3 stars */
+    negativePct: number
+}
+
+/**
+ * Competitive benchmarking data — populated from the category_benchmark table via JOIN.
+ * One row per category; updated whenever any business in the category is processed.
+ */
+export interface CompetitiveBenchmark {
+    yourBusiness: BenchmarkRow
+    top10Percent: BenchmarkRow
+    categoryAverage: BenchmarkRow
+    /** This business's rank in the category (1 = best) */
+    yourRank: number
+    /** Total businesses in the category with at least 1 review */
+    totalBusinessesInCategory: number
+    lastUpdatedAt: string
+}
+
+// ─────────────────────────────────────────────────────────
+
 export interface AnalyticsMetrics {
     responseMetrics: ResponseMetrics | null
     sentiment: SentimentMetrics | null
@@ -91,6 +123,14 @@ export interface AnalyticsDashboard {
     averageRating: number
     /** Bayesian average, rounded to 1dp. Accounts for review volume. Use this for display. */
     bayesianAverageRating: number
+    /**
+     * Competitive benchmark — assembled from business_analytics scalar columns (yourBusiness)
+     * and the category_benchmark JOIN (top10Percent / categoryAverage).
+     * Always fresh: the category_benchmark row is updated whenever ANY business in the
+     * category is processed, so all businesses see current data on every dashboard read.
+     * Null if the business has no category or no approved reviews yet.
+     */
+    competitiveBenchmark: CompetitiveBenchmark | null
     metrics: AnalyticsMetrics | null
     lastCalculatedAt: string
     createdAt: string
@@ -137,12 +177,7 @@ export function useAnalyticsApi() {
 
     /**
      * POST to the AnalyticsFunction HTTP trigger to force a recalculation.
-     *
-     * Targets the function app URL (analyticsFunctionUrl in runtimeConfig),
-     * NOT the BusinessService URL — these are different services.
-     *
-     * Pass businessId to recalculate one business only.
-     * Omit to recalculate all businesses (admin use).
+     * Targets the function app URL (analyticsFunctionUrl in runtimeConfig).
      */
     async function triggerRecalculation(businessId?: string): Promise<TriggerResponse> {
         const functionUrl = config.public.analyticsFunctionUrl as string
@@ -156,7 +191,6 @@ export function useAnalyticsApi() {
 
         const body = businessId ? { businessId } : {}
 
-        // Use the business store token for auth — same token the BusinessService uses.
         const response = await $fetch<TriggerResponse>(`${functionUrl}/api/trigger`, {
             method: 'POST',
             headers: {
