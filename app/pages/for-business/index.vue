@@ -254,10 +254,8 @@
           </ul>
 
           <div class="pt-2 flex justify-center md:justify-start">
-            <NuxtLink to="/business/landing">
-              <button
-                class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium transition-all flex items-center gap-3 shadow-lg hover:shadow-xl"
-              >
+            <NuxtLink to="/business/dashboard">
+              <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium  transition-all flex items-center gap-3 shadow-lg hover:shadow-xl">
                 View dashboard
                 <i
                   class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"
@@ -313,7 +311,7 @@
     </div>
   </section>
 
-  <section class="py-14 px-2 bg-white">
+  <section id="categories" class="py-14 px-2 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3 mb-2">
         <div class="w-1 h-8 rounded-full !bg-primary"></div>
@@ -362,10 +360,7 @@
       </div>
       <p class="text-center text-slate-400 text-sm mt-8">
         Don't see your industry?
-        <NuxtLink
-          to="/business/register"
-          class="!text-primary font-semibold hover:underline ml-1"
-        >
+        <NuxtLink to="/business/auth/sign-up" class="!text-primary font-semibold hover:underline ml-1">
           List your business anyway →
         </NuxtLink>
       </p>

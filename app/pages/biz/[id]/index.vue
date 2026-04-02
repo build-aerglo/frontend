@@ -21,7 +21,7 @@
       :isBusiness="isBusiness"
       :categories="categories"
       :reviews="reviews"
-      status="verified"
+      :status="businessStatus"
     />
   </div>
 </template>
@@ -151,4 +151,10 @@ const goBack = () => {
 //     businessId: computed(() => business.value?.id),
 //     isBusiness: computed(() => isBusiness.value)
 // })
+const businessStatus = computed(() => {
+  if (!business.value) return undefined
+  if (business.value.isVerified) return 'verified'
+  
+  return undefined
+})
 </script>

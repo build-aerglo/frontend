@@ -66,34 +66,23 @@
 
   <!--Business CTA Section-->
   <section class="py-10 px-6 md:px-8 overflow-hidden">
-    <div class="container mx-auto">
-      <div
-        class="flex flex-col-reverse md:flex-row items-center justify-between gap-12"
-      >
-        <div
-          class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5"
-        >
-          <h2
-            class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight"
-          >
-            Ready to expand your brand?
-          </h2>
-          <p class="text-slate-600 text-lg max-w-md md:text-left">
-            Boost credibility with authentic reviews and manage your reputation
-            with our dedicated business dashboard.
-          </p>
-          <div class="pt-2 w-full flex justify-center md:justify-start">
-            <NuxtLink to="/for-business/index-v2" class="w-auto">
-              <button
-                class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
-              >
-                Get Started
-                <i
-                  class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"
-                ></i>
-              </button>
-            </NuxtLink>
-          </div>
+  <div class="container mx-auto">
+    <div class="flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+      
+      <div class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5">
+        <h2 class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight">
+          Ready to expand your brand?
+        </h2>
+        <p class="text-slate-600 text-lg max-w-md md:text-left">
+          Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
+        </p>
+        <div class="pt-2 w-full flex justify-center md:justify-start">
+          <NuxtLink to="/for-business/" class="w-auto">
+            <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
+              Get Started
+              <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+          </NuxtLink>
         </div>
 
         <div class="relative md:w-1/2 w-full flex justify-center items-center">

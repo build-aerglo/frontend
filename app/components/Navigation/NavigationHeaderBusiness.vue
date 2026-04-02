@@ -6,6 +6,9 @@
     </NuxtLink>
 
     <div class="flex gap-2.5 items-center">
+      <NuxtLink to="/business/dashboard" v-if="businessUserStore.isAuthenticated" class="!bg-primary py-[10px] px-[15px] text-white rounded-[10px] transition transform duration-150 ease-in-out hover:scale-105">
+        Dashboard
+      </NuxtLink>
       <!-- Authenticated state (always visible) -->
       <div v-if="businessUserStore.isAuthenticated" class="relative">
         <button
@@ -32,7 +35,7 @@
           class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-slate-100 py-2 z-[100]"
         >
           <NuxtLink
-            to="/business/dashboard"
+            to="/business/profile/"
             class="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
             @click="showDropdown = false"
           >

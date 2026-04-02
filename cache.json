@@ -1,6 +1,37 @@
 {
   "top-business": [
     {
+      "id": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 5,
+      "avgRating": 4
+    },
+    {
+      "id": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "logo": "",
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 16,
+      "avgRating": 3.69
+    },
+    {
+      "id": "3bcc58bf-55c3-416e-8131-30581e9e0b10",
+      "businessName": "Placeholder Business 1",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 1,
+      "avgRating": 3.64
+    },
+    {
       "id": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
       "businessName": "BusinessBasic",
       "logo": "https://ik.imagekit.io/clerreview/images/profile/medal-icon_eCsEoQscnZ.svg",
@@ -27,23 +58,8 @@
           "parentCategoryId": null
         }
       ],
-      "reviewCount": 23,
-      "avgRating": 3.68
-    },
-    {
-      "id": "05df40fc-8238-4547-8847-95705ee724e8",
-      "businessName": "Humiz Stitches",
-      "logo": "",
-      "categories": [
-        {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 13,
-      "avgRating": 3.63
+      "reviewCount": 25,
+      "avgRating": 3.7
     },
     {
       "id": "cd932015-925c-4949-9ed0-36150fe10be1",
@@ -76,13 +92,13 @@
       "avgRating": 3.5
     },
     {
-      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
-      "businessName": "Hub Luxe",
+      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
+      "businessName": "picture frames",
       "logo": null,
       "categories": [
         {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
+          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+          "name": "Others",
           "description": null,
           "parentCategoryId": null
         }
@@ -91,13 +107,13 @@
       "avgRating": 3.6
     },
     {
-      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
-      "businessName": "picture frames",
+      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
+      "businessName": "Hub Luxe",
       "logo": null,
       "categories": [
         {
-          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
-          "name": "Others",
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
           "description": null,
           "parentCategoryId": null
         }
@@ -119,36 +135,6 @@
       ],
       "reviewCount": 2,
       "avgRating": 3.5
-    },
-    {
-      "id": "3f630f55-7bb9-42e1-aea3-38d9a5d1c09c",
-      "businessName": "Business_Basic2",
-      "logo": "",
-      "categories": [
-        {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 4,
-      "avgRating": 3.36
-    },
-    {
-      "id": "803e06fc-5695-47c9-a333-b3b673fd9d83",
-      "businessName": "BusinessPrem",
-      "logo": "",
-      "categories": [
-        {
-          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
-          "name": "Food and Resturants",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 7,
-      "avgRating": 3.21
     }
   ],
   "recentReviews": [

@@ -285,9 +285,7 @@
                         class="w-full h-full object-cover" 
                       />
                     </div>
-                    <div class="absolute -top-2 -right-2">
-                      <Badge :type="('isVerified' in business && business.isVerified) ? 'verified' : 'standard'" />
-                    </div>
+                    
                   </div>
 
                   <div class="text-center">

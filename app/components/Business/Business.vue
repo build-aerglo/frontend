@@ -641,10 +641,16 @@
               <BusinessStatusFrame
                 v-if="businessBadgeStatus"
                 :status="businessBadgeStatus"
-                :claimStatus="business?.businessStatus"
                 class="absolute inset-0 z-20 pointer-events-none"
               />
             </div>
+          </div>
+          <!-- Claim Status Text -->
+          <div
+            class="text-[85%] font-medium px-2 rounded-sm whitespace-nowrap"
+            :class="claimStatusClass"
+          >
+            {{claimStatusText }}
           </div>
 
             <!-- Star ratings and reviews -->
@@ -1279,6 +1285,31 @@ const updateProfile = async () => {
     isLoading.value = false;
   }
 };
+const claimStatusText = computed(() => {
+  switch (props.business?.businessStatus) {
+    case "approved":
+      return "Claimed Profile";
+    case "unclaimed":
+      return "Unclaimed Profile";
+    case "pending":
+      return "Claim in Progress";
+    default:
+      return "";
+  }
+})
+
+const claimStatusClass = computed(() => {
+  switch (props.business?.businessStatus) {
+    case "approved":
+      return "text-green-500";
+    case "unclaimed":
+      return "text-gray-600";
+    case "pending":
+      return "text-amber-500";
+    default:
+      return "";
+  }
+})
 </script>
 
 <style scoped>

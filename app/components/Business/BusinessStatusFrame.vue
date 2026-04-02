@@ -44,13 +44,6 @@
       </svg>
     </div>
 
-    <!-- Claim Status Text -->
-    <div
-      class="text-[75%] font-medium px-2 py-0.5 rounded-sm whitespace-nowrap"
-      :class="claimStatusClass"
-    >
-      {{ claimStatusText }}
-    </div>
   </div>
 </template>
 
@@ -59,7 +52,6 @@ import { computed } from "vue";
 
 interface Props {
   status: "verified" | "trusted";
-  claimStatus: "claimed" | "unclaimed" | "claiming";
 }
 
 const props = defineProps<Props>();
@@ -72,29 +64,5 @@ const statusLabel = computed(() =>
   props.status === "trusted" ? "Trusted" : "Verified",
 );
 
-const claimStatusText = computed(() => {
-  switch (props.claimStatus) {
-    case "claimed":
-      return "Claimed Profile";
-    case "unclaimed":
-      return "Unclaimed Profile";
-    case "claiming":
-      return "Claim in Progress";
-    default:
-      return "Claimed Profile";
-  }
-});
 
-const claimStatusClass = computed(() => {
-  switch (props.claimStatus) {
-    case "claimed":
-      return "text-green-500";
-    case "unclaimed":
-      return "text-gray-600";
-    case "claiming":
-      return "text-amber-500";
-    default:
-      return "text-green-500";
-  }
-});
 </script>
