@@ -41,6 +41,7 @@ export interface ProfileData {
   userId: string
   username: string
   email: string
+  isEmailVerified: boolean
   phone: string | null
   address: string | null
   joinDate: string | null
@@ -82,6 +83,8 @@ export interface SummaryReview {
   logo: string | null
   isVerified: boolean
   businessAddress: string // "City, State"
+  helpfulCount: number
+  businessReply: string | null
 }
 
 export interface SummaryTopCity {
