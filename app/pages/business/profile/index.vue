@@ -10,7 +10,7 @@
     :isBusiness="isBusiness"
     :categories="categories"
     :reviews="reviews"
-    status="verified"
+    :status="businessStatus"
     :canEdit="true"
   />
 </template>
@@ -104,4 +104,10 @@ useHead({
 onBeforeMount(async () => {
   await loadBusinessData();
 });
+const businessStatus = computed(() => {
+  if (!business.value) return undefined
+  if (business.value.isVerified) return 'verified'
+  
+  return undefined
+})
 </script>

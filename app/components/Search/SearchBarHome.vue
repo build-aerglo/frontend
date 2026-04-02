@@ -82,7 +82,7 @@
               }"
             >
               <i class="pi pi-star-fill text-white text-[10px]"></i>
-              {{ item.rating.toFixed(1) }}
+              {{ getDisplayRating(item.rating) }}
             </div>
           </li>
         </template>
@@ -236,4 +236,25 @@ onBeforeUnmount(() => {
   document.removeEventListener("click", handleOutsideClick);
   window.removeEventListener("resize", updateWindowWidth);
 });
+const getDisplayRating = (rating: number | string | undefined): string => {
+  const numRating = typeof rating === 'string' ? parseFloat(rating) : (rating ?? 0);
+  
+  const integerPart = Math.floor(numRating);
+  const decimalPart = numRating - integerPart;
+  const decimal = Math.round(decimalPart * 100) / 100;
+  
+  let displayValue;
+  if (decimal <= 0.35) {
+    // Round down: 1.35 → 1.0, 2.35 → 2.0
+    displayValue = integerPart;
+  } else if (decimal <= 0.65) {
+    // Half star: 1.4-1.65 → 1.5, 2.4-2.65 → 2.5
+    displayValue = integerPart + 0.5;
+  } else {
+    // Round up: 1.7 → 2.0, 2.7 → 3.0
+    displayValue = integerPart + 1;
+  }
+  
+  return displayValue.toFixed(1);
+};
 </script>

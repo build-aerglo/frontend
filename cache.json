@@ -1,6 +1,37 @@
 {
   "top-business": [
     {
+      "id": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 5,
+      "avgRating": 4
+    },
+    {
+      "id": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "logo": "",
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 16,
+      "avgRating": 3.69
+    },
+    {
+      "id": "3bcc58bf-55c3-416e-8131-30581e9e0b10",
+      "businessName": "Placeholder Business 1",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 1,
+      "avgRating": 3.64
+    },
+    {
       "id": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
       "businessName": "BusinessBasic",
       "logo": "https://ik.imagekit.io/clerreview/images/profile/medal-icon_eCsEoQscnZ.svg",
@@ -27,23 +58,8 @@
           "parentCategoryId": null
         }
       ],
-      "reviewCount": 23,
-      "avgRating": 3.68
-    },
-    {
-      "id": "05df40fc-8238-4547-8847-95705ee724e8",
-      "businessName": "Humiz Stitches",
-      "logo": "",
-      "categories": [
-        {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 13,
-      "avgRating": 3.63
+      "reviewCount": 25,
+      "avgRating": 3.7
     },
     {
       "id": "cd932015-925c-4949-9ed0-36150fe10be1",
@@ -76,13 +92,13 @@
       "avgRating": 3.5
     },
     {
-      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
-      "businessName": "Hub Luxe",
+      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
+      "businessName": "picture frames",
       "logo": null,
       "categories": [
         {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
+          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+          "name": "Others",
           "description": null,
           "parentCategoryId": null
         }
@@ -91,13 +107,13 @@
       "avgRating": 3.6
     },
     {
-      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
-      "businessName": "picture frames",
+      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
+      "businessName": "Hub Luxe",
       "logo": null,
       "categories": [
         {
-          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
-          "name": "Others",
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
           "description": null,
           "parentCategoryId": null
         }
@@ -119,144 +135,114 @@
       ],
       "reviewCount": 2,
       "avgRating": 3.5
-    },
-    {
-      "id": "3f630f55-7bb9-42e1-aea3-38d9a5d1c09c",
-      "businessName": "Business_Basic2",
-      "logo": "",
-      "categories": [
-        {
-          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
-          "name": "Fashion and Beauty",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 4,
-      "avgRating": 3.36
-    },
-    {
-      "id": "803e06fc-5695-47c9-a333-b3b673fd9d83",
-      "businessName": "BusinessPrem",
-      "logo": "",
-      "categories": [
-        {
-          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
-          "name": "Food and Resturants",
-          "description": null,
-          "parentCategoryId": null
-        }
-      ],
-      "reviewCount": 7,
-      "avgRating": 3.21
     }
   ],
   "recentReviews": [
     {
-      "id": "0b9233bf-f843-4f30-bd9e-9777efa481d0",
-      "email": "t**t@test.com",
-      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
-      "businessName": "BusinessBasic",
+      "id": "1504227b-8bdc-488b-9da9-dc4f59ebbe24",
+      "email": "i*******y@gmail.com",
+      "businessId": "a39f75dc-dd72-419f-b8c8-c6a857239745",
+      "businessName": "foodmart",
       "starRating": 3,
-      "uploadedDate": "2026-03-19T21:53:18.387439",
-      "reviewBody": "Decent food and atmosphere, but the service is slow and the prices feel a bit too high for the overall experience",
+      "uploadedDate": "2026-04-02T00:41:43.450644",
+      "reviewBody": "food mart has the most affordable foodstuff, their customer service is top notch",
       "anonymous": true
     },
     {
-      "id": "5a929ca7-6dc3-4654-9d24-25d309356c70",
-      "email": "o***************h@gmail.com",
-      "businessId": "3f630f55-7bb9-42e1-aea3-38d9a5d1c09c",
-      "businessName": "Business_Basic2",
-      "starRating": 5,
-      "uploadedDate": "2026-03-18T23:33:28.193661",
-      "reviewBody": "man i am trying to test elastic search so i am giving myself 5 star cause i too good mehn",
-      "anonymous": true
-    },
-    {
-      "id": "fd96b93b-a3ae-4d17-9972-68cb454818f1",
-      "email": "o***************h@gmail.com",
+      "id": "bb4234ba-e79a-49e5-a28a-5ff0f2c1d048",
+      "email": "t**t@mail.com",
       "businessId": "05df40fc-8238-4547-8847-95705ee724e8",
       "businessName": "Humiz Stitches",
-      "starRating": 5,
-      "uploadedDate": "2026-03-18T22:52:42.917981",
-      "reviewBody": "i went there again today and surpirsinlgy their staff outfit has changed i guess they do listen",
-      "anonymous": true
-    },
-    {
-      "id": "3f046ea5-3b7e-44ef-bb6b-857a321b5333",
-      "email": "t**t@test.com",
-      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
-      "businessName": "BusinessBasic",
       "starRating": 3.5,
-      "uploadedDate": "2026-03-18T21:44:03.983524",
-      "reviewBody": "I enjoyed myself, but the waiter was not very nice. The food came early, but i don't like being disrespected by waiters.",
+      "uploadedDate": "2026-04-01T19:35:37.195551",
+      "reviewBody": "it was great honestly the staff was nice and i guess i was really made happy",
       "anonymous": true
     },
     {
-      "id": "2f3719ef-766a-4adc-a54a-1607d7dc95eb",
-      "email": "r*******c@mailinator.com",
-      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
-      "businessName": "YumYum Foodmart",
+      "id": "3b1b4647-33e9-4341-975e-06c74ed6234c",
+      "email": "",
+      "businessId": "3bcc58bf-55c3-416e-8131-30581e9e0b10",
+      "businessName": "Placeholder Business 1",
       "starRating": 5,
-      "uploadedDate": "2026-03-18T20:41:45.579348",
-      "reviewBody": "yeah the food is great really great i actually enjoyed it honestly and i am really hard to please",
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
       "anonymous": true
     },
     {
-      "id": "e6bd1850-b343-4282-afd8-bd3c2d217880",
-      "email": "j******e@gmail.com",
-      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
-      "businessName": "BusinessBasic",
-      "starRating": 1,
-      "uploadedDate": "2026-03-17T21:30:24.896218",
-      "reviewBody": "Very poor food! The rice was spoilt! Then beans was undone and the stew was too oily",
+      "id": "64808269-430e-4ef1-a0f7-897a2222d6d4",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
       "anonymous": true
     },
     {
-      "id": "ce3f9d46-674f-48b0-8ff8-d394da12726a",
-      "email": "j******e@gmail.com",
-      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
-      "businessName": "BusinessBasic",
-      "starRating": 4.5,
-      "uploadedDate": "2026-03-17T21:28:02.207465",
-      "reviewBody": "I had a really great time here. The manager was very helpful",
+      "id": "cf56d9ce-a908-4775-9002-190726b62939",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
       "anonymous": true
     },
     {
-      "id": "bf802b82-0f3c-47c3-80cb-fe90b7d91b59",
-      "email": "o***************h@gmail.com",
+      "id": "89539934-6e0b-4eac-94ae-e63a657f645a",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "22df7baa-2a52-41ea-b537-e851824fdeeb",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "f9df60b8-c7c5-469e-a490-7e0f0c9ea92a",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "e55dcced-0cce-4068-8c77-1203ab444ce1",
+      "email": "s*********h@gmail.com",
+      "businessId": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "starRating": 4,
+      "uploadedDate": "2026-04-01T19:00:57.149803",
+      "reviewBody": "i do not like the place it quite stuffy and messy and has a weird smell",
+      "anonymous": true
+    },
+    {
+      "id": "64239bee-9009-4d1b-b882-0be1b59c0cd0",
+      "email": "o*********h@gmail.com",
       "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
       "businessName": "YumYum Foodmart",
-      "starRating": 3.5,
-      "uploadedDate": "2026-03-16T11:01:47.812724",
-      "reviewBody": "the place is great honestly i really love it mehn ",
+      "starRating": 4,
+      "uploadedDate": "2026-04-01T18:29:43.546852",
+      "reviewBody": "this is a random review a test rather i hope it passes the checks",
       "anonymous": true
-    },
-    {
-      "id": "61e3d3e4-7b86-4a08-a966-5447d597faa4",
-      "email": "t**t@test.com",
-      "businessId": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
-      "businessName": "BusinessBasic",
-      "starRating": 4.5,
-      "uploadedDate": "2026-03-13T16:30:23.217671",
-      "reviewBody": "i had a nice time, the food was prepared a bit late, but the background music kept me company, and i really enjoyed the service.",
-      "anonymous": true
-    },
-    {
-      "id": "b052ed43-d500-40b5-9362-ee74104b0c26",
-      "email": "j******e@gmail.com",
-      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
-      "businessName": "YumYum Foodmart",
-      "starRating": 2,
-      "uploadedDate": "2026-03-11T21:12:19.607582",
-      "reviewBody": "Testing pagination on enduser profile",
-      "anonymous": false
     }
   ],
   "statistics": {
-    "registeredBusinesses": 18,
-    "registeredUsers": 16,
-    "uploadedReviews": 77
+    "registeredBusinesses": 21,
+    "registeredUsers": 19,
+    "uploadedReviews": 87
   },
   "categories": [
     {
