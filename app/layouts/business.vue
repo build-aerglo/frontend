@@ -23,6 +23,14 @@
       </div>
     </div>
   </Drawer>
+
+  <!-- verification -->
+  <VerificationModal
+    v-if="showVerification"
+    @closed="showVerification = false"
+  />
+  <!--  -->
+
   <div
     class="layout-wrapper layout-content-navbar"
     :class="{ 'layout-menu-collapsed': isLayoutCollapsed }"
@@ -47,7 +55,15 @@
           </a>
 
           <div class="flex items-center justify-between w-full px-0">
-            <div class="flex items-center gap-4 ml-auto">
+            <div class="flex items-center gap-[25px] ml-auto">
+              <i
+                @click="showVerification = true"
+                class="pi pi-verified text-xl cursor-pointer"
+                :class="{
+                  'verified-red': isVerified,
+                  'verified-blue': !isVerified,
+                }"
+              ></i>
               <OverlayBadge
                 :value="announcements.length > 0 ? announcements.length : null"
                 severity="danger"
@@ -175,6 +191,9 @@ const menuItems = [
   },
 ];
 
+const isVerified = ref(true);
+const showVerification = ref(false);
+
 const showNotifications = ref(false);
 const { getAnnouncements } = useAnnouncementMethods();
 const announcements = getAnnouncements().data;
@@ -296,6 +315,32 @@ bell-pulse {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+.verified-red {
+  color: red;
+  animation: pulse 1s infinite;
+}
+
+.verified-blue {
+  color: blue;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>

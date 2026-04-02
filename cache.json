@@ -1,1 +1,313 @@
-{}
+{
+  "top-business": [
+    {
+      "id": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 5,
+      "avgRating": 4
+    },
+    {
+      "id": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "logo": "",
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 16,
+      "avgRating": 3.69
+    },
+    {
+      "id": "3bcc58bf-55c3-416e-8131-30581e9e0b10",
+      "businessName": "Placeholder Business 1",
+      "logo": null,
+      "categories": [],
+      "reviewCount": 1,
+      "avgRating": 3.64
+    },
+    {
+      "id": "7520ab6a-eb9c-47cb-b121-6bae1a637488",
+      "businessName": "BusinessBasic",
+      "logo": "https://ik.imagekit.io/clerreview/images/profile/medal-icon_eCsEoQscnZ.svg",
+      "categories": [
+        {
+          "id": "8edd049c-6505-4086-9bf1-4f8b058a4fcf",
+          "name": "Health and Wellness",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 11,
+      "avgRating": 3.24
+    },
+    {
+      "id": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "logo": "https://ik.imagekit.io/clerreview/images/profile/92011_OyXk_BIWe.jpg",
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 25,
+      "avgRating": 3.7
+    },
+    {
+      "id": "cd932015-925c-4949-9ed0-36150fe10be1",
+      "businessName": "Mhuniz Delicacies",
+      "logo": null,
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 4,
+      "avgRating": 3.61
+    },
+    {
+      "id": "aab47bff-c717-4bdd-9256-e00adcf29136",
+      "businessName": "Aerglo Tech Business",
+      "logo": "",
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 6,
+      "avgRating": 3.5
+    },
+    {
+      "id": "9ba7b9ca-cccc-4f09-bdfa-480ca07522d0",
+      "businessName": "picture frames",
+      "logo": null,
+      "categories": [
+        {
+          "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+          "name": "Others",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 1,
+      "avgRating": 3.6
+    },
+    {
+      "id": "d76699fe-345f-4e49-aeaa-ba8b1ab892e0",
+      "businessName": "Hub Luxe",
+      "logo": null,
+      "categories": [
+        {
+          "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+          "name": "Fashion and Beauty",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 1,
+      "avgRating": 3.6
+    },
+    {
+      "id": "a39f75dc-dd72-419f-b8c8-c6a857239745",
+      "businessName": "foodmart",
+      "logo": null,
+      "categories": [
+        {
+          "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+          "name": "Food and Resturants",
+          "description": null,
+          "parentCategoryId": null
+        }
+      ],
+      "reviewCount": 2,
+      "avgRating": 3.5
+    }
+  ],
+  "recentReviews": [
+    {
+      "id": "1504227b-8bdc-488b-9da9-dc4f59ebbe24",
+      "email": "i*******y@gmail.com",
+      "businessId": "a39f75dc-dd72-419f-b8c8-c6a857239745",
+      "businessName": "foodmart",
+      "starRating": 3,
+      "uploadedDate": "2026-04-02T00:41:43.450644",
+      "reviewBody": "food mart has the most affordable foodstuff, their customer service is top notch",
+      "anonymous": true
+    },
+    {
+      "id": "bb4234ba-e79a-49e5-a28a-5ff0f2c1d048",
+      "email": "t**t@mail.com",
+      "businessId": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "starRating": 3.5,
+      "uploadedDate": "2026-04-01T19:35:37.195551",
+      "reviewBody": "it was great honestly the staff was nice and i guess i was really made happy",
+      "anonymous": true
+    },
+    {
+      "id": "3b1b4647-33e9-4341-975e-06c74ed6234c",
+      "email": "",
+      "businessId": "3bcc58bf-55c3-416e-8131-30581e9e0b10",
+      "businessName": "Placeholder Business 1",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "64808269-430e-4ef1-a0f7-897a2222d6d4",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "cf56d9ce-a908-4775-9002-190726b62939",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "89539934-6e0b-4eac-94ae-e63a657f645a",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "22df7baa-2a52-41ea-b537-e851824fdeeb",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "f9df60b8-c7c5-469e-a490-7e0f0c9ea92a",
+      "email": "",
+      "businessId": "36e64630-be0b-4e99-ae35-74277b73e1ca",
+      "businessName": "Placeholder Business 2",
+      "starRating": 5,
+      "uploadedDate": "2026-04-01T19:24:13.45394",
+      "reviewBody": "Bu bir otomatik sistem kayıt düzeltme metnidir ve kısıtlamaları aşmak için uzatılmıştır.",
+      "anonymous": true
+    },
+    {
+      "id": "e55dcced-0cce-4068-8c77-1203ab444ce1",
+      "email": "s*********h@gmail.com",
+      "businessId": "05df40fc-8238-4547-8847-95705ee724e8",
+      "businessName": "Humiz Stitches",
+      "starRating": 4,
+      "uploadedDate": "2026-04-01T19:00:57.149803",
+      "reviewBody": "i do not like the place it quite stuffy and messy and has a weird smell",
+      "anonymous": true
+    },
+    {
+      "id": "64239bee-9009-4d1b-b882-0be1b59c0cd0",
+      "email": "o*********h@gmail.com",
+      "businessId": "bc3ddcc7-d2df-43b9-a89d-5b08e00e4377",
+      "businessName": "YumYum Foodmart",
+      "starRating": 4,
+      "uploadedDate": "2026-04-01T18:29:43.546852",
+      "reviewBody": "this is a random review a test rather i hope it passes the checks",
+      "anonymous": true
+    }
+  ],
+  "statistics": {
+    "registeredBusinesses": 21,
+    "registeredUsers": 19,
+    "uploadedReviews": 90
+  },
+  "categories": [
+    {
+      "id": "0199d4ef-ca22-7970-a8d2-57995e57eaa8",
+      "name": "Business",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": null,
+      "businessCount": 2
+    },
+    {
+      "id": "147e754e-5e57-4291-b878-9f246aeed0e4",
+      "name": "Education and Training",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-graduation-cap",
+      "businessCount": 1
+    },
+    {
+      "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
+      "name": "Fashion and Beauty",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-palette",
+      "businessCount": 4
+    },
+    {
+      "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
+      "name": "Food and Resturants",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-shop",
+      "businessCount": 7
+    },
+    {
+      "id": "8edd049c-6505-4086-9bf1-4f8b058a4fcf",
+      "name": "Health and Wellness",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-heart",
+      "businessCount": 2
+    },
+    {
+      "id": "c65281fa-eabd-4c73-917b-92fdd6025660",
+      "name": "Hotels,BnB and vacation",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-building",
+      "businessCount": 1
+    },
+    {
+      "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
+      "name": "Others",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-globe",
+      "businessCount": 2
+    },
+    {
+      "id": "14ce3615-ac66-4302-856b-133c3827b35d",
+      "name": "Shopping",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": "pi-shop",
+      "businessCount": 0
+    }
+  ]
+}

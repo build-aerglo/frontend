@@ -1,28 +1,30 @@
 <template>
   <Toast />
-  <Nav />
   <div
-    class="h-[calc(100vh-4rem)] overflow-hidden relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center"
+    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[30px]"
   >
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="h-full flex items-center justify-center relative z-10">
-      <div class="card w-full max-w-md -translate-y-6">
-        <div class="card-body">
-          <div class="app-brand justify-content-center mb-3">
-            <NuxtLink to="/" class="md:text-center">
-              <NavLogo />
-            </NuxtLink>
+    <div
+      class="rounded-[20px] shadow-sm w-full sm:max-w-[1000px] flex rounded-r-[10px]"
+    >
+      <div
+        class="w-full sm:w-[65%] flex flex-col p-[30px] rounded-r-[10px] bg-white"
+      >
+        <NuxtLink
+          to="/"
+          class="uppercase w-max text-[80%] text-primary mb-[30px] flex items-center gap-[5px]"
+        >
+          <i class="pi pi-angle-left mt-[5px]"></i> CleReview
+        </NuxtLink>
+        <div class="flex-1 text-center py-[20px]">
+          <div class="text-primary sm:text-[200%] text-[150%] font-bold">
+            Welcome Back!
           </div>
-          <p class="mb-6 text-[95%] sm:text-[100%] text-center text-contrast">
+          <div class="mb-[20px]">
             Sign in to manage reviews and track your business growth.
-          </p>
+          </div>
 
-          <form
-            @submit.prevent="HandleLogin"
-            id="formAuthentication"
-            class="mb-2"
-          >
-            <div class="form-control-validation">
+          <form @submit.prevent="HandleLogin">
+            <div>
               <InputTextCustom
                 v-model="loginData.email"
                 label="Email"
@@ -30,8 +32,7 @@
                 required
               />
             </div>
-
-            <div class="form-password-toggle form-control-validation">
+            <div>
               <InputTextCustom
                 v-model="loginData.password"
                 label="Password"
@@ -39,6 +40,7 @@
                 required
               />
             </div>
+
             <div class="mb-6 mt-8">
               <div class="d-flex justify-content-between">
                 <div class="form-check mb-0 ms-2">
@@ -51,47 +53,58 @@
                     Remember Me
                   </label>
                 </div>
-                <NuxtLink to="/business/auth/password-reset">
-                  <p class="mb-0 text-link">Forgot Password?</p>
+                <NuxtLink to="/auth/password-reset">
+                  <p class="mb-0 !text-primary">Forgot Password?</p>
                 </NuxtLink>
               </div>
             </div>
+
             <ButtonCustom
-              :label="isLoading ? 'Authenticating...' : 'Login'"
+              :label="
+                isLoading
+                  ? 'Authenticating Account Details...'
+                  : 'Sign in to Account'
+              "
               :disabled="isLoading"
               size="lg"
               primary="true"
               input-class="p-3 text-[15px]"
               type="submit"
+              :no-zoom="TrendingUpDownIcon"
             />
-          </form>
 
-          <p class="text-center md:text[100%] pt-1">
-            <span>New on our platform?</span>
-            <NuxtLink to="sign-up">
-              <span class="ms-1 hover:underline text-link"
-                >Create an account</span
-              >
-            </NuxtLink>
-          </p>
+            <div class="mt-[30px]">
+              <div class="text-center md:text[100%] pt-1">
+                <span>New to ClerReview?</span>
+                <NuxtLink to="sign-up">
+                  <span class="ms-1 hover:underline !text-primary"
+                    >Create an account</span
+                  >
+                </NuxtLink>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
+      <div
+        class="w-full sm:w-[35%] sm:block hidden !bg-primary text-white border rounded-r-[10px]"
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Nav from '~/components/BusinessLanding/Nav.vue';
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 import useVerificationMethods from "~/composables/verification/useVerificationMethods";
 import useBusinessUser from "~/composables/business/useBusinessUser";
 
-const { getBusinessUser, getBusinessProfile, getBusinessSubscriptionSummary } =
+const { getBusinessProfile, getBusinessSubscriptionSummary } =
   useBusinessMethods();
 const { getBusinessVerification } = useVerificationMethods();
 
 import useMethods from "~/composables/useMethods";
 import type { LoginData } from "~/types";
+import { TrendingUpDownIcon } from "lucide-vue-next";
 
 const { loginUser } = useMethods();
 const store = useBusinessUser();

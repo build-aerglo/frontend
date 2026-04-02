@@ -1,23 +1,7 @@
 <template>
   <GeneralLoader height="300px" v-if="isLoadingPage" />
   <div v-else>
-    <!-- <Card v-if="reviews.length <= 0">
-      <template #content>
-        <div class="flex flex-col items-center gap-2.5 py-[50px] min-h-[100px]">
-          <div>Business does not have reviews yet.</div>
-          <ButtonCustom
-            v-if="!isBusiness"
-            label="Be the first to review this business"
-            icon="pencil"
-            input-class="w-max"
-            size="lg"
-            primary="true"
-            @click="handleWriteReviewClick"
-          />
-        </div>
-      </template>
-    </Card> -->
-    <div v-if="review.length <= 0">
+    <div v-if="emptyStateType !== 'data'">
       <GeneralEmpty
         description="Business does not have reviews yet."
         v-if="emptyStateType === 'initial-empty'"
@@ -55,9 +39,17 @@
               >
                 <div class="flex gap-[10px] flex-1">
                   <!-- branches -->
-                  <select v-model="selectedBranch">
-                    <option v-for="(i, idx) in sort" :key="idx" :value="i.id">
-                      {{ i.name }}
+                  <select v-model="selectedBranch" v-if="branches.length > 0">
+                    <option
+                      v-for="(i, idx) in branches"
+                      :key="idx"
+                      :value="i.id"
+                    >
+                      {{
+                        i.id
+                          ? `${i.branchCityTown}, ${i.branchState}`
+                          : i.branchName
+                      }}
                     </option>
                   </select>
 
@@ -145,7 +137,7 @@
                   <h3
                     class="text-4xl sm:text-6xl font-black text-slate-800 leading-none mb-2"
                   >
-                    {{ displayAvgRating }}
+                    {{ business?.avgRating }}
                   </h3>
                   <div class="mb-1 scale-75 sm:scale-100 origin-left">
                     <Star :count="business?.avgRating || 0" :rounded="true" />
@@ -177,11 +169,12 @@
                   What people are saying
                 </p>
                 <p
-                  class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium"
+                  class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium whitespace-pre-line"
                 >
                   {{
-                    business?.reviewSummary ??
-                    "No review summary for this business."
+                    business?.reviewSummary
+                      ? formatReviewSummary(business?.reviewSummary)
+                      : "No review summary for this business."
                   }}
                 </p>
               </div>
@@ -250,23 +243,33 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from "~/store/user";
+import { onActivated, onBeforeMount } from "vue";
 import ReviewForm from "~/components/Review/ReviewForm.vue";
 
 import useReviewMethods from "~/composables/review/useReviewMethods";
 import type { ReviewDashboard } from "~/types/review";
 import type { RatingCounts } from "~/types/business";
-const { getReviewManagement } = useReviewMethods();
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
 
+const { getBusinessBranches } = useBusinessMethods();
+const { getReviewManagement } = useReviewMethods();
 const props = defineProps(["reviews", "business", "isBusiness"]);
-const userStore = useUserStore();
+
+interface BusinessBranch {
+  businessId: string;
+  id?: string | null;
+  branchName?: string;
+  branchStreet?: string;
+  branchCityTown?: string;
+  branchState?: string;
+}
 
 // UI State
 const showReviewModal = ref(false);
 const showAuthModal = ref(false);
 const reviewDraft = ref<any>(null);
 
-// pagination setup - do not touch
+// pagination
 const stars = [5, 4, 3, 2, 1] as const;
 
 function getTotalRatings(ratings: RatingCounts): number {
@@ -275,9 +278,8 @@ function getTotalRatings(ratings: RatingCounts): number {
 
 const selectedBranch = ref<string | null>(null);
 const selectedRating = ref<number | null>(null);
-const totalPages = ref(0);
 
-const limit = ref(2);
+const limit = ref(10);
 const total = ref(0);
 const currentPage = ref(1);
 const first = ref(0);
@@ -293,11 +295,12 @@ const onPageChange = async (event: any) => {
   }
   await loadReviews(false);
 };
-//
 
+// caching
 const expiryDate = useState<Date | null>("reviews-expiry", () => null);
-const review = ref<ReviewDashboard[]>([]);
 
+// data
+const review = ref<ReviewDashboard[]>([]);
 const ratingCount = ref<RatingCounts>({
   five: 0,
   four: 0,
@@ -306,60 +309,76 @@ const ratingCount = ref<RatingCounts>({
   one: 0,
 });
 
-const loadReviewsFromFilter = async () => {
-  if (review.value.length <= 0) {
-    return;
-  }
-
-  await loadReviews(false);
-};
-
-const clearFilters = async () => {
-  selectedRating.value = null;
-  selectedBranch.value = null;
-
-  // isLoadingPage.value = true;
-  await loadReviews(false);
-};
-
+// loading states
 const isLoadingPage = ref(false);
 const isLoadingReviews = ref(false);
+const isFirstLoad = ref(true);
+
 const hasLoaded = ref(false);
 const hasEverHadData = ref(false);
 
+// core loader
 const loadReviews = async (reloadPage: boolean) => {
-  if (reloadPage) {
-    const now = new Date();
+  const now = new Date();
+
+  // prevent unnecessary refetch
+  if (reloadPage && !isFirstLoad.value) {
     if (expiryDate.value && expiryDate.value > now) {
-      // still valid → don't refetch
-      isLoadingPage.value = false;
       return;
     }
   }
 
-  const _branch = selectedBranch.value ? selectedBranch.value : null;
-  const _page = currentPage.value ?? 1;
-  const _pageSize = limit.value ?? 10;
-  const _rating = selectedRating.value ? selectedRating.value : null;
-
-  hasLoaded.value = false;
+  const _branch = selectedBranch.value ?? null;
+  const _rating = selectedRating.value ?? null;
 
   try {
-    reloadPage ? (isLoadingPage.value = true) : (isLoadingReviews.value = true);
-    const res = await getReviewManagement(
-      props.business?.id,
-      {
-        branch: _branch,
-        startDate: null,
-        endDate: null,
-        status: null,
-        rating: _rating,
-      },
-      _page,
-      _pageSize,
-    );
+    if (isFirstLoad.value) {
+      isLoadingPage.value = true;
+    } else {
+      isLoadingReviews.value = true;
+    }
+
+    const [res, branchesRes] = await Promise.all([
+      getReviewManagement(
+        props.business?.id,
+        {
+          branch: _branch,
+          startDate: null,
+          endDate: null,
+          status: null,
+          rating: _rating,
+        },
+        currentPage.value,
+        limit.value,
+      ),
+      getBusinessBranches(props.business?.id),
+    ]);
+
+    // const res = await getReviewManagement(
+    //   props.business?.id,
+    //   {
+    //     branch: _branch,
+    //     startDate: null,
+    //     endDate: null,
+    //     status: null,
+    //     rating: _rating,
+    //   },
+    //   currentPage.value,
+    //   limit.value,
+    // );
+
+    if (branchesRes && branchesRes.statusCode === 200) {
+      if (branchesRes.data.length > 0) {
+        branches.value = branchesRes.data;
+        branches.value.push({
+          businessId: props.business?.id,
+          id: null,
+          branchName: "All Branches",
+        });
+      }
+    }
+
     if (res.ok) {
-      // set expiry - 5 mins
       expiryDate.value = new Date(Date.now() + 5 * 60 * 1000);
 
       review.value = res.data.reviews;
@@ -369,21 +388,48 @@ const loadReviews = async (reloadPage: boolean) => {
       }
 
       ratingCount.value = res.data.count;
-
-      totalPages.value = res.data.totalPages;
       total.value = getTotalRatings(ratingCount.value);
-      return;
+
+      isFirstLoad.value = false;
     }
   } catch (error) {
     console.log(error);
   } finally {
     hasLoaded.value = true;
-    reloadPage
-      ? (isLoadingPage.value = false)
-      : (isLoadingReviews.value = false);
+    isLoadingPage.value = false;
+    isLoadingReviews.value = false;
   }
 };
 
+// lifecycle
+onBeforeMount(async () => {
+  if (isFirstLoad.value) {
+    await loadReviews(true);
+  }
+});
+
+onActivated(async () => {
+  const now = new Date();
+
+  // only refetch if cache expired
+  if (!expiryDate.value || expiryDate.value < now) {
+    await loadReviews(true);
+  }
+});
+
+// filters
+const loadReviewsFromFilter = async () => {
+  if (review.value.length <= 0) return;
+  await loadReviews(false);
+};
+
+const clearFilters = async () => {
+  selectedRating.value = null;
+  selectedBranch.value = null;
+  await loadReviews(false);
+};
+
+// empty state logic
 const emptyStateType = computed(() => {
   if (!hasLoaded.value) return "loading";
   if (review.value.length > 0) return "data";
@@ -391,11 +437,8 @@ const emptyStateType = computed(() => {
   return "filtered-empty";
 });
 
-const sort = [
-  { id: "new", name: "Test Branch" },
-  { id: "old", name: "Test Branch 2" },
-  { id: null, name: "All Branches" },
-];
+// dropdowns
+const branches = ref<BusinessBranch[]>([]);
 
 const ratings = [
   { name: "Rating: 1 Star", id: 1 },
@@ -406,101 +449,7 @@ const ratings = [
   { name: "All Ratings", id: null },
 ];
 
-// Logic for Text Summary
-// const ratingDescription = computed(() => {
-//   if (props.reviews.length === 0)
-//     return "No reviews yet. Be the first to share your experience!";
-//   const allText = props.reviews
-//     .map((r: any) => r.reviewBody.toLowerCase())
-//     .join(" ");
-
-//   const themes = {
-//     positive: [
-//       "great",
-//       "best",
-//       "excellent",
-//       "amazing",
-//       "good",
-//       "perfect",
-//       "honestly",
-//       "love",
-//       "satisfied",
-//     ],
-//     service: [
-//       "service",
-//       "staff",
-//       "customer",
-//       "people",
-//       "worker",
-//       "professional",
-//       "manner",
-//     ],
-//     issues: [
-//       "problem",
-//       "wrong",
-//       "figure",
-//       "issue",
-//       "bad",
-//       "slow",
-//       "poor",
-//       "disappoint",
-//       "difficulty",
-//     ],
-//   };
-
-//   const foundThemes = {
-//     positive: themes.positive.some((word) => allText.includes(word)),
-//     service: themes.service.some((word) => allText.includes(word)),
-//     issues: themes.issues.some((word) => allText.includes(word)),
-//   };
-
-//   let summary = "Reviewers generally ";
-//   if (foundThemes.positive && !foundThemes.issues) {
-//     summary +=
-//       "highly praise this business, highlighting exceptional service and a top-tier experience. ";
-//   } else if (foundThemes.positive && foundThemes.issues) {
-//     summary +=
-//       "have shared mixed experiences; while many enjoy the quality, some have noted minor areas for improvement. ";
-//   } else if (foundThemes.issues) {
-//     summary +=
-//       "have raised concerns regarding their interactions, pointing out areas that need attention. ";
-//   } else {
-//     summary += "have shared varied feedback reflecting their recent visits. ";
-//   }
-
-//   if (summary.length < 60 && props.reviews[0]?.reviewBody) {
-//     summary = `Summary: ${props.reviews[0].reviewBody.substring(0, 150)}...`;
-//   }
-//   return summary;
-// });
-
-// Handlers for Writing Review (Preserved)
-const handleWriteReviewClick = () => {
-  if (userStore.isAuthenticated) {
-    // Redirect directly to the write-review page
-    navigateTo({
-      path: "/review/write-review",
-      query: {
-        bizId: props.business.id,
-        bizName: props.business.name,
-        bizLogo: props.business.logo,
-      },
-    });
-  } else {
-    // 2. If guest, show the modal flow
-    reviewDraft.value = {
-      businessName: props.business.name,
-      selectedBusinessId: props.business.id,
-      selectedBusinessLogo: props.business.logo,
-      rating: 0,
-      reviewBody: "",
-      images: [],
-      isAddingNewBusiness: false,
-    };
-    showReviewModal.value = true;
-  }
-};
-
+// review modal handlers (unchanged)
 const handleOpenAuth = (currentFormData: any) => {
   reviewDraft.value = currentFormData;
   localStorage.setItem("review_draft", JSON.stringify(currentFormData));
@@ -523,30 +472,32 @@ const closeReviewAndClearDraft = () => {
   reviewDraft.value = null;
   localStorage.removeItem("review_draft");
 };
-const displayAvgRating = computed(() => {
-  const rating = props.business?.avgRating ?? 0;
 
-  // Split into whole number and decimal
-  const integerPart = Math.floor(rating);
-  const decimal = rating - integerPart;
+// rating display
+// const displayAvgRating = computed(() => {
+//   const rating = props.business?.avgRating ?? 0;
 
-  let displayValue;
+//   // const integerPart = Math.floor(rating);
+//   const decimal = rating - integerPart;
 
-  if (decimal <= 0.35) {
-    displayValue = integerPart;
-  } else if (decimal <= 0.65) {
-    displayValue = integerPart + 0.5;
-  } else {
-    // Round up (e.g., 4.7 -> 5.0)
-    displayValue = integerPart + 1;
-  }
+//   let displayValue;
 
-  return displayValue.toFixed(1);
-});
+//   if (decimal <= 0.35) displayValue = integerPart;
+//   else if (decimal <= 0.65) displayValue = integerPart + 0.5;
+//   else displayValue = integerPart + 1;
 
-onBeforeMount(async () => {
-  await Promise.all([loadReviews(true)]);
-});
+//   return displayValue.toFixed(1);
+// });
+
+const formatReviewSummary = (text: string | null | undefined) => {
+  if (!text) return "";
+
+  return text
+    .split(". ")
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
+    .join(".\n\n"); // double line break for spacing
+};
 </script>
 
 <style scoped>

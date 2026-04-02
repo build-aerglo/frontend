@@ -23,4 +23,11 @@ logs
 .env.*
 !.env.example
 project-tree.txt
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
 cache.json

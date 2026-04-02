@@ -7,6 +7,7 @@ type PageData = {
   recentReviews?: any[];
   featuredBusiness?: any;
   statistics?: any;
+  categories?: any;
 };
 
 // type PageData = any;

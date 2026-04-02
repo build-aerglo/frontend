@@ -47,8 +47,8 @@ export default function () {
     }
     // Handle custom API errors (login, etc)
     else if (data.message || data.error) {
-        message = data.message || data.error; // Use whichever one exists
-        code = data.code || "api_error";
+      message = data.message || data.error; // Use whichever one exists
+      code = data.code || "api_error";
     }
     // Fallback
     else if (err?.message && !err.message.includes("status code")) {
@@ -238,6 +238,40 @@ export default function () {
     }
   };
 
+  const verifyEmail = async (email: string, token: string) => {
+    try {
+      const res = await api.get(
+        `api/Verification/verify-email?email=${email}&token=${token}`,
+      );
+      return { statusCode: res.status, data: res.data };
+    } catch (err: any) {
+      return { statusCode: 400, error: normalizeError(err) };
+    }
+  };
+
+  const reverifyEmail = async (email: string) => {
+    try {
+      const res = await api.post("api/Verification/reverify-email", {
+        email: email,
+      });
+      return { statusCode: res.status, data: res.data };
+    } catch (err: any) {
+      return { statusCode: 400, error: normalizeError(err) };
+    }
+  };
+
+  const createBusinessAccount = async (data: any) => {
+    try {
+      const res = await api.post(`api/user/register-business`, data);
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     loginUser,
     registerBusiness,
@@ -252,5 +286,8 @@ export default function () {
     requestResetPassword,
     resetPassword,
     updatePassword,
+    verifyEmail,
+    reverifyEmail,
+    createBusinessAccount,
   };
 }

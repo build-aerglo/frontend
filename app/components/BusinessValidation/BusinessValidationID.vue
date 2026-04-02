@@ -4,7 +4,7 @@
     :draggable="false"
     modal
     header="Verify Business Identity"
-    :style="{ width: '50rem' }"
+    :style="{ width: '40rem' }"
   >
     <form @submit.prevent="verifyIdAsync(identity)">
       <div class="grid gap-[20px] grid-cols-1 sm:grid-cols-2">

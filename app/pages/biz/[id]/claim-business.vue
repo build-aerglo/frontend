@@ -110,18 +110,33 @@
             <div class="mt-10 header font-bold">Business Information:</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label>CAC Number:</label>
+                <label>Identification Type:</label>
+                <Select
+                  v-model="selectedMode"
+                  :options="idVerificationTypes"
+                  optionLabel="name"
+                  fluid
+                />
+              </div>
+
+              <div>
+                <label
+                  >Identification number
+                  {{
+                    selectedMode.code === "other" ? "(optional)" : ""
+                  }}:</label
+                >
                 <InputText
                   fluid
                   class="flex-auto"
                   autocomplete="off"
-                  v-model="claimData.cacNumber"
+                  v-model="claimData.idNumber"
                 />
               </div>
               <InputFile
                 accept-description="image / pdf"
                 accept="image/*,.pdf"
-                label="CAC Document:"
+                label="Identification Document:"
                 path="business_cac"
                 @uploaded="setUpload"
                 @deleted="setDeleted"
@@ -152,7 +167,7 @@
                 @clicked="reset(claimData)"
               />
               <ButtonCustom
-                label="Claim Business"
+                label="Submit Business Claim"
                 type="submit"
                 input-class="w-max"
                 primary="true"
@@ -194,26 +209,37 @@ const business = ref<BusinessProfileResponse>();
 const isClaimed = ref(false);
 const isSubmitting = ref(false);
 
-const selectedCategory = ref<Category>();
+const selectedMode = ref({
+  code: "cac_certificate",
+  name: "CAC Certificate",
+  requiresIdNumber: true,
+});
+
+const selectedCategory = ref("");
 const claimData = ref<ClaimData>({
   fullName: "",
-  businessId: route.params.id as string,
+  businessId: "",
   phoneNumber: "",
   email: "",
   role: "",
+
+  idType: "",
   idDocumentUrl: null,
-  cacDocumentUrl: null,
+  idNumber: "",
+
+  personalIdDocumentUrl: null,
   proofOfOwnerShipUrl: null,
-  cacNumber: "",
+
   categoryId: "",
 });
 
 const claimBusiness = async (data: ClaimData) => {
   try {
-    data.categoryId = selectedCategory.value?.id!;
+    data.categoryId = selectedCategory.value;
+    data.idType = selectedMode.value.code;
     isSubmitting.value = true;
     const res = await claimBusinessAsync(data);
-    if (res?.statusCode !== 200) {
+    if (res?.statusCode !== 201) {
       return toast.add({
         severity: "error",
         summary: "ERROR",
@@ -325,7 +351,7 @@ const setUpload = (url: string, id: string) => {
       break;
 
     case "cac":
-      claimData.value.cacDocumentUrl = url;
+      claimData.value.personalIdDocumentUrl = url;
       break;
 
     case "proof":
@@ -344,7 +370,7 @@ const setDeleted = (id: string) => {
       break;
 
     case "cac":
-      claimData.value.cacDocumentUrl = null;
+      claimData.value.personalIdDocumentUrl = null;
       break;
 
     case "proof":
@@ -373,7 +399,7 @@ const deleteUrl = async (url: string | null) => {
 const reset = async (data: ClaimData) => {
   // clear data
   await Promise.all([
-    deleteUrl(data.cacDocumentUrl),
+    deleteUrl(data.personalIdDocumentUrl),
     deleteUrl(data.idDocumentUrl),
     deleteUrl(data.proofOfOwnerShipUrl),
   ]);
@@ -388,10 +414,11 @@ const softReset = () => {
     phoneNumber: "",
     email: "",
     role: "",
+    idType: "NIN",
     idDocumentUrl: null,
-    cacDocumentUrl: null,
+    idNumber: "",
     proofOfOwnerShipUrl: null,
-    cacNumber: "",
+    personalIdDocumentUrl: null,
     categoryId: "",
   };
 };

@@ -12,8 +12,14 @@ import { encryptJSONNative } from "~/utils/";
 import useAnnouncementMethods from "../announcements/useAnnouncementMethods";
 
 //temp caching
-let categories = ref(null);
-let plan = ref(null);
+interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+  parentCategoryId: string | null;
+  icon: string;
+  businessCount: number;
+}
 
 export default function () {
   const store = useBusinessUser();
@@ -35,10 +41,16 @@ export default function () {
   };
 
   const getCategories = async () => {
-    if (categories.value) return categories.value;
+    const res = await $fetch<Category[]>(`/api/page?key=categories`, {
+      method: "GET",
+    });
+
+    if (res.length > 1) {
+      return res;
+    }
+
     try {
       const res = await businessApi.get("api/Category/top-level");
-      categories.value = res.data;
       return res.data;
     } catch (error: any) {
       console.error("Failed to fetch categories:", error);
@@ -226,6 +238,22 @@ export default function () {
     }
   };
 
+  const updateClaimBusinessAsync = async (data: ClaimData) => {
+    try {
+      const res = await businessApi.put("api/BusinessClaim", data);
+      return { statusCode: res.status, data: res.data };
+    } catch (error) {
+      const err = error as AxiosError<any>;
+
+      return {
+        statusCode: err.response?.status ?? 500,
+        data: err.response?.data ?? {
+          message: "An error occurred",
+        },
+      };
+    }
+  };
+
   const getBusinessSettings = async () => {
     try {
       const res = await businessApi.get(`api/business/${store.id}/settings`);
@@ -289,18 +317,6 @@ export default function () {
     }
   };
 
-  // const getBusinessSubscriptions = async () => {
-  //   try {
-  //     const res = await businessApi.get(`api/Subscription/plans`);
-  //     return {
-  //       statusCode: res.status,
-  //       data: res.data,
-  //     };
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const getBusinessSubscriptions = () => {
     return useAsyncData<{ statusCode: number; data: any }>(
       "business-subscriptions",
@@ -363,6 +379,18 @@ export default function () {
     }
   };
 
+  const getBusinessClaim = async (id: string) => {
+    try {
+      const res = await businessApi.get(`api/BusinessClaim/${id}`);
+      return {
+        statusCode: res.status,
+        data: res.data,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     getCategories,
     saveBusinessProfile,
@@ -387,5 +415,7 @@ export default function () {
     updateEmail,
     getBusinessSubscriptionFromStore,
     getBusinessVerificationFromStore,
+    getBusinessClaim,
+    updateClaimBusinessAsync,
   };
 }

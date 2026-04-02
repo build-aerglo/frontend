@@ -1,86 +1,88 @@
-import useBusinessUser from '~/composables/business/useBusinessUser';
-import useUser from '~/composables/useUser';
-import useSupportUser from '~/composables/support/useSupportUser';
+import useBusinessUser from "~/composables/business/useBusinessUser";
+import useUser from "~/composables/useUser";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   const businessStore = useBusinessUser();
   const userStore = useUser();
-  const supportStore = useSupportUser();
 
-  // Define route patterns and their allowed roles
-  const routeRules = [
-    {
-      pattern: /^\/business(?!\/auth)/,  // /business/* but NOT /business/auth/*
-      blockedRoles: ['end_user'],
-      redirect: '/business/auth/sign-in'
-    },
-    {
-      pattern: /^\/support(?!\/auth)/,  // /support/* but NOT /support/auth/*
-      allowedRoles: ['support_user'],
-      redirect: '/support/auth/sign-in'
-    },
-    {
-      pattern: /^\/biz\/[^/]+(?!\/claim-business)/,  // /biz/[id] but NOT /biz/[id]/claim-business
-      blockedRoles: ['business_user', 'support_user'],
-      redirect: '/'  // Guests and end users can view, business/support users cannot
-    },
-    {
-      pattern: /^\/end-user(?!\/auth)/,  // /end-user/* but NOT /end-user/auth/*
-      blockedRoles: ['business_user', 'support_user'],
-      redirect: '/'  // ✅ Both blocked roles redirect to home
-    },
-    {
-      pattern: /^\/(user|review)/,  // /user/* or /review/*
-      allowedRoles: ['end_user'],
-      redirect: '/'
-    }
+  // Determine who is logged in
+  const isBusinessUser = businessStore.isAuthenticated && businessStore.role === "business_user";
+  const isEndUser = userStore.isAuthenticated && userStore.role === "end_user";
+  const isAuthenticated = isBusinessUser || isEndUser;
+
+  const path = to.path;
+
+  // Always public — anyone can access
+  const alwaysPublic = [
+    /^\/terms-and-conditions/,
+    /^\/privacy-policy/,
+    /^\/about/,
   ];
+  if (alwaysPublic.some((r) => r.test(path))) return;
 
-  // Get current user's role
-  let currentRole = null;
-  if (businessStore.isAuthenticated && businessStore.role) {
-    currentRole = businessStore.role;
-  } else if (userStore.isAuthenticated && userStore.role) {
-    currentRole = userStore.role;
-  } else if (supportStore.isAuthenticated && supportStore.role) {
-    currentRole = supportStore.role;
+  // Auth pages — redirect away if already logged in
+  const authPages = [
+    /^\/business\/auth/,
+    /^\/end-user\/auth/,
+  ];
+  if (authPages.some((r) => r.test(path))) {
+    if (isBusinessUser) return navigateTo("/business/dashboard");
+    if (isEndUser) return navigateTo("/");
+    return; // not logged in, allow through
   }
 
-  // Check each route rule
-  for (const rule of routeRules) {
-    if (rule.pattern.test(to.path)) {
-      
-      // Handle blocked roles
-      if (rule.blockedRoles && currentRole && rule.blockedRoles.includes(currentRole)) {
-        console.warn(`Access denied: ${currentRole} tried to access ${to.path}`);
-        // ✅ Use the rule's redirect directly instead of role-based hardcoded redirects
-        return navigateTo(rule.redirect);
-      }
-      
-      // Handle allowed roles
-      if (rule.allowedRoles) {
-        // If user is authenticated but has wrong role
-        if (currentRole && !rule.allowedRoles.includes(currentRole)) {
-          console.warn(`Access denied: ${currentRole} tried to access ${to.path}`);
-          
-          // Redirect based on their actual role
-          if (currentRole === 'business_user') {
-            return navigateTo('/business/dashboard');
-          } else if (currentRole === 'support_user') {
-            return navigateTo('/support/dashboard');
-          } else if (currentRole === 'end_user') {
-            return navigateTo('/');
-          }
-        }
-        
-        // If route requires auth but user is not authenticated
-        if (!currentRole) {
-          return navigateTo(rule.redirect);
-        }
-      }
-      
-      // Break after first match to avoid checking other rules
-      break;
-    }
+  // Claim & appeal — only unauthorized users
+  const claimPages = [
+    /^\/biz\/[^/]+\/claim-business/,
+    /^\/biz\/[^/]+\/appeal-claim/,
+  ];
+  if (claimPages.some((r) => r.test(path))) {
+    if (isAuthenticated) return navigateTo("/");
+    return;
   }
+
+  //  Business dashboard routes — business users only
+  if (/^\/business(?!\/auth)/.test(path)) {
+    if (!isAuthenticated) return navigateTo("/business/auth/sign-in");
+    if (isEndUser) return navigateTo("/");
+    return; // isBusinessUser — allow
+  }
+
+  // For-business marketing pages — guests and business users only
+  if (/^\/for-business/.test(path)) {
+    if (isEndUser) return navigateTo("/");
+    return;
+  }
+
+  // Main index — business users should not see this 
+  if (path === "/") {
+    if (isBusinessUser) return navigateTo("/for-business");
+    return;
+  }
+
+  // Public browsing routes — end users and guests only 
+  // Business users should not access these
+  const publicBrowsingRoutes = [
+    /^\/biz\//,
+    /^\/category\//,
+    /^\/end-user\/landing/,
+  ];
+  if (publicBrowsingRoutes.some((r) => r.test(path))) {
+    if (isBusinessUser) return navigateTo("/business/dashboard");
+    return; // guests and end users — allow
+  }
+
+  // End-user only routes
+  const endUserRoutes = [
+    /^\/end-user(?!\/auth)/,
+    /^\/user\//,
+    /^\/review\//,
+  ];
+  if (endUserRoutes.some((r) => r.test(path))) {
+    if (!isAuthenticated) return navigateTo("/end-user/auth/forgot-password");
+    if (isBusinessUser) return navigateTo("/for-business#categories/");
+    return; // isEndUser — allow
+  }
+
+  
 });
