@@ -9,10 +9,58 @@ export default defineNuxtPlugin(() => {
     useCategorySocket,
   } = useSocketInstances();
 
-  const statistics = useState("statistics", () => ({}));
-  const topBusinesses = useState("topBusinesses", () => []);
-  const reviews = useState("reviews", () => []);
-  const categories = useState("categories", () => []);
+  interface Statistics {
+    registeredBusinesses: number;
+    registeredUsers: number;
+    uploadedReviews: number;
+  }
+
+  interface Category {
+    id: string;
+    name: string;
+    description: string | null;
+    parentCategoryId: string | null;
+    icon: string;
+    businessCount: number;
+  }
+
+  interface Reviews {
+    id: string;
+    email: string;
+    businessId: string;
+    businessName: string;
+    starRating: number;
+    uploadedDate: string;
+    reviewBody: string;
+    anonymous: boolean;
+  }
+
+  interface TopBusiness {
+    id: string;
+    businessName: string;
+    logo: string;
+    categories: [
+      {
+        id: string;
+        name: string;
+        description: string | null;
+        parentCategoryId: string | null;
+        icon: string;
+      },
+    ];
+    reviewCount: number;
+    avgRating: number;
+  }
+
+  const statistics = useState<Statistics>("statistics", () => ({
+    registeredBusinesses: 0,
+    registeredUsers: 0,
+    uploadedReviews: 0,
+  }));
+
+  const topBusinesses = useState<TopBusiness[]>("topBusinesses", () => []);
+  const reviews = useState<Reviews[]>("reviews", () => []);
+  const categories = useState<Category[]>("categories", () => []);
 
   const statsConn = useStatisticsSocket();
   const businessConn = useTopBusinessSocket();
@@ -97,6 +145,7 @@ export default defineNuxtPlugin(() => {
         $fetch("/api/page?key=categories"),
       ]);
 
+      // @ts-ignore
       if (stats) statistics.value = stats;
       // @ts-ignore
       if (businesses) topBusinesses.value = businesses;

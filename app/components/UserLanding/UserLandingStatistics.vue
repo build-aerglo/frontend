@@ -1,97 +1,85 @@
 <template>
-  <div v-if="statistics.length > 0">
-    <div
-      v-for="(i, idx) in statistics"
-      :key="idx"
-      class="flex flex-col justify-center items-center p-[20px]"
-    >
-      <div class="font-bold text-[300%] drop-shadow-lg">
-        {{ i.count }}
+  <div :class="[bgClass, 'py-4']">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+        <!-- Growing Community - Hidden on mobile, visible on large screens -->
+        <div class="hidden lg:flex flex-col justify-center">
+          <div class="font-bold text-2xl mb-2 drop-shadow-lg text-gray-700">
+            Growing Community
+          </div>
+          <div class="text-sm">
+            Real people. Authentic reviews. Better decisions
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div
+          v-for="(i, idx) in statistics"
+          :key="idx"
+          class="flex flex-col justify-center items-center p-4 lg:p-6"
+        >
+          <div
+            class="font-bold text-3xl lg:text-4xl drop-shadow-lg mb-2 text-gray-700"
+          >
+            {{ displayCounts[idx] ?? 0 }}
+          </div>
+          <div class="text-xs sm:text-sm text-center">{{ i.title }}</div>
+        </div>
       </div>
-      <div>{{ i.title }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from "vue";
-import useSocketInstances from "~/composables/websocket/useSocketInstances";
-
-const props = defineProps<{
-  stats?: { title: string; count: number };
-}>();
-
-interface Stat {
+interface Stats {
   title: string;
   count: number;
 }
 
-const statistics = ref<Stat[]>([
-  { title: "Registered Business", count: 0 },
-  { title: "Reviewing Users", count: 0 },
-  { title: "Uploaded Reviews", count: 0 },
-]);
+const props = defineProps<{
+  statistics: Stats[];
+  bgClass: string;
+}>();
 
-const key = "statistics";
+// reactive counts for UI
+const displayCounts = ref<number[]>([]);
 
-const { useStatisticsSocket } = useSocketInstances();
-const connection = useStatisticsSocket();
+const animateCount = (
+  target: number,
+  duration: number,
+  callback: (value: number) => void,
+) => {
+  const startTime = performance.now();
 
-const setCoreStats = (data: any) => {
-  statistics.value[0]!.count = data.registeredBusinesses ?? 0;
-  statistics.value[1]!.count = data.registeredUsers ?? 0;
-  statistics.value[2]!.count = data.uploadedReviews ?? 0;
-};
+  const update = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
 
-const ensureExtraStat = () => {
-  if (props.stats && statistics.value.length === 3) {
-    statistics.value.push(props.stats);
-  }
-};
+    const value = Math.floor(progress * target);
+    callback(value);
 
-connection.on("ReceiveStatistics", async (stat) => {
-  console.log("fetched statistics");
-
-  setCoreStats(stat);
-  ensureExtraStat();
-
-  await $fetch("/api/page", {
-    method: "POST",
-    body: {
-      key,
-      data: stat,
-    },
-  });
-});
-
-connection.onclose(() => console.log("WebSocket disconnected"));
-connection.onreconnected(() => console.log("WebSocket reconnected"));
-
-onMounted(async () => {
-  try {
-    const res = await $fetch<any>(`/api/page?key=${key}`);
-
-    if (res) {
-      setCoreStats(res);
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      callback(target);
     }
+  };
 
-    ensureExtraStat();
+  requestAnimationFrame(update);
+};
 
-    await connection.start();
-  } catch (err) {
-    console.error("Connection failed:", err);
-  }
-});
+// run animation
+const runAnimation = () => {
+  displayCounts.value = props.statistics.map(() => 0);
 
-onUnmounted(async () => {
-  await connection.stop();
-});
+  props.statistics.forEach((item, index) => {
+    animateCount(item.count, 1500, (val) => {
+      displayCounts.value[index] = val;
+    });
+  });
+};
 
-watch(
-  () => props.stats,
-  () => {
-    ensureExtraStat();
-  },
-  { immediate: true },
-);
+onMounted(runAnimation);
+
+watch(() => props.statistics, runAnimation, { deep: true });
 </script>

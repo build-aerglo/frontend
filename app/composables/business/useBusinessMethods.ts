@@ -12,7 +12,14 @@ import { encryptJSONNative } from "~/utils/";
 import useAnnouncementMethods from "../announcements/useAnnouncementMethods";
 
 //temp caching
-let categories = ref(null);
+interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+  parentCategoryId: string | null;
+  icon: string;
+  businessCount: number;
+}
 
 export default function () {
   const store = useBusinessUser();
@@ -34,18 +41,16 @@ export default function () {
   };
 
   const getCategories = async () => {
-    const key = "categories";
-    const res = await $fetch(`/api/page?key=${key}`, {
+    const res = await $fetch<Category[]>(`/api/page?key=categories`, {
       method: "GET",
     });
 
-    if (res) {
+    if (res.length > 1) {
       return res;
     }
 
     try {
       const res = await businessApi.get("api/Category/top-level");
-      categories.value = res.data;
       return res.data;
     } catch (error: any) {
       console.error("Failed to fetch categories:", error);

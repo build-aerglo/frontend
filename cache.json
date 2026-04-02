@@ -242,50 +242,72 @@
   "statistics": {
     "registeredBusinesses": 21,
     "registeredUsers": 19,
-    "uploadedReviews": 87
+    "uploadedReviews": 90
   },
   "categories": [
+    {
+      "id": "0199d4ef-ca22-7970-a8d2-57995e57eaa8",
+      "name": "Business",
+      "description": null,
+      "parentCategoryId": null,
+      "icon": null,
+      "businessCount": 2
+    },
     {
       "id": "147e754e-5e57-4291-b878-9f246aeed0e4",
       "name": "Education and Training",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-graduation-cap",
+      "businessCount": 1
     },
     {
       "id": "7d2eec4b-3009-43ac-9eef-5644144556a8",
       "name": "Fashion and Beauty",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-palette",
+      "businessCount": 4
     },
     {
       "id": "4237bde4-7a06-463b-baaf-7e571bcf9dc5",
       "name": "Food and Resturants",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-shop",
+      "businessCount": 7
     },
     {
       "id": "8edd049c-6505-4086-9bf1-4f8b058a4fcf",
       "name": "Health and Wellness",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-heart",
+      "businessCount": 2
     },
     {
       "id": "c65281fa-eabd-4c73-917b-92fdd6025660",
       "name": "Hotels,BnB and vacation",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-building",
+      "businessCount": 1
     },
     {
       "id": "22949d84-3c57-449f-93dc-2af00cd63b24",
       "name": "Others",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-globe",
+      "businessCount": 2
     },
     {
       "id": "14ce3615-ac66-4302-856b-133c3827b35d",
       "name": "Shopping",
       "description": null,
-      "parentCategoryId": null
+      "parentCategoryId": null,
+      "icon": "pi-shop",
+      "businessCount": 0
     }
   ]
 }

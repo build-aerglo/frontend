@@ -30,4 +30,4 @@ project-tree.txt
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-package-lock.json
+cache.json
