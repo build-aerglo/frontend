@@ -309,11 +309,6 @@ function toISO(time: string): string {
   return new Date(`${d}T${time}:00.000Z`).toISOString();
 }
 
-// function isoToRange(open: string | null, close: string | null): string {
-//   if (!open || open === null || close === null || !close)
-//     return "00:00 - 00:00";
-//   return `${open.slice(11, 16)} - ${close.slice(11, 16)}`;
-// }
 function isoToRange(
   open: string | Date | null,
   close: string | Date | null,
@@ -328,54 +323,6 @@ function isoToRange(
 
   return `${openStr.slice(11, 16)} - ${closeStr.slice(11, 16)}`;
 }
-
-// export function rawToNormalized(raw: RawHours): NormalizedHours {
-//   const out = {} as NormalizedHours;
-//   const weekdayRanges: string[] = [];
-
-//   for (const day of DAYS) {
-//     const parsed = parseRange(raw[day]);
-
-//     if (!parsed) {
-//       out[day] = { open: null, close: null, closed: true };
-//     } else {
-//       out[day] = {
-//         open: toISO(parsed.open),
-//         close: toISO(parsed.close),
-//         closed: false,
-//       };
-
-//       if (WEEKDAYS.includes(day)) {
-//         weekdayRanges.push(raw[day]);
-//       }
-//     }
-//   }
-
-//   const same =
-//     weekdayRanges.length === 5 &&
-//     weekdayRanges.every((r) => r === weekdayRanges[0]);
-
-//   if (same) {
-//     // @ts-ignore
-//     const parsed = parseRange(weekdayRanges[0]);
-//     if (!parsed) throw new Error("Invalid weekday range");
-
-//     out.same_time = {
-//       open: toISO(parsed.open),
-//       close: toISO(parsed.close),
-//       closed: false,
-//     };
-
-//     for (const d of WEEKDAYS) {
-//       out[d] = { open: null, close: null, closed: true };
-//     }
-//   } else {
-//     out.same_time = { open: null, close: null, closed: true };
-//   }
-
-//   out.same = same;
-//   return out;
-// }
 
 export function rawToNormalized(raw: RawHours): NormalizedHours {
   const out = {} as NormalizedHours;
@@ -786,3 +733,9 @@ export function sanitizeAndTruncate(
 
   return cleanText;
 }
+
+export const isMobile = (): boolean => {
+  if (typeof window === "undefined") return false; // SSR safety
+
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+};

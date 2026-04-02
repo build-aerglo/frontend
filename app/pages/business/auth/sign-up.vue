@@ -1,113 +1,128 @@
 <template>
   <Toast />
-   <Nav />
-  <div class="container-xxl relative bg-[url('/images/auth/b-user-bg.png')] bg-cover bg-center">
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="authentication-wrapper authentication-basic container-py">
-      <div class="authentication-inner py-6">
-        <div class="card">
-          <div class="card-body">
-            <div class="app-brand justify-content-center mb-2">
-              <NuxtLink to="/">
-                <NavLogo />
-              </NuxtLink>
+  <div
+    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[30px]"
+  >
+    <div
+      class="rounded-[20px] shadow-sm w-full sm:max-w-[1000px] flex rounded-r-[10px]"
+    >
+      <div
+        class="w-full sm:w-[65%] flex flex-col p-[30px] rounded-r-[10px] bg-white"
+      >
+        <NuxtLink
+          to="/"
+          class="uppercase w-max text-[80%] text-primary mb-[30px] flex items-center gap-[5px]"
+        >
+          <i class="pi pi-angle-left mt-[5px]"></i> CleReview
+        </NuxtLink>
+
+        <div class="flex-1 text-center py-[20px]">
+          <div class="text-primary sm:text-[200%] text-[150%] font-bold">
+            Register your business
+          </div>
+          <div class="mb-[20px]">
+            Build customer trust through real feedback!
+          </div>
+          <div v-if="showSentVerification" class="text-center">
+            A confirmation email was sent to "{{ businessData.email }}", follow
+            the outlined process to complete your business registration.
+          </div>
+
+          <div v-else>
+            <!-- CLAIM BUSINESS SECTION -->
+            <div
+              v-if="showClaimOption && unclaimedBusiness"
+              class="text-center py-8"
+            >
+              <div class="mb-4">
+                <i class="pi pi-info-circle text-blue-500 text-5xl mb-4"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">
+                Business Profile Available to Claim
+              </h3>
+              <p class="text-gray-600 mb-2">
+                A business profile for
+                <strong>"{{ unclaimedBusiness.name }}"</strong> already exists
+                on Clereview.
+              </p>
+              <p class="text-gray-600 mb-6">
+                Claim this profile to respond to reviews, update your details,
+                and manage your business reputation on Clereview.
+              </p>
+
+              <div class="flex flex-col gap-3 max-w-md mx-auto">
+                <ButtonCustom
+                  label="Claim My Business"
+                  primary="true"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="handleClaimRedirect"
+                />
+                <ButtonCustom
+                  label="Register Different Business"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="resetSearch"
+                />
+              </div>
             </div>
 
-            <p class="mb-6 text-[95%] sm:text-[100%] text-contrast text-center">
-              Build customer trust through real feedback!
-            </p>
+            <!-- BUSINESS CLAIMED SECTION -->
+            <div
+              v-else-if="showClaimedWarning && claimedBusiness"
+              class="text-center py-8"
+            >
+              <div class="mb-4">
+                <i class="pi pi-check-circle text-green-500 text-5xl mb-4"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3 text-gray-800">
+                Business Already Claimed
+              </h3>
+              <p class="text-gray-600 mb-2">
+                This business already exists and has been claimed.
+              </p>
+              <p class="text-gray-600 mb-4">
+                Confirm the business name is correct and contact us at
+                <a
+                  href="mailto:support@clereview.com"
+                  class="text-primary underline font-semibold"
+                >
+                  support@clereview.com
+                </a>
+                if you think there's been an issue.
+              </p>
 
-            <div v-if="showSentVerification" class="text-center">
-              A confirmation email was sent to "{{ businessData.email }}",
-              follow the outlined process to complete your business
-              registration.
+              <div class="flex flex-col gap-3 max-w-md mx-auto">
+                <ButtonCustom
+                  label="Try Different Name"
+                  primary="true"
+                  size="lg"
+                  input-class="p-3 text-[15px]"
+                  @clicked="resetSearch"
+                />
+                <a
+                  href="mailto:support@clereview.com"
+                  class="text-sm text-primary underline"
+                >
+                  Contact Support
+                </a>
+              </div>
             </div>
-            <div v-else>
-              <!-- CLAIM BUSINESS SECTION -->
-              <div
-                v-if="showClaimOption && unclaimedBusiness"
-                class="text-center py-8"
-              >
-                <div class="mb-4">
-                  <i class="pi pi-info-circle text-blue-500 text-5xl mb-4"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-3 text-gray-800">
-                  Business Profile Available to Claim
-                </h3>
-                <p class="text-gray-600 mb-2">
-                  A business profile for
-                  <strong>"{{ unclaimedBusiness.name }}"</strong> already exists
-                  on Clereview.
-                </p>
-                <p class="text-gray-600 mb-6">
-                  Claim this profile to respond to reviews, update your details,
-                  and manage your business reputation on Clereview.
-                </p>
 
-                <div class="flex flex-col gap-3 max-w-md mx-auto">
-                  <ButtonCustom
-                    label="Claim My Business"
-                    primary="true"
-                    size="lg"
-                    input-class="p-3 text-[15px]"
-                    @clicked="handleClaimRedirect"
-                  />
-                  <ButtonCustom
-                    label="Register Different Business"
-                    size="lg"
-                    input-class="p-3 text-[15px]"
-                    @clicked="resetSearch"
+            <form @submit.prevent="handleRegistration" v-else>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
+                <!-- email -->
+                <div class="col-span-2">
+                  <InputTextCustom
+                    v-model="businessData.email"
+                    label="Email"
+                    type="email"
+                    required
                   />
                 </div>
-              </div>
 
-              <!-- BUSINESS CLAIMED SECTION -->
-              <div
-                v-else-if="showClaimedWarning && claimedBusiness"
-                class="text-center py-8"
-              >
-                <div class="mb-4">
-                  <i
-                    class="pi pi-check-circle text-green-500 text-5xl mb-4"
-                  ></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-3 text-gray-800">
-                  Business Already Claimed
-                </h3>
-                <p class="text-gray-600 mb-2">
-                  This business already exists and has been claimed.
-                </p>
-                <p class="text-gray-600 mb-4">
-                  Confirm the business name is correct and contact us at
-                  <a
-                    href="mailto:support@clereview.com"
-                    class="text-primary underline font-semibold"
-                  >
-                    support@clereview.com
-                  </a>
-                  if you think there's been an issue.
-                </p>
-
-                <div class="flex flex-col gap-3 max-w-md mx-auto">
-                  <ButtonCustom
-                    label="Try Different Name"
-                    primary="true"
-                    size="lg"
-                    input-class="p-3 text-[15px]"
-                    @clicked="resetSearch"
-                  />
-                  <a
-                    href="mailto:support@clereview.com"
-                    class="text-sm text-primary underline"
-                  >
-                    Contact Support
-                  </a>
-                </div>
-              </div>
-
-              <!-- REGISTRATION FORM -->
-              <form v-else @submit.prevent="handleRegistration" class="mb-6">
-                <div class="form-control-validation relative">
+                <!-- name -->
+                <div class="col-span-2 relative">
                   <InputTextCustom
                     v-model="businessData.name"
                     label="Business Name"
@@ -119,12 +134,12 @@
                     autocomplete="off"
                   />
 
-                  <!-- ✅ Search Loading Indicator (right side of input) -->
-                  <div v-if="isSearching" class="absolute right-3 top-10">
-                    <i class="pi pi-spin pi-spinner text-primary"></i>
+                  <!-- Search Loading Indicator (right side of input) -->
+                  <div v-if="isSearching" class="absolute right-3 top-8">
+                    <i class="pi pi-spin pi-spinner !text-primary"></i>
                   </div>
 
-                  <!-- ✅ Available Checkmark (right side of input) -->
+                  <!-- Available Checkmark (right side of input) -->
                   <div
                     v-else-if="
                       businessNameAvailable &&
@@ -132,9 +147,9 @@
                       !isSearching &&
                       businessData.name.trim().length >= 2
                     "
-                    class="absolute right-3 top-10"
+                    class="absolute right-3 top-9"
                   >
-                    <i class="pi pi-check-circle text-green-500 text-lg"></i>
+                    <i class="pi pi-check-circle !text-primary text-lg"></i>
                   </div>
 
                   <!-- Business Suggestions Dropdown -->
@@ -166,7 +181,7 @@
                         </div>
 
                         <!-- Business Info -->
-                        <div class="flex-1 min-w-0">
+                        <div class="flex-1 text-left min-w-0">
                           <div class="font-semibold text-gray-800 truncate">
                             {{ business.name }}
                           </div>
@@ -196,16 +211,8 @@
                   </div>
                 </div>
 
-                <div class="form-control-validation">
-                  <InputTextCustom
-                    v-model="businessData.email"
-                    label="Email"
-                    type="email"
-                    required
-                  />
-                </div>
-
-                <div class="form-control-validation">
+                <!-- phone -->
+                <div>
                   <InputTextCustom
                     v-model="businessData.phone"
                     label="Phone Number"
@@ -214,10 +221,11 @@
                   />
                 </div>
 
-                <div class="form-control-validation">
-                  <span class="text-contrast text-[95%] mb-1"
-                    >Business Sector</span
-                  >
+                <!-- category -->
+                <div>
+                  <div class="text-contrast text-[95%] mb-1 text-left w-full">
+                    Business Sector / Category
+                  </div>
                   <Select
                     v-model="businessData.categoryIds"
                     :options="categories"
@@ -226,23 +234,31 @@
                     optionValue="id"
                     filter
                     required
-                    :maxSelectedLabels="3"
-                    class="w-full mt-1 mb-3 border border-gray-300 outline-none rounded-[5px] focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 bg-secondaryLinen"
+                    class="text-left w-full border border-gray-300 outline-none rounded-[5px] focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 bg-secondaryLinen"
                   />
                 </div>
 
-                <div class="form-password-toggle form-control-validation">
+                <!-- passwords -->
+                <div>
                   <InputTextCustom
                     v-model="password"
                     label="Password"
                     type="password"
                     required
                   />
+                </div>
 
-                  <div
-                    v-if="!allValid"
-                    class="flex flex-col mt-[10px] mb-[10px]"
-                  >
+                <div>
+                  <InputTextCustom
+                    v-model="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    required
+                  />
+                </div>
+
+                <div class="col-span-2">
+                  <div v-if="!allValid" class="flex flex-col mb-[10px]">
                     <div class="flex items-center gap-2">
                       <i
                         class="text-[10px]"
@@ -278,60 +294,58 @@
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="form-password-toggle form-control-validation">
-                  <InputTextCustom
-                    v-model="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    required
-                  />
-                </div>
-
+              <div>
                 <div v-if="registrationError" class="text-red-500 text-sm mt-2">
                   {{ registrationError }}
                 </div>
 
                 <ButtonCustom
                   :label="
-                    isLoading ? 'Registering...' : 'Register your business'
+                    isLoading
+                      ? 'Creating your business account...'
+                      : 'Register your business'
                   "
                   :disabled="isLoading"
                   size="lg"
                   primary="true"
                   input-class="p-[10px] text-[15px] mt-8"
                   type="submit"
+                  :no-zoom="true"
                 />
-              </form>
+              </div>
+            </form>
 
-              <p
-                v-if="!showClaimOption && !showClaimedWarning"
-                class="text-center md:text-[100%]"
-              >
-                <span class="text-contrast">Already have an account?</span>
-                <NuxtLink to="sign-in">
-                  <span class="ms-1 hover:underline text-link"
-                    >Sign in instead</span
-                  >
-                </NuxtLink>
-              </p>
+            <div
+              v-if="!showClaimOption && !showClaimedWarning"
+              class="text-center md:text-[100%] mt-[10px]"
+            >
+              <span class="text-contrast">Already have an account?</span>
+              <NuxtLink to="sign-in">
+                <span class="ms-1 hover:underline !text-primary"
+                  >Sign in instead</span
+                >
+              </NuxtLink>
             </div>
           </div>
         </div>
       </div>
+      <div
+        class="w-full sm:w-[35%] sm:block hidden !bg-primary text-white border rounded-r-[10px]"
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Nav from '~/components/BusinessLanding/Nav.vue';
-import useMethods from '~/composables/useMethods';
-import useBusinessMethods from '~/composables/business/useBusinessMethods';
-import useSearch from '~/composables/search/useSearch';
+import useMethods from "~/composables/useMethods";
+import useBusinessMethods from "~/composables/business/useBusinessMethods";
+import useSearch from "~/composables/search/useSearch";
 import type { BusinessUser } from "~/types/business";
 
 const { getCategories, getBusinessProfile } = useBusinessMethods();
-const { registerBusiness, loginUser } = useMethods();
+const { registerBusiness } = useMethods();
 const { search } = useSearch();
 const toast = useToast();
 const router = useRouter();
@@ -479,7 +493,7 @@ const searchBusinessName = async (name: string) => {
       businessNameAvailable.value = false;
     } else {
       searchResults.value = [];
-      businessNameAvailable.value = true; // ✅ Triggers green checkmark
+      businessNameAvailable.value = true; //
     }
 
     searchCompleted.value = true;

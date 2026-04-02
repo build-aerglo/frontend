@@ -239,7 +239,7 @@ const claimBusiness = async (data: ClaimData) => {
     data.idType = selectedMode.value.code;
     isSubmitting.value = true;
     const res = await claimBusinessAsync(data);
-    if (res?.statusCode !== 200) {
+    if (res?.statusCode !== 201) {
       return toast.add({
         severity: "error",
         summary: "ERROR",
