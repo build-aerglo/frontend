@@ -62,7 +62,7 @@
           Boost credibility with authentic reviews and manage your reputation with our dedicated business dashboard.
         </p>
         <div class="pt-2 w-full flex justify-center md:justify-start">
-          <NuxtLink to="/for-business/index-v2" class="w-auto">
+          <NuxtLink to="/for-business/" class="w-auto">
             <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
               Get Started
               <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>

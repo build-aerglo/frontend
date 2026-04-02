@@ -1,9 +1,9 @@
 <template>
   <aside id="layout-menu" class="layout-menu menu-vertical menu">
     <div class="app-brand demo">
-      <NuxtLink v-if="!isLayoutCollapsed" to="/" class="app-brand-link">
-        <NavLogo height="h-[40px]" />
-      </NuxtLink>
+      <NavLogo v-if="!isLayoutCollapsed" height="h-[40px]" to="/for-business/" />
+      <!-- <NuxtLink v-if="!isLayoutCollapsed" to="/for-business/" class="app-brand-link">
+      </NuxtLink> -->
 
       <a href="javascript:void(0);"
         class="layout-menu-toggle menu-link text-large ms-auto pt-[14px] pr-2"

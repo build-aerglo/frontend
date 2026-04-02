@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink to="/">
+  <NuxtLink :to="to">
   <img
     src="~/assets/images/e-user-logo.png"
     :class="heightClass"
@@ -13,6 +13,10 @@ const props = defineProps({
   height: {
     type: String,
     default: 'h-[50px]' // default height
+  },
+  to: {
+    type: String,
+    default: '/'
   }
 })
 
