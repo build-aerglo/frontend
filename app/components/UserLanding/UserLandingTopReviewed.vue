@@ -42,7 +42,7 @@
             class="absolute top-3 left-3 p-2 rounded-lg"
             :class="colors[index].iconBg"
           >
-            <i :class="`w-5 h-5 pi ${card.categories[0].icon}`"></i>
+            <i :class="`w-5 h-5 pi ${card.categories?.[0]?.icon ?? 'pi-tag'}`"></i>
           </div>
 
           <!-- Logo -->
