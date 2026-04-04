@@ -67,15 +67,97 @@
   <!--Business CTA Section-->
   <section class="py-10 px-6 md:px-8 overflow-hidden">
     <div class="container mx-auto">
-      <div
-        class="flex flex-col-reverse md:flex-row items-center justify-between gap-12"
-      >
-        <div
-          class="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 space-y-5"
-        >
-          <h2
-            class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight"
-          >
+      <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+
+        <!-- Right: Mock UI card (comes first on mobile via order) -->
+        <div class="w-full md:w-1/2 md:order-2 relative flex justify-center items-center">
+          <div class="absolute w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+
+          <div class="relative z-10 w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-2xl animate-float overflow-hidden">
+            <!-- Window chrome -->
+            <div class="bg-slate-800 px-5 py-3 flex items-center gap-2">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+              <div class="ml-3 text-xs text-slate-400 font-mono">Clereview · Business Profile</div>
+            </div>
+
+            <div class="p-5 space-y-4">
+              <!-- Business header -->
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <i class="pi pi-building text-primary text-xl"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-slate-800 text-sm">Adaeze Fashion House</div>
+                  <div class="text-xs text-slate-400">Lagos, Nigeria · Fashion & Retail</div>
+                </div>
+                <div class="ml-auto">
+                  <span class="text-[10px] font-bold bg-primary/10 text-primary px-2 py-1 rounded-full">Verified ✓</span>
+                </div>
+              </div>
+
+              <!-- Review count + rating -->
+              <div class="grid grid-cols-3 gap-3">
+                <div class="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
+                  <div class="font-bold text-lg text-primary">4.9</div>
+                  <div class="text-[10px] text-slate-400">Avg Rating</div>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
+                  <div class="font-bold text-lg text-slate-800">842</div>
+                  <div class="text-[10px] text-slate-400">Reviews</div>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
+                  <div class="font-bold text-lg text-slate-800">2.1k</div>
+                  <div class="text-[10px] text-slate-400">Profile Visits</div>
+                </div>
+              </div>
+
+              <!-- Recent reviews -->
+              <div class="space-y-2">
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Recent Reviews</div>
+                <div v-for="review in mockReviews" :key="review.name"
+                  class="flex items-start gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
+                  <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold shrink-0">
+                    {{ review.name[0] }}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1 mb-0.5">
+                      <span class="text-[10px] font-semibold text-slate-700">{{ review.name }}</span>
+                      <div class="flex gap-0.5 ml-1">
+                        <i v-for="n in review.rating" :key="n" class="pi pi-star-fill text-gold text-[8px]"></i>
+                      </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 truncate">{{ review.text }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action row -->
+              <div class="flex gap-2">
+                <div class="flex-1 bg-primary/10 text-primary text-xs font-semibold rounded-lg px-3 py-2 text-center">
+                  📣 Respond
+                </div>
+                <div class="flex-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg px-3 py-2 text-center">
+                  📊 Analytics
+                </div>
+                <div class="flex-1 bg-gold/10 text-amber-600 text-xs font-semibold rounded-lg px-3 py-2 text-center">
+                  🔗 Share
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating badge -->
+          <div class="absolute -bottom-2 -right-2 md:right-4 bg-white border border-slate-100 p-3 rounded-xl shadow-xl animate-float-delayed z-20 hidden sm:flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+            <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Real-time Analytics</span>
+          </div>
+        </div>
+
+        <!-- Left: Marketing text (comes second on mobile via order) -->
+        <div class="w-full md:w-1/2 md:order-1 flex flex-col items-center md:items-start text-center md:text-left space-y-5">
+          <h2 class="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight">
             Ready to expand your brand?
           </h2>
           <p class="text-slate-600 text-lg max-w-md md:text-left">
@@ -84,43 +166,14 @@
           </p>
           <div class="pt-2 w-full flex justify-center md:justify-start">
             <NuxtLink to="/for-business/" class="w-auto">
-              <button
-                class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:bg-slate-800 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
-              >
+              <button class="group px-8 py-3.5 rounded-xl !bg-primary text-white font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
                 Get Started
-                <i
-                  class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"
-                ></i>
+                <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
               </button>
             </NuxtLink>
           </div>
-
-          <div
-            class="relative md:w-1/2 w-full flex justify-center items-center"
-          >
-            <div
-              class="absolute w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"
-            ></div>
-
-            <div class="relative z-10 animate-float drop-shadow-2xl">
-              <img
-                src="/images/img/front-pages/landing-page/cta-dashboard.png"
-                alt="Business Dashboard"
-                class="max-w-full h-auto rounded-lg"
-              />
-            </div>
-
-            <div
-              class="absolute -bottom-4 -right-4 md:right-0 bg-white p-3 rounded-lg shadow-xl animate-float-delayed z-20 hidden sm:flex items-center gap-2 border border-slate-100"
-            >
-              <div class="w-2 h-2 rounded-full bg-green-500"></div>
-              <span
-                class="text-[10px] font-bold text-slate-700 uppercase tracking-wider"
-                >Real-time Analytics</span
-              >
-            </div>
-          </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -272,6 +325,10 @@ const handleGeneralAuthSuccess = () => {
 
 const heroSearchRef = ref<HTMLElement | null>(null);
 useHeroSearchObserver(heroSearchRef);
+const mockReviews = [
+  { name: 'Chidi N.', rating: 5, text: 'Absolutely love the quality. Best purchase this year!' },
+  { name: 'Fatima B.', rating: 4, text: 'Great service, delivered faster than expected.' },
+]
 </script>
 <style scoped>
 @keyframes float {
