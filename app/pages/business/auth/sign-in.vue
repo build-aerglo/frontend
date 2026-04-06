@@ -60,17 +60,14 @@
             </div>
 
             <ButtonCustom
-              :label="
-                isLoading
-                  ? 'Authenticating Account Details...'
-                  : 'Sign in to Account'
-              "
-              :disabled="isLoading"
+              :label="buttonLabel"
+              :is-loading="isLoading || isPreloadingDashboard"
+              :disabled="isLoading || isPreloadingDashboard"
               size="lg"
               primary="true"
               input-class="p-3 text-[15px]"
               type="submit"
-              :no-zoom="TrendingUpDownIcon"
+              :no-zoom="true"
             />
 
             <div class="mt-[30px]">
@@ -104,7 +101,6 @@ const { getBusinessVerification } = useVerificationMethods();
 
 import useMethods from "~/composables/useMethods";
 import type { LoginData } from "~/types";
-import { TrendingUpDownIcon } from "lucide-vue-next";
 
 const { loginUser } = useMethods();
 const store = useBusinessUser();
@@ -137,21 +133,8 @@ const HandleLogin = async () => {
   try {
     await loginUser(loginData.value, "business_user");
 
-    toast.add({
-      severity: "success",
-      summary: "Success",
-      detail: "Logged in successfully",
-      life: 3000,
-    });
-
-    // do not delete
-    await Promise.all([
-      getBusinessProfile(store.id!),
-      getBusinessSubscriptionSummary(),
-      getBusinessVerification(store.id!),
-    ]);
-
-    navigateTo("/business/dashboard");
+    // fetch dashboard
+    await preloadDashboard();
   } catch (err: any) {
     loginError.value = err.message;
 
@@ -165,6 +148,64 @@ const HandleLogin = async () => {
     isLoading.value = false;
   }
 };
+
+const isPreloadingDashboard = ref(false);
+const preloadDashboard = async () => {
+  try {
+    // do not delete
+    isLoading.value = false;
+    isPreloadingDashboard.value = true;
+
+    const results = await Promise.allSettled([
+      getBusinessProfile(store.id!),
+      getBusinessSubscriptionSummary(),
+      getBusinessVerification(store.id!),
+    ]);
+
+    const allSuccessful = results.every(
+      (r) => r.status === "fulfilled" && r.value?.statusCode === 200,
+    );
+
+    if (allSuccessful) {
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: "Logged in successfully",
+        life: 3000,
+      });
+      return await navigateTo("/business/dashboard");
+    } else {
+      return toast.add({
+        severity: "error",
+        summary: "ERROR",
+        detail: "An error occured while loading business data.",
+        life: 4000,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    toast.add({
+      severity: "error",
+      summary: "ERROR",
+      detail: "An error occured while loading business data.",
+      life: 4000,
+    });
+  } finally {
+    isPreloadingDashboard.value = false;
+  }
+};
+
+const buttonLabel = computed(() => {
+  if (isLoading.value) {
+    return "Authenticating Account Details...";
+  }
+
+  if (isPreloadingDashboard.value) {
+    return "Fetching business data...";
+  }
+
+  return "Sign in to Account";
+});
 </script>
 
 <style scoped>

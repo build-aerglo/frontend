@@ -172,11 +172,13 @@ export default function () {
     }
   };
 
-  const getBusinessBranches = async (id: string) => {
+  const getBusinessBranches = async (id: string, dashboard = false) => {
+    let endpoint = `api/business-branch/${id ? id : getBusinessUser()?.id}`;
+    if (dashboard) {
+      endpoint += "?dashboard=true";
+    }
     try {
-      const res = await businessApi.get(
-        `api/business-branch/${getBusinessUser()?.id}`,
-      );
+      const res = await businessApi.get(endpoint);
       return { statusCode: res.status, data: res.data };
     } catch (error) {
       console.error("Error fetching branches:", error);

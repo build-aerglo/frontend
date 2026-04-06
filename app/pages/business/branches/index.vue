@@ -219,6 +219,7 @@ interface BusinessBranch {
   branchStreet?: string;
   branchCityTown?: string;
   branchState?: string;
+  status?: string;
 }
 
 const businessBranches = ref<BusinessBranch[]>([]);
