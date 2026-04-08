@@ -1,34 +1,31 @@
 <!-- pages/help-center.vue -->
 <template>
-  <div class="min-h-screen bg-[#F7F6F2] font-body" data-test="page-content">
+  <div class="min-h-screen bg-green-50">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-[#F7F6F2]/90 backdrop-blur-md border-b border-[#E2DDD5]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#1A1A2E] flex items-center justify-center">
-            <i class="pi pi-star-fill text-[#F4A836] text-sm"></i>
-          </div>
-          <div>
-            <p class="text-xs text-[#8A8070] font-medium tracking-widest uppercase">CleReview</p>
-            <h1 class="text-lg font-display font-bold text-[#1A1A2E] leading-none">Business Help Center</h1>
-          </div>
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div>
+          <h1 class="text-base font-bold text-[#1A1A2E] leading-none">Business Help Center</h1>
+          <p class="text-xs text-gray-500 mt-0.5">Find tutorials, articles & support</p>
         </div>
         <nav class="hidden md:flex items-center gap-1">
-          <a v-for="section in navSections" :key="section.id" :href="`#${section.id}`" class="px-4 py-2 rounded-lg text-sm font-medium text-[#5C5449] hover:text-[#1A1A2E] hover:bg-[#EDE9E1] transition-all duration-200">
+          <a v-for="section in navSections" :key="section.id" :href="`#${section.id}`"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1A1A2E] hover:bg-gray-100 transition-all duration-200">
             {{ section.label }}
           </a>
         </nav>
         <button
-          class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-[#EDE9E1] transition-colors"
+          class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
           @click="mobileMenuOpen = !mobileMenuOpen">
           <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" class="text-[#1A1A2E]"></i>
         </button>
       </div>
       <!-- Mobile Menu -->
       <Transition name="slide-down">
-        <div v-if="mobileMenuOpen"
-          class="md:hidden border-t border-[#E2DDD5] bg-[#F7F6F2] px-4 py-3 flex flex-col gap-1">
-          <a v-for="section in navSections" :key="section.id" :href="`#${section.id}`" class="px-4 py-2.5 rounded-lg text-sm font-medium text-[#5C5449] hover:text-[#1A1A2E] hover:bg-[#EDE9E1] transition-all" @click="mobileMenuOpen = false">
+        <div v-if="mobileMenuOpen" class="md:hidden border-t border-gray-200 bg-white px-4 py-3 flex flex-col gap-1">
+          <a v-for="section in navSections" :key="section.id" :href="`#${section.id}`"
+            class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1A1A2E] hover:bg-gray-100 transition-all"
+            @click="mobileMenuOpen = false">
             {{ section.label }}
           </a>
         </div>
@@ -62,7 +59,7 @@
           </span>
         </h2>
         <p class="text-[#6B6358] text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Everything you need to get the most out of ReviewHub — tutorials, articles, answers, and direct support.
+          Everything you need to get the most out of CleReview — tutorials, articles, answers, and direct support.
         </p>
         <!-- Search Bar -->
         <div class="relative max-w-lg mx-auto">
@@ -78,7 +75,7 @@
       <!-- ── SECTION 1: Video Tutorials ── -->
       <section id="tutorials">
         <SectionHeader icon="pi-video" label="Video Tutorials" title="Learn by Watching"
-          description="Step-by-step video guides to help you master every feature of ReviewHub." />
+          description="Step-by-step video guides to help you master every feature of CleReview." />
         <!-- Category Tabs -->
         <div class="flex gap-2 flex-wrap mb-8 mt-8">
           <button v-for="cat in videoCategories" :key="cat" @click="activeVideoCategory = cat" :class="[
@@ -158,7 +155,7 @@
       <!-- ── SECTION 2: Helpful Articles ── -->
       <section id="articles">
         <SectionHeader icon="pi-book" label="Helpful Articles" title="Deep Dive Guides"
-          description="In-depth articles written by our team to help you grow your business on ReviewHub." />
+          description="In-depth articles written by our team to help you grow your business on CleReview." />
         <!-- Featured Article -->
         <div
           class="mt-8 mb-6 rounded-3xl bg-[#1A1A2E] p-8 sm:p-10 flex flex-col sm:flex-row gap-8 items-center group cursor-pointer hover:bg-[#252544] transition-colors duration-300">
@@ -192,7 +189,7 @@
               <i :class="`pi ${article.icon}`" :style="{ color: article.iconColor }"></i>
             </div>
             <span class="text-xs font-semibold text-[#A09890] tracking-wider uppercase mb-2">{{ article.category
-              }}</span>
+            }}</span>
             <h3
               class="font-display font-bold text-[#1A1A2E] text-base mb-2 group-hover:text-[#E8832A] transition-colors leading-snug flex-1">
               {{ article.title }}</h3>
@@ -222,9 +219,11 @@
                   ? 'bg-[#1A1A2E] text-white'
                   : 'text-[#5C5449] hover:bg-[#F7F6F2]'
               ]">
-                <i :class="`pi ${cat.icon} text-sm ${activeFaqCategory === cat.id ? 'text-[#F4A836]' : 'text-[#A09890]'}`"></i>
+                <i
+                  :class="`pi ${cat.icon} text-sm ${activeFaqCategory === cat.id ? 'text-[#F4A836]' : 'text-[#A09890]'}`"></i>
                 {{ cat.label }}
-                <span  :class="['ml-auto text-xs px-2 py-0.5 rounded-full', activeFaqCategory === cat.id ? 'bg-white/20 text-white' : 'bg-[#F0EDE8] text-[#8A8070]']">
+                <span
+                  :class="['ml-auto text-xs px-2 py-0.5 rounded-full', activeFaqCategory === cat.id ? 'bg-white/20 text-white' : 'bg-[#F0EDE8] text-[#8A8070]']">
                   {{ cat.count }}
                 </span>
               </button>
@@ -310,7 +309,7 @@
                   </div>
                   <h4 class="font-display font-bold text-[#1A1A2E] text-xl mb-2">Ticket Raised!</h4>
                   <p class="text-[#6B6358] text-sm mb-1">Your ticket <strong class="text-[#1A1A2E]">#{{ ticketNumber
-                      }}</strong> has been submitted.</p>
+                  }}</strong> has been submitted.</p>
                   <p class="text-[#8A8070] text-sm mb-6">We'll get back to you within the committed timeframe.</p>
                   <button @click="resetForm"
                     class="px-6 py-2.5 rounded-xl bg-[#1A1A2E] text-white text-sm font-medium hover:bg-[#252544] transition-colors">
@@ -419,7 +418,7 @@
 
     <!-- Footer -->
     <footer class="border-t border-[#E2DDD5] bg-white py-8 px-4 text-center">
-      <p class="text-[#8A8070] text-sm">© 2026 ReviewHub · Business Help Center · <a href="#"
+      <p class="text-[#8A8070] text-sm">© 2026 CleReview · Business Help Center · <a href="#"
           class="text-[#E8832A] hover:underline">Privacy Policy</a></p>
     </footer>
   </div>
@@ -427,6 +426,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
+definePageMeta({ layout: 'business' })
 
 // ── Types ──
 interface Video { id: number; title: string; description: string; duration: string; views: string; date: string; gradient: string; category: string }
@@ -466,7 +467,7 @@ const openVideo = (video: Video) => { activeVideo.value = video }
 // ── Articles ──
 const articles: Article[] = [
   { id: 1, title: 'How to Turn Negative Reviews Into Business Opportunities', excerpt: 'A structured approach to responding professionally and recovering customer trust.', category: 'Review Strategy', readTime: '5 min read', icon: 'pi-refresh', iconBg: '#FEF3C7', iconColor: '#D97706' },
-  { id: 2, title: 'Understanding Your Review Rating Score', excerpt: 'How ReviewHub calculates your overall score and what factors influence it.', category: 'Analytics', readTime: '3 min read', icon: 'pi-chart-bar', iconBg: '#EDE9FE', iconColor: '#7C3AED' },
+  { id: 2, title: 'Understanding Your Review Rating Score', excerpt: 'How CleReview calculates your overall score and what factors influence it.', category: 'Analytics', readTime: '3 min read', icon: 'pi-chart-bar', iconBg: '#EDE9FE', iconColor: '#7C3AED' },
   { id: 3, title: 'Getting More Reviews: Ethical Strategies That Work', excerpt: 'Proven, compliant methods to encourage genuine customer feedback.', category: 'Growth', readTime: '7 min read', icon: 'pi-users', iconBg: '#D1FAE5', iconColor: '#059669' },
   { id: 4, title: 'Setting Up Your Business Profile for Success', excerpt: 'Optimize every field in your profile to attract and convert more customers.', category: 'Getting Started', readTime: '4 min read', icon: 'pi-building', iconBg: '#FEE2E2', iconColor: '#DC2626' },
   { id: 5, title: 'Using Review Widgets on Your Website', excerpt: 'Embed live review badges and carousels to build credibility on your site.', category: 'Integrations', readTime: '6 min read', icon: 'pi-code', iconBg: '#DBEAFE', iconColor: '#2563EB' },
