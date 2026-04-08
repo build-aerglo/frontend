@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="min-h-screen bg-green-50 p-4 md:p-6 lg:p-8">
+    <div class="min-h-screen bg-green-50 p-4 md:p-6 lg:p-8" data-test="page-content">
       <AnnouncementHandler />
 
       <div class="max-w-7xl mx-auto space-y-6">

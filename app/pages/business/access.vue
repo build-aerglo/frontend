@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" data-test="page-content">
     <div class="px-6 py-5">
       
       <div class="flex justify-between items-center mb-5">

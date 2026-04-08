@@ -1,5 +1,7 @@
 <template>
-  <Verification />
+  <div data-test="page-content">
+    <Verification />
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 import useBusinessMethods from "~/composables/business/useBusinessMethods";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  if (to.path.includes("/business/dashboard")) return;
+  if (to.path.includes("/business/auth")) return;
   if (!to.path.startsWith("/business")) return;
 
   const {

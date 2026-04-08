@@ -32,18 +32,18 @@
           :key="index"
           class="relative bg-gray-50 dark:bg-gray-800 p-2 rounded-xl transform transition-transform duration-150 ease-out hover:-translate-y-1.5"
           :class="[
-            colors[index].borderColor,
-            colors[index].shadowColor,
+            colorForIndex(index)?.borderColor,
+            colorForIndex(index)?.shadowColor,
             index > 4 ? 'hidden md:block' : 'block',
           ]"
         >
           <!-- Top-left icon -->
           <div
             class="absolute top-3 left-3 p-2 rounded-lg"
-            :class="colors[index].iconBg"
+            :class="colorForIndex(index)?.iconBg"
           >
             <i
-              :class="`w-5 h-5 pi ${card.categories?.[0]?.icon ?? 'pi-tag'}`"
+              :class="`w-5 h-5 pi ${getCategoryIcon(card.categories?.[0]?.id)}`"
             ></i>
           </div>
 
@@ -93,9 +93,17 @@
   </section>
 </template>
 
-<script setup>
-const { $topBusinesses } = useNuxtApp();
-const _topBusinesses = computed(() => $topBusinesses.value);
+<script setup lang="ts">
+const { $topBusinesses, $categories } = useNuxtApp();
+const _topBusinesses = computed(() =>
+  Array.isArray($topBusinesses.value) ? $topBusinesses.value : [],
+);
+
+const getCategoryIcon = (categoryId: string) => {
+  if (!categoryId) return "pi-tag";
+  const list = Array.isArray($categories.value) ? $categories.value : [];
+  return list.find((c) => c.id === categoryId)?.icon ?? "pi-tag";
+};
 
 const colors = [
   {
@@ -151,6 +159,8 @@ const colors = [
 ];
 
 const pageLoaded = ref(false);
+
+const colorForIndex = (index: number) => colors[index % colors.length];
 
 onMounted(() => {
   pageLoaded.value = true;

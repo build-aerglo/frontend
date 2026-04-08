@@ -16,15 +16,17 @@
     </div>
     <div>
       <GeneralLoader v-if="isLoading" height="500px" />
-      <KeepAlive v-else>
-        <component
-          :is="currentComponent"
-          :can-dnd="canDnd"
-          :can-auto-response="canAutoResponse"
-          :can-private-reviews="canPrivateReviews"
-          :allow-auto-response="businessSettings?.autoResponseEnabled"
-        />
-      </KeepAlive>
+      <div v-else data-test="page-content">
+        <KeepAlive>
+          <component
+            :is="currentComponent"
+            :can-dnd="canDnd"
+            :can-auto-response="canAutoResponse"
+            :can-private-reviews="canPrivateReviews"
+            :allow-auto-response="businessSettings?.autoResponseEnabled"
+          />
+        </KeepAlive>
+      </div>
     </div>
   </div>
 </template>

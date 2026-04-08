@@ -1,18 +1,19 @@
 <template>
   <Toast />
   <GeneralLoader height="500px" v-if="isLoading" />
-  <Business
-    v-else
-    :business="business"
-    :to-edit="toEdit"
-    :page="page"
-    @edit="loadBusinessData"
-    :isBusiness="isBusiness"
-    :categories="categories"
-    :reviews="reviews"
-    :status="businessStatus"
-    :canEdit="true"
-  />
+  <div v-else data-test="page-content">
+    <Business
+      :business="business"
+      :to-edit="toEdit"
+      :page="page"
+      @edit="loadBusinessData"
+      :isBusiness="isBusiness"
+      :categories="categories"
+      :reviews="reviews"
+      :status="businessStatus"
+      :canEdit="true"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

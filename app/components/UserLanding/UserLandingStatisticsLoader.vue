@@ -41,34 +41,33 @@ const statistics = computed(() => [
   { title: props.isUser ? "Uploaded Reviews" : "Reviews Uploaded" },
 ]);
 
-// reactive counts
-const displayCounts = ref<number[]>([]);
+const maxValues = [1000, 800, 1200];
+
+// seed with 1 so the template never renders 0 before the animation starts
+const displayCounts = ref<number[]>(maxValues.map(() => 1));
 
 let animationFrame: number;
 
 const animateLoop = () => {
-  const duration = 2000; // time to reach max
-  const maxValues = [1000, 800, 1200]; // different max for realism
-
+  const duration = 2000;
   const startTime = performance.now();
 
   const update = (currentTime: number) => {
     const elapsed = currentTime - startTime;
-    const progress = (elapsed % duration) / duration;
+    const raw = Math.min(elapsed / duration, 1);
+    const progress = 1 - (1 - raw) * (1 - raw); // ease-out
 
-    displayCounts.value = statistics.value.map((_, i) => {
-      const max = maxValues[i] || 1000;
-      return Math.floor(progress * max);
-    });
+    displayCounts.value = maxValues.map((max) => Math.floor(progress * max));
 
-    animationFrame = requestAnimationFrame(update);
+    if (raw < 1) {
+      animationFrame = requestAnimationFrame(update);
+    }
   };
 
   animationFrame = requestAnimationFrame(update);
 };
 
 onMounted(() => {
-  displayCounts.value = statistics.value.map(() => 0);
   animateLoop();
 });
 

@@ -86,10 +86,12 @@
 <script setup lang="ts">
 const { $reviews } = useNuxtApp();
 
-const baseReviews = computed(() => $reviews.value);
+const baseReviews = computed(() =>
+  Array.isArray($reviews.value) ? $reviews.value : [],
+);
 
 const visibleCount = ref(4);
-const currentIndex = ref(visibleCount.value); // start after prepended clones
+const currentIndex = ref(0);
 const isTransitioning = ref(true);
 let interval: NodeJS.Timeout;
 
@@ -101,10 +103,14 @@ const updateVisibleCount = () => {
 
 // Clone slides for infinite looping
 const reviews = computed(() => {
+  if (baseReviews.value.length === 0) return [];
+
+  const cloneSize = Math.min(visibleCount.value, baseReviews.value.length);
+
   return [
-    ...baseReviews.value.slice(-visibleCount.value),
+    ...baseReviews.value.slice(-cloneSize),
     ...baseReviews.value,
-    ...baseReviews.value.slice(0, visibleCount.value),
+    ...baseReviews.value.slice(0, cloneSize),
   ];
 });
 
@@ -115,25 +121,46 @@ const slideWidthClass = computed(() => {
 });
 
 const nextSlide = async () => {
+  if (baseReviews.value.length <= visibleCount.value) return;
+
+  const cloneSize = Math.min(visibleCount.value, baseReviews.value.length);
+
   isTransitioning.value = true;
   currentIndex.value++;
-  if (currentIndex.value === baseReviews.value.length + visibleCount.value) {
+  if (currentIndex.value === baseReviews.value.length + cloneSize) {
     // jump instantly back to real first slide
     await new Promise((r) => setTimeout(r, 700)); // wait for transition
     isTransitioning.value = false;
-    currentIndex.value = visibleCount.value;
+    currentIndex.value = cloneSize;
   }
 };
 
 const prevSlide = async () => {
+  if (baseReviews.value.length <= visibleCount.value) return;
+
+  const cloneSize = Math.min(visibleCount.value, baseReviews.value.length);
+
   isTransitioning.value = true;
   currentIndex.value--;
   if (currentIndex.value === 0) {
     await new Promise((r) => setTimeout(r, 700));
     isTransitioning.value = false;
     currentIndex.value = baseReviews.value.length;
+  } else if (currentIndex.value < cloneSize) {
+    await new Promise((r) => setTimeout(r, 700));
+    isTransitioning.value = false;
+    currentIndex.value = baseReviews.value.length;
   }
 };
+
+watch(
+  [baseReviews, visibleCount],
+  () => {
+    const cloneSize = Math.min(visibleCount.value, baseReviews.value.length);
+    currentIndex.value = cloneSize;
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   updateVisibleCount();

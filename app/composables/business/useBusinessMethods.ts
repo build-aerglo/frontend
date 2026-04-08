@@ -172,7 +172,7 @@ export default function () {
     }
   };
 
-  const getBusinessBranches = async (id: string, dashboard = false) => {
+  const getBusinessBranches = async (id?: string, dashboard = false) => {
     let endpoint = `api/business-branch/${id ? id : getBusinessUser()?.id}`;
     if (dashboard) {
       endpoint += "?dashboard=true";
