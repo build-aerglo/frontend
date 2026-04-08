@@ -1,6 +1,6 @@
 <!-- pages/help-center.vue -->
 <template>
-  <div class="min-h-screen bg-[#F7F6F2] font-body">
+  <div class="min-h-screen bg-[#F7F6F2] font-body" data-test="page-content">
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-[#F7F6F2]/90 backdrop-blur-md border-b border-[#E2DDD5]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">

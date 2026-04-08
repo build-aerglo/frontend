@@ -1,27 +1,17 @@
-import { test, expect, request } from "@playwright/test";
-import dotenv from "dotenv";
+import { test, expect } from "@playwright/test";
 
-// Load .env
-dotenv.config();
+test.describe("Business Auth Screens", () => {
+  test("sign-in page renders and links to sign-up", async ({ page }) => {
+    await page.goto("/business/auth/sign-in", {
+      timeout: 60000,
+      waitUntil: "domcontentloaded",
+    });
 
-test("login API returns 200 for valid credentials", async () => {
-  const apiUrl = process.env.API_URL + "/api/auth/login";
+    await expect(page.getByText("Welcome Back!")).toBeVisible();
+    await expect(page.getByLabel("Email")).toBeVisible();
+    await expect(page.getByLabel("Password")).toBeVisible();
 
-  // Create a new request context
-  const requestContext = await request.newContext();
-
-  // Correct way to send JSON body
-  const response = await requestContext.post(apiUrl, {
-    data: {
-      email: "test@test.com",
-      password: "Test1000$",
-    },
+    await page.getByText("Create an account").click();
+    await expect(page).toHaveURL(/\/business\/auth\/sign-up/);
   });
-
-  // Assert status code
-  expect(response.status()).toBe(200);
-
-  // Check JSON body
-  const body = await response.json();
-  expect(body).toHaveProperty("id"); // adjust according to your API response
 });

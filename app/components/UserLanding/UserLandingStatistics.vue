@@ -43,6 +43,27 @@ const props = defineProps<{
 
 // reactive counts for UI
 const displayCounts = ref<number[]>([]);
+let placeholderTimer: ReturnType<typeof setInterval> | null = null;
+
+const placeholderRanges = [
+  { min: 120, max: 420 },
+  { min: 900, max: 3600 },
+  { min: 1000, max: 8200 },
+];
+
+const randomBetween = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const normalizedCounts = computed(() =>
+  props.statistics.map((item) => {
+    const value = Number(item.count);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  }),
+);
+
+const hasRealData = computed(() =>
+  normalizedCounts.value.some((count) => count > 0),
+);
 
 const animateCount = (
   target: number,
@@ -70,16 +91,49 @@ const animateCount = (
 
 // run animation
 const runAnimation = () => {
-  displayCounts.value = props.statistics.map(() => 0);
-
-  props.statistics.forEach((item, index) => {
-    animateCount(item.count, 1500, (val) => {
+  // don't reset to 0 — start from current value so there's no flash
+  normalizedCounts.value.forEach((count, index) => {
+    animateCount(count, 1500, (val) => {
       displayCounts.value[index] = val;
     });
   });
 };
 
-onMounted(runAnimation);
+const startPlaceholderAnimation = () => {
+  if (placeholderTimer) return;
 
-watch(() => props.statistics, runAnimation, { deep: true });
+  const tick = () => {
+    displayCounts.value = props.statistics.map((_, index) => {
+      const range = placeholderRanges[index] || { min: 50, max: 500 };
+      return randomBetween(range.min, range.max);
+    });
+  };
+
+  tick();
+  placeholderTimer = setInterval(tick, 900);
+};
+
+const stopPlaceholderAnimation = () => {
+  if (!placeholderTimer) return;
+  clearInterval(placeholderTimer);
+  placeholderTimer = null;
+};
+
+const syncDisplay = () => {
+  if (hasRealData.value) {
+    stopPlaceholderAnimation();
+    runAnimation();
+    return;
+  }
+
+  startPlaceholderAnimation();
+};
+
+onMounted(syncDisplay);
+
+watch(() => props.statistics, syncDisplay, { deep: true, immediate: true });
+
+onBeforeUnmount(() => {
+  stopPlaceholderAnimation();
+});
 </script>

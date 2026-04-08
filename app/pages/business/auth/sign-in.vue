@@ -53,7 +53,7 @@
                     Remember Me
                   </label>
                 </div>
-                <NuxtLink to="/auth/password-reset">
+                <NuxtLink to="/auth/reset-password">
                   <p class="mb-0 !text-primary">Forgot Password?</p>
                 </NuxtLink>
               </div>

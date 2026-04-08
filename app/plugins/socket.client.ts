@@ -67,47 +67,106 @@ export default defineNuxtPlugin(() => {
   const reviewsConn = useRecentReviewsSocket();
   const categoryConn = useCategorySocket();
 
+  const parseMaybeJson = (value: unknown) => {
+    if (typeof value !== "string") return value;
+
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  };
+
+  const unwrapPayload = (raw: unknown): unknown => {
+    const parsed = parseMaybeJson(raw);
+
+    if (!parsed || typeof parsed !== "object") {
+      return parsed;
+    }
+
+    const source = parsed as Record<string, unknown>;
+
+    if (Array.isArray(source.data)) return source.data;
+    if (Array.isArray(source.items)) return source.items;
+    if (Array.isArray(source.result)) return source.result;
+    if (Array.isArray(source.value)) return source.value;
+    if (source.data && typeof source.data === "object") return source.data;
+    if (source.result && typeof source.result === "object")
+      return source.result;
+
+    return source;
+  };
+
+  const asArray = <T>(payload: unknown): T[] => {
+    const unwrapped = unwrapPayload(payload);
+    return Array.isArray(unwrapped) ? (unwrapped as T[]) : [];
+  };
+
+  const asStats = (payload: unknown): Statistics => {
+    const unwrapped = unwrapPayload(payload);
+
+    if (!unwrapped || typeof unwrapped !== "object") {
+      return {
+        registeredBusinesses: 0,
+        registeredUsers: 0,
+        uploadedReviews: 0,
+      };
+    }
+
+    const source = unwrapped as Record<string, unknown>;
+
+    return {
+      registeredBusinesses: Number(source.registeredBusinesses) || 0,
+      registeredUsers: Number(source.registeredUsers) || 0,
+      uploadedReviews: Number(source.uploadedReviews) || 0,
+    };
+  };
+
   statsConn.on("ReceiveStatistics", async (stat) => {
     console.log("fetched statistics");
 
-    statistics.value = stat;
+    const normalized = asStats(stat);
+    statistics.value = normalized;
 
     await $fetch("/api/page", {
       method: "POST",
-      body: { key: "statistics", data: stat },
+      body: { key: "statistics", data: normalized },
     });
   });
 
   businessConn.on("ReceiveTopBusinesses", async (data) => {
     console.log("fetched top businesses");
 
-    topBusinesses.value = data;
+    const normalized = asArray<TopBusiness>(data);
+    topBusinesses.value = normalized;
 
     await $fetch("/api/page", {
       method: "POST",
-      body: { key: "top-business", data },
+      body: { key: "top-business", data: normalized },
     });
   });
 
   reviewsConn.on("ReceiveTopReviews", async (data) => {
     console.log("fetched reviews");
 
-    reviews.value = data;
+    const normalized = asArray<Reviews>(data);
+    reviews.value = normalized;
 
     await $fetch("/api/page", {
       method: "POST",
-      body: { key: "recentReviews", data },
+      body: { key: "recentReviews", data: normalized },
     });
   });
 
   categoryConn.on("ReceiveCategories", async (data) => {
     console.log("fetched categories");
 
-    categories.value = data;
+    const normalized = asArray<Category>(data);
+    categories.value = normalized;
 
     await $fetch("/api/page", {
       method: "POST",
-      body: { key: "categories", data },
+      body: { key: "categories", data: normalized },
     });
   });
 
@@ -145,14 +204,10 @@ export default defineNuxtPlugin(() => {
         $fetch("/api/page?key=categories"),
       ]);
 
-      // @ts-ignore
-      if (stats) statistics.value = stats;
-      // @ts-ignore
-      if (businesses) topBusinesses.value = businesses;
-      // @ts-ignore
-      if (revs) reviews.value = revs;
-      // @ts-ignore
-      if (cats) categories.value = cats;
+      statistics.value = asStats(stats);
+      topBusinesses.value = asArray<TopBusiness>(businesses);
+      reviews.value = asArray<Reviews>(revs);
+      categories.value = asArray<Category>(cats);
 
       console.log("[Socket] Cache hydrated");
     } catch (err) {

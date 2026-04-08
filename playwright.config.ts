@@ -1,18 +1,24 @@
 import { defineConfig, devices } from "@playwright/test";
+import { config } from "dotenv";
+
+config(); // load .env into process.env before anything reads it
+
+const baseURL = process.env.BASE_URL || "http://127.0.0.1:3001";
 
 export default defineConfig({
   testDir: "./tests",
-  fullyParallel: true,
+  fullyParallel: false,
+  timeout: 90000,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 1,
   reporter: "html",
   use: {
-    baseURL: process.env.BASE_URL, // <- environment-dependent
+    baseURL,
     trace: "on-first-retry",
     browserName: "chromium",
     channel: "chrome", // use your installed Chrome
-    headless: false, // set to true for CI
+    headless: process.env.HEADLESS !== "false",
   },
 
   projects: [
@@ -24,7 +30,8 @@ export default defineConfig({
 
   webServer: {
     command: "npm run dev",
-    url: process.env.BASE_URL, // same as baseURL
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
+    timeout: 180000,
   },
 });

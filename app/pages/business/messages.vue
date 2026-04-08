@@ -47,7 +47,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <div class="flex h-screen overflow-hidden bg-white font-sans text-em-100">
+  <div class="flex h-screen overflow-hidden bg-white font-sans text-em-100" data-test="page-content">
 
     <!-- ═══════════════════════════════════════════  SIDEBAR ════════════════════════════════════════════ -->
     <aside

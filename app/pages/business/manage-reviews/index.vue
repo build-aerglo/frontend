@@ -194,7 +194,7 @@
     </template>
   </Dialog>
 
-  <div class="relative">
+  <div class="relative" data-test="page-content">
     <transition name="fade">
       <div
         v-if="isLoadingPage"
@@ -668,7 +668,7 @@ const getBusinessBranchesAsync = async () => {
   }
 
   try {
-    const res = await getBusinessBranches("id");
+    const res = await getBusinessBranches();
     if (res.statusCode === 200) {
       businessBranches.value = res.data;
       if (businessBranches.value.length > 0) {
