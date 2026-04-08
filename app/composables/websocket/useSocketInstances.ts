@@ -11,22 +11,19 @@ export default function () {
     // const baseUrl = `${location.protocol}//${location.hostname}:5187`;
     const baseUrl = config.public.reviewApiUrl;
 
-    connections[endpoint] = new signalR.HubConnectionBuilder()
+    const conn = new signalR.HubConnectionBuilder()
       .withUrl(`${baseUrl}${endpoint}`)
-      .withAutomaticReconnect({
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          const delays = [0, 2000, 5000, 10000, 30000];
-
-          const delay = delays[retryContext.previousRetryCount] ?? 30000;
-
-          console.log(
-            `[Socket Retry] Attempt #${retryContext.previousRetryCount + 1} for ${endpoint} in ${delay}ms`,
-          );
-
-          return delay;
-        },
-      })
+      .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+      .configureLogging(signalR.LogLevel.None)
       .build();
+
+    // Azure load balancer drops idle WebSocket connections after ~4 minutes.
+    // Ping every 30s to keep the connection alive, and allow up to 90s
+    // before treating the connection as dead.
+    conn.keepAliveIntervalInMilliseconds = 30000;
+    conn.serverTimeoutInMilliseconds = 90000;
+
+    connections[endpoint] = conn;
 
     return connections[endpoint];
   };
