@@ -69,7 +69,8 @@ function loadCacheFromDisk() {
       cacheStore.set(key, new PageCache(parsed[key]));
     }
 
-    console.log("cache.json loaded into memory");
+    console.log("[cache.json] loaded into memory. Keys:", Object.keys(parsed));
+    console.log("[cache.json] contents:", JSON.stringify(parsed, null, 2));
   } catch (err) {
     console.error("Failed to load cache.json", err);
   }
