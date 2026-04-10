@@ -1,7 +1,7 @@
 <template>
   <Toast />
   <div
-    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[12px]"
+    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[30px]"
   >
     <div
       class="rounded-[20px] shadow-sm w-full sm:max-w-[1000px] flex"
@@ -9,12 +9,7 @@
       <div
         class="w-full sm:w-[65%] flex flex-col p-[16px] sm:p-[30px] rounded-[20px] sm:rounded-l-[20px] sm:rounded-r-none bg-white"
       >
-        <NuxtLink
-          to="/"
-          class="uppercase w-max text-[80%] text-primary mb-[30px] flex items-center gap-[5px]"
-        >
-          <i class="pi pi-angle-left mt-[5px]"></i> CleReview
-        </NuxtLink>
+        <NavLogo height="h-[35px]"  to="/for-business/"></NavLogo>
 
         <div class="flex-1 text-center py-[20px]">
           <div class="text-primary sm:text-[200%] text-[130%] font-bold">
@@ -331,9 +326,44 @@
           </div>
         </div>
       </div>
-      <div
-        class="w-full sm:w-[35%] sm:block hidden !bg-primary text-white border rounded-r-[10px]"
-      ></div>
+      <div class="w-full sm:w-[35%] sm:flex hidden flex-col items-center justify-center !bg-primary text-white rounded-r-[10px] p-8 gap-8">
+
+        <!-- Icon -->
+        <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
+          <i class="pi pi-building text-white text-2xl"></i>
+        </div>
+
+        <!-- Headline -->
+        <div class="text-center space-y-3">
+          <h2 class="text-xl font-bold leading-snug text-white">
+            Start building trust<br/>with your customers.
+          </h2>
+          <p class="text-white/80 text-sm leading-relaxed">
+            Create your free business profile and let authentic reviews do the work for you.
+          </p>
+        </div>
+
+        <!-- Feature list -->
+        <div class="w-full space-y-3">
+          <div v-for="feature in sideFeatures" :key="feature"
+            class="flex items-center gap-3 text-sm text-white/80">
+            <i class="pi pi-check-circle text-gold shrink-0"></i>
+            <span>{{ feature }}</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="w-full border-t border-white/10"></div>
+
+        <!-- Quote -->
+        <div class="text-center space-y-2">
+          <p class="text-white/80 text-xs italic leading-relaxed">
+            "Clereview helped us identify weak spots in our service. We fixed them and our rating jumped to 4.9."
+          </p>
+          <div class="text-white/60 text-[10px]">— Chidi N., Port Harcourt</div>
+        </div>
+
+      </div>
     </div>
   </div>
 </template>
@@ -766,6 +796,12 @@ const handleRegistration = async () => {
     isLoading.value = false;
   }
 };
+const sideFeatures = [
+  'Free business profile setup',
+  'Collect and showcase real reviews',
+  'Respond directly to customers',
+  'Get discovered by new customers',
+]
 </script>
 
 <style scoped>
