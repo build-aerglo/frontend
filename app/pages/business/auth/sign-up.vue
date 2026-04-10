@@ -1,13 +1,13 @@
 <template>
   <Toast />
   <div
-    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[30px]"
+    class="flex justify-center items-center min-h-screen sm:p-[50px] p-[12px]"
   >
     <div
-      class="rounded-[20px] shadow-sm w-full sm:max-w-[1000px] flex rounded-r-[10px]"
+      class="rounded-[20px] shadow-sm w-full sm:max-w-[1000px] flex"
     >
       <div
-        class="w-full sm:w-[65%] flex flex-col p-[30px] rounded-r-[10px] bg-white"
+        class="w-full sm:w-[65%] flex flex-col p-[16px] sm:p-[30px] rounded-[20px] sm:rounded-l-[20px] sm:rounded-r-none bg-white"
       >
         <NuxtLink
           to="/"
@@ -17,7 +17,7 @@
         </NuxtLink>
 
         <div class="flex-1 text-center py-[20px]">
-          <div class="text-primary sm:text-[200%] text-[150%] font-bold">
+          <div class="text-primary sm:text-[200%] text-[130%] font-bold">
             Register your business
           </div>
           <div class="mb-[20px]">
@@ -35,7 +35,7 @@
               class="text-center py-8"
             >
               <div class="mb-4">
-                <i class="pi pi-info-circle text-blue-500 text-5xl mb-4"></i>
+                <i class="pi pi-info-circle text-blue-500 text-3xl sm:text-5xl mb-4"></i>
               </div>
               <h3 class="text-xl font-semibold mb-3 text-gray-800">
                 Business Profile Available to Claim
@@ -73,7 +73,7 @@
               class="text-center py-8"
             >
               <div class="mb-4">
-                <i class="pi pi-check-circle text-green-500 text-5xl mb-4"></i>
+                <i class="pi pi-check-circle text-green-500 text-3xl sm:text-5xl mb-4"></i>
               </div>
               <h3 class="text-xl font-semibold mb-3 text-gray-800">
                 Business Already Claimed
@@ -110,9 +110,9 @@
             </div>
 
             <form @submit.prevent="handleRegistration" v-else>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[14px] sm:gap-[20px]">
                 <!-- email -->
-                <div class="col-span-2">
+                <div class="col-span-1 sm:col-span-2">
                   <InputTextCustom
                     v-model="businessData.email"
                     label="Email"
@@ -122,7 +122,7 @@
                 </div>
 
                 <!-- name -->
-                <div class="col-span-2 relative">
+                <div class="col-span-1 sm:col-span-2 relative">
                   <InputTextCustom
                     v-model="businessData.name"
                     label="Business Name"
@@ -157,7 +157,7 @@
                     v-if="
                       showDropdown && searchResults.length > 0 && !isSearching
                     "
-                    class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                    class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto left-0 right-0"
                     @click.stop
                   >
                     <div
@@ -182,7 +182,7 @@
 
                         <!-- Business Info -->
                         <div class="flex-1 text-left min-w-0">
-                          <div class="font-semibold text-gray-800 truncate">
+                          <div class="font-semibold text-gray-800 truncate text-sm">
                             {{ business.name }}
                           </div>
                           <div
@@ -222,7 +222,7 @@
                 </div>
 
                 <!-- category -->
-                <div>
+                <div class="min-w-0">
                   <div class="text-contrast text-[95%] mb-1 text-left w-full">
                     Business Sector / Category
                   </div>
@@ -234,7 +234,7 @@
                     optionValue="id"
                     filter
                     required
-                    class="text-left w-full border border-gray-300 outline-none rounded-[5px] focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 bg-secondaryLinen"
+                    class="text-left w-full max-w-full border border-gray-300 outline-none rounded-[5px] focus-within:ring-2 focus-within:ring-primary/40 transition-all duration-300 bg-secondaryLinen"
                   />
                 </div>
 
@@ -257,7 +257,7 @@
                   />
                 </div>
 
-                <div class="col-span-2">
+                <div class="col-span-1 sm:col-span-2">
                   <div v-if="!allValid" class="flex flex-col mb-[10px]">
                     <div class="flex items-center gap-2">
                       <i
@@ -319,7 +319,7 @@
 
             <div
               v-if="!showClaimOption && !showClaimedWarning"
-              class="text-center md:text-[100%] mt-[10px]"
+              class="text-center text-[90%] sm:text-[100%] mt-[16px]"
             >
               <span class="text-contrast">Already have an account?</span>
               <NuxtLink to="sign-in">
