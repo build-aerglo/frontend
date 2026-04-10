@@ -124,11 +124,12 @@
                   :class="['rounded-lg p-3 min-h-[120px]', wordCloudView === 'positive' ? 'bg-green-50' : 'bg-red-50']">
                   <div v-if="(wordCloudView === 'positive' ? positiveWords : negativeWords).length"
                     class="flex flex-wrap gap-2">
-                    <span v-for="word in wordCloudView === 'positive' ? positiveWords : negativeWords" :key="word.text"
-                      :style="{ fontSize: word.size + 'px' }"
-                      :class="['font-semibold hover:opacity-70 transition-opacity cursor-pointer', wordCloudView === 'positive' ? 'text-green-700' : 'text-red-700']">
-                      {{ word.text }}
-                    </span>
+                    <span v-for="(word, index) in wordCloudView === 'positive' ? positiveWords : negativeWords"
+  :key="word.text"
+  :style="{ fontSize: Math.min(Math.max(word.size / 2, 10), 22) + 'px' }"
+  :class="['font-semibold hover:opacity-70 transition-opacity cursor-pointer',
+           wordColor(index, wordCloudView)]">
+           </span>
                   </div>
                   <p v-else class="text-sm text-gray-400 text-center pt-4">No keywords yet</p>
                 </div>
@@ -396,6 +397,16 @@ import type { BenchmarkRow } from '~/composables/useAnalyticsApi'
 
 definePageMeta({ layout: 'business' })
 
+const positiveColors = [
+  'text-green-700', 'text-teal-600', 'text-emerald-500',
+  'text-cyan-600',  'text-lime-600',  'text-green-500',
+]
+
+const negativeColors = [
+  'text-red-600',    'text-rose-500',   'text-orange-600',
+  'text-red-400',    'text-pink-600',   'text-orange-500',
+]
+
 const {
   loading, error, hasData, lastCalculatedAt,
   triggering, triggerError, triggerSuccess, lastTriggeredAt,
@@ -406,6 +417,11 @@ const {
 } = useRealAnalytics()
 
 onMounted(() => load())
+
+function wordColor(index: number, view: 'positive' | 'negative'): string {
+  const palette = view === 'positive' ? positiveColors : negativeColors
+  return palette[index % palette.length] ?? (view === 'positive' ? 'text-green-700' : 'text-red-600')
+}
 
 // ── Chart controls ───────────────────────────────────────────────────────────
 const wordCloudView = ref<'positive' | 'negative'>('positive')
