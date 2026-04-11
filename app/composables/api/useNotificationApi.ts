@@ -7,7 +7,7 @@ export default function () {
 
   const api = axios.create({
     baseURL: business_api_url,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
       "Content-Type": "application/json",
       "X-Api-Key": config.public.notificationApiKey, 
