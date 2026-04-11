@@ -39,6 +39,8 @@ export default defineNuxtConfig({
       encrypt_key: process.env.ENCODE_KEY!,
       app_url: process.env.APP_URL!,
       local_encode_key: process.env.LOCAL_ENCODE_KEY!,
+      businessApiKey: process.env.BUSINESS_API_KEY ?? "",
+      notificationApiKey: process.env.NOTIFICATION_API_KEY ?? "",
       analyticsFunctionUrl:
         process.env.ANALYTICS_FUNCTION_URL ??
         "https://analyticsservice-func-cc.azurewebsites.net/api",
