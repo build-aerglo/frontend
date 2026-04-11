@@ -4,7 +4,7 @@ export default function () {
   const business_api_url = useRuntimeConfig().public.notification_url;
   const api = axios.create({
     baseURL: business_api_url,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
       "Content-Type": "application/json",
     },

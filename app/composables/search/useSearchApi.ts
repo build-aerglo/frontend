@@ -5,7 +5,7 @@ export default function () {
   // const search_api_url = "http://localhost:5187";
   const api = axios.create({
     baseURL: search_api_url,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
       "Content-Type": "application/json",
     },
