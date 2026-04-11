@@ -125,11 +125,12 @@
                   <div v-if="(wordCloudView === 'positive' ? positiveWords : negativeWords).length"
                     class="flex flex-wrap gap-2">
                     <span v-for="(word, index) in wordCloudView === 'positive' ? positiveWords : negativeWords"
-  :key="word.text"
-  :style="{ fontSize: Math.min(Math.max(word.size / 2, 10), 22) + 'px' }"
-  :class="['font-semibold hover:opacity-70 transition-opacity cursor-pointer',
-           wordColor(index, wordCloudView)]">
-           </span>
+                      :key="word.text"
+                      :style="{ fontSize: Math.min(Math.max(word.size / 2, 10), 22) + 'px' }"
+                      :class="['font-semibold hover:opacity-70 transition-opacity cursor-pointer',
+                              wordColor(index, wordCloudView)]">
+                      {{ word.text }}
+                    </span>
                   </div>
                   <p v-else class="text-sm text-gray-400 text-center pt-4">No keywords yet</p>
                 </div>

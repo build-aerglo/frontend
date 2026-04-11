@@ -17,7 +17,8 @@
     :draggable="false"
     modal
     header="Update Business Address"
-    :style="{ width: '40rem' }"
+    :style="{ width: '90vw', maxWidth: '40rem' }"
+    :contentStyle="{ overflowY: 'auto', maxHeight: '80vh' }"
   >
     <form @submit.prevent="saveBusinessAddress">
       <div class="mb-5">
@@ -30,7 +31,7 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-[20px]">
         <div>
-          <label for="email">Street</label>
+          <label for="email" class="text-sm font-medium text-gray-600">Street</label>
           <InputText
             fluid
             class="flex-auto"
@@ -40,7 +41,7 @@
           />
         </div>
         <div>
-          <label for="email">City / Town</label>
+          <label for="email" class="text-sm font-medium text-gray-600">City / Town</label>
           <InputText
             fluid
             class="flex-auto"
@@ -50,7 +51,7 @@
           />
         </div>
         <div>
-          <label for="email">State</label>
+          <label for="email" class="text-sm font-medium text-gray-600">State</label>
           <InputText
             fluid
             class="flex-auto"
@@ -72,16 +73,17 @@
     modal
     :maximizable="true"
     @hide="$emit('closed')"
-    :style="{ width: '50rem' }"
+    :style="{ width: '90vw', maxWidth: '50rem' }"
+    :contentStyle="{ overflowY: 'auto', maxHeight: '80vh' }"
   >
     <div>
       <GeneralLoader v-if="isLoading" />
-      <div v-else class="p-[20px]">
-        <div class="mb-[20px]">
+      <div v-else class="p-3 sm:p-5">
+        <div class="mb-4 sm:mb-5">
           <div class="font-bold text-[140%]">Business Verifications</div>
           <small>Confirm and update business validated data.</small>
         </div>
-        <div class="mb-[50px]">
+        <div class="mb-8 sm:mb-12">
           <!-- <div class="mb-2.5">Verification Status:</div> -->
           <ProgressBar
             :value="verification_data?.verificationProgress"
@@ -90,14 +92,14 @@
           ></ProgressBar>
           {{ verification_data?.verificationProgress }}% completed
         </div>
-        <div class="flex flex-col gap-10">
+        <div class="flex flex-col gap-6 sm:gap-10">
           <!--  -->
           <div>
             <div class="text-[120%] font-bold head">
               Business Contact Information
             </div>
-            <div class="flex justify-between gap-2.5">
-              <div>Business Email Address:</div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+            <div class="text-gray-500 text-sm">Business Email Address:</div>
               <div class="flex items-center gap-2.5">
                 <div>
                   {{ business.businessEmail }}
@@ -137,8 +139,8 @@
                 </div>
               </div>
             </div>
-            <div class="flex justify-between gap-2.5">
-              <div>Business Phone Number:</div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+            <div class="text-gray-500 text-sm">Business Phone Number:</div>
               <div class="flex items-center gap-2.5">
                 <div
                   v-if="
@@ -184,8 +186,8 @@
                 </div>
               </div>
             </div>
-            <div class="flex justify-between gap-2.5">
-              <div>Business Address:</div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+            <div class="text-gray-500 text-sm">Business Address:</div>
               <div class="flex items-center gap-2.5">
                 <div v-if="hasAddress">
                   {{ business.businessStreet ?? "-" }}
@@ -237,8 +239,8 @@
               Business Claim Document
             </div>
             <div>
-              <div class="flex justify-between gap-2.5">
-                <div>ID verification</div>
+              <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+                <div class="text-gray-500 text-sm">ID Verification</div>
                 <div class="flex items-center gap-2.5">
                   <div>
                     {{
@@ -307,8 +309,8 @@
           <div>
             <div class="text-[120%] font-bold head">Business Subscription</div>
             <div>
-              <div class="flex justify-between gap-2.5">
-                <div>Subscription Tier:</div>
+              <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+              <div class="text-gray-500 text-sm">Subscription Tier:</div>
                 <div class="flex items-center gap-2.5">
                   <div>Tier {{ businessSubscription?.tier }}</div>
                   <div>
@@ -329,8 +331,8 @@
                   </div>
                 </div>
               </div>
-              <div class="flex justify-between gap-2.5">
-                <div>Selected Plan:</div>
+              <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-2.5">
+              <div class="text-gray-500 text-sm">Selected Plan:</div>
                 <div class="flex items-center gap-2.5">
                   <div>{{ businessSubscription?.planName }}</div>
                   <div>
